@@ -1,4 +1,4 @@
-""" license
+""" license 
 """
 
 from __future__ import print_function # use print as a function
@@ -8,10 +8,7 @@ import sys
 from utils import logger # logger facilitates acces to debug, warning, error...
 
 try:
-    if hasattr(sys, "run_from_cmdl") is True:
-        """
-        hasattr function return True if string is an atribute of the first object
-        """
+    if hasattr(sys, "run_from_cmdl") is True: #hasattr function return True if string is an atribute of the first object
         raise ImportError
     from pycompss.api.parameter import FILE_IN, FILE_OUT
     from pycompss.api.task import task
@@ -23,7 +20,7 @@ except ImportError:
     from utils.dummy_pycompss import FILE_IN, FILE_OUT # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import compss_wait_on # pylint: disable=ungrouped-imports
-   
+    
 
 from basic_modules.tool import Tool 
 """
@@ -33,37 +30,37 @@ class basic_modules.tool.Tool(configuration = {})
     run() method recieved metadata for each of the input data elements. Tools responsability
     to generate the metadata for each of the output data elements, returned in a tuple.
 
-    run method calls the methods that perform the operations to implements the Tool's
-    functionality each method should be decorated using the @task decorator.
-    Task constraints can be configured using the @constraint decorator.
+    run method calls the methods that perform the operations to implements the Tool's functionality
+    each method should be decorated using the @task decorator. Task constraints can be configured 
+    using the @constraint decorator.
 
-    run(input_files, input_metadata, output_files)
-        perform the functionality of the Tool. Usually
-        1)Import specific tool libraries
-        2) check the input data
-        3) convert input data into tool-specific format
-        4) Perform the tool specific operations
-        5) convert output into output format
-        6) write metadata for output
+    run(input_files, input_metadata, output_files) 
+        perform the functionality of the Tool. Usually > 
+        1)Import specific tool libraries,
+        2) check the input data, 
+        3) convert input data into tool-specific format, 
+        4) Perform the tool specific operations, 
+        5) convert output into output format, 
+        6) write metadata for output,
         7) handle error for any of the above
 
-        If failure return None with the exception instance to the
-        output metadata.
+        If failure return None with the exception instance to the 
+        output metadata. 
 
-        The method will run the task, each task shoudl have unique name
+        The method will run the task, each task shoudl have unique name 
         that identify the operation. used then by COMPSs runtime to build
         a graph and trace.
 
         parameters
-            input_file (dict), a dict of absolute path names of the input data elements,
-            input_metadata (dict), a dict of metadatas for each of the input data elements, 
-            output_files (dict), a dict of absolute path names of the output data elements, 
+            input_file (dict), a dict of absolute path names of the input data elements, associ- ated with their role;
+            input_metadata (dict), a dict of metadatas for each of the input data elements, associated with their role;
+            output_files (dict), a dict of absolute path names of the output data elements, associated with their role.
 
         Returns
-            output_files [dict] a dict of absolute path names of the output data elements
-                created by the Tool, associated with their role;
-            output_metadata [dict] a dict of metadatas for each of the output data elements
-                created by the Tool, associated with their role;
+            output_files [dict] a dict of absolute path names of the output data elements created by the
+            Tool, associated with their role;
+            output_metadata [dict] a dict of metadatas for each of the output data elements created by the Tool,
+            associated with their role;
 
         Return type (output_files, output_metadata)
 
@@ -74,18 +71,15 @@ class basic_modules.tool.Tool(configuration = {})
 from basic_modules.metadata import Metadata # contain the metadata of the files 
 
 
-class TestToolPablo(Tool):
-    """
-    tool for printing in a file if the number of
-    characters is even or odd
+class testToolPablo(Tool):
+    """ tool for printing in a file if the number of 
+        characters is even or odd
     """
     def __init__(self, configuration = None):
         """ init function"""
-        logger.info("Test writer")
-        """
-            looger.info(" ") logs a message with a level INFO. args are interpreted as for debug()
-            utils.logger.debug(message, *args, **kargs)
-            message is the message format string, and args are the arguments which are merged into
+        logger.info("Test writer") # looger.info(" ") logs a message with a level INFO. args are interpreted as for debug()
+        """ utils.logger.debug(message, *args, **kargs) 
+            message is the message format string, and args are the arguments which are merged into 
             the msg using the string formatting operator.
         """
         Tool.__init__(self)
@@ -121,10 +115,10 @@ class TestToolPablo(Tool):
         """
 
         try:
-            with open(file_in_loc, "r") as file_in:
+            with open(file_in_loc, "r") as file:
                 with open(file_out_loc, "w") as handle_out:
                     total_char = 0
-                    for line in file_in:
+                    for line in file:
                         total_char += len(line)
 
                     if total_char%2 == 0:
@@ -148,7 +142,7 @@ class TestToolPablo(Tool):
         input_file: dict
             list of input files - in case there is non
 
-        input_metadata: dict
+        input_metadata: dict 
             metadata matching the input files
 
         output_files: dict
@@ -168,7 +162,7 @@ class TestToolPablo(Tool):
 
         results = compss_wait_on(results)
 
-        if results is False:
+        if results == False:
             logger.fatal("Test writterEvenOrOdd: caca de la vaca paca")
             return {}, {}
 
@@ -184,9 +178,9 @@ class TestToolPablo(Tool):
                 }
             )
         }
-
+        
         return (results, output_metadata)
 
-TEST1 = TestToolPablo()
+test1 = testToolPablo()
 
-characters_result = TEST1.writterEvenOrOdd("/Users/pacera/test_pipeline/mg-process-test1/tool/data_test.txt", "/Users/pacera/test_pipeline/mg-process-test1/tool/output_file.txt")
+characters_result = test1.writterEvenOrOdd("/Users/pacera/test_pipeline/mg-process-test1/tool/data_test.txt","/Users/pacera/test_pipeline/mg-process-test1/tool/output_file.txt")
