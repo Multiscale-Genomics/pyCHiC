@@ -93,7 +93,7 @@ class bwaIndexerTool(Tool):
         Parameters
         ----------
         file_loc : str
-            Location of the genome assebly FASTA file
+            Location of the genome assembly FASTA file
         idx_out : str
             Location of the output index file
 
@@ -176,3 +176,4 @@ class bwaIndexerTool(Tool):
         return (output_files, output_metadata)
 
 # ------------------------------------------------------------------------------
+

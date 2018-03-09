@@ -163,7 +163,7 @@ class TestToolPablo(Tool):
             metadata that match with the input files
         """
 
-        results = self.writtenEvenOrOdd(input_files["inpput"],
+        results = self.writterEvenOrOdd(input_files["inpput"],
                                         output_files["output"])
 
         results = compss_wait_on(results)
