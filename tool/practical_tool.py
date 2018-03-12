@@ -19,9 +19,9 @@ except ImportError:
     logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
     logger.warn("          Using mock decorators.")
 
- from utils.dummy_pycompss import FILE_IN, FILE_OUT # pylint: disable=ungrouped-imports
- from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
- from utils.dummy_pycompss import compss_wait_on # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import FILE_IN, FILE_OUT # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import compss_wait_on # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
@@ -112,6 +112,7 @@ class bwaIndexerTool(Tool):
 
         idx_split = index_dir.split("/")
 
+
         shutil.move(amb_loc, index_dir)
         shutil.move(ann_loc, index_dir)
         shutil.move(bwt_loc, index_dir)
@@ -157,6 +158,7 @@ class bwaIndexerTool(Tool):
             input_files["genome"],
             output_files["index"]
         )
+
         results = compss_wait_on(results)
 
         output_metadata = {
@@ -176,4 +178,3 @@ class bwaIndexerTool(Tool):
         return (output_files, output_metadata)
 
 # ------------------------------------------------------------------------------
-

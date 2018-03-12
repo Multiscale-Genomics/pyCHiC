@@ -1,8 +1,8 @@
 """
-This tool uses BWA to index a genome sequence file that has been saved in FASTA format.
+This tool uses BWA to index the chromosome 21 file that has been saved in FASTA format
 
 The run function take input FASTA file, generates location for the output files
-both input and output are passed into the bwa_indexer function.
+both input and output are passed into the bwa_indexer function, not using COMPSs
 """
 
 from __future__ import print_function
@@ -94,7 +94,7 @@ class bwaIndexerTool(Tool):
             args = shlex.split(command_line)
             process = subprocess.Popen(args)
             """
-            Execute a child program in a new subprocess. 
+            Execute a child program in a new subprocess.
             recomended to use with shlex.split(args)
             """
             process.wait()
@@ -125,41 +125,53 @@ class bwaIndexerTool(Tool):
 		bool
 
     	"""
+        command_line = ''
+        try:
+            amb_loc, ann_loc, bwt_loc, pac_loc, sa_loc = self.bwa_index_genome(file_loc)
 
-        amb_loc, ann_loc, bwt_loc, pac_loc, sa_loc = self.bwa_index_genome(file_loc)
+            #.tar.gz the index
+            print('BS - idx_out', idx_out, idx_out.replace(".tar.gz", "")) #pero porque???
 
-        #.tar.gz the index
-        print('BS - idx_out', idx_out, idx_out.replace(".tar.gz", "")) #pero porque???
+            idx_out_pregz = idx_out.replace('.tar.gz', '.tar')
+            #idx_out_pregz = path/file.tar
 
-        idx_out_pregz = idx_out.replace('.tar.gz', '.tar')
-        #idx_out_pregz = path/file.tar
+            index_dir = idx_out.replace('.tar.gz', '')
+            #index_dir = path/file
 
-        index_dir = idx_out.replace('.tar.gz', '')
-        #index_dir = path/file
+            os.mkdir(index_dir)
 
-        os.mkdir(index_dir)
+            idx_split = index_dir.split("/")
+            #idx_split = ["path" , "file"]
 
-        idx_split = index_dir.split("/")
-        #idx_split = ["path" , "file"]
+            shutil.move(amb_loc, index_dir)
+            shutil.move(ann_loc, index_dir)
+            shutil.move(bwt_loc, index_dir)
+            shutil.move(pac_loc, index_dir)
+            shutil.move(sa_loc, index_dir)
 
-        shutil.move(amb_loc, index_dir)
-        shutil.move(ann_loc, index_dir)
-        shutil.move(bwt_loc, index_dir)
-        shutil.move(pac_loc, index_dir)
-        shutil.move(sa_loc, index_dir)
+            index_folder = idx_split[-1]
 
-        index_folder = idx_split[-1]
+            tar = tarfile.open(idx_out_pregz, "w")
+            tar.add(index_dir, arcname=index_folder) #arcname??
+            tar.close()
+            
+            """
+            This create a file .tar that contain the folder with all the
+            indexed files.
+            """
 
-        tar = tarfile.open(idx_out_pregz, "w")
-        tar.add(index_dir, arcname=index_folder) #arcname??
-        tar.close()
+            command_line = 'pigz ' + idx_out_pregz
+            args = shlex.split(command_line)
+            process = subprocess.Popen(args)
+            process.wait()
 
-        command_line = 'pigz ' + idx_out_pregz
-        args = shlex.split(command_line)
-        process = subprocess.Popen(args)
-        process.wait()
+            return True
 
-        return True
+        except (IOError, OSError) as msg:
+            logger.fatal("I/O error({0}) - BWA INDEXER: {1}/n{2}".format(
+                msg.errno, msg.strerror, command_line))
+            return False
+
 
     def run(self, input_files, metadata, output_files):
         """
@@ -189,21 +201,31 @@ class bwaIndexerTool(Tool):
 
 
         results = self.bwa_indexer(input_files["genome"],
-                                    output_files["index"])
+                                   output_files["index"])
+
         results = compss_wait_on(results)
 
-        output_metadata = {
-            "index": Metadata(
-                data_type="sequence_mapping_index_bwa",
-                file_type="TAR",
-                file_path=output_files["index"],
-                sources=[metadata["genome"].file_path],
-                taxon_id=metadata["genome"].taxon_id,
-                meta_data={
-                    "assembly": metadata["genome"].meta_data["assembly"],
-                    "tool": "bwa_indexer"
-                }
-            )
-        }
+
+        if results is False:
+            logger.fatal(("BWA indexer: Run failed"))
+
+        try:
+            output_metadata = {
+                "index": Metadata(
+                    data_type="sequence_mapping_index_bwa",
+                    file_type="TAR",
+                    file_path=output_files["index"],
+                    sources=[metadata["genome"].file_path],
+                    taxon_id=metadata["genome"].taxon_id,
+                    meta_data={
+                        "assembly": metadata["genome"].meta_data["assembly"],
+                        "tool": "bwa_indexer"
+                    }
+                )
+            }
+        except:
+            output_metadata = {}
+            pass
+
 
         return (output_files, output_metadata)
