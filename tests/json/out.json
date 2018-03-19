@@ -1,0 +1,17 @@
+{
+    "output_files": [
+        {
+            "name": "output",
+            "data_type": "<data_type>",
+            "file_type": "txt",
+            "sources": [
+                "tests/data/test_input.txt"
+            ],
+            "meta_data": {
+                "tool": "testTool"
+            },
+            "taxon_id": 9606,
+            "file_path": "tests/data/test.txt"
+        }
+    ]
+}
