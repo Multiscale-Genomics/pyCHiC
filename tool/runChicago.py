@@ -69,17 +69,16 @@ class ChicagoTool(Tool):
         self.configuration.update(configuration)
 
     #@task(some decorators)
-    def chicago(self, input_files, output_files, params):
-        
+    def chicago(self, input_files, output_prefix, output_dir, params):
         """
-        Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix 
+        Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
         folder:
             data :
                 output_index.Rds : chicago dara saved on Rds format
                 output_index_params.txt : parameters used to run Chicago
-                output_index.export_format : chicago output in the chosen format 
+                output_index.export_format : chicago output in the chosen format
             diag_plots :
-                3 plots to assest the quality of the output 
+                3 plots to assest the quality of the output
                 (see CHicago Capture-HiC documentation for details)
             enrichment_data:
                 files for the feature enrichment output (in case is used)
@@ -92,24 +91,23 @@ class ChicagoTool(Tool):
         input_files: str ot comma separated list if there is more than one replicate
         output_prefix: str
         output_dir: str (whole path for the output)
-        params: dict 
+        params: dict
 
         Returns:
         --------
-        bool 
+        bool
             writes the output files in the defined location
-        
         """
 
-        #output should be separated into prefix and path
-        output_prefix = output_files.split("/")[-1]
-        output_dir = "/".join(output_files.split("/")[:-1])
-
+        #check if there are more than one .chinput files
+        if type(input_files) is list:
+             args = ["runChicago.R", ", ".join(input_files), output_prefix, "--output-dir", output_dir]
+             args += params
 
         #I have runChicago.R added to PATH in bin so no need to call Rscript
-        args = ["runChicago.R", input_files, output_prefix, "--output-dir", output_dir]
-    
-        args += params
+        else:
+            args = ["runChicago.R", input_files, output_prefix, "--output-dir", output_dir]
+            args += params
         
         logger.info("chicago CMD: " + " ".join(args))
 
@@ -177,8 +175,9 @@ class ChicagoTool(Tool):
 
         print(command_params)
         return command_params
+
        
-    def run(self, input_files, output_files):
+    def run(self, input_files, input_metadata, output_files):
         """
         The main function to run chicago for peak calling. The input files
         are .chinput and are transformed from BAM files using bam2chicago.sh
@@ -202,102 +201,34 @@ class ChicagoTool(Tool):
         """
         
         command_params = self.get_chicago_params(self.configuration)
+
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        results = self.chicago(input_files["input_files"], output_files["output_files"], command_params)
+        results = self.chicago(input_files["chinput_files"], output_files["output_prefix"], 
+                               output_files["output_dir"], command_params)
 
         results = compss_wait_on(results)
         
-        """
+        
         output_metadata = { 
             "output" : Metadata(
                 data_type="data_type",
-                file_type=input_files["export_format"],
-                file_path=output_files["output"],
+                file_type=self.configuration["chicago_export_format"],
+                file_path=output_files["output_dir"],
                 sources=[
-                    input_metadata["input_files"].file_path,
+                    input_metadata["chinput_1"].file_path,
+                    input_metadata["chinput_2"].file_path
                 ],
-                taxon_id=input_metadata["input_files"].taxon_id,
+                taxon_id=input_metadata["chinput_1"].taxon_id,
                 meta_data={
                     "tool": "Chicago, capture Capture-HiC algorithm"
                 }
             )
                           }
-        """
-        return(results)
+
+        return(results, output_metadata)
 
 
-config = { "chicago_setting_file": "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/PCHiCdata/inst/extdata/sGM12878Settings/sGM12878.settingsFile",
-               "chicago_desing_dir": "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/PCHiCdata/inst/extdata/hg19TestDesign",
-              # "chicago_print_memory": None,
-               "chicago_cutoff": "5",
-               "chicago_export_format": "washU_text",
-               #"chicago_export_order": None,
-              # "chicago_rda": None,
-               #"chicago_save_df_only": None,
-    "chicago_examples_prox_dist": "1e6" ,
-  #"chicago_examples_full_range": None,
-   #"chicago_en_feat_files": None,
-   #"chicago_en_feat_folder": None,
-   "chicago_en_min_dist": "0",
-   "chicago_en_max_dist": "1e6",
-   #"chicago_en_full_cis_range": None,
-   "chicago_en_sample_no": "100",}
-   #"chicago_en_trans": None,
-    #   "chicago_features_only":None}
-
-output_ = {"output_files": "entuano"}
-
-Metadata = {"input_files": "/Users/pacera/MuG/output"}
-
-input_files = {"input_files": "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/PCHiCdata/inst/extdata/GMchinputFiles/GM_rep1.chinput"}
-
-test1 = ChicagoTool(config)
-
-
-print(test1.run(input_files, output_))
-
-        
-
-
-
-
-"""
-input_files, output_prefix, setting_file=None, desing_dir="",
-                print_memory=None, cutoff="5", export_format="washU_text", export_order=None, 
-                rda=None, save_df_only=None, examples_prox_dist="1e6", examples_full_range=None, 
-                output_dir=None, en_feat_files=None, en_feat_list=None, 
-                en_feat_folder=None, en_min_dist="0", en_max_dist="1e6", en_full_cis_range=None,
-                en_sample_no="100", en_trans=None, features_only=None)
-
-
-
-input_files : str
-        output_prefix : str
-        setting_file : str 
-        desing_dir : str
-        print_memory : flag
-        cutoff : int
-        export_format : str
-        export_order : str 
-            "seqMonk", "interBed", "washU_text", "washU_track" (one or more comma separated)
-        rda: flag
-        save_df_only : flag
-        examples_prox_dist : str
-        examples_full_range : flag
-        output_dir : str
-        en_feat_files : str
-            comma separated files with genomic features
-        en_feat_list : str
-        en_feat_folder: str
-        en_min_dist : str
-        en_max_dist : str
-        en_full_cis_range : flag
-        en_sample_no : str
-        en_trans: flag 
-        features_only: flag
-
-"""
 
 
 
