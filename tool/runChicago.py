@@ -69,12 +69,8 @@ class ChicagoTool(Tool):
         self.configuration.update(configuration)
 
     #@task(some decorators)
-    def chicago(self, input_files, output_prefix, setting_file=None, desing_dir="",
-                print_memory=None, cutoff="5", export_format="washU_text", export_order=None, 
-                rda=None, save_df_only=None, examples_prox_dist="1e6", examples_full_range=None, 
-                output_dir=None, en_feat_files=None, en_feat_list=None, 
-                en_feat_folder=None, en_min_dist="0", en_max_dist="1e6", en_full_cis_range=None,
-                en_sample_no="100", en_trans=None, features_only=None):
+    def chicago(self, input_files, output_files, params):
+        
         """
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix 
         folder:
@@ -93,30 +89,10 @@ class ChicagoTool(Tool):
 
         Parameters:
         -----------
-        input_files : str
-        output_prefix : str
-        setting_file : str 
-        desing_dir : str
-        print_memory : flag
-        cutoff : int
-        export_format : str
-        export_order : str 
-            "seqMonk", "interBed", "washU_text", "washU_track" (one or more comma separated)
-        rda: flag
-        save_df_only : flag
-        examples_prox_dist : int
-        examples_full_range : flag
-        output_dir : str
-        en_feat_files : str
-            comma separated files with genomic features
-        en_feat_list : str
-        en_feat_folder: str
-        en_min_dist : str
-        en_max_dist : int
-        en_full_cis_range : flag
-        en_sample_no : int
-        en_trans: flag 
-        features_only: flag
+        input_files: str ot comma separated list if there is more than one replicate
+        output_prefix: str
+        output_dir: str (whole path for the output)
+        params: dict 
 
         Returns:
         --------
@@ -124,68 +100,25 @@ class ChicagoTool(Tool):
             writes the output files in the defined location
         
         """
-        #select variables that are not None
-        total_args = [arg for arg in locals()]
-        print(total_args)
-        selected_var = [arg for arg in total_args if locals()[arg] != None]
-        
-        flags = ["print_memory",
-                 "save_df_only", 
-                 "examples_full_range",
-                 "en_full_cis_range",
-                 "en_trans",
-                 "features_only"
-                 ]
 
-        #dictionary containin the flags from the arguments
-        arg_flags = {"setting_file": "--settings-file",
-                     "desing_dir": "--design-dir",
-                     "print_memory": "--print-memory",
-                     "cutoff": "--cutoff",
-                     "export_format": "--export-format",
-                     "export_order": "--export-order",
-                     "rda": "--rda",
-                     "save_df_only": "--save-df-only",
-                     "examples_prox_dist": "--examples-prox-dist",
-                     "examples_full_range": "--examples-full-range",
-                     "output_dir": "--output-dir",
-                     "en_feat_files": "--en-feat-files",
-                     "en_feat_list": "--en-feat-list",
-                     "en_feat_folder" :"--en-feat-folder",
-                     "en_min_dist": "--en-min-dist",
-                     "en_max_dist": "--en-max-dist",
-                     "en_full_cis_range": "--en-full-cis-range",
-                     "en_sample_no": "--en-sample-no",
-                     "en_trans": "--en-trans",
-                     "features_only": "--features-only"
-                     }
-        
-        rscript = os.path.join(os.path.dirname(__file__), "../scripts/runChicago.R")
+        #output should be separated into prefix and path
+        output_prefix = output_files.split("/")[-1]
+        output_dir = "/".join(output_files.split("/")[:-1])
 
-        #include parametres that are not None to call the Rscript
-        args = ["Rscript", rscript, input_files, output_prefix]
-        for arg in selected_var:
-            if arg not in ["self", "input_files", "output_prefix"]:
-                if arg in flags:
-                    args.append(arg_flags[arg])
-                else:
-                    args.append(arg_flags[arg])
-                    args.append(locals()[arg])
-       
-        print(args)
-        logger.info("chicago CMD: " + " ".join(arg))
+
+        #I have runChicago.R added to PATH in bin so no need to call Rscript
+        args = ["runChicago.R", input_files, output_prefix, "--output-dir", output_dir]
+    
+        args += params
+        
+        logger.info("chicago CMD: " + " ".join(args))
 
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         process.wait()
         proc_out, proc_err = process.communicate()
 
         try:
-            if locals()[output_dir] != None: 
-                with open(output_dir + "/data/"+output_prefix+".Rds", "r") as file_in:
-                    pass
-            else:
-                with open(output_prefix + "/data/"+output_prefix+".Rds", "r") as file_in:
-                    pass
+            os.path.isfile(output_dir+"/data"+output_prefix+".Rds")
         except IOError:
             logger.fatal("chicago failed to generate peak file")
             logger.fatal("chicago stdout" + proc_out)
@@ -194,8 +127,58 @@ class ChicagoTool(Tool):
 
         return True
 
+    @staticmethod # is there any reason for this to be static?
+    def get_chicago_params(params):
+        """
+        Function to handle to extraction of commandline parameters and formatting
+        them for use in the aligner for BWA ALN
 
-    def run(self, input_files, input_metadata, output_files):
+        Parameters
+        ----------
+        params : dict
+
+        Returns
+        -------
+        list
+        """
+
+        command_params = []
+
+        command_parameters = {
+            "chicago_setting_file": ["--settings-file", True],
+            "chicago_desing_dir": ["--design-dir", True],
+            "chicago_print_memory": ["--print-memory", False],
+            "chicago_cutoff": ["--cutoff", True],
+            "chicago_export_format":["--export-format", True],
+            "chicago_export_order": ["--export-order", True],
+            "chicago_rda": ["--rda", True],
+            "chicago_save_df_only": ["--save-df-only", False],
+            "chicago_examples_prox_dist": ["--examples-prox-dist", True],
+            "chicago_examples_full_range": ["--examples-full-range", False],
+            "chicago_en_feat_files": ["--en-feat-files", True],
+            "chicago_en_feat_list": ["--en-feat-list", True],
+            "chicago_en_feat_folder" :["--en-feat-folder", True],
+            "chicago_en_min_dist": ["--en-min-dist", True],
+            "chicago_en_max_dist": ["--en-max-dist", True],
+            "chicago_en_full_cis_range": ["--en-full-cis-range", False],
+            "chicago_en_sample_no": ["--en-sample-no", True],
+            "chicago_en_trans": ["--en-trans", False],
+            "chicago_features_only": ["--features-only", False]
+            }
+
+
+        for param in params:
+            if param in command_parameters:
+                if command_parameters[param][1]:
+                    command_params += [command_parameters[param][0], params[param]]
+                else:
+                    if command_parameters[param][0]:
+                        command_params += [command_parameters[param][0]]
+
+        print(command_params)
+        return command_params
+       
+    def run(self, input_files, output_files):
         """
         The main function to run chicago for peak calling. The input files
         are .chinput and are transformed from BAM files using bam2chicago.sh
@@ -208,46 +191,29 @@ class ChicagoTool(Tool):
         input_files : dict
             list of 
         metadata : dict
+        output_files: dict with the output path
 
         Returns
         -------
         output_files : Dict
-            List of locations for the output files.
+            List of locations for the output files, 
         output_metadata : Dict
             List of matching metadata dict objects
         """
         
-        results = self.chicago(input_files["input_files"],
-                               input_files["output_prefix"],
-                               input_files["setting_file"],
-                               input_files["desing_dir"],
-                               input_files["print_memory"],
-                               input_files["cutoff"],
-                               input_files["export_format"],
-                               input_files["export_order"],
-                               input_files["rda"],
-                               input_files["save_df_only"],
-                               input_files["examples_prox_dist"],
-                               input_files["examples_full_range"],
-                               output_files["output_dir"],
-                               input_files["en_feat_files"],
-                               input_files["en_feat_files"],
-                               input_files["en_feat_folder"],
-                               input_files["en_min_dist"],
-                               input_files["en_max_dist"],
-                               input_files["en_full_cis_range"],
-                               input_files["en_sample_no"],
-                               input_files["en_trans"],
-                               input_files["features_only"])
+        command_params = self.get_chicago_params(self.configuration)
+        logger.info("Chicago command parameters "+ " ".join(command_params))
+
+        results = self.chicago(input_files["input_files"], output_files["output_files"], command_params)
 
         results = compss_wait_on(results)
         
+        """
         output_metadata = { 
-    
             "output" : Metadata(
                 data_type="data_type",
                 file_type=input_files["export_format"],
-                file_path=output_files["output_dir"],
+                file_path=output_files["output"],
                 sources=[
                     input_metadata["input_files"].file_path,
                 ],
@@ -257,14 +223,81 @@ class ChicagoTool(Tool):
                 }
             )
                           }
-
-        return(results, output_metadata)
-
-
+        """
+        return(results)
 
 
+config = { "chicago_setting_file": "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/PCHiCdata/inst/extdata/sGM12878Settings/sGM12878.settingsFile",
+               "chicago_desing_dir": "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/PCHiCdata/inst/extdata/hg19TestDesign",
+              # "chicago_print_memory": None,
+               "chicago_cutoff": "5",
+               "chicago_export_format": "washU_text",
+               #"chicago_export_order": None,
+              # "chicago_rda": None,
+               #"chicago_save_df_only": None,
+    "chicago_examples_prox_dist": "1e6" ,
+  #"chicago_examples_full_range": None,
+   #"chicago_en_feat_files": None,
+   #"chicago_en_feat_folder": None,
+   "chicago_en_min_dist": "0",
+   "chicago_en_max_dist": "1e6",
+   #"chicago_en_full_cis_range": None,
+   "chicago_en_sample_no": "100",}
+   #"chicago_en_trans": None,
+    #   "chicago_features_only":None}
+
+output_ = {"output_files": "entuano"}
+
+Metadata = {"input_files": "/Users/pacera/MuG/output"}
+
+input_files = {"input_files": "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/PCHiCdata/inst/extdata/GMchinputFiles/GM_rep1.chinput"}
+
+test1 = ChicagoTool(config)
 
 
+print(test1.run(input_files, output_))
+
+        
+
+
+
+
+"""
+input_files, output_prefix, setting_file=None, desing_dir="",
+                print_memory=None, cutoff="5", export_format="washU_text", export_order=None, 
+                rda=None, save_df_only=None, examples_prox_dist="1e6", examples_full_range=None, 
+                output_dir=None, en_feat_files=None, en_feat_list=None, 
+                en_feat_folder=None, en_min_dist="0", en_max_dist="1e6", en_full_cis_range=None,
+                en_sample_no="100", en_trans=None, features_only=None)
+
+
+
+input_files : str
+        output_prefix : str
+        setting_file : str 
+        desing_dir : str
+        print_memory : flag
+        cutoff : int
+        export_format : str
+        export_order : str 
+            "seqMonk", "interBed", "washU_text", "washU_track" (one or more comma separated)
+        rda: flag
+        save_df_only : flag
+        examples_prox_dist : str
+        examples_full_range : flag
+        output_dir : str
+        en_feat_files : str
+            comma separated files with genomic features
+        en_feat_list : str
+        en_feat_folder: str
+        en_min_dist : str
+        en_max_dist : str
+        en_full_cis_range : flag
+        en_sample_no : str
+        en_trans: flag 
+        features_only: flag
+
+"""
 
 
 
