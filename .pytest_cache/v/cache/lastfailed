@@ -1,1 +1,3 @@
-{}
+{
+  "tests/test_process_chicago.py": true
+}
