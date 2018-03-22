@@ -29,11 +29,11 @@ def test_chicago():
     path = os.path.dirname(__file__)
 
     input_files = {
-        "chinput_files": path + "/data/GMchinputFiles/GM_rep1.chinput"
+        "chinput_file": path + "/data/GMchinputFiles/GM_rep1.chinput"
         }
 
     output_files = {
-        "output_dir": path + "../output",
+        "output_dir": path + "/output",
         "output_prefix" : "output_test"
         }
 

@@ -196,12 +196,17 @@ class ChicagoTool(Tool):
         output_metadata : Dict
             List of matching metadata dict objects
         """
+        #check if the output directory exists, otherwise create it
+        if not os.path.exists(output_files["output_dir"]):
+            logger.info("creating output directory")
+            os.mkdir(output_files["output_dir"])
+
 
         command_params = self.get_chicago_params(self.configuration)
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        results = self.chicago(input_files["chinput_files"],
+        results = self.chicago(input_files["chinput_file"],
                                output_files["output_prefix"],
                                output_files["output_dir"],
                                command_params)

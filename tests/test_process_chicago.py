@@ -37,7 +37,7 @@ def test_process_chicago():
     }
 
     output_files = {
-        "output_dir" : path + "../output",
+        "output_dir" : path + "/output",
         "output_prefix" : "output_test"
     }
 
@@ -70,7 +70,7 @@ def test_process_chicago():
         #"chicago_features_only":None}
 
 
-    chicago_handle = process_runChicago(config)
+    chicago_handle = process_Chicago(config)
     chicago_handle.run(input_files, metadata, output_files)
 
     assert os.path.isfile(output_files["output_dir"] +
