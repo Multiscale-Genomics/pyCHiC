@@ -17,7 +17,6 @@
 from __future__ import print_function
 
 import os
-import shlex
 import subprocess
 import sys
 
@@ -100,15 +99,16 @@ class ChicagoTool(Tool):
         """
 
         #check if there are more than one .chinput files
-        if type(input_files) is list:
-             args = ["runChicago.R", ", ".join(input_files), output_prefix, "--output-dir", output_dir]
-             args += params
+        if isinstance(input_files, list):
+            args = ["runChicago.R", ", ".join(input_files),
+                    output_prefix, "--output-dir", output_dir]
+            args += params
 
         #I have runChicago.R added to PATH in bin so no need to call Rscript
         else:
             args = ["runChicago.R", input_files, output_prefix, "--output-dir", output_dir]
             args += params
-        
+
         logger.info("chicago CMD: " + " ".join(args))
 
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -139,7 +139,6 @@ class ChicagoTool(Tool):
         -------
         list
         """
-
         command_params = []
 
         command_parameters = {
@@ -173,10 +172,8 @@ class ChicagoTool(Tool):
                     if command_parameters[param][0]:
                         command_params += [command_parameters[param][0]]
 
-        print(command_params)
         return command_params
 
-       
     def run(self, input_files, input_metadata, output_files):
         """
         The main function to run chicago for peak calling. The input files
@@ -188,29 +185,31 @@ class ChicagoTool(Tool):
         Parameters
         ----------
         input_files : dict
-            list of 
+            list of
         metadata : dict
         output_files: dict with the output path
 
         Returns
         -------
         output_files : Dict
-            List of locations for the output files, 
+            List of locations for the output files,
         output_metadata : Dict
             List of matching metadata dict objects
         """
-        
+
         command_params = self.get_chicago_params(self.configuration)
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        results = self.chicago(input_files["chinput_files"], output_files["output_prefix"], 
-                               output_files["output_dir"], command_params)
+        results = self.chicago(input_files["chinput_files"],
+                               output_files["output_prefix"],
+                               output_files["output_dir"],
+                               command_params)
 
         results = compss_wait_on(results)
-        
-        
-        output_metadata = { 
+
+
+        output_metadata = {
             "output" : Metadata(
                 data_type="data_type",
                 file_type=self.configuration["chicago_export_format"],
@@ -224,7 +223,7 @@ class ChicagoTool(Tool):
                     "tool": "Chicago, capture Capture-HiC algorithm"
                 }
             )
-                          }
+        }
 
         return(results, output_metadata)
 

@@ -13,6 +13,14 @@ This repo structure workflows and tools can be forked and used as the base templ
   - pylint
   - pytest
   - mg-tool-api
+  - rpy2
+- R >=3.1.2
+-R Modules:
+  -argparser
+  -devtools
+  -Chicago
+- bedtools
+- perl
 
 Installation
 ------------
@@ -34,4 +42,12 @@ pyenv-virtualenv 2.7.12 mg-process-test
 pyenv activate mg-process-test
 pip install -e .
 pip install -r requirements.txt
+```
+Run the R code:
+
+```
+install.packages("argparser")
+install.packages("devtools")
+library(devtools)
+install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
 ```

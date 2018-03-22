@@ -25,16 +25,15 @@ def test_chicago():
     """
     Function to testing the R chicago wrapper runChicago.py
     """
-    #
+
+    path = os.path.dirname(__file__)
+
     input_files = {
-        "chinput_files":
-            "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/"+
-            "PCHiCdata/inst/extdata/GMchinputFiles/GM_rep1.chinput"
+        "chinput_files": path + "/data/GMchinputFiles/GM_rep1.chinput"
         }
 
     output_files = {
-        "output_dir":
-            "/Users/pacera/test_pipeline/mg-process-test1/output/",
+        "output_dir": path + "../output",
         "output_prefix" : "output_test"
         }
 
@@ -46,12 +45,9 @@ def test_chicago():
         }
 
     config = {
-        "chicago_setting_file":
-            "/Users/pacera/test_pipeline/mg-process-test1/tests/"+
-            "data/sGM12878Settings/sGM12878.settingsFile",
-        "chicago_desing_dir":
-            "/Users/pacera/test_pipeline/mg-process-test1/"+
-            "tests/data/hg19TestDesign/",
+        "chicago_setting_file": path + "/data/sGM12878Settings/"+
+                                "sGM12878.settingsFile",
+        "chicago_desing_dir": path + "/data/hg19TestDesign/",
         #"chicago_print_memory": None,
         "chicago_cutoff": "5",
         "chicago_export_format": "washU_text",

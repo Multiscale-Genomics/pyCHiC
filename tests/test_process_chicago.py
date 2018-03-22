@@ -21,7 +21,7 @@ import os.path
 import pytest
 
 from pipelines.process_runChicago import process_runChicago
-from basic_modules.metadata import Metadata 
+from basic_modules.metadata import Metadata
 
 def test_process_chicago():
     """
@@ -30,13 +30,14 @@ def test_process_chicago():
     Running the chicago pipeline with the test data from the command line
     """
 
+    path = os.path.dirname(__file__)
+
     input_files = {
-        "chinput_file" : "/Users/pacera/test_pipeline/mg-process-test1/"+
-            "tests/data/GMchinputFiles/GM_rep1.chinput"
+        "chinput_file" : path + "/data/GMchinputFiles/GM_rep1.chinput"
     }
 
     output_files = {
-        "output_dir" : "/Users/pacera/test_pipeline/mg-process-test1/output",
+        "output_dir" : path + "../output",
         "output_prefix" : "output_test"
     }
 
@@ -48,12 +49,9 @@ def test_process_chicago():
     }
 
     config = {
-        "chicago_setting_file":
-            "/Users/pacera/test_pipeline/mg-process-test1/tests/"+
-            "data/sGM12878Settings/sGM12878.settingsFile",
-        "chicago_desing_dir":
-            "/Users/pacera/test_pipeline/mg-process-test1/"+
-            "tests/data/hg19TestDesign/",
+        "chicago_setting_file": path + "/data/sGM12878Settings/"+
+                                "sGM12878.settingsFile",
+        "chicago_desing_dir": path + "/data/hg19TestDesign/",
         #"chicago_print_memory": None,
         "chicago_cutoff": "5",
         "chicago_export_format": "washU_text",
@@ -72,7 +70,7 @@ def test_process_chicago():
         #"chicago_features_only":None}
 
 
-    chicago_handle = process_chicago(config)
+    chicago_handle = process_runChicago(config)
     chicago_handle.run(input_files, metadata, output_files)
 
     assert os.path.isfile(output_files["output_dir"] +
@@ -80,10 +78,3 @@ def test_process_chicago():
 
     assert os.path.getsize(output_files["output_dir"] +
                            "/data/" + output_files["output_prefix"] + ".Rds") > 0
-
-
-
-
-
-
-

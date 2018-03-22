@@ -22,7 +22,11 @@ Requirements
 Software
 ^^^^^^^^
 
-- Python 2.7.10+
+- Python 2.7.12+
+- R >=3.1.2
+- bedtools
+- perl
+
 
 Python Modules
 ^^^^^^^^^^^^^^
@@ -30,6 +34,14 @@ Python Modules
 - mg-tool-api
 - pylint
 - pytest
+
+R Modules
+^^^^^^^^^
+- argparser
+- devtools
+- Chicago
+
+
 
 Installation
 ------------
@@ -46,3 +58,11 @@ Using pip:
    :linenos:
 
    pip install git+https://github.com/Multiscale-Genomics/mg-process-test.git
+
+Install R modules, use the following R code:
+
+  install.packages("argparser")
+  install.packages("devtools") 
+  library(devtools)
+  install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
+	
