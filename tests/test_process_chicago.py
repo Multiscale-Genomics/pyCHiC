@@ -20,7 +20,7 @@ from __future__ import print_function
 import os.path
 import pytest
 
-from pipelines.process_runChicago import process_runChicago
+from process_runChicago import process_Chicago
 from basic_modules.metadata import Metadata
 
 def test_process_chicago():
