@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 .. See the NOTICE file distributed with this work for additional information
    regarding copyright ownership.
@@ -14,6 +15,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-__author__ = 'Mark McDowall'
-__version__ = '0.0'
-__license__ = 'Apache 2.0'
+from pycompssapp import PyCOMPSsApp
+from localapp import LocalApp
+from workflowapp import WorkflowApp
