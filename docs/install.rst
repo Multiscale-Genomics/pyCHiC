@@ -41,7 +41,8 @@ R Modules
 - devtools
 - Chicago
 
-
+To Run runChicago.py and process_runChicago.py, the R script runChicago.R from  https://bitbucket.org/chicagoTeam/chicago/src/ceffddda8ea392a1e84e4db9593f8fc35ac88048/chicagoTools/?at=master
+should be downloded and added to PATH.
 
 Installation
 ------------
