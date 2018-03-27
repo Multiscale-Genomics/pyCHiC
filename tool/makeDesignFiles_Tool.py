@@ -113,7 +113,16 @@ class makeDesignFilesTool(Tool):
             logger.fatal("makeDesignFiles stdout" + proc_out)
             return False
 
-        #if design
+        #if the output file is different than the .rmap and .baitmap folder
+        #copy .map and .baitmaop and paste them in the output folder
+
+        outDir = "/".join(outFilePrefix.split("/")[:-1])
+
+        if os.path.isfile(outDir + "/" + rmapFile.split("/")[-1]) is False:
+            shutil.copy(rmapFile, outDir)
+            shutil.copy(baitMapFile, outDir)
+
+
         return True
 
     @staticmethod
@@ -134,13 +143,6 @@ class makeDesignFilesTool(Tool):
             "makeDesignFiles_removeb2b" : ["--removeb2b", False],
             "makeDesignFiles_removeAdjacent" : ["--removeAdjacent", False],
             }
-        """
-        "makeDesignFiles_rmapFile" : ["-r", True],
-        "makeDesignFiles_baitMapFile" : ["-f", True],
-        "makeDesignFiles_outFilePrefix" : ["-o", True],
-        "makeDesignFiles_designDir" : ["-d", True]
-        """
-
 
         for parameter in params:
             if parameter in command_parameters:
@@ -177,8 +179,7 @@ class makeDesignFilesTool(Tool):
         """
 
         if not os.path.exists(output_files["designDir"]):
-            logger.error(output_files["designDir"] + "does not" +
-                + "exists")
+            logger.error(output_files["designDir"] + "does not" + "exists")
             logger.info("Introduce a valid directory with .map and .mapbait")
 
         commands_params = self.get_makeDesignFiles_params(self.configuration)
