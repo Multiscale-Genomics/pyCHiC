@@ -45,7 +45,7 @@ class makeDesignFilesTool(Tool):
     capture Hi-C
     """
 
-    def __init__(self, configuration={}):
+    def __init__(self, configuration=None):
         """
         Initialise the tool with the configuration file
 
@@ -64,32 +64,21 @@ class makeDesignFilesTool(Tool):
 
     def makeDesignFiles(self, designDir, outFilePrefix, parameters):
         """
-        make the design files and store it in the specify design folder.
+        make the design files and store it in the specify design folder. It is a
+        wrapper of makeDesignFiles.py
 
         Parameters:
         -----------
-        rmapFIle :  A tab-separated file of the format
-                    <chr> <start> <end> <numeric ID>,
-                    describing the restriction digest (or "virtual digest"
-                    if pooled fragments are used). These numeric IDs are referred to as
-                    "otherEndID" in Chicago. All fragments mapping outside of the digest
-                    coordinates will be disregarded by both these scripts and Chicago.
-        baitMapFile: Tab-separated file of the format
-                     <chr> <start> <end> <numeric ID> <annotation>,
-                     listing the coordinates of the baited/captured
-                     restriction fragments (should be a subset of the fragments
-                     listed in rmapfile), their numeric IDs (should match those listed
-                     in rmapfile for the corresponding fragments) and their annotations
-                     (such as, for example, the names of baited promoters). The numeric
-                     IDs are referred to as "baitID" in Chicago.
-        outFilePrefix: Prefix name of the output files
-        designDir: Path to the folder with the output files(recommended the same
-                    folder as .map and .baitmap files).
-        parameters: list of parameter already selected by
+        designDir: str,
+                   Path to the folder with the output files(recommended the same
+                   folder as .map and .baitmap files).
+        parameters: dict,
+                    list of parameter already selected by
                     get_makeDesignFiles_params().
         Returns:
         -------
         bool
+        outFilePrefix: str
             writes the output files in the defined location
 
         """
@@ -177,6 +166,8 @@ class makeDesignFilesTool(Tool):
         results = self.makeDesignFiles( input_files["designDir"],
                                   output_files["outFilePrefix"],
                                   commands_params)
+
+        resutls = compss_wait_on(results)
 
         output_metadata ={
             "output" : Metadata(
