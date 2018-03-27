@@ -62,8 +62,7 @@ class makeDesignFilesTool(Tool):
 
         self.configuration.update(configuration)
 
-    def makeDesignFiles(self, rmapFile, baitMapFile, outFilePrefix,
-                        designDir, parameters):
+    def makeDesignFiles(self, designDir, outFilePrefix, parameters):
         """
         make the design files and store it in the specify design folder.
 
@@ -95,8 +94,9 @@ class makeDesignFilesTool(Tool):
 
         """
         #if makeDesignFiles.py is added to PATH
-        args = ["makeDesignFiles.py", "--rmapfile", rmapFile, "--baitmapfile", baitMapFile,
-                "--outfilePrefix", outFilePrefix, "--designDir", designDir]
+        args = ["makeDesignFiles.py", "--outfilePrefix", outFilePrefix,
+            "--designDir", designDir]
+
         args += parameters
 
         logger.info("makeDesignFile : "+ " ".join(args))
@@ -112,16 +112,6 @@ class makeDesignFilesTool(Tool):
             logger.fatal("makeDesignFiles stderr" + proc_err)
             logger.fatal("makeDesignFiles stdout" + proc_out)
             return False
-
-        #if the output file is different than the .rmap and .baitmap folder
-        #copy .map and .baitmaop and paste them in the output folder
-
-        outDir = "/".join(outFilePrefix.split("/")[:-1])
-
-        if os.path.isfile(outDir + "/" + rmapFile.split("/")[-1]) is False:
-            shutil.copy(rmapFile, outDir)
-            shutil.copy(baitMapFile, outDir)
-
 
         return True
 
@@ -142,6 +132,8 @@ class makeDesignFilesTool(Tool):
             "makeDesignFiles_binSize" : ["--binSize", True],
             "makeDesignFiles_removeb2b" : ["--removeb2b", False],
             "makeDesignFiles_removeAdjacent" : ["--removeAdjacent", False],
+            "makeDesignFiles_rmapfile" : ["--rmapfile", True],
+            "makeDesignFiles_baitmapfail" : ["--baitmapFIle", True]
             }
 
         for parameter in params:
@@ -163,12 +155,12 @@ class makeDesignFilesTool(Tool):
         ----------
 
         input_files: dict
-            rmapfile : location
-            baitMapFile : location
+            designDir : path to the designDir containin .rmap and .baitmap files
         input_metadata: dict
         output_files: dict
-            outFilePrefix : prefix output name
-            designDir : location of output folder
+            outFilePrefix : path to the output folder and prefix name of files
+                example: "/folder1/folder2/prefixname". Recommended to use the
+                path to designDir and the same prefix as .rmap and .baitmap
 
         Returns:
         --------
@@ -178,25 +170,19 @@ class makeDesignFilesTool(Tool):
             List of matching metadata dict objects.
         """
 
-        if not os.path.exists(output_files["designDir"]):
-            logger.error(output_files["designDir"] + "does not" + "exists")
-            logger.info("Introduce a valid directory with .map and .mapbait")
-
         commands_params = self.get_makeDesignFiles_params(self.configuration)
 
         logger.info("makeDesignFiles command parameters " + " ".join(commands_params))
 
-        results = self.makeDesignFiles(input_files["rmapFile"],
-                                 input_files["baitMapFile"],
+        results = self.makeDesignFiles( input_files["designDir"],
                                   output_files["outFilePrefix"],
-                                  output_files["designDir"],
                                   commands_params)
 
         output_metadata ={
             "output" : Metadata(
                 data_type = "Designfiles",
                 file_type = [".nbpb", ".npb", ".poe"],
-                file_path = output_files["designDir"],
+                file_path = input_files["designDir"],
                 sources = [
                     input_metadata[".rmap"].file_path,
                     input_metadata[".baitmap"].file_path
@@ -216,41 +202,6 @@ class makeDesignFilesTool(Tool):
         return (results, output_metadata)
 
 
-
-
-config_file = {
-    "makeDesignFiles_minFragLen" : "150",
-    "makeDesignFiles_maxFragLen" : "40000",
-    "makeDesignFiles_maxLBrownEst" : "1.5e6",
-    "makeDesignFiles_binSize" : "20000",
-    "makeDesignFiles_removeb2b" : True,
-    "makeDesignFiles_removeAdjacent" : True,
-    }
-
-input_files = {
-    "rmapFile" : "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/PCHiCdata/inst/extdata/hg19TestDesign/h19_chr20and21.rmap",
-    "baitMapFile" : "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/PCHiCdata/inst/extdata/hg19TestDesign/h19_chr20and21.baitmap"
-}
-
-input_metadata = {
-    ".rmap" : Metadata(
-        "data_chicago_input", ".rmap",
-         "/Users/pacera/test_makedir/output/h19_chr20and21.rmap",
-         None, {}, 9606),
-    ".baitmap" : Metadata(
-        "data_chicago_input", ".rmap",
-         "/Users/pacera/test_makedir/output/h19_chr20and21.baitmap",
-         None, {}, 9606)
-}
-
-output_files = {
-    "outFilePrefix" : "/Users/pacera/designTest/testecillo",
-    "designDir" : "/Users/pacera/designTest"
-}
-
-test = makeDesignFilesTool(config_file)
-
-print(test.run(input_files, input_metadata, output_files))
 
 
 
