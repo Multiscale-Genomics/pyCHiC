@@ -66,6 +66,39 @@ class makeRmapFile(Tool):
 
         self.configuration.update(configuration)
 
+    @staticmethod
+    def adjust_format_to_rmap(out_digest_dir, out_digest_file):
+        """
+        This function takes the output file from hicup_digester
+        and put it in the correct format for rmap chicago input.
+        <chr> <start> <end> <numeric ID>
+        """
+
+        formated_out = out_digest_file.split(".")[0]
+
+        logger.info("Reformating file and converting to .rmap")
+
+        with open(out_digest_dir + out_digest_file, "r") as f_in:
+            with open(out_digest_dir + formated_out + ".rmap", "w") as f_out:
+                for line in f_in:
+                    line = line.rstrip().split("\t")
+                    if line[0].startswith("chr"):
+                        print(line[0] + "\t" +
+                            line[1]+ "\t" +
+                            line[2]+ "\t" +
+                            line[3],
+                             file = f_out)
+
+        if os.path.getsize(out_digest_dir + formated_out + ".rmap") > 0:
+            return True
+        else:
+            logger.fatal("makeRmapFile could not change to" +
+                "rmap format")
+            return False
+
+
+
+
     def hicup_digester(self, genome, arguments, output_dir, output_prefix):
         """
         This function runs the Perl script hicup_digester
@@ -93,35 +126,25 @@ class makeRmapFile(Tool):
         print(args)
         logger.info("hicup_digester CMD: " + " ".join(args))
 
-        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr= subprocess.PIPE)
+        process = subprocess.Popen(args,
+            stdout=subprocess.PIPE,
+            stderr= subprocess.PIPE)
         process.wait()
         proc_out, proc_err = process.communicate()
 
-        try:
-            if "digester_re2" in self.configuration:
-                os.path.isfile("Digest_"+ output_dir + output_prefix +
-                "_" + self.configuration["digester_re1"].split(",")[1]
-                + "_" + self.configuration["digester_re2"].split(",")[1]
-                + ".txt")
-            else:
-                 os.path.isfile("Digest_"+ output_dir + output_prefix +
-                "_" + self.configuration["digester_re1"].split(",")[1]
-                + "_None.txt")
+        out = "".join([f for f in os.listdir(output_dir)
+            if f.startswith("Digest_")])
 
-        except IOError:
-            logger.fatal("chicago failed to generate peak file")
-            logger.fatal("chicago stdout" + proc_out)
-            logger.fatal("chicago stderr" + proc_err)
+        if os.path.getsize(output_dir + out) > 0:
+            pass
+        else:
+            logger.fatal("hicup_digester failed to generate peak file")
+            logger.fatal("hicup_digester stdout" + proc_out)
+            logger.fatal("hicup_digester stderr" + proc_err)
             return False
 
-        return True
-
-    #def adjust_format_to_rmpa(output_digest, output_formated):
-        """
-        This function takes the output file from hicup_digester
-        and put it in the correct format for rmap chicago input.
-        <chr> <start> <end> <numeric ID>
-        """
+        if self.adjust_format_to_rmap(output_dir, out) is True:
+            return True
 
 
     @staticmethod
@@ -198,20 +221,32 @@ class makeRmapFile(Tool):
         results = compss_wait_on(results)
 
         output_metadata = {
+            "rmap": Metadata(
+                data_type=input_metadata['genome'].data_type,
+                file_type="rmap",
+                file_path=output_files["output_dir"],
+                sources=[
+                    input_metadata["genome"].file_path,
+                ],
+                taxon_id=input_metadata["genome"].taxon_id,
+                meta_data={
+                    "RE" : input_metadata["genome"].meta_data,
+                    "tool": "makeRmapFileTool"
+                }
+            )
+
         }
 
         return(results, output_metadata)
 
-#from the command line  ../hicup_digester --re1 A^AGCTT,HindIII --genome caquita_digestiva --outdir . /Users/pacera/developing/C-HiC/genome_mm10/mm10.fa
-
-
+"""
 input_files = {
     "genome" : "../genome_mm10/mm10.fa"
 }
 
 
-metadata = {
-
+metadata = {"genome" : Metadata(
+    "hg38", "fasta", "../genome_mm10/mm10.fa", None, "HindIII", 9606),
 }
 
 config = {
@@ -219,14 +254,14 @@ config = {
 }
 
 output_files = {
-    "output_dir" : ".",
+    "output_dir" : "../tests/data/test_makeRmap/",
     "output_prefix" : "test_digest"
 }
 
 test = makeRmapFile(config)
 
 test.run(input_files, metadata, output_files)
-
+"""
 
 
 
