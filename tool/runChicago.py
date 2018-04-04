@@ -73,7 +73,7 @@ class ChicagoTool(Tool):
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
         folder:
             data :
-                output_index.Rds : chicago dara saved on Rds format
+                output_index.Rds : chicago data saved on Rds format
                 output_index_params.txt : parameters used to run Chicago
                 output_index.export_format : chicago output in the chosen format
             diag_plots :
@@ -125,7 +125,7 @@ class ChicagoTool(Tool):
 
         return True
 
-    @staticmethod # is there any reason for this to be static?
+    @staticmethod
     def get_chicago_params(params):
         """
         Function to handle to extraction of commandline parameters and formatting
@@ -185,7 +185,7 @@ class ChicagoTool(Tool):
         Parameters
         ----------
         input_files : dict
-            list of
+            list of .chinput files, or str with a single .chinput file
         metadata : dict
         output_files: dict with the output path
 
@@ -216,7 +216,7 @@ class ChicagoTool(Tool):
 
         output_metadata = {
             "output" : Metadata(
-                data_type="data_type",
+                data_type="peaks",
                 file_type=self.configuration["chicago_export_format"],
                 file_path=output_files["output_dir"],
                 sources=[

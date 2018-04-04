@@ -10,3 +10,5 @@ env/*
 mg_process_test.egg-info*
 .cache
 /tests/data/tmp
+genome_mm10
+tests/data/test_bam2chicago
