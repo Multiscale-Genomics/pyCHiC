@@ -37,9 +37,9 @@ except ImportError:
     from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import compss_wait_on # pylint: disable=ungrouped-imports
 
-from basic_modules.metadata import Metadata
-from basic_modules.tool import Tool
 
+from basic_modules.tool import Tool
+from basic_modules.metadata import Metadata
 ###############################################################
 
 class makeRmapFile(Tool):
@@ -49,16 +49,16 @@ class makeRmapFile(Tool):
 
     def __init__(self, configuration=None):
         """
-        Initialising the Tool with its confifuration
-
+        initialising the function
 
         Parameters:
         -----------
-        configuration : Dict
-            dictionary containing parameters that define
-            how to Run hicup_digester
+        configuration: dict
+         dictionary containing all the arguments and parameters
+         to run the tool
         """
-        print("hicup_digester")
+
+        print("bam2chicago initialising")
         Tool.__init__(self)
 
         if configuration is None:
@@ -85,27 +85,27 @@ class makeRmapFile(Tool):
         """
 
 
-
-        args = ["../scripts/hicup_digester ", genome,
+        args = ["hicup_digester", genome,
             "--outdir", output_dir, "--genome", output_prefix]
 
         args = args + arguments
 
-        logger.info("hicap_digester CMD: " + " ".join(args))
+        print(args)
+        logger.info("hicup_digester CMD: " + " ".join(args))
 
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr= subprocess.PIPE)
         process.wait()
         proc_out, proc_err = process.communicate()
 
         try:
-            if "digester_re2" in self.config_file:
-                os.path.isfile("Digest_"+ output + output_prefix +
-                "_" + self.config_file["digester_re1"].split(",")[1]
-                + "_" + self.config_file["digester_re2"].split(",")[1]
+            if "digester_re2" in self.configuration:
+                os.path.isfile("Digest_"+ output_dir + output_prefix +
+                "_" + self.configuration["digester_re1"].split(",")[1]
+                + "_" + self.configuration["digester_re2"].split(",")[1]
                 + ".txt")
             else:
-                 os.path.isfile("Digest_"+ output + output_prefix +
-                "_" + self.config_file["digester_re1"].split(",")[1]
+                 os.path.isfile("Digest_"+ output_dir + output_prefix +
+                "_" + self.configuration["digester_re1"].split(",")[1]
                 + "_None.txt")
 
         except IOError:
@@ -122,7 +122,6 @@ class makeRmapFile(Tool):
         and put it in the correct format for rmap chicago input.
         <chr> <start> <end> <numeric ID>
         """
-
 
 
     @staticmethod
@@ -167,85 +166,66 @@ class makeRmapFile(Tool):
                     command_params += [command_parameters[arg][0]]
         return command_params
 
-        def run(self, input_files, input_metadata, output_files):
-            """
-            This function run the tool
+    def run(self, input_files, input_metadata, output_files):
+        """
+        This function run the tool
 
-            Parameters
-            ----------
+        Parameters
+        ----------
 
-            input_files: dict
-                genome in fasta file
-            input_metadata: dict
-                input metadata
+        input_files: dict
+            genome in fasta file
+        input_metadata: dict
+            input metadata
 
-            Returns
-            -------
+        Returns
+        -------
 
-            output_files: dict
-                name and path to the output file
-            output_metadata: dict
-                lest of matching metadata
-            """
+        output_files: dict
+            name and path to the output file
+        output_metadata: dict
+            lest of matching metadata
+        """
 
-            command_params = self.get_digester_params(self.configuration)
+        command_params = self.get_digester_params(self.configuration)
 
-            logger.info("hicup_digester command parameters "+
-             " ".join(command_params))
+        logger.info("hicup_digester command parameters "+
+         " ".join(command_params))
 
-            results = self.hicup_digester(input_files["genome"],
-                command_params, output_files["output_dir"], output_files["output_prefix"])
+        results = self.hicup_digester(input_files["genome"],
+            command_params, output_files["output_dir"], output_files["output_prefix"])
 
-            results = compss_wait_on(results)
+        results = compss_wait_on(results)
 
-            output_metadata = {
-            }
+        output_metadata = {
+        }
 
-            return(results, output_metadata)
+        return(results, output_metadata)
 
 #from the command line  ../hicup_digester --re1 A^AGCTT,HindIII --genome caquita_digestiva --outdir . /Users/pacera/developing/C-HiC/genome_mm10/mm10.fa
 
 
-if __name__ == "__main__":
-
-    config_file = {
-        "digester_re1" : "A^AGCTT,HindIII"
-       #"digester_re2" : ,
-       # "digester_quite" :,
-       # "digester_version" : ,
-       # "digester_zip" :
-    }
-
-    input_files = {
-        "genome" : "../genome_mm10/mm10.fa"
-    }
-
-    output_files = {
-        "output_dir" : ".",
-        "output_prefix" : "test_digest"
-    }
-
-    input_metadata = {
-        "genome" : Metadata (
-            "gemome", "fasta", [], None, None, 9606)
-    }
-
-    test1 = makeRmapFile(config_file)
-
-    caca = test1.run(input_files, input_metadata, output_files)
+input_files = {
+    "genome" : "../genome_mm10/mm10.fa"
+}
 
 
+metadata = {
 
+}
 
+config = {
+     "digester_re1" : "A^AGCTT,HindIII"
+}
 
+output_files = {
+    "output_dir" : ".",
+    "output_prefix" : "test_digest"
+}
 
+test = makeRmapFile(config)
 
-
-
-
-
-
-
+test.run(input_files, metadata, output_files)
 
 
 

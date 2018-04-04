@@ -244,10 +244,3 @@ class ChicagoTool(Tool):
 
 
 
-
-
-
-
-
-
-
