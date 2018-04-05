@@ -59,6 +59,7 @@ class bam2chicagoTool(Tool):
         print("bam2chicago initialising")
         Tool.__init__(self)
 
+
         if configuration is None:
             configuration = {}
 
@@ -173,7 +174,6 @@ class bam2chicagoTool(Tool):
         }
 
         return(results, output_metadata)
-
 
 
 

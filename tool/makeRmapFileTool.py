@@ -83,7 +83,7 @@ class makeRmapFile(Tool):
                 for line in f_in:
                     line = line.rstrip().split("\t")
                     if line[0].startswith("chr"):
-                        print(line[0] + "\t" +
+                        print(line[0][3:] + "\t" +
                             line[1]+ "\t" +
                             line[2]+ "\t" +
                             line[3],
