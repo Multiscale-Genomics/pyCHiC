@@ -13,3 +13,4 @@ mg_process_test.egg-info*
 genome_mm10
 tests/data/test_bam2chicago
 genomes/
+tool/original_RE.py
