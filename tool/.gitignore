@@ -7,3 +7,5 @@ output
 practical_tool_pablo_run.py
 ../process_pablo_test.py
 ../.pytest_cache/v/cache/lastfailed
+../genomes/
+../genomes

@@ -20,6 +20,7 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
+from re import compile
 
 from utils import logger
 
@@ -67,34 +68,59 @@ class makeRmapFile(Tool):
         self.configuration.update(configuration)
 
     @staticmethod
-    def adjust_format_to_rmap(out_digest_dir, out_digest_file):
-        """
-        This function takes the output file from hicup_digester
-        and put it in the correct format for rmap chicago input.
-        <chr> <start> <end> <numeric ID>
-        """
 
-        formated_out = out_digest_file.split(".")[0]
+    def map_re_sites_nochunk(self, enzyme_name, genome_seq, verbose=False):
+    """
+    map all restriction enzyme (RE) sites of a given enzyme in a genome.
+    Position of a RE site is defined as the genomic coordinate of the first
+    nucleotide after the first cut (genomic coordinate starts at 1).
+    In the case of HindIII the genomic coordinate is this one:
+    123456 789...
+           |
+           v
+    -----A|AGCT T--------------
+    -----T TCGA|A--------------
+    In this example the coordinate of the RE site would be 7.
+    :param enzyme_name: name of the enzyme to map (upper/lower case are
+       important)
+    :param genome_seq: a dictionary containing the genomic sequence by
+       chromosome
+    """
 
-        logger.info("Reformating file and converting to .rmap")
+    if isinstance(enzyme_name, str):
+        enzyme_names = [enzyme_name]
+    elif isinstance(enzyme_name, list):
+        enzyme_names = enzyme_name
 
-        with open(out_digest_dir + out_digest_file, "r") as f_in:
-            with open(out_digest_dir + formated_out + ".rmap", "w") as f_out:
-                for line in f_in:
-                    line = line.rstrip().split("\t")
-                    if line[0].startswith("chr"):
-                        print(line[0][3:] + "\t" +
-                            line[1]+ "\t" +
-                            line[2]+ "\t" +
-                            line[3],
-                             file = f_out)
+    enzymes = {}
 
-        if os.path.getsize(out_digest_dir + formated_out + ".rmap") > 0:
-            return True
-        else:
-            logger.fatal("makeRmapFile could not change to" +
-                "rmap format")
-            return False
+    for name in enzyme_names:
+        enzymes[name] = RESTRICTION_ENZYMES[name]
+
+    # we match the full cut-site but report the position after the cut site
+    # (third group of the regexp)
+    restring = ('%s') % ('|'.join(['(?<=%s(?=%s))' % tuple(enzymes[n].split('|'))
+                                   for n in enzymes]))
+    # IUPAC conventions
+    restring = iupac2regex(restring)
+
+    enz_pattern = compile(restring)
+
+    frags = {}
+    count = 0
+    for crm in genome_seq:
+        seq = genome_seq[crm]
+        frags[crm] = [1]
+        for match in enz_pattern.finditer(seq):
+            pos = match.end() + 1
+            frags[crm].append(pos)
+            count += 1
+        # at the end of last chunk we add the chromosome length
+        frags[crm].append(len(seq))
+    if verbose:
+        print 'Found %d RE sites' % count
+    return frags
+
 
 
 
@@ -147,48 +173,6 @@ class makeRmapFile(Tool):
             return True
 
 
-    @staticmethod
-    def get_digester_params(params):
-        """
-        Function that select the parameters that have been
-        selected by the user and pass them to run hicup_digester
-
-        Parameters
-        ----------
-        params: dict
-            --re1       Restriction enzyme used to digest the genome (the enzyme that
-                        forms the ligation junction) e.g. A^GATCT,BglII.  Some Hi-C protocols may use two enzymes at this stage.  To specify two enzymes: -1 A^GATCT,BglII:A^AGCTT,HindIII.
-            --re2       To specify a restriction enzyme instead of sonication to
-                        shorten di-tags. This restriction site does NOT form a Hi-C ligation junction. 2 .g. AG^CT,AluI. Typically the sonication protocol is followed.
-            --config    Specify the name of the optional configuration file
-            --genome    Name of the genome to be digested (not the path to the genome
-                        file or files, but the genome name to include in the output file)
-            --help      Print program help and exit
-            --outdir    Specify the directory to which the output files should be
-                        written
-            --quiet     Suppress all progress reports
-            --version   Print the program version and exit
-            --zip       Print the results to a gzip file
-        """
-
-        command_params = []
-
-        command_parameters = {
-            "digester_re1" : ["--re1", True],
-            "digester_re2" : ["--re2", True],
-            "digester_quite" :["--quiet", False],
-            "digester_version" : ["--version", False],
-            "digester_zip" : ["--zip", False]
-            }
-
-        for arg in params:
-            if arg in command_parameters:
-                if command_parameters[arg][1] is True:
-                    command_params += [command_parameters[arg][0], params[arg]]
-                else:
-                    command_params += [command_parameters[arg][0]]
-        return command_params
-
     def run(self, input_files, input_metadata, output_files):
         """
         This function run the tool
@@ -213,7 +197,7 @@ class makeRmapFile(Tool):
         command_params = self.get_digester_params(self.configuration)
 
         logger.info("hicup_digester command parameters "+
-         " ".join(command_params))
+            " ".join(command_params))
 
         results = self.hicup_digester(input_files["genome"],
             command_params, output_files["output_dir"], output_files["output_prefix"])
@@ -239,9 +223,9 @@ class makeRmapFile(Tool):
 
         return(results, output_metadata)
 
-"""
+
 input_files = {
-    "genome" : "../genome_mm10/mm10.fa"
+    "genome" : "../genomes/GRCh38/GRCh38.fa"
 }
 
 
@@ -255,13 +239,13 @@ config = {
 
 output_files = {
     "output_dir" : "../tests/data/test_makeRmap/",
-    "output_prefix" : "test_digest"
+    "output_prefix" : "hicup_digester_GRCh38"
 }
 
 test = makeRmapFile(config)
 
 test.run(input_files, metadata, output_files)
-"""
+
 
 
 
