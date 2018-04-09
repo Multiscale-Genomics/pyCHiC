@@ -337,25 +337,4 @@ class makeRmapFile(Tool):
 
         return(results, output_metadata)
 
-
-input_files = {
-    "genome" : "../genomes/GRCh38/toy_GRCh38.fa",
-    "RE" : { "HindIII" : 'A|AGCTT'}
-}
-
-
-metadata = {"genome" : Metadata(
-    "hg38", "fasta", "../genome_mm10/mm10.fa", None, "HindIII", 9606),
-}
-
-
-output_files = {
-    "output_dir" : "../tests/data/test_makeRmap/",
-    "output_prefix" : "restriction_enzyme_test2.txt"
-}
-
-test = makeRmapFile()
-
-test.run(input_files, metadata, output_files)
-
 #print(test.run(input_files, metadata, output_files))

@@ -20,7 +20,7 @@ import os
 import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
-from tool.makeRmapFileTool import makeRmapFile
+from tool.makeRmap_tool import makeRmapFile
 
 
 def test_makeRmapFileTool():
@@ -28,29 +28,27 @@ def test_makeRmapFileTool():
     Function to test generation of .rmap input files
     from CHiCAGO
     """
-
     path = os.path.join(os.path.dirname(__file__), "data/")
 
+
     input_files = {
-        "genome" : path + "test_makeRmap/mm10.fa"
+        "genome" : path+ "test_makeRmap/toy_GRCh38.fa",
+        "RE" : { "HindIII" : 'A|AGCTT'}
     }
+
+
+    metadata = {"genome" : Metadata(
+        "hg38", "fasta", "../genome_mm10/mm10.fa", None, "HindIII", 9606),
+    }
+
 
     output_files = {
-    "output_dir" : path + "test_makeRmap/",
-    "output_prefix" : "test_digest"
+        "output_dir" : path + "/test_makeRmap/",
+        "output_prefix" : "restriction_enzyme_test2.txt"
     }
 
-    metadata = {
-        "genome" : Metadata(
-        "hg38", "fasta", "../genome_mm10/mm10.fa", None,
-        "HindIII", 9606),
-    }
 
-    config = {
-        "digester_re1" : "A^AGCTT,HindIII"
-    }
-
-    makeRmap_handle = makeRmapFile(config)
+    makeRmap_handle = makeRmapFile()
     makeRmap_handle.run(input_files, metadata, output_files)
 
     out =  "".join([f for f in os.listdir(output_files["output_dir"])
