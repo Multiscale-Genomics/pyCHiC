@@ -132,7 +132,7 @@ class makeRmapFile(Tool):
             #Ad last chromosome
             genome_dict[chromo] = sequence
 
-        return(genome_dict)
+        return genome_dict
 
     def map_re_sites2(self, enzyme_name, genome_seq,
         output_dir, output_prefix, verbose=False):
@@ -175,7 +175,7 @@ class makeRmapFile(Tool):
         # we match the full cut-site but report the position after the cut site
         # (third group of the regexp)
         restring = ('%s') % ('|'.join(['(?<=%s(?=%s))' % tuple(enzymes[n].split('|'))
-                                    for n in enzymes]))
+            for n in enzymes]))
         # IUPAC conventions
         restring = self.iupac2regex(restring)
 
@@ -215,10 +215,10 @@ class makeRmapFile(Tool):
                     counter_id += 1
                     counter += 1
                     if counter == 1:
-                        print("{}\t{}\t{}\t{}".format("chr"+str(crm), 1, RE_site,
+                        print("{}\t{}\t{}\t{}".format("chr" + str(crm), 1, RE_site,
                             counter_id), file = out)
                     else:
-                        print("{}\t{}\t{}\t{}".format("chr"+str(crm), prev_RE_site+1,
+                        print("{}\t{}\t{}\t{}".format("chr" + str(crm), prev_RE_site+1 ,
                             RE_site, counter_id), file = out)
                     prev_RE_site = RE_site
 
@@ -269,5 +269,3 @@ class makeRmapFile(Tool):
         }
 
         return(results, output_metadata)
-
-#print(test.run(input_files, metadata, output_files))
