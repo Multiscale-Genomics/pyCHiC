@@ -110,6 +110,7 @@ class makeRmapFile(Tool):
             genome in a dict form, key as chromosomes and
             values str with sequences
         """
+        logger.info("converting fasta genome into a dictionary")
         genome_dict = {}
         sequence = ""
 
@@ -134,7 +135,8 @@ class makeRmapFile(Tool):
         return(genome_dict)
 
 
-    def map_re_sites(self, enzyme_name, genome_seq, output_dir, output_prefix, frag_chunk=100000, verbose=False):
+    def map_re_sites(self, enzyme_name, genome_seq,
+        output_dir, output_prefix, verbose=False):
         """
         map all restriction enzyme (RE) sites of a given enzyme in a genome.
         Position of a RE site is defined as the genomic coordinate of the first
@@ -147,16 +149,17 @@ class makeRmapFile(Tool):
         -----T TCGA|A--------------
         In this example the coordinate of the RE site would be 6.
 
+
         Parameters:
         -----------
         enzyme_name: dict
             name of the enzyme to map (upper/lower case are
             important) as key and value the target sequence
-            with a pipe where the enzyme cuts.
+            with a pipe where the enzyme cuts
 
         genome_seq: dict
-            a dictionary containing the genomic sequence by
-            chromosome
+            genome in fasta format
+
         frag_chunk: in order to optimize the search for nearby RE
             sites, each chromosome is splitted into chunks.
 
@@ -164,17 +167,17 @@ class makeRmapFile(Tool):
         ------
             bool
             Fragments
-
         """
 
         enzymes = enzyme_name
 
+        #the genome should be in a dictionary
         genome_seq = self.genome_to_dict(genome_seq)
 
         # we match the full cut-site but report the position after the cut site
         # (third group of the regexp)
         restring = ('%s') % ('|'.join(['(?<=%s(?=%s))' % tuple(enzymes[n].split('|'))
-                                     for n in enzymes]))
+                                    for n in enzymes]))
         # IUPAC conventions
         restring = self.iupac2regex(restring)
 
@@ -184,46 +187,21 @@ class makeRmapFile(Tool):
         count = 0
         for crm in genome_seq:
             seq = genome_seq[crm]
-            frags[crm] = dict([(i, []) for i in xrange(len(seq) / frag_chunk + 1)])
-            frags[crm][0] = [1]
+            frags[crm] = [1]
             for match in enz_pattern.finditer(seq):
                 pos = match.end()
-                frags[crm][pos / frag_chunk].append(pos)
+                frags[crm].append(pos)
                 count += 1
             # at the end of last chunk we add the chromosome length
-            frags[crm][len(seq) / frag_chunk].append(len(seq))
-            # now we need to assign as first RE site of a fragment the last RE site
-            # of previsou fragment, and as last RE site, the first RE site of the
-            # next fragment.
-            for i in xrange(len(seq) / frag_chunk + 1):
-                try:
-                    try:
-                        frags[crm][i].insert(0, frags[crm][i - 1][-2])
-                    except IndexError:
-                        # in case there was no RE site in previous fragment
-                        frags[crm][i].insert(0, frags[crm][i - 1][-1])
-                except KeyError:
-                    # it is the very first chunk
-                    pass
-                plus = 1
-                while True:
-                    try:
-                        frags[crm][i].append(frags[crm][i + plus][0])
-                        break
-                    except IndexError:
-                        # no RE site in this fragment, get "next RE site" from next
-                        plus += 1
-                    except KeyError:
-                        # end of the chromosome
-                        break
+            frags[crm].append(len(seq))
         if verbose:
-            print ('Found' + count + 'RE sites')
-        #return frags
-        with open(output_dir + output_prefix, "w") as out:
-            print(frags, file = out)
+            print ('Found %d RE sites' % count)
+
+        #with open(output_dir + output_prefix, "w") as out:
+        #print(frags, file = out)
 
 
-    def map_re_sites_nochunk(self, enzyme_name, genome_seq,
+    def map_re_sites2(self, enzyme_name, genome_seq,
         output_dir, output_prefix, verbose=False):
         """
         map all restriction enzyme (RE) sites of a given enzyme in a genome.
@@ -272,9 +250,12 @@ class makeRmapFile(Tool):
 
         frags = {}
         count = 0
+
+        logger.info("searching RE sites")
+
         for crm in genome_seq:
             seq = genome_seq[crm]
-            frags[crm] = [1]
+            frags[crm] = []
             for match in enz_pattern.finditer(seq):
                 pos = match.end()
                 frags[crm].append(pos)
@@ -284,12 +265,29 @@ class makeRmapFile(Tool):
         if verbose:
             print ('Found %d RE sites' % count)
 
+        self.from_frag_to_rmap(frags, output_dir, output_prefix)
+
+    def from_frag_to_rmap(self, frags, output_dir, output_prefix):
+        """
+        This function takes the fragment output from digestion and
+        convert them into rmap files.
+        """
+        logger.info("coverting RE fragments into rmap file")
+
         with open(output_dir + output_prefix, "w") as out:
-            print(frags, file = out)
-
-    #def from_frag_to_rmap(self, frags, output_dir, output_prefix):
-
-
+            counter_id = 0
+            for crm in frags:
+                counter = 0
+                for RE_site in frags[crm]:
+                    counter_id += 1
+                    counter += 1
+                    if counter == 1:
+                        print("{}\t{}\t{}\t{}".format("chr"+str(crm), 1, RE_site,
+                            counter_id), file = out)
+                    else:
+                        print("{}\t{}\t{}\t{}".format("chr"+str(crm), prev_RE_site+1,
+                            RE_site, counter_id), file = out)
+                    prev_RE_site = RE_site
 
     def run(self, input_files, input_metadata, output_files):
         """
@@ -312,7 +310,7 @@ class makeRmapFile(Tool):
             lest of matching metadata
         """
 
-        results = self.map_re_sites_nochunk(
+        results = self.map_re_sites2(
             input_files["RE"],
             input_files["genome"],
             output_files["output_dir"],
@@ -341,7 +339,7 @@ class makeRmapFile(Tool):
 
 
 input_files = {
-    "genome" : "../genomes/GRCh38/GRCh38.fa",
+    "genome" : "../genomes/GRCh38/toy_GRCh38.fa",
     "RE" : { "HindIII" : 'A|AGCTT'}
 }
 
@@ -353,7 +351,7 @@ metadata = {"genome" : Metadata(
 
 output_files = {
     "output_dir" : "../tests/data/test_makeRmap/",
-    "output_prefix" : "restriction_enzyme_test.txt"
+    "output_prefix" : "restriction_enzyme_test2.txt"
 }
 
 test = makeRmapFile()
