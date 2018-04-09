@@ -49,7 +49,6 @@ class makeBaitmapTool(Tool):
    def __init__(self, configuration = None):
       """
       Initialise the tool with its configuration
-
       Parameters:
       -----------
       configuration: dict
@@ -70,20 +69,16 @@ class makeBaitmapTool(Tool):
       This function run bwa using an index genome and a probes file
       in fasta format. bwa is used as single end and with high
       gap penalty and missmacht score
-
       Parameters:
       -----------
       genome_index: str
          path to the indexed genome. This genome should
          be the same used to generate the .rmap file
-
       probes_fa: str
          path to probes files in fasta format,
          every sequences representing one
-
       out: str
          Name of the output file
-
       Return:
       ------
          bool
@@ -110,15 +105,12 @@ class makeBaitmapTool(Tool):
       """
       This function take the sam file, output of bwa
       and the rmap file, and output a baitmap file
-
       Parameters:
       -----------
       sam_file : str
          path to output file from bwa_for_probes
-
       rmap: str
          complete path to .rmap file
-
       baitmap_file: str
          complete path and name of the baitmap file
       """
@@ -135,61 +127,3 @@ class makeBaitmapTool(Tool):
             for line in file_in:
                line = line.rstrip().split("\t")
                if line[0][0] != "@":
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

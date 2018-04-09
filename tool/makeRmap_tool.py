@@ -67,7 +67,7 @@ class makeRmapFile(Tool):
          to run the tool
         """
 
-        print("bam2chicago initialising")
+        print("makeRmapFile initialising")
         Tool.__init__(self)
 
         if configuration is None:
@@ -110,10 +110,10 @@ class makeRmapFile(Tool):
             genome in a dict form, key as chromosomes and
             values str with sequences
         """
+        genome_dict = {}
+        sequence = ""
 
         with open(genome_fa, "r") as file:
-            genome_dict = {}
-            sequence = ""
             for line in file:
                 line = line.rstrip()
                 if line[0] is ">":
@@ -134,18 +134,18 @@ class makeRmapFile(Tool):
         return(genome_dict)
 
 
-    def map_re_sites(self, enzyme_name, genome_seq, frag_chunk=100000, verbose=False):
+    def map_re_sites(self, enzyme_name, genome_seq, output_dir, output_prefix, frag_chunk=100000, verbose=False):
         """
         map all restriction enzyme (RE) sites of a given enzyme in a genome.
         Position of a RE site is defined as the genomic coordinate of the first
-        nucleotide after the first cut (genomic coordinate starts at 1).
+        nucleotide before the first cut (genomic coordinate starts at 1).
         In the case of HindIII the genomic coordinate is this one:
         123456 789...
              |
              v
         -----A|AGCT T--------------
         -----T TCGA|A--------------
-        In this example the coordinate of the RE site would be 7.
+        In this example the coordinate of the RE site would be 6.
 
         Parameters:
         -----------
@@ -168,12 +168,15 @@ class makeRmapFile(Tool):
         """
 
         enzymes = enzyme_name
+
+        genome_seq = self.genome_to_dict(genome_seq)
+
         # we match the full cut-site but report the position after the cut site
         # (third group of the regexp)
         restring = ('%s') % ('|'.join(['(?<=%s(?=%s))' % tuple(enzymes[n].split('|'))
                                      for n in enzymes]))
         # IUPAC conventions
-        restring = iupac2regex(restring)
+        restring = self.iupac2regex(restring)
 
         enz_pattern = compile(restring)
 
@@ -184,7 +187,7 @@ class makeRmapFile(Tool):
             frags[crm] = dict([(i, []) for i in xrange(len(seq) / frag_chunk + 1)])
             frags[crm][0] = [1]
             for match in enz_pattern.finditer(seq):
-                pos = match.end() + 1
+                pos = match.end()
                 frags[crm][pos / frag_chunk].append(pos)
                 count += 1
             # at the end of last chunk we add the chromosome length
@@ -215,21 +218,24 @@ class makeRmapFile(Tool):
                         break
         if verbose:
             print ('Found' + count + 'RE sites')
-        return frags
+        #return frags
+        with open(output_dir + output_prefix, "w") as out:
+            print(frags, file = out)
 
 
-    def map_re_sites_nochunk(self, enzyme_name, genome_seq, verbose=False):
+    def map_re_sites_nochunk(self, enzyme_name, genome_seq,
+        output_dir, output_prefix, verbose=False):
         """
         map all restriction enzyme (RE) sites of a given enzyme in a genome.
         Position of a RE site is defined as the genomic coordinate of the first
-        nucleotide after the first cut (genomic coordinate starts at 1).
+        nucleotide before the first cut (genomic coordinate starts at 1).
         In the case of HindIII the genomic coordinate is this one:
         123456 789...
              |
              v
         -----A|AGCT T--------------
         -----T TCGA|A--------------
-        In this example the coordinate of the RE site would be 7.
+        In this example the coordinate of the RE site would be 6.
 
 
         Parameters:
@@ -270,14 +276,19 @@ class makeRmapFile(Tool):
             seq = genome_seq[crm]
             frags[crm] = [1]
             for match in enz_pattern.finditer(seq):
-                pos = match.end() + 1
+                pos = match.end()
                 frags[crm].append(pos)
                 count += 1
             # at the end of last chunk we add the chromosome length
             frags[crm].append(len(seq))
         if verbose:
             print ('Found %d RE sites' % count)
-        return frags
+
+        with open(output_dir + output_prefix, "w") as out:
+            print(frags, file = out)
+
+    #def from_frag_to_rmap(self, frags, output_dir, output_prefix):
+
 
 
     def run(self, input_files, input_metadata, output_files):
@@ -304,6 +315,8 @@ class makeRmapFile(Tool):
         results = self.map_re_sites_nochunk(
             input_files["RE"],
             input_files["genome"],
+            output_files["output_dir"],
+            output_files["output_prefix"]
             )
 
         results = compss_wait_on(results)
@@ -340,7 +353,7 @@ metadata = {"genome" : Metadata(
 
 output_files = {
     "output_dir" : "../tests/data/test_makeRmap/",
-    "output_prefix" : "test_digest"
+    "output_prefix" : "restriction_enzyme_test.txt"
 }
 
 test = makeRmapFile()
