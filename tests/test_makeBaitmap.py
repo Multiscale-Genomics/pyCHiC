@@ -48,7 +48,7 @@ def test_makeBaitmap():
 
         "Rtree_file" : Metadata(
             "Rtree files", [".dat", ".idx"], path + "test_makeRmap/rtree_file",
-            {"genome" : path+ "test_makeRmap/toy_GRCh38.fa",
+            {"genome" : path + "test_makeRmap/toy_GRCh38.fa",
              "RE" : {"HindIII" : 'A|AGCTT'}},
             None, 9606
             )

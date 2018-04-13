@@ -218,45 +218,22 @@ class makeBaitmapTool(Tool):
             baitmap_list,
             output_files["out_baitmap"])
 
-        return results
+        output_metadata = {
+            "baitmap": Metadata(
+                data_type="RE sites with baits",
+                file_type=".baitmap",
+                file_path=output_files["out_baitmap"],
+                sources=[
+                    input_metadata["genome"].file_path,
+                    input_metadata["probes"].file_path,
+                    input_metadata["Rtree_file"].file_path,
+                ],
+                taxon_id=input_metadata["genome"].taxon_id,
+                meta_data={
+                    "RE" : input_metadata["Rtree_file"].meta_data,
+                    "tool": "makeBaitmap",
+                }
+            )
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return results, output_metadata
