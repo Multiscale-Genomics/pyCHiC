@@ -44,14 +44,21 @@ def test_makeRmapFileTool():
 
     output_files = {
         "output_dir" : path + "/test_makeRmap/",
-        "output_prefix" : "restriction_enzyme_test2.txt"
+        "output_prefix" : "restriction_enzyme_test2.txt",
+        "Rtree_file" : path + "/test_makeRmap/rtree_file"
     }
 
 
     makeRmap_handle = makeRmapFile()
     makeRmap_handle.run(input_files, metadata, output_files)
 
-    out =  "".join([f for f in os.listdir(output_files["output_dir"])
-            if f.startswith("Digest_") and f.endswith(".map")])
+    out = "".join(
+        [
+            f for f in os.listdir(output_files["output_dir"])
+            if f.startswith("Digest_") and f.endswith(".map")
+        ]
+    )
 
     assert os.path.getsize(output_files["output_dir"] + out) > 0
+    assert os.path.getsize(output_files["Rtree_file"] + ".dat")
+    assert os.path.getsize(output_files["Rtree_file"] + ".idx")

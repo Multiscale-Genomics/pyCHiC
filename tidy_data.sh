@@ -25,7 +25,7 @@ cd tests/data
 a=$(git ls-tree -r master --name-only | sort)
 
 # All files in test/data
-b=$(ls | sort)
+b=$(tree -aifF --noreport | grep -v /$ | sed 's/^\.\///' | sed 's/^\.$//' | sort)
 
 for i in $b; do
     skip=0

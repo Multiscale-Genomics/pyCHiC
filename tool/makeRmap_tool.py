@@ -17,9 +17,8 @@
 
 from __future__ import print_function
 
-import os
-import subprocess
 import sys
+from rtree import index
 
 
 from utils import logger
@@ -42,10 +41,8 @@ except ImportError:
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
 
-
-
-from re import compile
-from warnings import warn
+import re
+re.compile("pattern")
 
 ####################################################
 
@@ -63,8 +60,8 @@ class makeRmapFile(Tool):
         Parameters:
         -----------
         configuration: dict
-         dictionary containing all the arguments and parameters
-         to run the tool
+            dictionary containing all the arguments and parameters
+            to run the tool
         """
 
         print("makeRmapFile initialising")
@@ -114,11 +111,11 @@ class makeRmapFile(Tool):
         genome_dict = {}
         sequence = ""
 
-        with open(genome_fa, "r") as file:
-            for line in file:
+        with open(genome_fa, "r") as file_handle:
+            for line in file_handle:
                 line = line.rstrip()
-                if line[0] is ">":
-                    if sequence is "":
+                if line[0] == ">":
+                    if not sequence:
                         genome_dict[int(line[4:])] = []
                         chromo = int(line[4:])
                         continue
@@ -134,8 +131,9 @@ class makeRmapFile(Tool):
 
         return genome_dict
 
-    def map_re_sites2(self, enzyme_name, genome_seq,
-        output_dir, output_prefix, verbose=False):
+    def map_re_sites2(
+            self, enzyme_name, genome_seq, output_dir, output_prefix,
+            Rtree_file, verbose=False):
         """
         map all restriction enzyme (RE) sites of a given enzyme in a genome.
         Position of a RE site is defined as the genomic coordinate of the first
@@ -174,12 +172,18 @@ class makeRmapFile(Tool):
 
         # we match the full cut-site but report the position after the cut site
         # (third group of the regexp)
-        restring = ('%s') % ('|'.join(['(?<=%s(?=%s))' % tuple(enzymes[n].split('|'))
-            for n in enzymes]))
+        restring = ('%s') % (
+            '|'.join(
+                [
+                    '(?<=%s(?=%s))' % tuple(enzymes[n].split('|'))
+                    for n in enzymes]
+                )
+            )
+
         # IUPAC conventions
         restring = self.iupac2regex(restring)
 
-        enz_pattern = compile(restring)
+        enz_pattern = re.compile(restring)
 
         frags = {}
         count = 0
@@ -198,14 +202,31 @@ class makeRmapFile(Tool):
         if verbose:
             print ('Found %d RE sites' % count)
 
-        self.from_frag_to_rmap(frags, output_dir, output_prefix)
+        self.from_frag_to_rmap(frags, output_dir, output_prefix, Rtree_file)
 
-    def from_frag_to_rmap(self, frags, output_dir, output_prefix):
+    def from_frag_to_rmap(self, frags, output_dir, output_prefix, Rtree_file):
         """
         This function takes the fragment output from digestion and
         convert them into rmap files.
+
+        It also save the RE sites positions and ID into a file using Rtree
+        python module. This file will be used by makeBatmap.py to generate
+        .batmap file using spatial indexing
+
+        Parameters:
+        -----------
+        frags : dict
+            dict containing chromosomes as keys and
+            RE sites as values
+        output_dir: str
+            path to the output directory
+        outpur_prefix: str
+            name of the output dir.
         """
+
         logger.info("coverting RE fragments into rmap file")
+
+        idx = index.Rtree(Rtree_file)
 
         with open(output_dir + output_prefix, "w") as out:
             counter_id = 0
@@ -215,12 +236,18 @@ class makeRmapFile(Tool):
                     counter_id += 1
                     counter += 1
                     if counter == 1:
-                        print("{}\t{}\t{}\t{}".format("chr" + str(crm), 1, RE_site,
-                            counter_id), file = out)
-                    else:
-                        print("{}\t{}\t{}\t{}".format("chr" + str(crm), prev_RE_site+1 ,
+                        print("{}\t{}\t{}\t{}".format("chr" + str(crm), 1,
                             RE_site, counter_id), file = out)
+                        idx.insert(counter_id, (1, crm, RE_site, crm))
+                    else:
+                        print("{}\t{}\t{}\t{}".format("chr" + str(crm),
+                            prev_RE_site+1, RE_site, counter_id),
+                            file = out)
+                        idx.insert(counter_id, (prev_RE_site+1, crm, RE_site, crm))
+
                     prev_RE_site = RE_site
+
+        idx.close()
 
     def run(self, input_files, input_metadata, output_files):
         """
@@ -247,7 +274,8 @@ class makeRmapFile(Tool):
             input_files["RE"],
             input_files["genome"],
             output_files["output_dir"],
-            output_files["output_prefix"]
+            output_files["output_prefix"],
+            output_files["Rtree_file"]
             )
 
         results = compss_wait_on(results)
