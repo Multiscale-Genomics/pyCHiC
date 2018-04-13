@@ -221,29 +221,6 @@ class makeBaitmapTool(Tool):
         return results
 
 
-input_files = {
-    "genome_index" : "/Users/pacera/developing/C-HiC/tests/data/test_makeBaitmap/toy_GRCh38.fa",
-    "probes_fa" : "/Users/pacera/developing/C-HiC/tests/data/test_makeBaitmap/baits.fa",
-    "Rtree_file" : "/Users/pacera/developing/C-HiC/tests/data/test_makeRmap/rtree_file"
-    }
-output_files = {
-    "out_sam" : "/Users/pacera/developing/C-HiC/tests/data/test_makeBaitmap/baits.sam",
-    "out_baitmap" : "/Users/pacera/developing/C-HiC/tests/data/test_makeBaitmap/test.baitmap"
-}
-
-input_metadata = {
-
-}
-
-
-test = makeBaitmapTool()
-test.run(input_files, input_metadata, output_files)
-
-#test.bwa_for_probes(genome_index, fasta, out)
-#test.sam_to_baitmap(sam_file, Rtree_file, baitmap_file)
-#test.create_baitmap()
-
-
 
 
 
