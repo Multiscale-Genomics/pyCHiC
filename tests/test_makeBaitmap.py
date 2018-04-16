@@ -28,7 +28,7 @@ def test_makeBaitmap():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "genome_index" : path + "/test_makeBaitmap/toy_GRCh38.fa",
+        "genome" : path + "/test_makeBaitmap/toy_GRCh38.fa",
         "probes_fa" : path + "test_makeBaitmap/baits.fa",
         "Rtree_file" : path + "test_makeRmap/rtree_file"
     }
@@ -39,21 +39,21 @@ def test_makeBaitmap():
     }
 
     input_metadata = {
-        "genome" : Metadata(
-            "hg38", "fasta", "../genome_mm10/mm10.fa", None, "HindIII", 9606),
+        "genome_digest" : Metadata(
+            "hg38", "fasta", path + "/test_makeBaitmap/toy_GRCh38.fa" ,
+            None, "HindIII", 9606),
 
         "probes" : Metadata(
             "C-HiC probes", "fasta", path + "test_makeBaitmap/baits.fa",
             None, None, 9606),
 
-        "Rtree_file" : Metadata(
+        "Rtree_files" : Metadata(
             "Rtree files", [".dat", ".idx"], path + "test_makeRmap/rtree_file",
             {"genome" : path + "test_makeRmap/toy_GRCh38.fa",
              "RE" : {"HindIII" : 'A|AGCTT'}},
             None, 9606
             )
     }
-
 
     makeBaitmap_handler = makeBaitmapTool()
     makeBaitmap_handler.run(input_files, input_metadata, output_files)

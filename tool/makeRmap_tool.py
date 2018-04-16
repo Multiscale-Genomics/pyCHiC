@@ -19,6 +19,7 @@ from __future__ import print_function
 
 import sys
 from rtree import index
+import os
 
 
 from utils import logger
@@ -132,8 +133,8 @@ class makeRmapFile(Tool):
         return genome_dict
 
     def map_re_sites2(
-            self, enzyme_name, genome_seq, output_dir, output_prefix,
-            Rtree_file, verbose=False):
+            self, enzyme_name, genome_seq, out_dir_makeRmap, out_prefix_makeRmap,
+            Rtree_files, verbose=False):
         """
         map all restriction enzyme (RE) sites of a given enzyme in a genome.
         Position of a RE site is defined as the genomic coordinate of the first
@@ -154,11 +155,9 @@ class makeRmapFile(Tool):
             important) as key and value the target sequence
             with a pipe where the enzyme cuts
 
-        genome_seq: dict
+        genome_seq: str
             genome in fasta format
 
-        frag_chunk: in order to optimize the search for nearby RE
-            sites, each chromosome is splitted into chunks.
 
         Return
         ------
@@ -202,9 +201,9 @@ class makeRmapFile(Tool):
         if verbose:
             print ('Found %d RE sites' % count)
 
-        self.from_frag_to_rmap(frags, output_dir, output_prefix, Rtree_file)
+        self.from_frag_to_rmap(frags, out_dir_makeRmap, out_prefix_makeRmap, Rtree_files)
 
-    def from_frag_to_rmap(self, frags, output_dir, output_prefix, Rtree_file):
+    def from_frag_to_rmap(self, frags, out_dir_makeRmap, out_prefix_makeRmap, Rtree_files):
         """
         This function takes the fragment output from digestion and
         convert them into rmap files.
@@ -218,17 +217,17 @@ class makeRmapFile(Tool):
         frags : dict
             dict containing chromosomes as keys and
             RE sites as values
-        output_dir: str
+        out_dir_makeRmap: str
             path to the output directory
-        outpur_prefix: str
-            name of the output dir.
+        out_prefix_makeRmap: str
+            name of the output file.
         """
 
         logger.info("coverting RE fragments into rmap file")
 
-        idx = index.Rtree(Rtree_file)
+        idx = index.Rtree(Rtree_files)
 
-        with open(output_dir + output_prefix, "w") as out:
+        with open(out_dir_makeRmap + out_prefix_makeRmap + ".rmap", "w") as out:
             counter_id = 0
             for crm in frags:
                 counter = 0
@@ -237,17 +236,24 @@ class makeRmapFile(Tool):
                     counter += 1
                     if counter == 1:
                         print("{}\t{}\t{}\t{}".format("chr" + str(crm), 1,
-                            RE_site, counter_id), file = out)
+                                                      RE_site, counter_id),
+                              file=out)
                         idx.insert(counter_id, (1, crm, RE_site, crm))
                     else:
                         print("{}\t{}\t{}\t{}".format("chr" + str(crm),
-                            prev_RE_site+1, RE_site, counter_id),
-                            file = out)
+                                                      prev_RE_site+1, RE_site, counter_id),
+                              file=out)
                         idx.insert(counter_id, (prev_RE_site+1, crm, RE_site, crm))
 
                     prev_RE_site = RE_site
 
         idx.close()
+
+        if os.path.getsize(out_dir_makeRmap + out_prefix_makeRmap + ".rmap") > 0:
+            return True
+
+        logger.fatal("makeRmap_Tool.py failed to generate .rmap file")
+        return False
 
     def run(self, input_files, input_metadata, output_files):
         """
@@ -273,24 +279,24 @@ class makeRmapFile(Tool):
         results = self.map_re_sites2(
             input_files["RE"],
             input_files["genome"],
-            output_files["output_dir"],
-            output_files["output_prefix"],
-            output_files["Rtree_file"]
+            output_files["out_dir_makeRmap"],
+            output_files["out_prefix_makeRmap"],
+            output_files["Rtree_files"]
             )
 
         results = compss_wait_on(results)
 
         output_metadata = {
             "rmap": Metadata(
-                data_type=input_metadata['genome'].data_type,
+                data_type=input_metadata['genome_digest'].data_type,
                 file_type="rmap",
-                file_path=output_files["output_dir"],
+                file_path=output_files["out_dir_makeRmap"],
                 sources=[
-                    input_metadata["genome"].file_path,
+                    input_metadata["genome_digest"].file_path,
                 ],
-                taxon_id=input_metadata["genome"].taxon_id,
+                taxon_id=input_metadata["genome_digest"].taxon_id,
                 meta_data={
-                    "RE" : input_metadata["genome"].meta_data,
+                    "RE" : input_metadata["genome_digest"].meta_data,
                     "tool": "makeRmapFileTool"
                 }
             )

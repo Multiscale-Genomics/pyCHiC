@@ -133,10 +133,10 @@ class makeBaitmapTool(Tool):
         logger.fatal("bwa stderr" + proc_err)
         return False
 
-    def sam_to_baitmap(self, sam_file, Rtree_file):
+    def sam_to_baitmap(self, sam_file, Rtree_files):
         """
         This function take the sam file, output of bwa
-        and the Rtree_file, and output a baitmap file
+        and the Rtree_files, and output a baitmap file
         Parameters:
         -----------
         sam_file : str
@@ -144,7 +144,7 @@ class makeBaitmapTool(Tool):
         rmap: str
             complete path to .rmap file
         """
-        idx = index.Rtree(Rtree_file)
+        idx = index.Rtree(Rtree_files)
 
         baitmap = []
 
@@ -183,7 +183,7 @@ class makeBaitmapTool(Tool):
 
                         if fragment_coord not in baitmap:
                             baitmap.append(fragment_coord)
-        return(baitmap)
+        return baitmap
 
     def run(self, input_files, input_metadata, output_files):
         """
@@ -205,14 +205,14 @@ class makeBaitmapTool(Tool):
         """
 
         self.bwa_for_probes(
-            input_files["genome_index"],
+            input_files["genome"],
             input_files["probes_fa"],
             output_files["out_sam"]
             )
 
         baitmap_list = self.sam_to_baitmap(
             output_files["out_sam"],
-            input_files["Rtree_file"],)
+            input_files["Rtree_files"],)
 
         results = self.create_baitmap(
             baitmap_list,
@@ -224,13 +224,13 @@ class makeBaitmapTool(Tool):
                 file_type=".baitmap",
                 file_path=output_files["out_baitmap"],
                 sources=[
-                    input_metadata["genome"].file_path,
+                    input_metadata["genome_digest"].file_path,
                     input_metadata["probes"].file_path,
-                    input_metadata["Rtree_file"].file_path,
+                    input_metadata["Rtree_files"].file_path,
                 ],
-                taxon_id=input_metadata["genome"].taxon_id,
+                taxon_id=input_metadata["genome_digest"].taxon_id,
                 meta_data={
-                    "RE" : input_metadata["Rtree_file"].meta_data,
+                    "RE" : input_metadata["Rtree_files"].meta_data,
                     "tool": "makeBaitmap",
                 }
             )
