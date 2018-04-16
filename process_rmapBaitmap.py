@@ -63,11 +63,6 @@ class generate_CHiCAGO_inputs(Workflow):
         Parameters:
         ----------
         input_files: dict
-            (for makeRmap.py)
-            RE : dict
-                    Name of the enzyme to map (upper/lower case are
-                    important) as key and value the target sequence
-                    with a pipe where the enzyme cuts. -----A|AGCTT--
             genome: str
                     Ref genome used on the experiment. it has to be in the
                     same folder as the indexed files of the gneome, with
@@ -96,7 +91,6 @@ class generate_CHiCAGO_inputs(Workflow):
         makeRmap_caller = makeRmapFile(self.configuration)
         output_files_makeRmap, output_metadata_makeRmap = makeRmap_caller.run(
             {
-                "RE" : input_files["RE"],
                 "genome" : input_files["genome"]
             },
             {

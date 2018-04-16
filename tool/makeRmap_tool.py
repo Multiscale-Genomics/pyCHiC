@@ -277,7 +277,7 @@ class makeRmapFile(Tool):
         """
 
         results = self.map_re_sites2(
-            input_files["RE"],
+            self.configuration["RE"],
             input_files["genome"],
             output_files["out_dir_makeRmap"],
             output_files["out_prefix_makeRmap"],

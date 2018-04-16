@@ -31,34 +31,37 @@ def test_makeRmapFileTool():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
 
+    configuration = {"RE" : {"HindIII" : 'A|AGCTT'}
+                    }
+
     input_files = {
         "genome" : path+ "test_makeRmap/toy_GRCh38.fa",
-        "RE" : { "HindIII" : 'A|AGCTT'}
-    }
+        }
 
 
-    metadata = {"genome" : Metadata(
-        "hg38", "fasta", "../genome_mm10/mm10.fa", None, "HindIII", 9606),
-    }
+    metadata = {"genome_digest" : Metadata(
+        "hg38", "fasta", path+ "test_makeRmap/toy_GRCh38.fa",
+        None, "HindIII", 9606),
+        }
 
 
     output_files = {
-        "output_dir" : path + "/test_makeRmap/",
-        "output_prefix" : "restriction_enzyme_test2",
-        "Rtree_file" : path + "/test_makeRmap/rtree_file"
-    }
+        "out_dir_makeRmap" : path + "/test_makeRmap/",
+        "out_prefix_makeRmap" : "restriction_enzyme_test2",
+        "Rtree_files" : path + "/test_makeRmap/rtree_file"
+        }
 
 
-    makeRmap_handle = makeRmapFile()
+    makeRmap_handle = makeRmapFile(configuration)
     makeRmap_handle.run(input_files, metadata, output_files)
 
     out = "".join(
         [
-            f for f in os.listdir(output_files["output_dir"])
+            f for f in os.listdir(output_files["out_dir_makeRmap"])
             if f.startswith("Digest_") and f.endswith(".map")
         ]
     )
 
-    assert os.path.getsize(output_files["output_dir"] + out) > 0
-    assert os.path.getsize(output_files["Rtree_file"] + ".dat")
-    assert os.path.getsize(output_files["Rtree_file"] + ".idx")
+    assert os.path.getsize(output_files["out_dir_makeRmap"] + out) > 0
+    assert os.path.getsize(output_files["Rtree_files"] + ".dat")
+    assert os.path.getsize(output_files["Rtree_files"] + ".idx")

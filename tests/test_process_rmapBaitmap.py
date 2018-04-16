@@ -32,8 +32,10 @@ def test_process_rmapBaitmap():
 
     path = os.path.join(os.path.dirname(__file__) + "/data")
 
+    configuration = {"RE" : {"HindIII" : 'A|AGCTT'},
+                    }
+
     input_files = {
-        "RE" : { "HindIII" : 'A|AGCTT'},
         "genome" :  path + "/test_makeBaitmap/toy_GRCh38.fa",
         "probes_fa": path + "/test_makeBaitmap/baits.fa",
         }
@@ -61,7 +63,7 @@ def test_process_rmapBaitmap():
         "out_baitmap" : path + "/test_process_rmapBaitmap/test.baitmap"
     }
 
-    generate_CHiCAGO_inputs_hand = generate_CHiCAGO_inputs()
+    generate_CHiCAGO_inputs_hand = generate_CHiCAGO_inputs(configuration)
     generate_CHiCAGO_inputs_hand.run(input_files, input_metadata, output_files)
 
     assert os.path.getsize(output_files["out_dir_makeRmap"] +
