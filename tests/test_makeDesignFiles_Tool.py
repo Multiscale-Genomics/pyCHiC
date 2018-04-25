@@ -19,7 +19,7 @@ import os.path
 
 from basic_modules.metadata import Metadata
 
-from tool.makeDesignFiles_Tool import makeDesignFilesTool
+from tool.makeDesignFiles import makeDesignFilesTool
 
 def test_makeDesignFilesTool():
     """
@@ -36,9 +36,9 @@ def test_makeDesignFilesTool():
         "makeDesignFiles_removeb2b" : True,
         "makeDesignFiles_removeAdjacent" : True,
         #"rmapFile" : "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/"+
-            # "PCHiCdata/inst/extdata/hg19TestDesign/h19_chr20and21.rmap",
+        #             "PCHiCdata/inst/extdata/hg19TestDesign/h19_chr20and21.rmap",
         #"baitMapFile" : "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/"+
-            #"PCHiCdata/inst/extdata/hg19TestDesign/h19_chr20and21.baitmap"
+        #                "PCHiCdata/inst/extdata/hg19TestDesign/h19_chr20and21.baitmap"
         }
 
     input_files = {
@@ -48,14 +48,14 @@ def test_makeDesignFilesTool():
     input_metadata = {
         ".rmap" : Metadata(
             "data_chicago_input", ".rmap",
-             path, None, {}, 9606),
+            path, None, {}, 9606),
         ".baitmap" : Metadata(
             "data_chicago_input", ".baitmap",
-             path, None, {}, 9606)
+            path, None, {}, 9606)
     }
 
     output_files = {
-        "outFilePrefix" : path + "/h19_chr20and21_test",
+        "outPrefixDesign" : path + "/h19_chr20and21_test",
     }
 
     makeDesignFiles_handle = makeDesignFilesTool(config_file)

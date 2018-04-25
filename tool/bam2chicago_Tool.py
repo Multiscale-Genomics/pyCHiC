@@ -177,32 +177,6 @@ class bam2chicagoTool(Tool):
 
 
 
-input_metadata = {
-    "bam_1": Metadata(
-        "input_chicago", "chinput", [], None, {"assembly" : "test"}, 9606),
-    "bsgenome" : Metadata(
-        "data_bam2chicago", "bsgenome", [], None, {"assembly" : "test"}, 9606)
-    }
-
-input_files = {
-    "bamFile" : "/Users/pacera/developing/C-HiC/tests/data/test_bam2chicago/SRR1658573_merge.bamx",
-    "rmapFile" : "/Users/pacera/developing/C-HiC/tests/data/hg19TestDesign/h19_chr20and21.rmap",
-    "baitmapFile" : "/Users/pacera/developing/C-HiC/tests/data/hg19TestDesign/h19_chr20and21.baitmap"
-}
-
-output_files = {
-    "sample_name" : "/Users/pacera/developing/C-HiC/tests/data/test_bam2chicago/test_bam2chicago.chinput"
-}
-
-
-test1 = bam2chicagoTool()
-
-
-test1.run(input_files, input_metadata, output_files)
-
-
-
-
 
 
 

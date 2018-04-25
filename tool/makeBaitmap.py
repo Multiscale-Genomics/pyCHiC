@@ -79,14 +79,15 @@ class makeBaitmapTool(Tool):
         out: str
             entire pat and name of the .baitmap file
         """
-
+        print(out_baitmap)
         with open(out_baitmap, "a") as file_out:
              for frag_coord in baitmap_list:
-                print("{}\t{}\t{}\t{}".format(
+                print("{}\t{}\t{}\t{}\t{}".format(
                     frag_coord[0],
                     frag_coord[1],
                     frag_coord[2],
-                    frag_coord[3]), file = file_out)
+                    frag_coord[3],
+                    "NaN"), file = file_out)
 
         if os.path.getsize(out_baitmap) > 0:
             return True
@@ -175,9 +176,9 @@ class makeBaitmapTool(Tool):
 
                     else:
                         fragment_coord = [
-                            hits[0][1][1],
-                            hits[0][1][0],
-                            hits[0][1][2],
+                            int(hits[0][1][1]),
+                            int(hits[0][1][0]),
+                            int(hits[0][1][2]),
                             hits[0][0]
                             ]
 

@@ -62,7 +62,7 @@ class makeDesignFilesTool(Tool):
 
         self.configuration.update(configuration)
 
-    def makeDesignFiles(self, designDir, outFilePrefix, parameters):
+    def makeDesignFiles(self, designDir, outPrefixDesign, parameters):
         """
         make the design files and store it in the specify design folder. It is a
         wrapper of makeDesignFiles.py
@@ -75,18 +75,20 @@ class makeDesignFilesTool(Tool):
         parameters: dict,
                     list of parameter already selected by
                     get_makeDesignFiles_params().
+        outPrefixDesign: str
+            Name of the output Design files, recomended
+            to be the same name as .rmap and .baitmap files
         Returns:
         -------
         bool
-        outFilePrefix: str
-            writes the output files in the defined location
 
         """
         #if makeDesignFiles.py is added to PATH
-        args = ["makeDesignFiles.py", "--outfilePrefix", outFilePrefix,
+        args = ["makeDesignFiles.py", "--outfilePrefix", outPrefixDesign,
             "--designDir", designDir]
 
         args += parameters
+        print(args)
 
         logger.info("makeDesignFile : "+ " ".join(args))
 
@@ -94,7 +96,7 @@ class makeDesignFilesTool(Tool):
         process.wait()
         proc_out, proc_err = process.communicate()
 
-        if os.path.isfile(outFilePrefix + ".nbpb") is True:
+        if os.path.isfile(outPrefixDesign + ".nbpb") is True:
             pass
         else:
             logger.fatal("makeDesignFiles.py failed to generate design files")
@@ -163,68 +165,31 @@ class makeDesignFilesTool(Tool):
 
         logger.info("makeDesignFiles command parameters " + " ".join(commands_params))
 
-        results = self.makeDesignFiles( input_files["designDir"],
-                                  output_files["outFilePrefix"],
-                                  commands_params)
+        results = self.makeDesignFiles(input_files["designDir"],
+                                       output_files["outPrefixDesign"],
+                                       commands_params)
 
-        resutls = compss_wait_on(results)
+        results = compss_wait_on(results)
 
-        output_metadata ={
+        output_metadata = {
             "output" : Metadata(
-                data_type = "Designfiles",
-                file_type = [".nbpb", ".npb", ".poe"],
-                file_path = input_files["designDir"],
-                sources = [
+                data_type="Designfiles",
+                file_type=[".nbpb", ".npb", ".poe"],
+                file_path=input_files["designDir"],
+                sources=[
                     input_metadata[".rmap"].file_path,
                     input_metadata[".baitmap"].file_path
                     ],
-                taxon_id = [
+                taxon_id=[
                     input_metadata[".rmap"].taxon_id,
                     input_metadata[".baitmap"].taxon_id
                     ],
-                meta_data = {
+                meta_data={
                     "tool" : "makeDesignFiles, make the design files"+
-                        "used by chicago as part of the input file"
+                             "used by chicago as part of the input file"
                 }
 
             )
         }
 
         return (results, output_metadata)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

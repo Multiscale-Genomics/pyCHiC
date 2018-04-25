@@ -49,7 +49,7 @@ class process_Chicago(Workflow):
         """
 
         logger.info("Processing chicago")
-        if configuration==None:
+        if configuration is None:
             configuration = {}
 
         self.configuration.update(configuration)
@@ -137,11 +137,11 @@ if __name__ == "__name__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
-        description= "Chicago algorithm for capture Hi-C peak detection")
+        description="Chicago algorithm for capture Hi-C peak detection")
 
     PARSER.add_argument("--config", help="Configuration file")
     PARSER.add_argument(
-        "--in_metadata", help= "Location of metadata file")
+        "--in_metadata", help="Location of metadata file")
     PARSER.add_argument(
         "--out_metadata", help="Location of output metadata file")
     PARSER.add_argument(

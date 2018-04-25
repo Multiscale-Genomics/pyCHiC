@@ -30,7 +30,7 @@ def test_makeBaitmap():
     input_files = {
         "genome" : path + "/test_makeBaitmap/toy_GRCh38.fa",
         "probes_fa" : path + "test_makeBaitmap/baits.fa",
-        "Rtree_file" : path + "test_makeRmap/rtree_file"
+        "Rtree_files" : path + "test_makeRmap/rtree_file"
     }
 
     output_files = {

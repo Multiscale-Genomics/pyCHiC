@@ -235,12 +235,12 @@ class makeRmapFile(Tool):
                     counter_id += 1
                     counter += 1
                     if counter == 1:
-                        print("{}\t{}\t{}\t{}".format("chr" + str(crm), 1,
+                        print("{}\t{}\t{}\t{}".format(str(crm), 1,
                                                       RE_site, counter_id),
                               file=out)
                         idx.insert(counter_id, (1, crm, RE_site, crm))
                     else:
-                        print("{}\t{}\t{}\t{}".format("chr" + str(crm),
+                        print("{}\t{}\t{}\t{}".format(str(crm),
                                                       prev_RE_site+1, RE_site, counter_id),
                               file=out)
                         idx.insert(counter_id, (prev_RE_site+1, crm, RE_site, crm))

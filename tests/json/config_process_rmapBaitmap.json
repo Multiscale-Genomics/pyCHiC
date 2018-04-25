@@ -1,0 +1,88 @@
+{
+    "input_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "genome",
+            "value": "<unique_file_id>"
+        }
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "probes_fa",
+            "value": "<unique_file_id>"
+        }
+    ],
+    "arguments": [
+        {
+            "name": "RE",
+            "value": "{'HindIII' : 'A|AGCTT'}"
+        },
+    ],
+    "output_files": [
+        {
+            "name": "rmap",
+            "required": true,
+            "allow_multiple": false,
+            "file": {
+                "file_type": ".rmap",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeRmap_tool.py",
+                    "description": "file with coordinates of RE fragments from the digested genome"
+                },
+                "file_path": "out_prefix_makeRmap.rmap",
+                "data_type": "rmap",
+                "compressed": ""
+            }
+        }
+        {
+            "name": "baitmap",
+            "required": true,
+            "allow_multiple": false,
+            "file": {
+                "file_type": ".baitmap",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeBaitmap.py",
+                    "description": "file with coordinates of RE fragments from the digested genome that are baits"
+                },
+                "file_path": ".baitmap",
+                "data_type": ".baitmap",
+                "compressed": ""
+            }
+        }
+        {
+            "name": "Rtree_files",
+            "required": true,
+            "allow_multiple": false,
+            "file": {
+                "file_type": "['.idx','.dat']",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeRmap_tool.py",
+                    "description": "files with the information of RE coordinates in binary to perform spatial index"
+                },
+                "file_path": "[rtree_file.idx, rtree_file.dat]",
+                "data_type": "binary",
+                "compressed": ""
+            }
+        }
+        {
+            "name": "out_sam",
+            "required": true,
+            "allow_multiple": false,
+            "file": {
+                "file_type": ".sam",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeBaitmap.py",
+                    "description": "output of map the probes into the reference genome with bwa"
+                },
+                "file_path": "baits.sam",
+                "data_type": "text",
+                "compressed": ""
+            }
+        }
+    ]
+}
