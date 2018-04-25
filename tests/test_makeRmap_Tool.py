@@ -35,19 +35,19 @@ def test_makeRmapFileTool():
                     }
 
     input_files = {
-        "genome" : path+ "test_makeRmap/toy_GRCh38.fa",
+        "genome" : path+ "test_makeRmap/toy_hg19.fa",
         }
 
 
     metadata = {"genome_digest" : Metadata(
-        "hg38", "fasta", path+ "test_makeRmap/toy_GRCh38.fa",
+        "hg38", "fasta", path+ "test_makeRmap/toy_hg19.fa",
         None, "HindIII", 9606),
         }
 
 
     output_files = {
         "out_dir_makeRmap" : path + "/test_makeRmap/",
-        "out_prefix_makeRmap" : "restriction_enzyme_test2",
+        "out_prefix_makeRmap" : "restriction_enzyme_test_HindIII_hg19",
         "Rtree_files" : path + "/test_makeRmap/rtree_file"
         }
 

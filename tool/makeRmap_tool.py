@@ -201,6 +201,8 @@ class makeRmapFile(Tool):
         if verbose:
             print ('Found %d RE sites' % count)
 
+        print(frags)
+
         self.from_frag_to_rmap(frags, out_dir_makeRmap, out_prefix_makeRmap, Rtree_files)
 
     def from_frag_to_rmap(self, frags, out_dir_makeRmap, out_prefix_makeRmap, Rtree_files):
@@ -303,3 +305,32 @@ class makeRmapFile(Tool):
         }
 
         return(results, output_metadata)
+
+
+if __name__ == "__main__":
+
+    path = "../tests/data/"
+
+
+    configuration = {"RE" : {"HindIII" : 'A|AGCTT'}
+                    }
+
+    input_files = {
+        "genome" : path + "test_makeRmap/toy_hg19.fa",
+        }
+
+
+    metadata = {"genome_digest" : Metadata(
+        "hg38", "fasta", path+ "test_makeRmap/toy_hg19.fa",
+        None, "HindIII", 9606),
+        }
+
+
+    output_files = {
+        "out_dir_makeRmap" : path + "/test_makeRmap/",
+        "out_prefix_makeRmap" : "restriction_enzyme_test_HindIII_hg19",
+        "Rtree_files" : path + "/test_makeRmap/rtree_file"
+        }
+
+    makeRmap_handle = makeRmapFile(configuration)
+    print(makeRmap_handle.run(input_files, metadata, output_files))

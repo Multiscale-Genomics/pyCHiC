@@ -34,10 +34,8 @@ def test_Design_process():
         "makeDesignFiles_binSize" : "20000",
         "makeDesignFiles_removeb2b" : True,
         "makeDesignFiles_removeAdjacent" : True,
-        #"rmapFile" : "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/"+
-        #             "PCHiCdata/inst/extdata/hg19TestDesign/h19_chr20and21.rmap",
-        #"baitMapFile" : "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/"+
-        #                "PCHiCdata/inst/extdata/hg19TestDesign/h19_chr20and21.baitmap"
+        #"rmapFile" : "path"
+        #"baitMapFile" : "path"
         }
 
     input_files = {
