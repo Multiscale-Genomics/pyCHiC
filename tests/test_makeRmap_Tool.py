@@ -47,7 +47,7 @@ def test_makeRmapFileTool():
 
     output_files = {
         "out_dir_makeRmap" : path + "/test_makeRmap/",
-        "out_prefix_makeRmap" : "restriction_enzyme_test_HindIII_hg19",
+        "out_prefix_makeRmap" : "restriction_enzyme_test_HindIII_37_debugaso",
         "Rtree_files" : path + "/test_makeRmap/rtree_file"
         }
 

@@ -11,3 +11,7 @@ practical_tool_pablo_run.py
 ../genomes
 makeRmapFileTool_hicup.py
 baits.fa
+tests.sh
+output_test/
+scripts/SRR3535023_1_2.hicup.bam
+../scripts/SRR3535023_1_2.hicup.bam
