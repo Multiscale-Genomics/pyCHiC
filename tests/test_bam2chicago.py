@@ -18,35 +18,26 @@ import pytest
 import os.path
 
 from basic_modules.metadata import Metadata
-from tool.bam2chicago_Tool import bam2chicagoTool
+from tool.bam2chicago import bam2chicago
 
+def test_bam2chicago():
+	"""
+	Function to test bam2chicago.py
+	"""
+	path = "data/test_bam2chicago"
 
-def test_bam2chicagoTool():
-    """
-    Function to test if bam2chicago convert bam files to .chinput files
-    """
+	input_files = {
+		"RMAP" : path + "/h19_chr20and21_chr.rmap",
+		"BAITMAP" : path +  "/h19_chr20and21.baitmap_4col_chr.txt",
+		"BAM" : path + "/SRR3535023_1_2.hicup.bam"
+	}
 
-    path = os.path.join(os.path.dirname(__file__), "data/")
+	output_files = {
+		"out_dir" : path,
+		"output_file" :  "/sample"
+	}
 
-    input_metadata = {
-        "bam_1": Metadata(
-            "input_chicago", "chinput", [], None, {"assembly" : "test"}, 9606),
-        "bsgenome" : Metadata(
-            "data_bam2chicago", "bsgenome", [], None, {"assembly" : "test"}, 9606)
-        }
+	input_metadata = {}
 
-    input_files = {
-        "bamFile" : path + "test_bam2chicago/SRR1658573_merge.bamx",
-        "rmapFile" : path + "test_Design/h19_chr20and21.rmap",
-        "baitmapFile" : path + "test_Design/h19_chr20and21.baitmap"
-    }
-
-    output_files = {
-        "sample_name" : "/Users/pacera/developing/C-HiC/tests/data/test_bam2chicago/test_bam2chicago.chinput"
-    }
-
-
-    test1 = bam2chicagoTool()
-    test1.run(input_files, input_metadata, output_files)
-
-    #write the assertions
+	bam2chicago_handle = bam2chicago()
+	bam2chicago_handle.run(input_files, input_metadata, output_files)

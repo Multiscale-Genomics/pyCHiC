@@ -20,6 +20,8 @@ from __future__ import print_function
 
 import sys
 import os
+import subprocess
+import pandas as pd
 
 from utils import logger
 
@@ -40,11 +42,6 @@ except ImportError:
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
 
-import argparse
-import sys
-import numpy as np
-import pandas as pd
-import subprocess
 
 
 class bam2chicago(Tool):
@@ -73,7 +70,7 @@ class bam2chicago(Tool):
         self.configuration.update(configuration)
 
 
-    def check_files(self, RMAP, BAITMAP):
+    def check_files(self, RMAP, BAITMAP, BAM):
         """
         This function check that the rmap and baitmap input fiels are in the correct format
 
@@ -95,11 +92,14 @@ class bam2chicago(Tool):
         except:
             logger.fatal("rmap rows contain"+
                          "different number of columns")
+            return False
 
         if rmap.shape[1] != 4:
             logger.fatal("rmap file does not have 4 columns")
 
-        rmap_IDs = rmap.iloc[:,3]
+        #retrieve rmap IDs and chromosome format
+        rmap_chr = rmap.iloc[1, 1]
+        rmap_IDs = rmap.iloc[:, 3]
         set_rmap_IDs = set(rmap_IDs)
 
         if len(rmap_IDs) != len(set_rmap_IDs):
@@ -111,10 +111,13 @@ class bam2chicago(Tool):
         except:
             logger.fatal("baitmap rows contain"+
                          "different number of columns")
+            return False
 
         if baitmap.shape[1] != 4:
             logger.fatal("baitmap does not contain 4 columns")
 
+        #retrieve baitmap IDs
+        baitmap_chr = baitmap.iloc[1, 1]
         baitmapIDs = baitmap.iloc[:, 3]
         set_baitmapIDs = set(baitmapIDs)
 
@@ -123,14 +126,15 @@ class bam2chicago(Tool):
 
         baits_no_rmap = set_baitmapIDs - set_rmap_IDs
 
-        if not baits_no_rmap:
-            print("rmap and baitmap files checked successfully =)")
-        else:
+        if baits_no_rmap:
             logger.fatal("Error! IDs Baitmap entry not found in rmap: " + baits_no_rmap)
+            return False
+        else:
+            logger.info("rmap and baitmap files checked successfully =)")
 
         return True
 
-    def intersect_bam_bait(self, BAM, BAITMAP, RMAP, out_dir):
+    def intersect_bam_bait_rmap(self, BAM, BAITMAP, RMAP, out_dir):
         """
         THis function will intersect the pair-end reads from the
         bam file with the baits
@@ -148,7 +152,7 @@ class bam2chicago(Tool):
             os.mkdir(out_dir)
 
         bashCommand = ["bedtools", "pairtobed", "-abam", BAM, "-bedpe", "-b",
-                       BAITMAP, "-f", "0.6",">", out_dir+"/mappedToBaits.bedpe"]
+                       BAITMAP, "-f", "0.6", ">", out_dir+"/mappedToBaits.bedpe"]
 
         logger.info("bedtools pairtobed parameters :"+ " ".join(bashCommand))
         process = subprocess.Popen(" ".join(bashCommand), shell=True,
@@ -161,32 +165,40 @@ class bam2chicago(Tool):
         else:
             logger.fatal("bedtools failed in this operation" \
                 "parameters :"+ " ".join(bashCommand))
+            logger.fatal(output)
+            logger.fatal(error)
+            logger.fatal("Check that the chromosome format is the same" \
+                         " in rmap, baitmap and bam files")
 
         logger.info("Flipping all reads that overlap with the bait on to the right-hand side...")
 
-        with open(out_dir+"/mappedToBaits.bedpe", "r") as FILE_IN:
-            with open(out_dir+"/mappedToBaits_baitOnRight.bedpe", "w") as FILE_OUT:
-                for line in FILE_IN:
+        with open(out_dir+"/mappedToBaits.bedpe", "r") as file_in:
+            with open(out_dir+"/mappedToBaits_baitOnRight.bedpe", "w") as file_out:
+                for line in file_in:
                     line_hdl = line.rstrip().split("\t")
-                    minRight=min(int(line_hdl[2]), int(line_hdl[12]))
-                    maxLeft=max(int(line_hdl[1]), int(line_hdl[11]))
+                    minRight = min(int(line_hdl[2]), int(line_hdl[12]))
+                    maxLeft = max(int(line_hdl[1]), int(line_hdl[11]))
 
-                    if (line_hdl[0] == line_hdl[10]) and (minRight - maxLeft) / (int(line_hdl[2]) - int(line_hdl[1])) >= 0.6:
-                        print("\t".join([line_hdl[3], line_hdl[4], line_hdl[5], line_hdl[0], line_hdl[1], line_hdl[2],
-                            line_hdl[6], line_hdl[7], line_hdl[9], line_hdl[8], line_hdl[10], line_hdl[11],
-                            line_hdl[12], line_hdl[13]]), file=FILE_OUT)
+                    if (line_hdl[0] == line_hdl[10]) and \
+                       (minRight - maxLeft) / (int(line_hdl[2]) - int(line_hdl[1])) >= 0.6:
+                        print("\t".join([line_hdl[3], line_hdl[4], line_hdl[5],
+                              line_hdl[0], line_hdl[1], line_hdl[2],
+                              line_hdl[6], line_hdl[7], line_hdl[9], line_hdl[8],
+                              line_hdl[10], line_hdl[11],
+                              line_hdl[12], line_hdl[13]]), file=file_out)
                     else:
-                        print("\t".join(line_hdl), file=FILE_OUT)
+                        print("\t".join(line_hdl), file=file_out)
 
         logger.info("Intersecting with bait fragments again to produce a list of bait-to-bait"+
                     "interactions that can be used separately; note they will also be retained"+
                     "in the main output...")
 
         with open(out_dir+"/bait2bait.bedpe", "w") as b2b:
-            print("## samplename="+out_dir+" bamname="+BAM+ " baitmap="+BAITMAP+ " rmap="+RMAP, file=b2b)
+            print("## samplename="+out_dir+" bamname="+BAM+ \
+                  " baitmap="+BAITMAP+ " rmap="+RMAP, file=b2b)
 
         bashCommand = ["bedtools", "intersect", "-a", out_dir+"/mappedToBaits_baitOnRight.bedpe",
-                      "-wo", "-f", "0.6", "-b", BAITMAP, ">>", out_dir+ "/bait2bait.bedpe"]
+                       "-wo", "-f", "0.6", "-b", BAITMAP, ">>", out_dir+ "/bait2bait.bedpe"]
 
         logger.info("bedtools intersect parameters: " + " ".join(bashCommand))
         process = subprocess.Popen(" ".join(bashCommand), shell=True,
@@ -211,15 +223,15 @@ class bam2chicago(Tool):
                       out_dir+"/mappedToBaitsBoRAndRFrag.bedpe"]
 
         logger.info("bedtools inteersect parameters: "
-         + " ".join(bashCommand))
+                    + " ".join(bashCommand))
 
         process = subprocess.Popen(" ".join(basCommand), shell=True,
                                    stdout=subprocess.PIPE,
-                                   stderr= subprocess.PIPE)
+                                   stderr=subprocess.PIPE)
         process.wait()
         output, error = process.communicate()
 
-        return True
+        return out_dir+"/mappedToBaitsBoRAndRFrag.bedpe"
 
     def filter_reads(self, out_dir, mappedToBaitsBoRAndRFrag):
         """
@@ -238,27 +250,27 @@ class bam2chicago(Tool):
         mapped_reads = pd.read_csv(mappedToBaitsBoRAndRFrag, sep= '\t',
                                    header=None)
 
-        less06 = mapped_reads.loc[(mapped_reads.iloc[:,15] == -1) & \
-                                  (mapped_reads.iloc[:,16] == -1)]
+        less06 = mapped_reads.loc[(mapped_reads.iloc[:, 15] == -1) & \
+                                  (mapped_reads.iloc[:, 16] == -1)]
 
         less06.to_csv(out_dir+"/mappedToBaitsBoRAndRFrag_fless06.bedpe", \
                       sep="\t", index=False, header=None)
 
         less06_rows = less06.shape[0]
 
-        more06 = mapped_reads.loc[(mapped_reads.iloc[:,15] != -1) & \
-                                  (mapped_reads.iloc[:,16] != -1)]
+        more06 = mapped_reads.loc[(mapped_reads.iloc[:, 15] != -1) & \
+                                  (mapped_reads.iloc[:, 16] != -1)]
 
-        more06.to_csv(out_dir+"/mappedToBaitsBoRAndRFrag_more062.bedpe", \
+        more06.to_csv(out_dir+"/mappedToBaitsBoRAndRFrag_fmore06.bedpe", \
                       sep="\t", index=False, header=None)
 
         more06_rows = more06.shape[0]
 
-        logger.info("Filtered out %f reads with <60%% overlap with a \
-                    single digestion fragment" % \
+        logger.info("Filtered out %f reads with <60%% overlap with a" \
+                    "single digestion fragment" % \
                     (less06_rows/(less06_rows+more06_rows)))
 
-        return True
+        return out_dir+"/mappedToBaitsBoRAndRFrag_fmore06.bedpe"
 
     def calculate_distances(self, out_dir, mappedToBaitsBoRAndRFrag_fmore06):
         """
@@ -273,9 +285,11 @@ class bam2chicago(Tool):
                     "removing self-ligation fragments (if any; not expected" \
                     "with HiCUP input)...")
 
-        with open(mappedToBaitsBoRAndRFrag_fmore06, "r") as FILE_IN:
-            with open(out_dir+"/mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen.bedpe", "w") as FILE_OUT:
-                for line in FILE_IN:
+        with open(mappedToBaitsBoRAndRFrag_fmore06, "r") as file_in:
+            with open(out_dir+"/mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen.bedpe",
+                      "w") as file_out:
+
+                for line in file_in:
                     line_hdl = line.rstrip().split("\t")
                     if line_hdl[10] == line_hdl[14]:
                         midB = int((int(line_hdl[12]) +
@@ -287,15 +301,18 @@ class bam2chicago(Tool):
                         if distance != 0:
                             line_hdl.append(str(int(line_hdl[16]) - int(line_hdl[15])))
                             line_hdl.append(str(distance))
-                            print("\t".join(line_hdl), file = FILE_OUT)
+                            print("\t".join(line_hdl), file=file_out)
 
 
-        if os.path.getsize(out_dir+"//mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen.bedpe") > 0:
+        if os.path.getsize(out_dir+"/mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen.bedpe") > 0:
             pass
         else:
             logger.fatal("calculate_distances function failed")
 
-    def write_output(self, out_dir, RMAP, mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen):
+        return out_dir+"/mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen.bedpe"
+
+    def write_output(self, out_dir, RMAP, BAM, BAITMAP, output_file,
+                     mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen,):
         """
         This function writes the output in the chinput format
         PARAMETERS:
@@ -311,26 +328,29 @@ class bam2chicago(Tool):
 
         baits_dict = {}
 
-        with open(mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen, "r") as FILE_IN:
-            with open(out_dir+"/"+out_dir+"unsorted.chinput", "w") as FILE_OUT:
-                print("##samplename'\t'bamname='\t'baitmapfile='\t'digestfile='\t'")
-                for line in FILE_IN:
+        with open(mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen, "r") as file_in:
+            with open(out_dir+output_file+"unsorted.chinput", "w") as file_out:
+                print("##samplename="+out_dir+"'\t'bamname="+BAM+" \
+                      '\t'baitmapfile="+BAITMAP+"'\t'rmap="+RMAP+"'\t'", file=file_out)
+                for line in file_in:
                     line_hdl = line.rstrip().split("\t")
                     if line_hdl[13]+" "+line_hdl[17] not in baits_dict:
                         baits_dict[line_hdl[13]+" "+line_hdl[17]] = [1, line_hdl[19], line_hdl[20]]
                     else:
-                        baits_dict[line_hdl[13]+" "+line_hdl[17]] = [baits_dict[line_hdl[13]+" "+line_hdl[17]][0] + 1,
-                                                                     baits_dict[line_hdl[13]+" "+line_hdl[17]][1],
-                                                                     baits_dict[line_hdl[13]+" "+line_hdl[17]][2]]
+                        baits_dict[line_hdl[13]+" "+line_hdl[17]] = [
+                            baits_dict[line_hdl[13]+" "+line_hdl[17]][0] + 1,
+                            baits_dict[line_hdl[13]+" "+line_hdl[17]][1],
+                            baits_dict[line_hdl[13]+" "+line_hdl[17]][2]
+                            ]
+
                 for item in baits_dict:
                     print(item.split(" ")[0]+"\t"+item.split(" ")[1]+
-                          "\t"+"\t".join(list(map(lambda x : str(x),
-                          baits_dict[item]))), file= FILE_OUT)
+                          "\t"+"\t".join([str(i) for i in baits_dict[item]]), file=file_out)
 
-
-        bashCommand = ["cat", out_dir+"/"+out_dir+"unsorted.chinput", "|" ,\
+        #sort the printed file based on RMAP file
+        bashCommand = ["cat", out_dir+output_file+"unsorted.chinput", "|" ,\
                       "sort", "-k1,1", "-k2,2n", "-T",RMAP,">>",
-                      out_dir+"/"+out_dir+".chinput"]
+                      out_dir+output_file+".chinput"]
 
         logger.info("Sorting output: "
          + " ".join(bashCommand))
@@ -339,32 +359,60 @@ class bam2chicago(Tool):
                                    stdout=subprocess.PIPE,
                                    stderr= subprocess.PIPE)
 
+        return True
 
+    def run(self, input_files, input_metadata, output_files):
+        """
+        This function runs all the fucntions and produce the file output
+        PARAMETERS
+        ----------
+        input_files: dict
+            RMAP: str
+                path to rmap file
+            BAITMAP: str
+                path to the baitmap file
+            BAM: str
+                path to the bam file
 
-if __name__ == "__main__":
+        input_metadata: dict
+            input metadata
 
-    test = bam2chicago()
-    """
-    test.intersect_bam_bait("/Users/pacera/developing/C-HiC/genomes/out_hicup/SRR3535023_1_2.hicup.bam",
-        "/Users/pacera/developing/C-HiC/tests/data/hg19TestDesign/h19_chr20and21.baitmap_4col_chr.txt",
-        "/Users/pacera/developing/C-HiC/tests/data/hg19TestDesign/h19_chr20and21_chr.rmap",
-        "output_test")
-    """
+        output_files:dict
+            out_dir: str
+                path to the output directory
+            output_file: str
+                name of the .chinput file
+        """
 
-    #test.filter_reads("output_test", "/Users/pacera/developing/C-HiC/tool/output_test/mappedToBaitsBoRAndRFrag.bedpe")
+        check = self.check_files(input_files["RMAP"],
+                                 input_files["BAITMAP"],
+                                 input_files["BAM"])
+        if check is True:
+            intersected_files = self.intersect_bam_bait_rmap(input_files["BAM"],
+                                                             input_files["BAITMAP"],
+                                                             input_files["RMAP"],
+                                                             output_files["out_dir"])
 
-    test.write_output("output_test", "/Users/pacera/developing/C-HiC/tests/data/hg19TestDesign/h19_chr20and21.rmap"  ,"/Users/pacera/developing/C-HiC/tool/output_test/mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen.bedpe")
+            filtered_reads = self.filter_reads(output_files["out_dir"],
+                                               intersected_files)
 
+            calculated_distances = self.calculate_distances(output_files["out_dir"],
+                                                            filtered_reads)
 
+            results = self.write_output(output_files["out_dir"],
+                                        input_files["RMAP"],
+                                        input_files["BAM"],
+                                        input_files["BAITMAP"],
+                                        output_files["output_file"],
+                                        calculated_distances
+                                        )
 
-
-
-
-
-
-
-
-
+        if os.path.getsize(output_files["out_dir"]+output_files["output_file"]+".chinput") > 0:
+            pass
+        else:
+            logger.fatal("write_output function failed to "\
+                         "generate output")
+        return True
 
 
 
