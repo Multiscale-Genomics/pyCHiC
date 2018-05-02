@@ -15,29 +15,40 @@
    limitations under the License.
 """
 import pytest
-import os.path
 
 from basic_modules.metadata import Metadata
 from tool.bam2chicago import bam2chicago
 
 def test_bam2chicago():
-	"""
-	Function to test bam2chicago.py
-	"""
-	path = "data/test_bam2chicago"
+    """
+    Function to test bam2chicago.py
+    """
+    path = "data/test_bam2chicago"
 
-	input_files = {
-		"RMAP" : path + "/h19_chr20and21_chr.rmap",
-		"BAITMAP" : path +  "/h19_chr20and21.baitmap_4col_chr.txt",
-		"BAM" : path + "/SRR3535023_1_2.hicup.bam"
-	}
+    input_files = {
+        "RMAP" : path + "/h19_chr20and21_chr.rmap",
+        "BAITMAP" : path +  "/h19_chr20and21.baitmap_4col_chr.txt",
+        "BAM" : path + "/SRR3535023_1_2.hicup.bam"
+    }
 
-	output_files = {
-		"out_dir" : path,
-		"output_file" :  "/sample"
-	}
+    output_files = {
+        "out_dir" : path,
+        "output_file" :  "/sample"
+    }
 
-	input_metadata = {}
+    input_metadata = {
+        ".rmap" : Metadata(
+            "data_chicago_input", ".rmap",
+            path+"/h19_chr20and21_chr.rmap", None, {}, 9606),
+        ".baitmap" : Metadata(
+            "data_chicago_input", ".baitmap",
+            path+"/h19_chr20and21.baitmap_4col_chr.txt", None, {}, 9606),
+        "bam" : Metadata(
+            "txt", "bamfile", path + "/SRR3535023_1_2.hicup.bam",
+            {"fastq1" : "SRR3535023_1.fastq",
+             "fastq2" : "SRR3535023_2.fastq", "genome" : "human_hg19"},
+            9606)
+    }
 
-	bam2chicago_handle = bam2chicago()
-	bam2chicago_handle.run(input_files, input_metadata, output_files)
+    bam2chicago_handle = bam2chicago()
+    bam2chicago_handle.run(input_files, input_metadata, output_files)

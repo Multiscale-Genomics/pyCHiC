@@ -407,6 +407,23 @@ class bam2chicago(Tool):
                                         calculated_distances
                                         )
 
+            output_metadata = {
+                ".chinput" : Metadata(
+                    data_type="txt",
+                    file_type=".chinput",
+                    file_path=output_files["out_dir"]+output_files["output_file"],
+                    sources=[
+                        input_metadata[".rmap"].file_path,
+                        input_metadata[".baitmap"].file_path,
+                        input_metadata["bam"].file_path
+                    ],
+                    taxon_id=9606,
+                    meta_data={
+                        "tool": "Chicago, capture Capture-HiC algorithm"
+                    }
+                )
+            }
+
         if os.path.getsize(output_files["out_dir"]+output_files["output_file"]+".chinput") > 0:
             pass
         else:
