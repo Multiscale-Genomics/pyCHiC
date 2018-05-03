@@ -51,14 +51,14 @@ Directly from GitHub:
 .. code-block:: none
    :linenos:
 
-   git clone https://github.com/Multiscale-Genomics/mg-process-test.git
+   git clone https://github.com/pabloacera/C-HiC.git
 
 Using pip:
 
 .. code-block:: none
    :linenos:
 
-   pip install git+https://github.com/Multiscale-Genomics/mg-process-test.git
+   pip install git+https://github.com/pabloacera/C-HiC.git
 
 Install R modules, use the following R code:
 
