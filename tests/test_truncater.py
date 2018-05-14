@@ -47,6 +47,6 @@ def test_truncater():
 
     assert os.path.isfile(output_files["outdir"]+"SRR3535023_1.trunc.fastq") is True
     assert os.path.isfile(output_files["outdir"]+"SRR3535023_2.trunc.fastq") is True
-    
+
     assert os.path.getsize(output_files["outdir"]+"SRR3535023_1.trunc.fastq") > 0
     assert os.path.getsize(output_files["outdir"]+"SRR3535023_2.trunc.fastq") > 0

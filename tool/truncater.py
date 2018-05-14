@@ -84,6 +84,7 @@ class Truncater(Tool):
         process = subprocess.Popen(" ".join(args), shell=True,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
+        process.wait()
 
         name_trunc1 = ""
         name_trunc2 = ""
@@ -98,9 +99,6 @@ class Truncater(Tool):
             name_trunc2 = name_trunc2.split(".")[-2]+".trunc.fastq"
         else:
             name_trunc2 = name_trunc2.split(".")[-2]+".trunc.fastq"
-
-        print(name_trunc1, name_trunc2)
-        print(outdir)
 
         if os.path.isfile(outdir+name_trunc1) is True:
             pass
@@ -186,4 +184,3 @@ class Truncater(Tool):
             output_files["outdir"])
 
         return results
-
