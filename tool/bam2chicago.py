@@ -52,9 +52,9 @@ class bam2chicago(Tool):
 
     def __init__(self, configuration=None):
         """
-        initialising the function
+        initialising the class
 
-        Parameters:
+        Parameters
         -----------
         configuration: dict
             dictionary containing all the arguments and parameters

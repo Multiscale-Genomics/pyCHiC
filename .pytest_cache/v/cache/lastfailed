@@ -1,1 +1,3 @@
-{}
+{
+  "tests/test_makeDesignFiles_Tool.py::test_makeDesignFilesTool": true
+}
