@@ -183,4 +183,16 @@ class Truncater(Tool):
             param_truncater,
             output_files["outdir"])
 
-        return results
+        output_metadata = {
+            "tsv": Metadata(
+                data_type="text",
+                file_type="tsv",
+                file_path=output_files["outdir"],
+                sources=[input_metadata["fastq1"].file_path, input_metadata["fastq2"].file_path],
+                taxon_id=9606,
+                meta_data=""
+            )
+        }
+
+
+        return results, output_metadata

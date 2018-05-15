@@ -30,7 +30,25 @@ def test_truncater():
         "fastq2" : path + "SRR3535023_2.fastq"
     }
 
-    input_metadata = {}
+    input_metadata = {
+            "fastq1": Metadata(
+                data_type="text",
+                file_type="fastq",
+                file_path=input_files["fastq1"],
+                sources="",
+                taxon_id=9606,
+                meta_data=""
+            ),
+            "fastq2": Metadata(
+                data_type="text",
+                file_type="fastq",
+                file_path=input_files["fastq2"],
+                sources="",
+                taxon_id=9606,
+                meta_data=""
+            )
+
+        }
 
     output_files = {
         "outdir" : path
