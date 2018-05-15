@@ -21,7 +21,6 @@ from __future__ import print_function
 import sys
 import os
 import subprocess
-import pandas as pd
 from utils import logger
 
 try:
@@ -58,8 +57,8 @@ class Fastq2bed(Tool):
         ----------
         configuration: dict
             contains parameters to run the functino
-
         """
+        logger.info("initialising Fastq2bed")
 
     def tadbit_map(self, fastq1, fastq2, gemindex, RE, wd, chromosome):
         """
@@ -101,7 +100,7 @@ class Fastq2bed(Tool):
                      "--index", gemindex,
                      "--read", "2",
                      "--renz", RE,
-                    "-w", wd]
+                     "-w", wd]
         else:
                 args1 = ["tadbit", "map",
                          "--fastq", fastq1,
@@ -109,7 +108,7 @@ class Fastq2bed(Tool):
                          "--read", "1",
                          "--renz", RE,
                          "-w", wd,
-                          "--chr_name", chromosome]
+                        "--chr_name", chromosome]
 
                 args2 = ["tadbit", "map",
                          "--fastq", fastq2,
@@ -130,8 +129,9 @@ class Fastq2bed(Tool):
         try:
             mapped_files = os.listdir(wd+"/01_mapped_r1/")
             for indv_file in mapped_files:
-                if os.path.getsize(wd+"/01_mapped_r1/"+indv_file) > 0:
-                    pass
+                if "full" in indv_file:
+                    if os.path.getsize(wd+"/01_mapped_r1/"+indv_file) > 0:
+                        pass
         except IOError:
             logger.fatal("tadbit map1 failed to generate" \
                           "mapped files")

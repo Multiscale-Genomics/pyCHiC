@@ -194,5 +194,4 @@ class Truncater(Tool):
             )
         }
 
-
         return results, output_metadata
