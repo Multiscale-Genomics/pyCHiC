@@ -83,8 +83,9 @@ class makeDesignFilesTool(Tool):
 
         """
         #if makeDesignFiles.py is added to PATH
-        args = ["makeDesignFiles.py", "--outfilePrefix", outFilePrefix,
-            "--designDir", designDir]
+        args = ["python", "../scripts/makeDesignFiles.py",
+                "--outfilePrefix", outFilePrefix,
+                "--designDir", designDir]
 
         args += parameters
 
@@ -164,7 +165,7 @@ class makeDesignFilesTool(Tool):
         logger.info("makeDesignFiles command parameters " + " ".join(commands_params))
 
         results = self.makeDesignFiles( input_files["designDir"],
-                                  output_files["outFilePrefix"],
+                                  output_files["outPrefixDesign"],
                                   commands_params)
 
         resutls = compss_wait_on(results)

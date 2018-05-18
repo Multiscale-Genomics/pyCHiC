@@ -22,6 +22,9 @@ import os
 from tool.truncater import Truncater
 
 def test_truncater():
+    """
+    Test for the truncater function
+    """
 
     path = os.path.join(os.getcwd(),"data/test_truncater/")
 

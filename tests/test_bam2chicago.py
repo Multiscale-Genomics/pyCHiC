@@ -15,6 +15,7 @@
    limitations under the License.
 """
 import pytest
+import os
 
 from basic_modules.metadata import Metadata
 from tool.bam2chicago import bam2chicago
@@ -23,12 +24,12 @@ def test_bam2chicago():
     """
     Function to test bam2chicago.py
     """
-    path = "data/test_bam2chicago"
+    path = os.path.join(os.path.dirname(__file__),"data/test_bam2chicago")
 
     input_files = {
         "RMAP" : path + "/h19_chr20and21_chr.rmap",
         "BAITMAP" : path +  "/h19_chr20and21.baitmap_4col_chr.txt",
-        "BAM" : path + "/SRR3535023_1_2.hicup.bam"
+        "BAM" : path + "/outbam_sorted.bam"
     }
 
     output_files = {

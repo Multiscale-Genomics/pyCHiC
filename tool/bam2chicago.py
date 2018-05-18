@@ -89,7 +89,7 @@ class bam2chicago(Tool):
         print("Checking rmap file")
         try:
             rmap = pd.read_table(RMAP, header=None)
-        except:
+        except IOError:
             logger.fatal("rmap rows contain"+
                          "different number of columns")
             return False
@@ -108,7 +108,7 @@ class bam2chicago(Tool):
         print("Checking baitmap file")
         try:
             baitmap = pd.read_table(BAITMAP, header=None)
-        except:
+        except IOError:
             logger.fatal("baitmap rows contain"+
                          "different number of columns")
             return False
@@ -277,8 +277,6 @@ class bam2chicago(Tool):
 
     def calculate_distances(self, out_dir, mappedToBaitsBoRAndRFrag_fmore06):
         """
-        
-
         PARAMETERS:
         -----------
         mappedToBaitsBoRAndRFrag_fmore06: str
@@ -312,6 +310,7 @@ class bam2chicago(Tool):
             pass
         else:
             logger.fatal("calculate_distances function failed")
+            return False
 
         return out_dir+"/mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen.bedpe"
 
@@ -362,6 +361,7 @@ class bam2chicago(Tool):
         process = subprocess.Popen(" ".join(bashCommand), shell=True,
                                    stdout=subprocess.PIPE,
                                    stderr= subprocess.PIPE)
+        process.wait()
 
         return True
 

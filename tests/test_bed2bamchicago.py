@@ -29,9 +29,9 @@ def test_bed2bam():
     path = os.path.join(os.getcwd(), "data/test_bed2bam/")
 
     input_files = {
-        "bed" : path + "valid_r1-r2_intersection_b51cdf1282.tsv",
-		"ncpus" : "2"
-    }
+      "bed" : path + "valid_r1-r2_intersection_b51cdf1282.tsv",
+		  "ncpus" : "2"
+      }
 
     input_metadata = {
             "bed": Metadata(

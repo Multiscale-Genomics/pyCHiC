@@ -13,6 +13,8 @@ This repository contains pipelines for analyzing capture Hi-C data. CHiCAGO algo
   - pytest
   - mg-tool-api
   - rpy2
+  - spatialindex
+
 - R >=3.1.2
 -R Modules:
   -argparser
@@ -41,6 +43,18 @@ pyenv-virtualenv 2.7.12 mg-process-test
 pyenv activate mg-process-test
 pip install -e .
 pip install -r requirements.txt
+```
+
+install spatialindex and rtree
+
+```
+-curl -L https://github.com/libspatialindex/libspatialindex/archive/1.8.5.tar.gz | tar xz
+cd spatialindex-src-1.8.5
+./configure
+make
+sudo make install
+sudo ldconfig
+pip install rtree
 ```
 Run the R code:
 

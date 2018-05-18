@@ -25,13 +25,13 @@ def test_fastq2bed():
     """
     Test for the fastq2bed function
     """
-    path = os.path.join(os.path.dirname(__file__), "data/test_fastq2bed")
+    path = os.path.join(os.path.dirname(__file__), "data")
 
     input_files = {
-        "fastq1" : path + "/SRR3535023_1.fastq",
-        "fastq2" : path + "/SRR3535023_2.fastq",
-        "gemindex" : path + "/toy_hg19.gem",
-        "genome_fasta" : path + "/toy_hg19.fa",
+        "fastq1" : path + "/test_fastq2bed/SRR3535023_1.fastq",
+        "fastq2" : path + "/test_fastq2bed/SRR3535023_2.fastq",
+        "gemindex" : path + "/test_gem_indexer/tb.Human.GCA_000001405.21.fasta.gem",
+        "genome_fasta" : path + "/test_gem_indexer/chr21.fa",
         "RE" : "HindIII",
         "chromosome" : ""
     }
@@ -56,7 +56,7 @@ def test_fastq2bed():
         }
 
     output_files = {
-        "wd" : path
+        "wd" : path + "/test_fastq2bed"
     }
 
     fastq2bed_hdl = Fastq2bed()

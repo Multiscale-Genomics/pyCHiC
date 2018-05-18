@@ -100,13 +100,13 @@ class ChicagoTool(Tool):
 
         #check if there are more than one .chinput files
         if isinstance(input_files, list):
-            args = ["runChicago.R", ", ".join(input_files),
+            args = ["../scripts/runChicago.R", ", ".join(input_files),
                     output_prefix, "--output-dir", output_dir]
             args += params
 
         #I have runChicago.R added to PATH in bin so no need to call Rscript
         else:
-            args = ["runChicago.R", input_files, output_prefix, "--output-dir", output_dir]
+            args = ["../scripts/runChicago.R", input_files, output_prefix, "--output-dir", output_dir]
             args += params
 
         logger.info("chicago CMD: " + " ".join(args))

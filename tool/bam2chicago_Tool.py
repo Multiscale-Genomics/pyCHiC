@@ -74,27 +74,33 @@ class bam2chicagoTool(Tool):
         Parameters
         ----------
         bamFiles : str,
-                 path to paired-end file produced by a HiC aligner; Chicago has
-                 only been tested with data produced by HiCUP
-                 (http://www.bioinformatics.babraham.ac.uk/projects/hicup/).
-                 However, it should theoretically be possible to use other HiC
-                 aligners for this purpose.
+            path to paired-end file produced by a HiC aligner; Chicago has
+            only been tested with data produced by HiCUP
+            (http://www.bioinformatics.babraham.ac.uk/projects/hicup/).
+            However, it should theoretically be possible to use other HiC
+            aligners for this purpose.
         rmapFile : str,
-                 A tab-separated file of the format
-                 <chr> <start> <end> <numeric ID>,
-                 describing the restriction digest (or "virtual digest"
-                 if pooled fragments are used). These numeric IDs are referred to as
-                 "otherEndID" in Chicago. All fragments mapping outside of the digest
-                 coordinates will be disregarded by both these scripts and Chicago.
+            A tab-separated file of the format
+            <chr> <start> <end> <numeric ID>,
+            describing the restriction digest (or "virtual digest"
+            if pooled fragments are used). These numeric IDs are referred to as
+            "otherEndID" in Chicago. All fragments mapping outside of the digest
+            coordinates will be disregarded by both these scripts and Chicago.
         baitMapFile: str,
-                   Tab-separated file of the format
-                   <chr> <start> <end> <numeric ID> <annotation>,
-                   listing the coordinates of the baited/captured
-                   restriction fragments (should be a subset of the fragments
-                   listed in rmapfile), their numeric IDs (should match those listed
-                   in rmapfile for the corresponding fragments) and their annotations
-                   (such as, for example, the names of baited promoters). The numeric
-                   IDs are referred to as "baitID" in Chicago.
+            Tab-separated file of the format
+            <chr> <start> <end> <numeric ID> <annotation>,
+            listing the coordinates of the baited/captured
+            restriction fragments (should be a subset of the fragments
+            listed in rmapfile), their numeric IDs (should match those listed
+            in rmapfile for the corresponding fragments) and their annotations
+            (such as, for example, the names of baited promoters). The numeric
+            IDs are referred to as "baitID" in Chicago.
+        sample_name: str
+            name of the output file. Bbam2chicago creates a folder with the
+            name of this sample, and inside the folder there is a file with
+            sample_name.chinput, that is the final output.
+
+
 
         Returns
         -------
@@ -103,7 +109,7 @@ class bam2chicagoTool(Tool):
          name of the sample
         """
 
-        args = ["bam2chicago.sh",
+        args = ["../scripts/bam2chicago.sh",
               bamFiles,
               baitmapFile,
               rmapFile,
@@ -112,7 +118,7 @@ class bam2chicagoTool(Tool):
         logger.info("bam2chicago CMD: " + " ".join(args))
 
         process = subprocess.Popen(args, stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+                                   stderr=subprocess.PIPE)
         process.wait()
         proc_out, proc_err = process.communicate()
 
@@ -133,9 +139,9 @@ class bam2chicagoTool(Tool):
         Parameters
         ----------
         input_files : dict
-        bamfiles : path
-        rmapFile : path
-        baitmapFile : path
+        bamfiles : str
+        rmapFile : str
+        baitmapFile : str
 
         metadata : dict
 
@@ -148,9 +154,9 @@ class bam2chicagoTool(Tool):
         """
 
         results = self.bam2chicago(
-              input_files["bamFile"],
-              input_files["rmapFile"],
-              input_files["baitmapFile"],
+              input_files["BAM"],
+              input_files["RMAP"],
+              input_files["BAITMAP"],
               output_files["sample_name"]
               )
 
@@ -158,16 +164,17 @@ class bam2chicagoTool(Tool):
 
         output_metadata = {
             "chinput": Metadata(
-                data_type=input_metadata['bam_1'].data_type,
+                data_type=input_metadata['BAM'].data_type,
                 file_type="chinput",
                 file_path=output_files["sample_name"],
                 sources=[
-                    input_metadata["bam_1"].file_path,
-                    input_metadata["bsgenome"].file_path
+                    input_metadata["BAM"].file_path,
+                    input_metadata["RMAP"].file_path,
+                    input_metadata["BAITMAP"].file_path
                 ],
-                taxon_id=input_metadata["bam_1"].taxon_id,
+                taxon_id=input_metadata["BAM"].taxon_id,
                 meta_data={
-                    "assembly": input_metadata["bam_1"].meta_data["assembly"],
+                    "assembly": input_metadata["BAM"].meta_data,
                     "tool": "bam2chicago"
                 }
             )

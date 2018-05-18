@@ -19,7 +19,7 @@ import os.path
 
 from basic_modules.metadata import Metadata
 
-from tool.makeDesignFiles import makeDesignFilesTool
+from tool.makeDesignFiles_Tool import makeDesignFilesTool
 
 def test_makeDesignFilesTool():
     """

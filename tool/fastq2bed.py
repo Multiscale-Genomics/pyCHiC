@@ -44,7 +44,7 @@ from basic_modules.metadata import Metadata
 class Fastq2bed(Tool):
     """
     This class has the functions to convert fastq
-    files to bam files. 
+    files to bam files.
     Hicup_truncated, gem(binaries) and tadbit is neccesary to be
     installed, and added to $PATH.
 
@@ -87,13 +87,13 @@ class Fastq2bed(Tool):
         bool
         """
         logger.info(chromosome)
-        if chromosome is "": 
+        if chromosome is "":
             args1 = ["tadbit", "map",
                      "--fastq", fastq1,
                      "--index", gemindex,
                      "--read", "1",
                      "--renz", RE,
-                     "-w", wd]              
+                     "-w", wd]
 
             args2 = ["tadbit", "map",
                      "--fastq", fastq2,
@@ -102,21 +102,21 @@ class Fastq2bed(Tool):
                      "--renz", RE,
                      "-w", wd]
         else:
-                args1 = ["tadbit", "map",
-                         "--fastq", fastq1,
-                         "--index", gemindex,
-                         "--read", "1",
-                         "--renz", RE,
-                         "-w", wd,
-                        "--chr_name", chromosome]
+            args1 = ["tadbit", "map",
+                     "--fastq", fastq1,
+                     "--index", gemindex,
+                     "--read", "1",
+                     "--renz", RE,
+                     "-w", wd,
+                    "--chr_name", chromosome]
 
-                args2 = ["tadbit", "map",
-                         "--fastq", fastq2,
-                         "--index", gemindex,
-                         "--read", "2",
-                         "--renz", RE,
-                         "-w", wd,
-                         "--chr_name", chromosome]
+            args2 = ["tadbit", "map",
+                     "--fastq", fastq2,
+                     "--index", gemindex,
+                     "--read", "2",
+                     "--renz", RE,
+                     "-w", wd,
+                     "--chr_name", chromosome]
 
 
         logger.info("tadbit map1 arguments:" + " ".join(args1))
@@ -163,7 +163,7 @@ class Fastq2bed(Tool):
         Parameters
         ----------
         genome: str
-            path to the reference genome in fasta 
+            path to the reference genome in fasta
         wd: str
             working directory path
 
@@ -247,7 +247,7 @@ class Fastq2bed(Tool):
         input_metadata: dict
         output_files: dict
             wd
-    
+
         Returns
         -------
         bool
