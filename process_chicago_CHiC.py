@@ -28,14 +28,22 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
+from tool.truncater import Truncater
+from tool.makeBaitmap import makeBaitmapTool
+from tool.makeRmap_tool import makeRmapFile
+from tool.makeDesignFiles_Tool import makeDesignFilesTool
+from tool.fastq2bed import Fastq2bed
 from tool.bed2bam import bed2bam
+from tool.bam2chicago_Tool import bam2chicagoTool
+from tool.runChicago import ChicagoTool
+
 
 ################################################
 
-class process_bed2bam(Workflow):
+class process_chicago_CHiC(Workflow):
     """
-    This class generate bam file compatible with
-    bam2chicago.py from .tsv file ourput of process_fastq2bed.py
+    This class output chromatin contacts from capture HiC from
+    pair fastq reads, baits and RE
     """
     def __init__(self, configuration=None):
         """
@@ -44,11 +52,12 @@ class process_bed2bam(Workflow):
         Parameters
         ----------
         configuration: dict
-            dictionary with parameters for different Tools, indicating
-            how to run each of them
+            "RE" : str - format A^AGCT (Truncater)
+
+
         """
 
-        logger.info("Initialising process_bed2bam")
+        logger.info("Initialising process_chicago_CHiC")
         if configuration is None:
             configuration = {}
 
@@ -56,54 +65,57 @@ class process_bed2bam(Workflow):
 
     def run(self, input_files, input_metadata, output_files):
         """
-        This is the main function that run the tools to create bamfile
+        This is the main function that run the tools to create
+        .baitmap.
 
         Parameters:
         ----------
         input_files: dict
-            bed : str
-                path to the bed file
-
+            fastq1: str
+            fastq2: str
+            genome: str
+                Indexed Ref genome used used in the experiment.
 
         input_metadata: dict
             input metadata
 
         output_files: dict
-            bam_out : str
-                complete path and prefix of output
 
         Returns:
         --------
-        bool
-        output_metadata_Baitmap : dict
-            metadata for both rmap and baitmap
-            files
+
         """
 
-        bed2bam_caller = bed2bam(self.configuration)
-        output_files_bed2bam, output_metadata_bed2bam = bed2bam_caller.run(
+        truncater_caller = Truncater(self.configuration)
+        output_files_Truncater, output_metadata_Truncater = truncater_caller.run(
             {
-                "bed" : input_files["bed"],
-                "ncpus" : "2"
+                "fastq1" : input_files["fastq1"],
+                "fastq2": input_files["fastq2"],
             },
             {
-                "bed" : input_metadata["bed"]
+                "fastq1" : input_metadata["fastq1"],
+                "fastq2" : input_metadata["fastq2"],
             },
             {
-                "bam_out" : output_files["bam_out"],
+                "out_dir" : output_files["out_dir"],
             }
         )
 
-        if os.path.getsize(output_files["bam_out"] + "_sorted.bam") > 0:
+        fastq1_name = input_files["fastq1"].split("/")[-1].split(".")[-2]+".trunc.fastq"
+        fastq2_name = input_files["fastq2"].split("/")[-1].split(".")[-2]+".trunc.fastq"
+
+        if os.path.getsize(output_files["out_dir"]+fastq1_name) > 0 and \
+           os.path.getsize(output_files["out_dir"]+fastq2_name) > 0:
             pass
+
         else:
-            logger.fatal("process_bed2bam failed to generate BAM file")
+            logger.fatal("Truncater failed to truncate  fastq reads")
             return False
 
-        return output_files_bed2bam, output_metadata_bed2bam
+
+
 
 #############################################################
-
 
 def main_json(config, in_metadata, out_metadata):
     """
@@ -117,7 +129,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(process_bed2bam,
+    results = app.launch(generate_CHiCAGO_baitmap,
                          config,
                          in_metadata,
                          out_metadata)
@@ -134,7 +146,7 @@ if __name__ == "__name__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
-        description="Pipeline to generate BAM files")
+        description="Pipeline to generate .baitmap file")
 
     PARSER.add_argument("--config", help="Configuration file")
     PARSER.add_argument(

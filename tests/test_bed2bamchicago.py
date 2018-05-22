@@ -19,7 +19,7 @@ from __future__ import print_function
 from basic_modules.metadata import Metadata
 import os
 
-from tool.bed2chicagobamWrap import bed2bam
+from tool.bed2bam import bed2bam
 
 def test_bed2bam():
     """

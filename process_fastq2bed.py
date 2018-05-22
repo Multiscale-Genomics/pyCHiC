@@ -97,11 +97,11 @@ class process_Fastq2bed(Workflow):
                 "chromosome": input_files["chromosome"],
                 "genindex": input_files["genindex"],
                 "genome_fasta" : input_files["genome_fasta"]
-            },{
+            }, {
                 "fastq1": input_metadata["fastq1"],
                 "fastq2": input_metadata["fastq2"],
                 "genome_fasta": input_metadata["genome_fasta"]
-            },{
+            }, {
                 "wd": output_files["wd"]
             }
         )
@@ -128,11 +128,11 @@ def main_json(config, in_metadata, out_metadata):
     """
     #Instantiate and lauch the app
     print("1.Instantiate and launch the App")
-    from app.jsonapp import JASONApp
-    app = JASONApp()
+    from apps.jsonapp import JSONApp
+    app = JSONApp()
     results = app.launch(process_Fastq2bed,
-                        config, in_metadata,
-                        out_metadata)
+                         config, in_metadata,
+                         out_metadata)
     #2. Th2 App has finished
     print("2. Execution is finished: " + out_metadata)
     print(results)

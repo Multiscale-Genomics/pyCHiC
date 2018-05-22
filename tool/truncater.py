@@ -70,12 +70,13 @@ class Truncater(Tool):
             path to feastq file read 2
         parameters: list
             paramters selected using get_params()
-    
+
         Return
         ------
         bool
         """
-        args = ["hicup_truncater", fastq1, fastq2, "--outdir", outdir]
+        args = ["hicup_truncater", fastq1, fastq2, "--outdir", outdir,
+                "--quiet"]
 
         args += parameters
 
@@ -113,10 +114,10 @@ class Truncater(Tool):
         """
         this function take the parameters that
         have been selected tu run the truncater
-        
+
         Paramaters
         ----------
-         --outdir: str, 
+         --outdir: str,
             output directory
          --quiet: str, flag
             supress all the progress report
@@ -128,7 +129,7 @@ class Truncater(Tool):
             number of threads to use
         --zip: str, flag
             compress output
-       
+
         Returns
         -------
         arguments: list

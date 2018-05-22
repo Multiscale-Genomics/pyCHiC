@@ -1,3 +1,3 @@
 [
-  "tests/test_process_bam2chicago.py::test_process_bam2chicago"
+  "tests/test_process_CHiC.py::test_process_CHiC"
 ]
