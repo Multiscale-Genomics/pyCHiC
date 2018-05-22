@@ -110,10 +110,10 @@ class bam2chicagoTool(Tool):
         """
 
         args = ["../scripts/bam2chicago.sh",
-              bamFiles,
-              baitmapFile,
-              rmapFile,
-              sample_name]
+                bamFiles,
+                baitmapFile,
+                rmapFile,
+                sample_name]
 
         logger.info("bam2chicago CMD: " + " ".join(args))
 
@@ -123,12 +123,12 @@ class bam2chicagoTool(Tool):
         proc_out, proc_err = process.communicate()
 
         try:
-         os.path.isfile(sample_name + ".chinput")
+            os.path.isfile(sample_name + ".chinput")
         except IOError:
-         logger.fatal("bam2chicago failed to geenerate .chinput files")
-         logger.fatal("bam2chicago stdout" + proc_out)
-         logger.fatal("bam2chicago srerr"  + proc_err)
-         return False
+            logger.fatal("bam2chicago failed to geenerate .chinput files")
+            logger.fatal("bam2chicago stdout" + proc_out)
+            logger.fatal("bam2chicago srerr"  + proc_err)
+            return False
 
         return True
 
@@ -154,11 +154,11 @@ class bam2chicagoTool(Tool):
         """
 
         results = self.bam2chicago(
-              input_files["BAM"],
-              input_files["RMAP"],
-              input_files["BAITMAP"],
-              output_files["sample_name"]
-              )
+            input_files["BAM"],
+            input_files["RMAP"],
+            input_files["BAITMAP"],
+            output_files["sample_name"]
+            )
 
         results = compss_wait_on(results)
 

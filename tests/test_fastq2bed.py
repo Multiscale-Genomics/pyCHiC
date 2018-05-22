@@ -30,7 +30,7 @@ def test_fastq2bed():
     input_files = {
         "fastq1" : path + "/test_fastq2bed/SRR3535023_1.fastq",
         "fastq2" : path + "/test_fastq2bed/SRR3535023_2.fastq",
-        "gemindex" : path + "/test_gem_indexer/tb.Human.GCA_000001405.21.fasta.gem",
+        "genindex" : path + "/test_gem_indexer/tb.Human.GCA_000001405.21.fasta.gem",
         "genome_fasta" : path + "/test_gem_indexer/chr21.fa",
         "RE" : "HindIII",
         "chromosome" : ""
@@ -49,6 +49,14 @@ def test_fastq2bed():
                 data_type="text",
                 file_type="fastq",
                 file_path=input_files["fastq2"],
+                sources="",
+                taxon_id=9606,
+                meta_data=""
+            ),
+            "genome_fasta": Metadata(
+                data_type="text",
+                file_type="fasta",
+                file_path=input_files["genome_fasta"],
                 sources="",
                 taxon_id=9606,
                 meta_data=""

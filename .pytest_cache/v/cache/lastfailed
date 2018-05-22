@@ -1,1 +1,3 @@
-{}
+{
+  "tests/test_process_baitmap.py::test_process_rmapBaitmap": true
+}

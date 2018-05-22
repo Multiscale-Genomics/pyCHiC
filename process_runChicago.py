@@ -19,9 +19,6 @@
 
 from __future__ import print_function
 
-#Required for ReadTheDocs
-from functools import wraps
-
 import argparse
 
 from basic_modules.workflow import Workflow
@@ -44,7 +41,7 @@ class process_Chicago(Workflow):
         Parameters:
         -----------
         Configuration: dict
-        dictinoary with parameters for different Tools, indicating
+        dictinoary with parameters for different tools, indicating
         how to run each of them
         """
 
@@ -67,7 +64,7 @@ class process_Chicago(Workflow):
                 chinput_file: comma separated list in case there
                     is more than one input file.
 
-        metadata: dict
+        input_metadata: dict
                 Input metadata, str
 
         output: dict
@@ -86,7 +83,9 @@ class process_Chicago(Workflow):
         output_files_generated = {}
         output_metadata = {}
 
-        logger.info("Process chicago - defined output:", output_files)
+        logger.info("Process chicago - defined output:" +
+                    output_files["output_dir"]+
+                    output_files["output_prefix"])
 
         #chicago
         chicago_caller = ChicagoTool(self.configuration)
@@ -133,7 +132,7 @@ def main_json(config, in_metadata, out_metadata):
 
 ###############################################################
 
-if __name__ == "__name__":
+if __name__ == "__main__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(

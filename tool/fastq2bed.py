@@ -60,7 +60,7 @@ class Fastq2bed(Tool):
         """
         logger.info("initialising Fastq2bed")
 
-    def tadbit_map(self, fastq1, fastq2, gemindex, RE, wd, chromosome):
+    def tadbit_map(self, fastq1, fastq2, genindex, RE, wd, chromosome):
         """
         This function map the Capture fastq reads to the reference genome using gem
 
@@ -70,16 +70,16 @@ class Fastq2bed(Tool):
             path to fastq
         fastq2: str
             path to fastq
-        gemindex: str
+        genindex: str
             path to the ref. genome indexed with gem.
         RE: str
             restriction enzyme used to digest the genome.
-            the formt of the RE is the name with upper case
+            the form of the RE is the name with case
             sensitive. exam. HindIII
         wd: str
             working diretory for the output
         chr: str
-            chromosome number to run just onw chromosome.
+            chromosome number to run just one chromosome.
             chr number
 
         Returns
@@ -90,21 +90,21 @@ class Fastq2bed(Tool):
         if chromosome is "":
             args1 = ["tadbit", "map",
                      "--fastq", fastq1,
-                     "--index", gemindex,
+                     "--index", genindex,
                      "--read", "1",
                      "--renz", RE,
                      "-w", wd]
 
             args2 = ["tadbit", "map",
                      "--fastq", fastq2,
-                     "--index", gemindex,
+                     "--index", genindex,
                      "--read", "2",
                      "--renz", RE,
                      "-w", wd]
         else:
             args1 = ["tadbit", "map",
                      "--fastq", fastq1,
-                     "--index", gemindex,
+                     "--index", genindex,
                      "--read", "1",
                      "--renz", RE,
                      "-w", wd,
@@ -112,7 +112,7 @@ class Fastq2bed(Tool):
 
             args2 = ["tadbit", "map",
                      "--fastq", fastq2,
-                     "--index", gemindex,
+                     "--index", genindex,
                      "--read", "2",
                      "--renz", RE,
                      "-w", wd,
@@ -242,7 +242,7 @@ class Fastq2bed(Tool):
             fastq2,
             RE,
             chromosome,
-            gemindex
+            genindex
             genome_fasta
         input_metadata: dict
         output_files: dict
@@ -266,7 +266,7 @@ class Fastq2bed(Tool):
 
         results_map = self.tadbit_map(input_files["fastq1"],
                                       input_files["fastq2"],
-                                      input_files["gemindex"],
+                                      input_files["genindex"],
                                       input_files["RE"],
                                       output_files["wd"],
                                       input_files["chromosome"])

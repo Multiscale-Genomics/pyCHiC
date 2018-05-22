@@ -42,7 +42,7 @@ from basic_modules.metadata import Metadata
 
 class bed2bam(Tool):
     """
-    This class contain functions to convert a bed file output from 
+    This class contain functions to convert a bed file bam_out from
     fatq2bed.py to bam file compatible with CHiCAGO
     """
     def __init__(self, configuration=None):
@@ -56,7 +56,7 @@ class bed2bam(Tool):
         """
         logger.info("Initiating bed2chicago")
 
-    def wrapper_bed2bam(self, bed, ncpus, output):
+    def wrapper_bed2bam(self, bed, bam_out):
         """
         This function runs the script from_bed_to_BAM_for_chicago.py
         tha convert a bed file to a bam file compatible with CHiCAGO
@@ -68,8 +68,8 @@ class bed2bam(Tool):
             path to the bed file
         ncpus: str
             Number of cpus to run the script
-        output: str
-            path to the output directory and file of output
+        bam_out: str
+            path to the bam_out directory and file of bam_out
 
         Returns
         -------
@@ -77,7 +77,7 @@ class bed2bam(Tool):
         """
 
         args = ["python", "../scripts/from_bed_to_BAM_for_chicago.py",
-              bed, ncpus, output]
+              bed, "2", bam_out]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
@@ -86,26 +86,26 @@ class bed2bam(Tool):
                                  stderr=subprocess.PIPE)
         process.wait()
 
-        if os.path.isfile(output + ".bam") is True:
-            if os.path.getsize(output + ".bam") > 0:
+        if os.path.isfile(bam_out + ".bam") is True:
+            if os.path.getsize(bam_out + ".bam") > 0:
                 return True
         else:
             logger.fatal("from_bed_to_BAM_for_chicago\
-                generates no output")
+                generates no bam_out")
             return False
 
-    def sort_output(self, output):
+    def sort_bam_out(self, bam_out):
         """
-        This function sort the output using samtools
-        
+        This function sort the bam_out using samtools
+
         Parameters
         ----------
-        output: str
-            path to output directory and file
+        bam_out: str
+            path to bam_out directory and file
         """
         args = ["samtools", "sort",
-                "-n", output+".bam",
-                ">", output+"_sorted.bam"]
+                "-n", bam_out+".bam",
+                ">", bam_out+"_sorted.bam"]
 
         logger.info("samtools args:"+ " ".join(args))
 
@@ -115,19 +115,19 @@ class bed2bam(Tool):
             stderr=subprocess.PIPE)
 
         process.wait()
-    
-        if os.path.isfile(output+"_sorted.bam") is True:
-            if os.path.getsize(output+"_sorted.bam") > 0:
+
+        if os.path.isfile(bam_out+"_sorted.bam") is True:
+            if os.path.getsize(bam_out+"_sorted.bam") > 0:
                 return True
         else:
-            logger.fatal("samtools didnt generate sorted output")
+            logger.fatal("samtools didnt generate sorted bam_out")
             return False
 
 
     def run(self, input_files, input_metadata, output_files):
         """
         This function runs the wrapper_bed2chicago function
-        and produce the output
+        and produce the bam_out
 
         Parameters
         ----------
@@ -136,7 +136,7 @@ class bed2bam(Tool):
             ncpus
         input_metadata: dict
         output_files: dict
-            output
+            bam_out
 
         Returns
         -------
@@ -146,18 +146,17 @@ class bed2bam(Tool):
 
         results = self.wrapper_bed2bam(
             input_files["bed"],
-            input_files["ncpus"],
-            output_files["output"])
+            output_files["bam_out"])
 
         if results is True:
-            sorted_results = self.sort_output(
-                output_files["output"])
+            sorted_results = self.sort_bam_out(
+                output_files["bam_out"])
 
         output_metadata = {
             "BAM": Metadata(
                 data_type="",
                 file_type="bam",
-                file_path=output_files["output"]+".bam",
+                file_path=output_files["bam_out"]+".bam",
                 sources=input_metadata["bed"].file_path,
                 taxon_id=9606,
                 meta_data=""

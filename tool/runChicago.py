@@ -198,8 +198,9 @@ class ChicagoTool(Tool):
         """
         #check if the output directory exists, otherwise create it
         if not os.path.exists(output_files["output_dir"]):
-            logger.info("creating output directory")
-            os.mkdir(output_files["output_dir"])
+            logger.info("creating output directory: "+
+                        output_files["output_dir"])
+            os.makedirs(output_files["output_dir"])
 
 
         command_params = self.get_chicago_params(self.configuration)
