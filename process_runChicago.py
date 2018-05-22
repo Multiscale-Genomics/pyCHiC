@@ -28,7 +28,7 @@ from tool.runChicago import ChicagoTool
 
 #################################################
 
-class process_Chicago(Workflow):
+class process_runChicago(Workflow):
     """
     Function for processing capture Hi-C fastq files. Files are aligned,
     filtered and analysed for Cpature Hi-C peaks
@@ -45,7 +45,7 @@ class process_Chicago(Workflow):
         how to run each of them
         """
 
-        logger.info("Processing chicago")
+        logger.info("Initiating process_runChicago")
         if configuration is None:
             configuration = {}
 
@@ -119,7 +119,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(process_Chicago,
+    results = app.launch(process_runChicago,
                          config,
                          in_metadata,
                          out_metadata)

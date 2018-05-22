@@ -20,7 +20,7 @@ from __future__ import print_function
 import os.path
 import pytest
 
-from process_runChicago import process_Chicago
+from process_runChicago import process_runChicago
 from basic_modules.metadata import Metadata
 
 def test_process_chicago():
@@ -69,7 +69,7 @@ def test_process_chicago():
         #"chicago_features_only":None}
 
 
-    chicago_handle = process_Chicago(config)
+    chicago_handle = process_runChicago(config)
     chicago_handle.run(input_files, metadata, output_files)
 
     assert os.path.isfile(output_files["output_dir"] +

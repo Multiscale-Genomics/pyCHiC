@@ -97,7 +97,7 @@ class process_bed2bam(Workflow):
         if os.path.getsize(output_files["bam_out"] + "_sorted.bam") > 0:
             pass
         else:
-            logger.fatal("makeRmapFile failed to generate .rmap file")
+            logger.fatal("process_bed2bam failed to generate BAM file")
             return False
 
         return output_files_bed2bam, output_metadata_bed2bam
@@ -117,7 +117,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(generate_CHiCAGO_inputs,
+    results = app.launch(process_bed2bam,
                          config,
                          in_metadata,
                          out_metadata)
@@ -134,7 +134,7 @@ if __name__ == "__name__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
-        description="Pipeline to generate .rmap and .baitmap files")
+        description="Pipeline to generate BAM files")
 
     PARSER.add_argument("--config", help="Configuration file")
     PARSER.add_argument(

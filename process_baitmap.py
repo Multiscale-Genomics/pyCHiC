@@ -105,7 +105,7 @@ class generate_CHiCAGO_baitmap(Workflow):
         if os.path.getsize(output_files["out_baitmap"]) > 0:
             pass
         else:
-            logger.fatal("makeBaitmapTool failed to generate .baitmap file")
+            logger.fatal("generate_CHiCAGO_baitmap failed to generate .baitmap file")
             return False
 
         return output_files_Baitmap, output_metadata_Baitmap
@@ -124,7 +124,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(generate_CHiCAGO_inputs,
+    results = app.launch(generate_CHiCAGO_baitmap,
                          config,
                          in_metadata,
                          out_metadata)
@@ -141,7 +141,7 @@ if __name__ == "__name__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
-        description="Pipeline to generate .baitmap files")
+        description="Pipeline to generate .baitmap file")
 
     PARSER.add_argument("--config", help="Configuration file")
     PARSER.add_argument(

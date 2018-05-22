@@ -130,7 +130,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1.Instantiate and launch the App")
     from app.jsonapp import JASONApp
     app = JASONApp()
-    results = app.launch(generate_ChiCAGO_inputs,
+    results = app.launch(process_Fastq2bed,
                         config, in_metadata,
                         out_metadata)
     #2. Th2 App has finished
@@ -146,7 +146,7 @@ if __name__ == "__name__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
-        description="Pipeline to generate .rmap and .baitmap files")
+        description="Pipeline to generate bed (.tsv) files")
 
     PARSER.add_argument("--config", help="Configuration file")
     PARSER.add_argument(

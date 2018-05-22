@@ -101,6 +101,8 @@ class process_bam2chicago(Workflow):
 
         if os.path.getsize(out_path) > 0:
             return output_files_bam2chicago, output_metadata_bam2chicago
+        else:
+            logger.fatal("process_bam2chicago failed to generate .chinput files")
 
 #############################################################
 
@@ -117,7 +119,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(generate_CHiCAGO_inputs,
+    results = app.launch(process_bam2chicago,
                          config,
                          in_metadata,
                          out_metadata)
@@ -134,7 +136,7 @@ if __name__ == "__name__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
-        description="Pipeline to generate .rmap and .baitmap files")
+        description="Pipeline to generate .chinput file")
 
     PARSER.add_argument("--config", help="Configuration file")
     PARSER.add_argument(

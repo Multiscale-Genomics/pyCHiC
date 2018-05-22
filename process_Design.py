@@ -32,7 +32,7 @@ from tool.makeDesignFiles_Tool import makeDesignFilesTool
 
 #####################################################
 
-class makeDesign(Workflow):
+class process_makeDesign(Workflow):
     """
     This class generates the Design files and chinput files,
     imput for CHiCAGO. Starting from rmap and baitmap and capture
@@ -100,7 +100,7 @@ class makeDesign(Workflow):
         if os.path.isfile(output_files["outPrefixDesign"] + ".nbpb") is True:
             pass
         else:
-            logger.fatal("processmakeDesign_chinput failed to" +
+            logger.fatal("process_makeDesign failed to" +
                          "generate design files")
             return False
 
@@ -119,7 +119,7 @@ def main_json(config, in_metadata, out_metadata):
     print("Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(makeDesign_chinput,
+    results = app.launch(process_makeDesign,
                          config,
                          in_metadata,
                          out_metadata)
@@ -136,7 +136,7 @@ if __name__ == "__main__":
 
     #sert up the command line parameters
     PARSER = argparse.ArgumentParser(
-        description="Pipeline to generate Design and .chinput files")
+        description="Pipeline to generate Design files")
 
     PARSER.add_argument("--config", help="Configuration file")
     PARSER.add_argument(

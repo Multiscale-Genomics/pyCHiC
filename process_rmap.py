@@ -103,7 +103,7 @@ class generate_CHiCAGO_rmap(Workflow):
             output_files["out_prefix_makeRmap"] + ".rmap") > 0:
             pass
         else:
-            logger.fatal("makeRmapFile failed to generate .rmap file")
+            logger.fatal("generate_CHiCAGO_rmap failed to generate .rmap file")
             return False
 
         return output_files_makeRmap, output_metadata_makeRmap
@@ -123,7 +123,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(generate_CHiCAGO_inputs,
+    results = app.launch(generate_CHiCAGO_rmap,
                          config,
                          in_metadata,
                          out_metadata)
@@ -140,7 +140,7 @@ if __name__ == "__name__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
-        description="Pipeline to generate .rmap and .baitmap files")
+        description="Pipeline to generate .rmap file")
 
     PARSER.add_argument("--config", help="Configuration file")
     PARSER.add_argument(
