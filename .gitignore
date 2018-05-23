@@ -18,3 +18,4 @@ pytest.ini
 .pytest_cache/
 pytest.ini
 build/
+dist/
