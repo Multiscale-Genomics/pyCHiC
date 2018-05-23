@@ -59,7 +59,7 @@ def test_truncater():
 
     configuration = {
         "quiet_progress": True,
-        "RE": "A^AGCT",
+        "RE_truncater": "A^AGCT",
         "threads" : "2"
         }
 

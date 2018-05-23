@@ -29,14 +29,13 @@ from basic_modules.workflow import Workflow
 from utils import logger
 
 from tool.truncater import Truncater
-from tool.makeBaitmap import makeBaitmapTool
 from tool.makeRmap_tool import makeRmapFile
+from tool.makeBaitmap import makeBaitmapTool
 from tool.makeDesignFiles_Tool import makeDesignFilesTool
 from tool.fastq2bed import Fastq2bed
 from tool.bed2bam import bed2bam
 from tool.bam2chicago_Tool import bam2chicagoTool
 from tool.runChicago import ChicagoTool
-
 
 ################################################
 
@@ -52,8 +51,8 @@ class process_chicago_CHiC(Workflow):
         Parameters
         ----------
         configuration: dict
-            "RE" : str - format A^AGCT (Truncater)
-
+            "RE_truncater" : str - format A^AGCT (Truncater),
+            "RE" : {"HindIII" : 'A|AGCTT'},
 
         """
 
@@ -73,8 +72,8 @@ class process_chicago_CHiC(Workflow):
         input_files: dict
             fastq1: str
             fastq2: str
-            genome: str
-                Indexed Ref genome used used in the experiment.
+            genome_fa: str
+                genome in fasta format
 
         input_metadata: dict
             input metadata
@@ -85,7 +84,7 @@ class process_chicago_CHiC(Workflow):
         --------
 
         """
-
+        #truncate reads using HiCUP truncater
         truncater_caller = Truncater(self.configuration)
         output_files_Truncater, output_metadata_Truncater = truncater_caller.run(
             {
@@ -113,6 +112,35 @@ class process_chicago_CHiC(Workflow):
             return False
 
 
+        #make rmap and rtree files
+
+        rmap_caller = makeRmapFile(self.configuration)
+        output_files_rmap, output_meta_rmap = rmap_caller.run(
+            {
+                "genome_fa": input_files["genome_fa"],
+            }, {
+                "genome_fa": input_metadata["genome_fa"]
+            }, {
+                "out_dir_makeRmap": output_files["out_dir"],
+                "out_prefix_makeRmap": output_files["out_prefix_makeRmap"],
+                "Rtree_files": output_files["Rtree_files"]
+            }
+        )
+
+        out = "".join(
+            [
+                f for f in os.listdir(output_files["out_dir"])
+                if f.startswith("Digest_") and f.endswith(".map")
+            ]
+        )
+
+        if os.path.getsize(output_files["out_dir"] + out) > 0 and \
+           os.path.getsize(output_files["Rtree_files"] + ".dat") and \
+           os.path.getsize(output_files["Rtree_files"] + ".idx"):
+            pass
+        else:
+            logger.fatal("makeRmapFile failed to generate rmap file")
+            return False
 
 
 #############################################################

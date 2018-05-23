@@ -62,7 +62,7 @@ class generate_CHiCAGO_rmap(Workflow):
         Parameters:
         ----------
         input_files: dict
-            genome: str
+            genome_fa: str
                     Ref genome used in the experiment.
 
         input_metadata: dict
@@ -87,10 +87,10 @@ class generate_CHiCAGO_rmap(Workflow):
         makeRmap_caller = makeRmapFile(self.configuration)
         output_files_makeRmap, output_metadata_makeRmap = makeRmap_caller.run(
             {
-                "genome" : input_files["genome"]
+                "genome_fa" : input_files["genome_fa"]
             },
             {
-                "genome_digest" : input_metadata["genome_digest"]
+                "genome_fa" : input_metadata["genome_fa"]
             },
             {
                 "out_dir_makeRmap" : output_files["out_dir_makeRmap"],

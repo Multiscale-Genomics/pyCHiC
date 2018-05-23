@@ -1,4 +1,0 @@
-{
-  "tests/test_process_CHiC.py::test_process_CHiC": true, 
-  "tests/test_process_baitmap.py::test_process_rmapBaitmap": true
-}

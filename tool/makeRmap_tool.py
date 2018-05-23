@@ -126,14 +126,14 @@ class makeRmapFile(Tool):
                         sequence = ""
                         continue
 
-                sequence += line
+                sequence += line.upper()
             #Ad last chromosome
             genome_dict[chromo] = sequence
 
         return genome_dict
 
     def map_re_sites2(
-            self, enzyme_name, genome_seq, out_dir_makeRmap, out_prefix_makeRmap,
+            self, enzyme_name, genome_fa, out_dir_makeRmap, out_prefix_makeRmap,
             Rtree_files, verbose=False):
         """
         map all restriction enzyme (RE) sites of a given enzyme in a genome.
@@ -155,7 +155,7 @@ class makeRmapFile(Tool):
             important) as key and value the target sequence
             with a pipe where the enzyme cuts
 
-        genome_seq: str
+        genome_fa: str
             genome in fasta format
 
 
@@ -167,7 +167,7 @@ class makeRmapFile(Tool):
         enzymes = enzyme_name
 
         #the genome should be in a dictionary
-        genome_seq = self.genome_to_dict(genome_seq)
+        genome_seq = self.genome_to_dict(genome_fa)
 
         # we match the full cut-site but report the position after the cut site
         # (third group of the regexp)
@@ -198,10 +198,6 @@ class makeRmapFile(Tool):
                 count += 1
             # at the end of last chunk we add the chromosome length
             frags[crm].append(len(seq))
-        if verbose:
-            print ('Found %d RE sites' % count)
-
-        print(frags)
 
         self.from_frag_to_rmap(frags, out_dir_makeRmap, out_prefix_makeRmap, Rtree_files)
 
@@ -277,10 +273,9 @@ class makeRmapFile(Tool):
         output_metadata: dict
             lest of matching metadata
         """
-
         results = self.map_re_sites2(
             self.configuration["RE"],
-            input_files["genome"],
+            input_files["genome_fa"],
             output_files["out_dir_makeRmap"],
             output_files["out_prefix_makeRmap"],
             output_files["Rtree_files"]
@@ -290,47 +285,18 @@ class makeRmapFile(Tool):
 
         output_metadata = {
             "rmap": Metadata(
-                data_type=input_metadata['genome_digest'].data_type,
+                data_type=input_metadata['genome_fa'].data_type,
                 file_type="rmap",
                 file_path=output_files["out_dir_makeRmap"],
                 sources=[
-                    input_metadata["genome_digest"].file_path,
+                    input_metadata["genome_fa"].file_path,
                 ],
-                taxon_id=input_metadata["genome_digest"].taxon_id,
+                taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : input_metadata["genome_digest"].meta_data,
+                    "RE" : input_metadata["genome_fa"].meta_data,
                     "tool": "makeRmapFileTool"
                 }
             )
         }
 
         return(results, output_metadata)
-
-
-if __name__ == "__main__":
-
-    path = "../tests/data/"
-
-
-    configuration = {"RE" : {"HindIII" : 'A|AGCTT'}
-                    }
-
-    input_files = {
-        "genome" : path + "test_makeRmap/toy_hg19.fa",
-        }
-
-
-    metadata = {"genome_digest" : Metadata(
-        "hg38", "fasta", path+ "test_makeRmap/toy_hg19.fa",
-        None, "HindIII", 9606),
-        }
-
-
-    output_files = {
-        "out_dir_makeRmap" : path + "/test_makeRmap/",
-        "out_prefix_makeRmap" : "restriction_enzyme_test_HindIII_hg19",
-        "Rtree_files" : path + "/test_makeRmap/rtree_file"
-        }
-
-    makeRmap_handle = makeRmapFile(configuration)
-    print(makeRmap_handle.run(input_files, metadata, output_files))

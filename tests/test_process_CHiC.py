@@ -19,18 +19,18 @@ from __future__ import print_function
 from basic_modules.metadata import Metadata
 import os
 
-from tool.truncater import Truncater
+from process_chicago_CHiC import process_chicago_CHiC
 
 def test_process_CHiC():
     """
     Test for the process_chicago_CHiC
     """
-
     path = os.path.join(os.getcwd(),"data/test_process_CHiC/")
 
     input_files = {
         "fastq1" : path + "SRR3535023_1.fastq",
-        "fastq2" : path + "SRR3535023_2.fastq"
+        "fastq2" : path + "SRR3535023_2.fastq",
+        "genome_fa" : path + "toy_hg19.fa"
     }
 
     input_metadata = {
@@ -49,22 +49,45 @@ def test_process_CHiC():
                 sources="",
                 taxon_id=9606,
                 meta_data=""
+            ),
+            "genome_fa" : Metadata(
+                data_type="text",
+                file_type="fasta",
+                file_path=input_files["genome_fa"],
+                sources="",
+                taxon_id=9606,
+                meta_data="",
             )
         }
 
     output_files = {
-        "outdir" : path + "output"
+        "out_dir" : path + "output/",
+        "out_prefix_makeRmap" : "restriction_enzyme_test_HindIII_hg19.txt",
+        "Rtree_files" : path + "output/rtree_file"
     }
 
     configuration = {
-        "RE": "A^AGCT",
+        "RE_truncater": "A^AGCT",
+        "RE": {"HindIII" : 'A|AGCTT'}
         }
 
-    truncater_hdl = Truncater(configuration)
-    truncater_hdl.run(input_files, input_metadata, output_files)
+    CHiC_hdl = process_chicago_CHiC(configuration)
+    CHiC_hdl.run(input_files, input_metadata, output_files)
 
-    assert os.path.isfile(output_files["outdir"]+"SRR3535023_1.trunc.fastq") is True
-    assert os.path.isfile(output_files["outdir"]+"SRR3535023_2.trunc.fastq") is True
+    assert os.path.isfile(output_files["out_dir"]+"SRR3535023_1.trunc.fastq") is True
+    assert os.path.isfile(output_files["out_dir"]+"SRR3535023_2.trunc.fastq") is True
 
-    assert os.path.getsize(output_files["outdir"]+"SRR3535023_1.trunc.fastq") > 0
-    assert os.path.getsize(output_files["outdir"]+"SRR3535023_2.trunc.fastq") > 0
+    assert os.path.getsize(output_files["out_dir"]+"SRR3535023_1.trunc.fastq") > 0
+    assert os.path.getsize(output_files["out_dir"]+"SRR3535023_2.trunc.fastq") > 0
+
+
+    out = "".join(
+        [
+            f for f in os.listdir(output_files["out_dir"])
+            if f.startswith("Digest_") and f.endswith(".map")
+        ]
+    )
+
+    assert os.path.getsize(output_files["out_dir"] + out) > 0
+    assert os.path.getsize(output_files["Rtree_files"] + ".dat")
+    assert os.path.getsize(output_files["Rtree_files"] + ".idx")

@@ -58,7 +58,7 @@ class Truncater(Tool):
         logger.info("Initialising truncater")
         self.configuration.update(configuration)
 
-    def truncate_reads(self, fastq1, fastq2, parameters, outdir):
+    def truncate_reads(self, fastq1, fastq2, parameters, out_dir):
         """
         Function to truncate the reads with hicup_truncater
 
@@ -75,7 +75,7 @@ class Truncater(Tool):
         ------
         bool
         """
-        args = ["hicup_truncater", fastq1, fastq2, "--outdir", outdir,
+        args = ["hicup_truncater", fastq1, fastq2, "--outdir", out_dir,
                 "--quiet"]
 
         args += parameters
@@ -101,11 +101,11 @@ class Truncater(Tool):
         else:
             name_trunc2 = name_trunc2.split(".")[-2]+".trunc.fastq"
 
-        if os.path.isfile(outdir+name_trunc1) is True:
+        if os.path.isfile(out_dir+name_trunc1) is True:
             pass
         else:
             return False
-        if os.path.getsize(outdir+name_trunc1) > 0:
+        if os.path.getsize(out_dir+name_trunc1) > 0:
             return True
         else:
             return False
@@ -138,7 +138,7 @@ class Truncater(Tool):
 
         parameters = {
             "quiet_progress": ["--quiet", False],
-            "RE": ["--re1", True],
+            "RE_truncater": ["--re1", True],
             "sequence_junction": ["--sequences", True],
             "threads" : ["--threads", True],
             "zip": ["--zip", False],
@@ -147,10 +147,11 @@ class Truncater(Tool):
         params = []
 
         for arg in configuration:
-            if parameters[arg][1] == True:
-                params += [parameters[arg][0], configuration[arg]]
-            else:
-                params += [parameters[arg][0]]
+            if arg in parameters:
+                if parameters[arg][1] is True:
+                    params += [parameters[arg][0], configuration[arg]]
+                else:
+                    params += [parameters[arg][0]]
 
         return params
 
@@ -165,7 +166,7 @@ class Truncater(Tool):
             fastq2
         input_metadata: dict
         output_files: dict
-            outdir: str
+            out_dir: str
                 directory to write the output
 
         Return
@@ -182,13 +183,13 @@ class Truncater(Tool):
             input_files["fastq1"],
             input_files["fastq2"],
             param_truncater,
-            output_files["outdir"])
+            output_files["out_dir"])
 
         output_metadata = {
             "tsv": Metadata(
                 data_type="text",
                 file_type="tsv",
-                file_path=output_files["outdir"],
+                file_path=output_files["out_dir"],
                 sources=[input_metadata["fastq1"].file_path, input_metadata["fastq2"].file_path],
                 taxon_id=9606,
                 meta_data=""

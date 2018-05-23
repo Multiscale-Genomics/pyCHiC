@@ -14,3 +14,7 @@ genome_mm10
 tests/data/test_bam2chicago
 genomes/
 tool/original_RE.py
+pytest.ini
+.pytest_cache/
+pytest.ini
+build/

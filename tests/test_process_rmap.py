@@ -36,18 +36,18 @@ def test_process_rmap():
                     }
 
     input_files = {
-        "genome":  path + "/test_makeRmap/toy_hg19.fa",
+        "genome_fa":  path + "/test_makeRmap/toy_hg19.fa",
         }
 
     input_metadata = {
 
         "Rtree_files" : Metadata(
             "Rtree files", [".dat", ".idx"], path + "/test_makeRmap/rtree_file",
-            {"genome" : path + "/test_makeRmap/toy_hg19.fa",
+            {"genome_fa" : path + "/test_makeRmap/toy_hg19.fa",
              "RE" : {"HindIII" : 'A|AGCTT'}},
             None, 9606),
 
-        "genome_digest" : Metadata(
+        "genome_fa" : Metadata(
             "hg19", "fasta", path + "/test_makeRmap/toy_hg19.fa", None, "HindIII", 9606),
         }
 

@@ -125,7 +125,7 @@ def main_json(config, in_metadata, out_metadata):
                          out_metadata)
 
     #2. The App has finished
-    print("2. Execution finished: see " +out_metadata)
+    print("2. Execution finished: see " + out_metadata)
     print(results)
 
     return results
