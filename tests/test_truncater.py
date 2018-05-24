@@ -54,7 +54,7 @@ def test_truncater():
         }
 
     output_files = {
-        "outdir" : path
+        "out_dir" : path
     }
 
     configuration = {
@@ -66,8 +66,8 @@ def test_truncater():
     truncater_hdl = Truncater(configuration)
     truncater_hdl.run(input_files, input_metadata, output_files)
 
-    assert os.path.isfile(output_files["outdir"]+"SRR3535023_1.trunc.fastq") is True
-    assert os.path.isfile(output_files["outdir"]+"SRR3535023_2.trunc.fastq") is True
+    assert os.path.isfile(output_files["out_dir"]+"SRR3535023_1.trunc.fastq") is True
+    assert os.path.isfile(output_files["out_dir"]+"SRR3535023_2.trunc.fastq") is True
 
-    assert os.path.getsize(output_files["outdir"]+"SRR3535023_1.trunc.fastq") > 0
-    assert os.path.getsize(output_files["outdir"]+"SRR3535023_2.trunc.fastq") > 0
+    assert os.path.getsize(output_files["out_dir"]+"SRR3535023_1.trunc.fastq") > 0
+    assert os.path.getsize(output_files["out_dir"]+"SRR3535023_2.trunc.fastq") > 0
