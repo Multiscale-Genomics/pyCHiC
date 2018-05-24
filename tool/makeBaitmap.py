@@ -154,7 +154,11 @@ class makeBaitmapTool(Tool):
                 if line[0] != "@":
                     line = line.rstrip().split("\t")
 
-                    crm = int(line[2][3:])
+                    try:
+                        crm = int(line[2][3:])
+                    except:
+                        continue
+
                     srt_pos = int(line[3])
                     end_pos = srt_pos + int(len(line[9]))
 
@@ -166,7 +170,7 @@ class makeBaitmapTool(Tool):
 
                     if len(hits) > 1:
                         logger.warning("probe map to two RE fragmnets, " +
-                                       " ".join(line))
+                                       " ".join(line)+" str pos"+ str(srt_pos)+" end pos"+ str(end_pos))
 
                     elif not hits:
                         logger.warn("Sequence does not"+
@@ -206,7 +210,7 @@ class makeBaitmapTool(Tool):
         """
 
         self.bwa_for_probes(
-            input_files["genome"],
+            input_files["genome_idx"],
             input_files["probes_fa"],
             output_files["out_sam"]
             )

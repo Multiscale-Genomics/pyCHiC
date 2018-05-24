@@ -28,19 +28,19 @@ def test_makeBaitmap():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "genome" : path + "/test_makeBaitmap/toy_GRCh38.fa",
+        "genome_idx" : path + "test_makeBaitmap/toy_GRh38.fa",
         "probes_fa" : path + "test_makeBaitmap/baits.fa",
         "Rtree_files" : path + "test_makeRmap/rtree_file"
     }
 
     output_files = {
-        "out_sam" :  path + "/test_makeBaitmap/baits.sam",
-        "out_baitmap" : path + "/test_makeBaitmap/test.baitmap"
+        "out_sam" :  path + "test_makeBaitmap/baits.sam",
+        "out_baitmap" : path + "test_makeBaitmap/test.baitmap"
     }
 
     input_metadata = {
         "genome_digest" : Metadata(
-            "hg38", "fasta", path + "/test_makeBaitmap/toy_GRCh38.fa" ,
+            "hg38", "fasta", path + "test_makeRmap/toy_GRCh38.fa",
             None, "HindIII", 9606),
 
         "probes" : Metadata(
