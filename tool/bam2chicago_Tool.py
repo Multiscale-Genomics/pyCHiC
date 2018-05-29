@@ -72,11 +72,15 @@ class bam2chicagoTool(Tool):
         """
         rmapfile_new = rmap_file.split(".")[0]+"rfmt.rmap"
         baitmapfile_new = baitmap_file.split(".")[0]+"rfmt.baitmap"
+        rm_old_rmap = True
+        rm_old_baitmap = True
+
 
         with open(rmap_file, "r") as file_in:
             for line in file_in:
                 if line[0:3] == "chr":
                     rmapfile_new = rmap_file
+                    rm_old_rmap = False
                     break
                 else:
                     line_hdl = line.rstrip().split("\t")
@@ -89,6 +93,7 @@ class bam2chicagoTool(Tool):
             for line in file_in:
                 if line[0:3] == "chr":
                     baitmapfile_new = baitmap_file
+                    rm_old_baitmap = False
                     break
                 else:
                     line_hdl = line.rstrip().split("\t")
@@ -96,6 +101,14 @@ class bam2chicagoTool(Tool):
                         print("chr"+line, file=file_out, end="")
             logger.info("Checking baitmap chromosome format..")
 
+
+        if rm_old_rmap:
+            logger.info("removing old rmap file to avoid conflicts")
+            os.remove(rmap_file)
+
+        if rm_old_baitmap:
+            logger.info("removing old baitmap_file file to avoid conflicts")
+            os.remove(baitmap_file)
 
         return rmapfile_new, baitmapfile_new
 

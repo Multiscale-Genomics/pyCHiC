@@ -26,10 +26,10 @@ def test_chicago():
     Function to testing the R chicago wrapper runChicago.py
     """
 
-    path = os.path.join(os.path.dirname(__file__), "data/test_runChicago/")
+    path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "chinput_file": path + "GM_rep1.chinput"
+        "chinput_file": path + "test_bam2chicago_Tool/sampleout/sampleout.chinput"
         }
 
     output_files = {
@@ -45,8 +45,8 @@ def test_chicago():
         }
 
     config = {
-        "chicago_setting_file": path + "sGM12878.settingsFile",
-        "chicago_desing_dir": path + "hg19TestDesign/",
+        "chicago_setting_file": path + "test_runChicago/sGM12878.settingsFile",
+        "chicago_desing_dir": path + "test_Design/",
         #"chicago_print_memory": None,
         "chicago_cutoff": "5",
         "chicago_export_format": "washU_text",
