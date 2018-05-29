@@ -22,7 +22,8 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'pytest', "pandas", "numpy"
+        'pytest', "pandas", "numpy",
+	"rtree"
     ],
     setup_requires=[
         'pytest-runner',
