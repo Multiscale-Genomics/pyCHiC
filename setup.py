@@ -18,11 +18,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='mg_process_test',
+    name='C-HiC',
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'pytest'
+        'pytest', "pandas", "nummpy"
     ],
     setup_requires=[
         'pytest-runner',

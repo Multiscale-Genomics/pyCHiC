@@ -15,3 +15,7 @@ tests.sh
 output_test/
 scripts/SRR3535023_1_2.hicup.bam
 ../scripts/SRR3535023_1_2.hicup.bam
+aligner_utils.py
+common.py
+gem_indexer.py
+.Rhistory
