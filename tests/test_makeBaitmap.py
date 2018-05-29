@@ -28,7 +28,7 @@ def test_makeBaitmap():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "genome_idx" : path + "test_makeBaitmap/toy_GRh38.fa",
+        "genome_idx" : path + "test_makeBaitmap/toy_GRCh38.fa",
         "probes_fa" : path + "test_makeBaitmap/baits.fa",
         "Rtree_files" : path + "test_makeRmap/rtree_file"
     }

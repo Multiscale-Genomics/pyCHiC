@@ -38,7 +38,7 @@ def test_process_chicago():
 
     output_files = {
         "output_dir" : path + "output_chicago/",
-        "output_prefix" : "output_test"
+        "output_prefix" : "output_test_chicago"
     }
 
     metadata = {

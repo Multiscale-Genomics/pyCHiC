@@ -60,7 +60,7 @@ class Fastq2bed(Tool):
         """
         logger.info("initialising Fastq2bed")
 
-    def tadbit_map(self, fastq1, fastq2, genindex, RE, wd, chromosome):
+    def tadbit_map(self, fastq1, fastq2, gem_idx, RE, wd, chromosome):
         """
         This function map the Capture fastq reads to the reference genome using gem
 
@@ -70,7 +70,7 @@ class Fastq2bed(Tool):
             path to fastq
         fastq2: str
             path to fastq
-        genindex: str
+        gem_idx: str
             path to the ref. genome indexed with gem.
         RE: str
             restriction enzyme used to digest the genome.
@@ -90,21 +90,21 @@ class Fastq2bed(Tool):
         if chromosome is "":
             args1 = ["tadbit", "map",
                      "--fastq", fastq1,
-                     "--index", genindex,
+                     "--index", gem_idx,
                      "--read", "1",
                      "--renz", RE,
                      "-w", wd]
 
             args2 = ["tadbit", "map",
                      "--fastq", fastq2,
-                     "--index", genindex,
+                     "--index", gem_idx,
                      "--read", "2",
                      "--renz", RE,
                      "-w", wd]
         else:
             args1 = ["tadbit", "map",
                      "--fastq", fastq1,
-                     "--index", genindex,
+                     "--index", gem_idx,
                      "--read", "1",
                      "--renz", RE,
                      "-w", wd,
@@ -112,7 +112,7 @@ class Fastq2bed(Tool):
 
             args2 = ["tadbit", "map",
                      "--fastq", fastq2,
-                     "--index", genindex,
+                     "--index", gem_idx,
                      "--read", "2",
                      "--renz", RE,
                      "-w", wd,
@@ -156,7 +156,7 @@ class Fastq2bed(Tool):
 
         return True
 
-    def tadbit_parse(self, genome_fasta, wd):
+    def tadbit_parse(self, genome_fa, wd):
         """
         This function parse the output files from mapping
 
@@ -173,7 +173,7 @@ class Fastq2bed(Tool):
         """
 
         args = ["tadbit", "parse",
-                "--genome", genome_fasta,
+                "--genome", genome_fa,
                 "-w", wd]
 
         logger.info("arguments for tadbit parse:" + " ".join(args))
@@ -242,8 +242,8 @@ class Fastq2bed(Tool):
             fastq2,
             RE,
             chromosome,
-            genindex
-            genome_fasta
+            gem_idx
+            genome_fa
         input_metadata: dict
         output_files: dict
             wd
@@ -266,13 +266,13 @@ class Fastq2bed(Tool):
 
         results_map = self.tadbit_map(input_files["fastq1"],
                                       input_files["fastq2"],
-                                      input_files["genindex"],
+                                      input_files["gem_idx"],
                                       input_files["RE"],
                                       output_files["wd"],
                                       input_files["chromosome"])
 
         if results_map is True:
-            results_parse = self.tadbit_parse(input_files["genome_fasta"],
+            results_parse = self.tadbit_parse(input_files["genome_fa"],
                                               output_files["wd"])
             if results_parse is True:
                 results_filter = self.tadbit_filter(output_files["wd"])

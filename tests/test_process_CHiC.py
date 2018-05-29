@@ -30,7 +30,7 @@ def test_process_CHiC():
     input_files = {
         "fastq1" : path + "SRR3535023_1.fastq",
         "fastq2" : path + "SRR3535023_2.fastq",
-        "genome_fa" : path + "toy_hg19.fa"
+        "genome_fa" : path + "cc"
     }
 
     input_metadata = {
@@ -56,13 +56,13 @@ def test_process_CHiC():
                 file_path=input_files["genome_fa"],
                 sources="",
                 taxon_id=9606,
-                meta_data="",
+                meta_data="GRCh38",
             )
         }
 
     output_files = {
         "out_dir" : path + "output/",
-        "out_prefix_makeRmap" : "restriction_enzyme_test_HindIII_hg19.txt",
+        "out_prefix_makeRmap" : "restriction_enzyme_test_HindIII_hg38.txt",
         "Rtree_files" : path + "output/rtree_file"
     }
 
@@ -74,12 +74,15 @@ def test_process_CHiC():
     CHiC_hdl = process_chicago_CHiC(configuration)
     CHiC_hdl.run(input_files, input_metadata, output_files)
 
+    #assert truncater.py
+
     assert os.path.isfile(output_files["out_dir"]+"SRR3535023_1.trunc.fastq") is True
     assert os.path.isfile(output_files["out_dir"]+"SRR3535023_2.trunc.fastq") is True
 
     assert os.path.getsize(output_files["out_dir"]+"SRR3535023_1.trunc.fastq") > 0
     assert os.path.getsize(output_files["out_dir"]+"SRR3535023_2.trunc.fastq") > 0
 
+    #assert makeRmap_Tool.py
 
     out = "".join(
         [
@@ -91,3 +94,6 @@ def test_process_CHiC():
     assert os.path.getsize(output_files["out_dir"] + out) > 0
     assert os.path.getsize(output_files["Rtree_files"] + ".dat")
     assert os.path.getsize(output_files["Rtree_files"] + ".idx")
+
+    #assert makeBaitmap.py
+

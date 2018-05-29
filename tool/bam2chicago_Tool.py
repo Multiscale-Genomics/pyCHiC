@@ -65,6 +65,41 @@ class bam2chicagoTool(Tool):
 
         self.configuration.update(configuration)
 
+    def check_chr_format(self, rmap_file, baitmap_file):
+        """
+        This function check that the chromosome format is right for
+        bam3chicago.sh
+        """
+        rmapfile_new = rmap_file.split(".")[0]+"rfmt.rmap"
+        baitmapfile_new = baitmap_file.split(".")[0]+"rfmt.baitmap"
+
+        with open(rmap_file, "r") as file_in:
+            for line in file_in:
+                if line[0:3] == "chr":
+                    rmapfile_new = rmap_file
+                    break
+                else:
+                    line_hdl = line.rstrip().split("\t")
+                    with open(rmapfile_new, "a") as file_out:
+                        print("chr"+line, file=file_out, end="")
+            logger.info("Checking rmap chromosome format..")
+
+
+        with open(baitmap_file, "r") as file_in:
+            for line in file_in:
+                if line[0:3] == "chr":
+                    baitmapfile_new = baitmap_file
+                    break
+                else:
+                    line_hdl = line.rstrip().split("\t")
+                    with open(baitmapfile_new, "a") as file_out:
+                        print("chr"+line, file=file_out, end="")
+            logger.info("Checking baitmap chromosome format..")
+
+
+        return rmapfile_new, baitmapfile_new
+
+
     def bam2chicago(self, bamFiles, rmapFile, baitmapFile, sample_name):
         """
         Main function that preprocess the bam files into Chinput files. Part of
@@ -153,10 +188,14 @@ class bam2chicagoTool(Tool):
         List of matching metadata dict objects
         """
 
+        rfmat_rmap, rfmat_baitmap = self.check_chr_format(
+            input_files["RMAP"],
+            input_files["BAITMAP"])
+
         results = self.bam2chicago(
             input_files["BAM"],
-            input_files["RMAP"],
-            input_files["BAITMAP"],
+            rfmat_rmap,
+            rfmat_baitmap,
             output_files["sample_name"]
             )
 
@@ -183,14 +222,40 @@ class bam2chicagoTool(Tool):
         return(results, output_metadata)
 
 
+if __name__ == "__main__":
 
+    path = os.path.join(os.path.dirname(__file__),"tests/data/")
 
+    path = "/home/pablo/MuG/C-HiC/tests/data/"
 
+    input_files = {
+        "RMAP" : path + "test_makeRmap/test.rmap",
+        "BAITMAP" : path +  "test_makeBaitmap/test.baitmap",
+        "BAM" : path + "test_bed2bam/outbam_sorted.bam"
+    }
 
+    output_files = {
+        "sample_name" :  path + "test_bam2chicago_Tool/sampleout"
+    }
 
+    input_metadata = {
+        "RMAP" : Metadata(
+            "data_chicago_input", ".rmap",
+            path+"/h19_chr20and21_chr.rmap", None, {}, 9606),
+        "BAITMAP" : Metadata(
+            "data_chicago_input", ".baitmap",
+            path+"/h19_chr20and21.baitmap_4col_chr.txt", None, {}, 9606),
+        "BAM" : Metadata(
+            "txt", "bamfile", path + "/SRR3535023_1_2.hicup.bam",
+            {"fastq1" : "SRR3535023_1.fastq",
+             "fastq2" : "SRR3535023_2.fastq", "genome" : "human_hg19"},
+            9606)
+    }
 
+    bam2chicago_handle = bam2chicagoTool()
+    bam2chicago_handle.run(input_files, input_metadata, output_files)
 
-
+    out_path = output_files["sample_name"] + "/sampleout.chinput"
 
 
 

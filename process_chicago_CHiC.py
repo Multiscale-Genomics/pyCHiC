@@ -142,6 +142,17 @@ class process_chicago_CHiC(Workflow):
             logger.fatal("makeRmapFile failed to generate rmap file")
             return False
 
+        #make baitmap file
+
+        baitmap_called = makeBaitmapTool(self.configuration)
+        output_files_baitmap, output_meta_baitmap = baitmap_called.run(
+            {
+
+            }
+            )
+
+
+
 
 #############################################################
 

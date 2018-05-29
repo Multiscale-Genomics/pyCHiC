@@ -45,12 +45,12 @@ def test_bed2bam():
         }
 
     output_files = {
-        "output" : path + "outbam"
+        "bam_out" : path + "outbam"
     }
 
 
     bed2bam_hdl = bed2bam()
     bed2bam_hdl.run(input_files, input_metadata, output_files)
 
-    assert os.path.isfile(output_files["output"]+"_sorted.bam") is True
-    assert os.path.isfile(output_files["output"]+"_sorted.bam") is True
+    assert os.path.isfile(output_files["bam_out"]+"_sorted.bam") is True
+    assert os.path.isfile(output_files["bam_out"]+"_sorted.bam") is True

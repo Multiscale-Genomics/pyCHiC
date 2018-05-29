@@ -17,7 +17,7 @@
 
 from __future__ import print_function
 
-import os.path
+import os
 import gzip
 import pytest # pylint: disable=unused-import
 
@@ -32,15 +32,13 @@ def test_gem_indexer():
     Test case to ensure that the GEM indexer works.
     """
 
-    genome_gem_idx = "/home/pablo/MuG/C-HiC/tests/data/test_gem_indexer/tb.Human.GCA_000001405.21.fasta.gem"
+    path = os.path.join(os.path.dirname(__file__), "data/")
 
-    input_files = {
-        "genome": "/home/pablo/MuG/data/chr21.fa"
-    }
+    genome_gem_idx = path + "test_gem_indexer/toy_GRCh38.fasta.gem"
 
-    output_files = {
-        "index": "/home/pablo/MuG/C-HiC/tests/data/test_gem_indexer/tb.Human.GCA_000001405.21.fasta.gem.gz"
-    }
+    input_files = {"genome": path + "test_makeBaitmap/toy_GRCh38.fa"}
+
+    output_files = {"index": path + "test_gem_indexer/toy_GRCh38.fasta.gem.gz"}
 
     metadata = {
         "genome": Metadata(
