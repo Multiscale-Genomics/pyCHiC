@@ -28,7 +28,7 @@ install:
   - sudo ./configure
   - sudo make
   - sudo make install
-  - cd ${HOME}
+  - cd ${HOME}/C-HiC/
   - pip install .
   - pip install -r requirements.txt
 
