@@ -29,8 +29,7 @@ install:
   - sudo make
   - sudo make install
   - pwd
-  - cd ${HOME}
-  - find . -type d -name C-HiC
+  - cd ${HOME}/build/pabloacera/C-HiC
   - pip install .
   - pip install -r requirements.txt
 
