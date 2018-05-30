@@ -28,7 +28,7 @@ install:
   - sudo ./configure
   - sudo make
   - sudo make install
-  - cd ../
+  - cd ${HOME}
   - pip install .
   - pip install -r requirements.txt
 
