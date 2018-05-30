@@ -17,6 +17,7 @@ before_install:
     - mkdir -p ${HOME}/bin
     - mkdir -p ${HOME}/lib
     - export PATH="${HOME}/bin:$PATH"
+    - export PATH="${HOME}/lib:$PATH"
     - cd ${HOME}/lib
     - wget download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz
     - gunzip spatialindex-src-1.8.5.tar.gz
