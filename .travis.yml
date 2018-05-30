@@ -31,6 +31,7 @@ install:
   - pwd
   - cd ${HOME}
   - pwd
+  - ls -l
   - pip install .
   - pip install -r requirements.txt
 
