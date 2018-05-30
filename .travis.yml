@@ -8,21 +8,27 @@ python:
   - "2.7"
   #- "3.5"
 
-# libspatialindex
-cd /home/lib
-git clone https://github.com/libspatialindex/libspatialindex.git
-cd libspatialindex
-./configure --prefix=home/lib/libspatialindex
-make
-make install
-
-cd ${HOME}/bin
+#cd ${HOME}/bin
 # Then add symlinks to the executables here, for example:
-ln -s home/lib/libspatialindex/spatial spatial
+#ln -s ${HOME}/lib/libspatialindex/spatial spatial
 
+#create folders for installation
+before_install:
+    - mkdir -p ${HOME}/bin
+    - mkdir -p ${HOME}/lib
+    - export PATH="${HOME}/bin:$PATH"
 
 # command to install dependencies
 install:
+  #spatialindex
+  - cd ${HOME}/lib
+  - wget download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz .
+  - gunzip spatialindex-src-1.8.5.tar.gz 
+  - tar -xvf spatialindex-src-1.8.5.tar
+  - cd spatialindex-src-1.8.5 
+  - ./configure
+  - make
+  - make install
   - pip install .
   - pip install -r requirements.txt
 
