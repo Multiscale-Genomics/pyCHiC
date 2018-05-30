@@ -30,9 +30,7 @@ install:
   - sudo make install
   - pwd
   - cd ${HOME}
-  - pwd
-  - ls -l
-  - cd ${HOME}/pablo/C-HiC
+  - find . -type d -name C-HiC
   - pip install .
   - pip install -r requirements.txt
 
