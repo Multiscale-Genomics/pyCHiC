@@ -8,6 +8,19 @@ python:
   - "2.7"
   #- "3.5"
 
+# libspatialindex
+cd /home/lib
+git clone https://github.com/libspatialindex/libspatialindex.git
+cd libspatialindex
+./configure --prefix=home/lib/libspatialindex
+make
+make install
+
+cd ${HOME}/bin
+# Then add symlinks to the executables here, for example:
+ln -s home/lib/libspatialindex/spatial spatial
+
+
 # command to install dependencies
 install:
   - pip install .
