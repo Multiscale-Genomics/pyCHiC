@@ -8,33 +8,40 @@ python:
   - "2.7.12"
   #- "3.5"
 
+perl:
+  - "5.24"
+  - "5.22"
+  - "5.20"
+
+
 #cd ${HOME}/bin
 # Then add symlinks to the executables here, for example:
 #ln -s ${HOME}/lib/libspatialindex/spatial spatial
+
 addons:
   apt:
     packages:
       - libspatialindex-dev
 
 
-
 #create folders for installation
 before_install:
      - chmod +x ./tests/run_tests.sh
-#    - mkdir -p ${HOME}/bin
-#    - mkdir -p ${HOME}/lib
-#    - export PATH="${HOME}/bin:$PATH"
-#    - export PATH="${HOME}/lib:$PATH"
-#    - cd ${HOME}/lib
-#    - wget download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz
-#    - gunzip spatialindex-src-1.8.5.tar.gz
-#    - tar -xvf spatialindex-src-1.8.5.tar 
-#    - cd spatialindex-src-1.8.5
-#    - ./configure --prefix=${HOME}/lib/spatialindex-src-1.8.5
-#    - sudo make
-#    - sudo make install
-# command to install dependencies
+     - mkdir -p ${HOME}/bin
+     - mkdir -p ${HOME}/lib
+     - export PATH="${HOME}/bin:$PATH"
+     - cd ${HOME}/lib
+     - wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
+     - tar -xzf hicup_v0.6.1.tar.gz
+     - cd hicup_v0.6.1.tar.gz
+     - chmod x+ hicup_truncater
+     - cd ${HOME}/bin
+     - ln -s ${HOME}/lib/hicup_v0.6.1.tar.gz/hicup_truncater hicup_truncater
+     - cd ${HOME}
+     - tree
 
+
+# command to install dependencies
 install:
   - pip install -e .
   - pip install -r requirements.txt
