@@ -1,5 +1,3 @@
-test_makeRmap/Digest_hicup_digester_HindIII_None_10-57-07_09-04-2018.rmap
-test_makeRmap/Digest_hicup_digester_HindIII_None_10-57-07_09-04-2018.txt
 test_process_rmapBaitmap/baits.sam test_process_rmapBaitmap/restriction_enzyme_test2.rmap test_process_rmapBaitmap/rtree_file.dat test_process_rmapBaitmap/rtree_file.idx test_process_rmapBaitmap/test.baitmap
 test_process_rmapBaitmap/
 test_gem_indexer/
