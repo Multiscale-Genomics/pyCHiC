@@ -33,7 +33,7 @@ before_install:
      - cd ${HOME}/lib
      - wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
      - tar -xzf hicup_v0.6.1.tar.gz
-     - cd hicup_v0.6.1.tar.gz
+     - cd hicup_v0.6.1
      - chmod x+ hicup_truncater
      - cd ${HOME}/bin
      - ln -s ${HOME}/lib/hicup_v0.6.1.tar.gz/hicup_truncater hicup_truncater
