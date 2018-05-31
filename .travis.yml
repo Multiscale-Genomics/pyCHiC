@@ -32,7 +32,7 @@ addons:
 #    - ./configure --prefix=${HOME}/lib/spatialindex-src-1.8.5
 #    - sudo make
 #    - sudo make install
-     - chmod +x ./scripts/run_tests.sh
+     - chmod +x ./tests/run_tests.sh
 # command to install dependencies
 install:
 #  - cd ${HOME}/build/pabloacera/C-HiC
@@ -41,4 +41,6 @@ install:
 
 # command to run tests
 #script: pytest -m "not underdevelopment"
-script:./tests/run_tests.sh
+script: 
+  - cd test
+  -.run_tests.sh
