@@ -19,7 +19,8 @@ addons:
 
 
 #create folders for installation
-#before_install:
+before_install:
+     - chmod +x ./tests/run_tests.sh
 #    - mkdir -p ${HOME}/bin
 #    - mkdir -p ${HOME}/lib
 #    - export PATH="${HOME}/bin:$PATH"
@@ -32,15 +33,13 @@ addons:
 #    - ./configure --prefix=${HOME}/lib/spatialindex-src-1.8.5
 #    - sudo make
 #    - sudo make install
-     - chmod +x ./tests/run_tests.sh
 # command to install dependencies
+
 install:
-#  - cd ${HOME}/build/pabloacera/C-HiC
   - pip install -e .
   - pip install -r requirements.txt
 
 # command to run tests
-#script: pytest -m "not underdevelopment"
 script: 
   - cd test
-  -.run_tests.sh
+  -./run_tests.sh
