@@ -1,3 +1,4 @@
+rtree
 pylint
 git+https://github.com/Multiscale-Genomics/mg-tool-api.git@move_dummy_pycompss
 git+https://github.com/Multiscale-Genomics/mg-dm-api.git
