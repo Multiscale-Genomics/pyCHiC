@@ -41,4 +41,7 @@ install:
 
 # command to run tests
 #script: pytest -m "not underdevelopment"
-script: ./scripts/run_tests.sh
+script: 
+  -pwd
+  -ls -s
+  -./scripts/run_tests.sh
