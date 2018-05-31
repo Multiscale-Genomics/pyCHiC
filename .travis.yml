@@ -40,6 +40,4 @@ install:
   - pip install -r requirements.txt
 
 # command to run tests
-script: 
-  - cd test
-  -./run_tests.sh
+script: ./tests/run_tests.sh
