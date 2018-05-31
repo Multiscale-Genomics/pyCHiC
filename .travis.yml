@@ -39,9 +39,7 @@ before_install:
      - ln -s ${HOME}/lib/hicup_v0.6.1.tar.gz/hicup_truncater hicup_truncater
      - cd ${HOME}/build/
      - ls -l 
-     - cd ${HOME}/build/travis
-     - ls -l 
-     - cd ${HOME}/build/travis/C-HiC
+     - cd ${HOME}/build/pabloacera/C-HiC
 
 
 # command to install dependencies
