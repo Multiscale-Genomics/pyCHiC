@@ -15,4 +15,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-python ../tests/test_toolchains.py
+python tests/test_toolchains.py

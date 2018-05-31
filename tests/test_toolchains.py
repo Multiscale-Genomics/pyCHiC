@@ -27,6 +27,7 @@ def all_toolchain(verbose=False):
     Runs the tests for all of the tools
 
     This set is only required for determining code coverage.
+    run from home of the repo
     """
 
     params = []
@@ -35,13 +36,13 @@ def all_toolchain(verbose=False):
         params.append('-')
 
     #params.append('test_gem_indexer.py')
-    params.append('test_truncater.py')
-    params.append('test_makeRmap_Tool.py')
-    params.append('test_makeBaitmap.py')
-    params.append('test_makeDesignFiles_Tool.py')
-    params.append('test_fastq2bed.py')
-    params.append('test_bed2bamchicago.py')
-    params.append('test_bam2chicago_Tool.py')
+    params.append('tests/test_truncater.py')
+    params.append('tests/test_makeRmap_Tool.py')
+    params.append('tests/test_makeBaitmap.py')
+    params.append('tests/test_makeDesignFiles_Tool.py')
+    params.append('tests/test_fastq2bed.py')
+    params.append('tests/test_bed2bamchicago.py')
+    params.append('tests/test_bam2chicago_Tool.py')
     #params.append('test_runChicago.py')
 
     return pytest.main(params)
