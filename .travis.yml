@@ -22,13 +22,13 @@ before_install:
     - wget download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz
     - gunzip spatialindex-src-1.8.5.tar.gz
     - tar -xvf spatialindex-src-1.8.5.tar 
- 
+    - cd spatialindex-src-1.8.5
+    - ./configure --prefix=${HOME}/lib/spatialindex-src-1.8.5
+    - sudo make
+    - sudo make install
+
 # command to install dependencies
 install:
-  - cd spatialindex-src-1.8.5 
-  - ./configure --prefix=${HOME}/lib/spatialindex-src-1.8.5
-  - make
-  - make install
   - cd ${HOME}/build/pabloacera/C-HiC
   - pip install -e .
   - pip install -r requirements.txt
