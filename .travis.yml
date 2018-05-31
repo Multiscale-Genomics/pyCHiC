@@ -41,3 +41,17 @@ install:
 
 # command to run tests
 script: pytest -m "not underdeverlopment"
+
+#run test in order
+jobs:
+  include:
+    -stage: test
+      script: ./test/test_truncater.py
+      script: ./test/test_makeRmap_Tool.py
+      script: ./test/test_makeBaitmap.py
+      script: ./test/test_makeDesignFiles_Tool.py
+      script: ./test/test_fastq2bed.py
+      script: ./test/test_bed2bamchicago.py
+      script: ./test/test_bam2chicago_Tool.py
+
+
