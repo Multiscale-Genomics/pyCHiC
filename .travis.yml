@@ -41,4 +41,4 @@ install:
 
 # command to run tests
 #script: pytest -m "not underdevelopment"
-script: ./scripts/travis/run_tests.sh
+script: ./scripts/run_tests.sh
