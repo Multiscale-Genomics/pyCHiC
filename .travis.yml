@@ -48,8 +48,15 @@ before_install:
      - make
      - cd ${HOME}/bin
      - ln -s ${HOME}/lib/bwa-0.7.17/bwa ${HOME}/bin/
-     - cd ${HOME}/build/pabloacera/C-HiC
 
+#install GEM
+     - cd ${HOME}/lib
+     - wget barnaserver.com/gemtools/releases/GEMTools-static-i3-1.7.1.tar.gz
+     - tar -xzf GEMTools-static-i3-1.7.1.tar.gz
+     - cd ${HOME}/bin
+     - ln -s ${HOME}/lib/gemtools-1.7.1-i3/bin/* .
+     - cd ${HOME}/build/pabloacera/C-HiC
+     - gem-indexer
 
 
 # command to install dependencies
