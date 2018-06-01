@@ -23,7 +23,6 @@ addons:
     packages:
       - libspatialindex-dev
 
-
 #create folders for installation
 before_install:
      - chmod +x ./tests/run_tests.sh
@@ -31,7 +30,7 @@ before_install:
      - mkdir -p ${HOME}/lib
      - export PATH="${HOME}/bin:$PATH"
      - cd ${HOME}/lib
-
+		
 # install hicup   
      - wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
      - tar -xzf hicup_v0.6.1.tar.gz
@@ -65,8 +64,7 @@ before_install:
      - pip install matplotlib
      - yes | python setup.py install --install-scripts=${HOME}/bin 
 
-     - cd ${HOME}/build/pabloacera/C-HiC
-
+     - cd ${HOME}/build/pabloacera/C-HiC/
 
 # command to install dependencies
 install:
