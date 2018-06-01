@@ -66,6 +66,7 @@ before_install:
      - cd ${HOME}/bin
      - ls -s 
      - chmod +x tadbit
+     - tasbit map
 #     - chmod +x ${HOME}/lib/TADbit-master/scripts/tadbit
 #     - ln -s ${HOME}/lib/TADbit-master/scripts/tadbit .
 
