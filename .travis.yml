@@ -26,12 +26,15 @@ addons:
 
 #create folders for installation
 before_install:
+     - apt-get install python-scipy
+     - apt-get install python-numpy
+     - apt-get install python-matplotlib
      - chmod +x ./tests/run_tests.sh
      - mkdir -p ${HOME}/bin
      - mkdir -p ${HOME}/lib
      - export PATH="${HOME}/bin:$PATH"
      - cd ${HOME}/lib
-
+		
 # install hicup   
      - wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
      - tar -xzf hicup_v0.6.1.tar.gz
