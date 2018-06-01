@@ -35,7 +35,7 @@ def all_toolchain(verbose=False):
     if verbose is True:
         params.append('-')
 
-    #params.append('test_gem_indexer.py')
+    params.append('test_gem_indexer.py')
     params.append('test_truncater.py')
     params.append('test_makeRmap_Tool.py')
     params.append('test_makeBaitmap.py')
