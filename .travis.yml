@@ -37,6 +37,7 @@ before_install:
      - chmod a+x *
      - cd ${HOME}/bin
      - ln -s ${HOME}/lib/hicup_v0.6.1.tar.gz/* .
+     - ls -s
      - cd ${HOME}/build/pabloacera/C-HiC
      - hicup_truncater
 
