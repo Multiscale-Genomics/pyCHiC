@@ -31,7 +31,8 @@ before_install:
      - mkdir -p ${HOME}/lib
      - export PATH="${HOME}/bin:$PATH"
      - cd ${HOME}/lib
-     # install hicup   
+
+# install hicup   
      - wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
      - tar -xzf hicup_v0.6.1.tar.gz
      - cd hicup_v0.6.1
@@ -49,14 +50,20 @@ before_install:
      - cd ${HOME}/bin
      - ln -s ${HOME}/lib/bwa-0.7.17/bwa ${HOME}/bin/
 
-#install GEM
+# install GEM
      - cd ${HOME}/lib
      - wget barnaserver.com/gemtools/releases/GEMTools-static-i3-1.7.1.tar.gz
      - tar -xzf GEMTools-static-i3-1.7.1.tar.gz
      - cd ${HOME}/bin
      - ln -s ${HOME}/lib/gemtools-1.7.1-i3/bin/* .
+
+# install  TADbit
+     - wget https://github.com/3DGenomes/tadbit/archive/master.zip -O tadbit.zip
+     - unzip tadbit.zip
+     - cd tadbit-master
+     - python setup.py install 
+
      - cd ${HOME}/build/pabloacera/C-HiC
-     - gem-indexer
 
 
 # command to install dependencies
