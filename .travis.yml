@@ -60,7 +60,6 @@ before_install:
 # Download  TADbit
      - wget https://github.com/3DGenomes/tadbit/archive/master.zip -O tadbit.zip
      - unzip tadbit.zip
-
      - cd ${HOME}/build/pabloacera/C-HiC
 
 
@@ -68,7 +67,8 @@ before_install:
 install:
   - pip install -e .
   - pip install -r requirements.txt
-  # install  TADbit
+
+#install  TADbit
   - cd ${HOME}/lib/TADbit-master
   - python setup.py install
 
