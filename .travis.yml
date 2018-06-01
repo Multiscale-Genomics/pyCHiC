@@ -41,7 +41,7 @@ before_install:
      
 # install bwa
      - cd ${HOME}/lib
-     - wget wget https://sourceforge.net/projects/bio-bwa/files/bwa-0.7.17.tar.bz2
+     - wget https://sourceforge.net/projects/bio-bwa/files/bwa-0.7.17.tar.bz2
      - bzip2 -d bwa-0.7.17.tar.bz2 
      - tar -xf bwa-0.7.17.tar
      - cd bwa-0.7.17
