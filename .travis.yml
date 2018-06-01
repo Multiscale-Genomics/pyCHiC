@@ -60,6 +60,9 @@ before_install:
 # Download  TADbit
      - wget https://github.com/3DGenomes/tadbit/archive/master.zip -O tadbit.zip
      - unzip tadbit.zip
+     - pip install scipy
+     - pip install matplotlib
+     - yes | python setup.py install --install-scripts=${HOME}/bin
      - cd ${HOME}/build/pabloacera/C-HiC
 
 
@@ -67,11 +70,6 @@ before_install:
 install:
   - pip install -e .
   - pip install -r requirements.txt
-
-#install  TADbit
-  - cd ${HOME}/lib/TADbit-master
-  - python setup.py install
-
 
 # command to run tests
 script: ./tests/run_tests.sh
