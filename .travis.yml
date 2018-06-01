@@ -35,12 +35,10 @@ before_install:
      - tar -xzf hicup_v0.6.1.tar.gz
      - cd hicup_v0.6.1
      - chmod a+x *
-     - ./hicup_truncater
      - cd ${HOME}/bin
      - ln -s ${HOME}/lib/hicup_v0.6.1.tar.gz/* .
-     - cd ${HOME}/build/
-     - ls -l 
      - cd ${HOME}/build/pabloacera/C-HiC
+     - hicup_truncater
 
 
 # command to install dependencies
