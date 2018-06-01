@@ -30,7 +30,7 @@ before_install:
      - mkdir -p ${HOME}/lib
      - export PATH="${HOME}/bin:$PATH"
      - cd ${HOME}/lib
-		
+
 # install hicup   
      - wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
      - tar -xzf hicup_v0.6.1.tar.gz
