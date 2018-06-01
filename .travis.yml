@@ -64,8 +64,10 @@ before_install:
      - pip install matplotlib
      - yes | python setup.py install --install-scripts=${HOME}/bin 
      - cd ${HOME}/bin
-     - chmod +x ${HOME}/lib/TADbit-master/scripts/tadbit
-     - ln -s ${HOME}/lib/TADbit-master/scripts/tadbit .
+     - ls -s 
+     - chmod +x tadbit
+#     - chmod +x ${HOME}/lib/TADbit-master/scripts/tadbit
+#     - ln -s ${HOME}/lib/TADbit-master/scripts/tadbit .
 
      - cd ${HOME}/build/pabloacera/C-HiC/
 
