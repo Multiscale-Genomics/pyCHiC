@@ -48,4 +48,4 @@ install:
   - pip install -r requirements.txt
 
 # command to run tests
-script: ./scripts/test_hicup
+script: ./scripts/test_hicup.sh
