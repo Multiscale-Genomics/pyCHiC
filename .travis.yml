@@ -31,16 +31,25 @@ before_install:
      - mkdir -p ${HOME}/lib
      - export PATH="${HOME}/bin:$PATH"
      - cd ${HOME}/lib
+     # install hicup   
      - wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
      - tar -xzf hicup_v0.6.1.tar.gz
      - cd hicup_v0.6.1
      - chmod a+x *
      - cd ${HOME}/bin
      - ln -s ${HOME}/lib/hicup_v0.6.1/* ${HOME}/bin/
-     - ls -s ${HOME}/lib/hicup_v0.6.1/
-     - ls -s 
+     
+# install bwa
+     - cd ${HOME}/lib
+     - wget wget https://sourceforge.net/projects/bio-bwa/files/bwa-0.7.17.tar.bz2
+     - bzip2 -d bwa-0.7.17.tar.bz2 
+     - tar -xf bwa-0.7.17.tar
+     - cd bwa-0.7.17
+     - make
+     - cd ${HOME}/bin
+     - ln -s ${HOME}/lib/bwa-0.7.17/bwa ${HOME}/bin/
      - cd ${HOME}/build/pabloacera/C-HiC
-     - hicup_truncater
+
 
 
 # command to install dependencies
