@@ -23,7 +23,6 @@ addons:
     packages:
       - libspatialindex-dev
 
-
 #create folders for installation
 before_install:
      - chmod +x ./tests/run_tests.sh
@@ -58,12 +57,12 @@ before_install:
      - ln -s ${HOME}/lib/gemtools-1.7.1-i3/bin/* .
 
 # Download  TADbit
-     - wget https://github.com/3DGenomes/tadbit/archive/master.zip -O tadbit.zip
-     - unzip tadbit.zip
-     - pip install scipy
-     - pip install matplotlib
-     - yes | python setup.py install --install-scripts=${HOME}/bin
-     - cd ${HOME}/build/pabloacera/C-HiC
+#     - wget https://github.com/3DGenomes/tadbit/archive/master.zip -O tadbit.zip
+#     - unzip tadbit.zip
+#     - pip install scipy
+#     - pip install matplotlib
+#     - yes | python setup.py install --install-scripts=${HOME}/bin
+#     - cd ${HOME}/build/pabloacera/C-HiC
 
 
 # command to install dependencies
