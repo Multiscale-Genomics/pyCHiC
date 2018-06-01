@@ -26,9 +26,6 @@ addons:
 
 #create folders for installation
 before_install:
-     - apt-get install python-scipy
-     - apt-get install python-numpy
-     - apt-get install python-matplotlib
      - chmod +x ./tests/run_tests.sh
      - mkdir -p ${HOME}/bin
      - mkdir -p ${HOME}/lib
@@ -60,11 +57,9 @@ before_install:
      - cd ${HOME}/bin
      - ln -s ${HOME}/lib/gemtools-1.7.1-i3/bin/* .
 
-# install  TADbit
+# Download  TADbit
      - wget https://github.com/3DGenomes/tadbit/archive/master.zip -O tadbit.zip
      - unzip tadbit.zip
-     - cd TADbit-master/
-     - python setup.py install 
 
      - cd ${HOME}/build/pabloacera/C-HiC
 
@@ -73,6 +68,10 @@ before_install:
 install:
   - pip install -e .
   - pip install -r requirements.txt
+  # install  TADbit
+  - cd ${HOME}/lib/TADbit-master
+  - python setup.py install
+
 
 # command to run tests
 script: ./tests/run_tests.sh
