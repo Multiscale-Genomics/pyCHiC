@@ -60,6 +60,29 @@ class Fastq2bed(Tool):
         """
         logger.info("initialising Fastq2bed")
 
+
+    def gunzip_gem(self, gem_idx_gz):
+        """
+        This function uncompress the gem indexed genome in is compressed
+        """
+        print(gem_idx_gz)
+        if gem_idx_gz[-2:] == "gz":
+
+            args = ["gunzip", gem_idx_gz]
+            logger.info("args for decompress:"+" ".join(args))
+            process = subprocess.Popen(" ".join(args), shell=True,
+                                       stdout=subprocess.PIPE,
+                                       stderr=subprocess.PIPE)
+            process.wait()
+
+            if os.path.getsize(gem_idx_gz[:-3]) > 0:
+                return gem_idx_gz[:-3]
+            else:
+                logger.fatal("fastq2bed.unzip_gem failed to uncompress gem indexed genome")
+                return False
+        else:
+            return gem_idx_gz
+
     def tadbit_map(self, fastq1, fastq2, gem_idx, RE, wd, chromosome):
         """
         This function map the Capture fastq reads to the reference genome using gem
@@ -264,9 +287,11 @@ class Fastq2bed(Tool):
             )
         }
 
+        uncompres_gem = self.gunzip_gem(input_files["gem_idx"])
+
         results_map = self.tadbit_map(input_files["fastq1"],
                                       input_files["fastq2"],
-                                      input_files["gem_idx"],
+                                      uncompres_gem,
                                       input_files["RE"],
                                       output_files["wd"],
                                       input_files["chromosome"])

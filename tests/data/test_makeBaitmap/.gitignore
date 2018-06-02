@@ -1,6 +1,7 @@
-toy_hg19.fa
-toy_hg19.fa.amb
-toy_hg19.fa.bwt
-toy_hg19.fa.pac
-toy_hg19.fa.sa
-toy_hg19.fa.ann
+toy_GRCh38.fa
+toy_GRCh38.fa.amb
+toy_GRCh38.fa.ann
+toy_GRCh38.fa.bwt
+toy_GRCh38.fa.pac
+toy_GRCh38.fa.sa
+

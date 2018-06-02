@@ -35,12 +35,12 @@ def test_makeRmapFileTool():
                     }
 
     input_files = {
-        "genome_fa" : path+ "test_makeBaitmap/toy_GRCh38.fa",
+        "genome_fa" : path+ "test_makeBaitmap/chr21_hg19.fa",
         }
 
 
     metadata = {"genome_fa" : Metadata(
-        "txt", "fasta", path+ "test_makeBaitmap/toy_GRCh38.fa",
+        "txt", "fasta", path+ "test_makeBaitmap/chr21_hg19.fa",
         None, 9606, ""),
         }
 
