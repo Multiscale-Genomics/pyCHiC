@@ -65,36 +65,6 @@ class makeBaitmapTool(Tool):
 
         self.configuration.update(configuration)
 
-    def create_baitmap(self, baitmap_list, out_baitmap):
-        """
-        This function takes a list with RE fragments that
-        correspond to baits and print it to a file
-
-        Parameters:
-        -----------
-
-        baitmap_list: list
-            lsit with all the RE fragments corresponding
-            to baits
-        out: str
-            entire pat and name of the .baitmap file
-        """
-        print(out_baitmap)
-        with open(out_baitmap, "a") as file_out:
-             for frag_coord in baitmap_list:
-                print("{}\t{}\t{}\t{}\t{}".format(
-                    frag_coord[0],
-                    frag_coord[1],
-                    frag_coord[2],
-                    frag_coord[3],
-                    "NaN"), file = file_out)
-
-        if os.path.getsize(out_baitmap) > 0:
-            return True
-
-        logger.fatal("baitmap file not generated")
-        return False
-
     def bwa_for_probes(self, genome_index, probes_fa, out_sam):
         """
         This function run bwa using an index genome and a probes file
@@ -189,6 +159,36 @@ class makeBaitmapTool(Tool):
                         if fragment_coord not in baitmap:
                             baitmap.append(fragment_coord)
         return baitmap
+
+    def create_baitmap(self, baitmap_list, out_baitmap):
+        """
+        This function takes a list with RE fragments that
+        correspond to baits and print it to a file
+
+        Parameters:
+        -----------
+
+        baitmap_list: list
+            lsit with all the RE fragments corresponding
+            to baits
+        out: str
+            entire pat and name of the .baitmap file
+        """
+        print(out_baitmap)
+        with open(out_baitmap, "a") as file_out:
+             for frag_coord in baitmap_list:
+                print("{}\t{}\t{}\t{}\t{}".format(
+                    frag_coord[0],
+                    frag_coord[1],
+                    frag_coord[2],
+                    frag_coord[3],
+                    "NaN"), file = file_out)
+
+        if os.path.getsize(out_baitmap) > 0:
+            return True
+
+        logger.fatal("baitmap file not generated")
+        return False
 
     def run(self, input_files, input_metadata, output_files):
         """

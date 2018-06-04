@@ -27,13 +27,15 @@ def test_bam2chicago():
     path = os.path.join(os.path.dirname(__file__),"data/")
 
     input_files = {
-        "RMAP" : path + "test_Design/test.rmap",
-        "BAITMAP" : path +  "test_Design/test.baitmap",
-        "BAM" : path + "test_bed2bam/outbam_sorted.bam"
+        "RMAP" : path + "test_runChicago/test.rmap",
+        "BAITMAP" : path +  "test_runChicago/test.baitmap",
+        "BAM" : path + "test_bed2bam/outbam_sorted.bam",
     }
 
     output_files = {
-        "sample_name" :  path + "test_bam2chicago_Tool/sampleout"
+        "sample_name" :  path + "test_bam2chicago_Tool/sampleout",
+        "chrRMAP" : path + "test_bam2chicago_Tool/chrtest.rmap",
+        "chrBAITMAP" : path + "test_bam2chicago_Tool/chrtest.baitmap"
     }
 
     input_metadata = {

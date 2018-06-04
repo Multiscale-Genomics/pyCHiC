@@ -52,7 +52,7 @@ def test_Design_process():
     }
 
     output_files = {
-        "outPrefixDesign" : path + "test_process_Design/h19_chr20and21_test",
+        "outPrefixDesign" : path + "test_runChicago/h19_chr20and21_test",
     }
 
     makeDesignFiles_handle = makeDesign(config_file)

@@ -29,11 +29,11 @@ def test_chicago():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "chinput_file": path + "test_runChicago/GM_rep1.chinput"
+        "chinput_file": path + "test_runChicago/data_chicago/GM_rep1.chinput"
         }
 
     output_files = {
-        "output_dir": path,
+        "output_dir": path + "test_runChicago",
         "output_prefix" : "output_test"
         }
 
@@ -45,8 +45,8 @@ def test_chicago():
         }
 
     config = {
-        "chicago_setting_file": path + "test_runChicago/sGM12878.settingsFile",
-        "chicago_desing_dir": path + "test_runChicago/",
+        "chicago_setting_file": path + "test_runChicago/data_chicago/sGM12878.settingsFile",
+        "chicago_desing_dir": path + "test_runChicago/data_chicago",
         #"chicago_print_memory": None,
         "chicago_cutoff": "5",
         "chicago_export_format": "washU_text",
@@ -68,5 +68,5 @@ def test_chicago():
     chicago_handle = ChicagoTool(config)
     chicago_handle.run(input_files, metadata, output_files)
 
-    assert os.path.isfile(output_files["output_dir"] + "data/" + output_files["output_prefix"] + ".Rds") is True
-    assert os.path.getsize(output_files["output_dir"] + "data/" + output_files["output_prefix"] + ".Rds") > 0
+    assert os.path.isfile(output_files["output_dir"] + "/data/" + output_files["output_prefix"] + ".Rds") is True
+    assert os.path.getsize(output_files["output_dir"] + "/data/" + output_files["output_prefix"] + ".Rds") > 0

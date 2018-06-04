@@ -35,7 +35,7 @@ def test_makeBaitmap():
 
     output_files = {
         "out_sam" :  path + "test_makeBaitmap/baits.sam",
-        "out_baitmap" : path + "test_Design/test.baitmap"
+        "out_baitmap" : path + "test_runChicago/test.baitmap"
     }
 
     input_metadata = {

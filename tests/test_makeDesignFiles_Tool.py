@@ -25,7 +25,7 @@ def test_makeDesignFilesTool():
     """
     Function to test the right generation of CHicago Design files
     """
-    path = os.path.join(os.path.dirname(__file__), "data/test_Design")
+    path = os.path.join(os.path.dirname(__file__), "data/")
 
 
     config_file = {
@@ -42,30 +42,30 @@ def test_makeDesignFilesTool():
         }
 
     input_files = {
-        "designDir" : path
+        "designDir" : path + "test_runChicago"
     }
 
     input_metadata = {
         ".rmap" : Metadata(
             "data_chicago_input", ".rmap",
-            path, None, {}, 9606),
+            path + "test_runChicago", None, {}, 9606),
         ".baitmap" : Metadata(
             "data_chicago_input", ".baitmap",
-            path, None, {}, 9606)
+            path + "test_runChicago", None, {}, 9606)
     }
 
     output_files = {
-        "outPrefixDesign" : path + "/h19_chr20and21_test",
+        "outPrefixDesign" : path + "test_runChicago/h19_chr20and21_test",
     }
 
     makeDesignFiles_handle = makeDesignFilesTool(config_file)
     makeDesignFiles_handle.run(input_files, input_metadata, output_files)
 
-    assert os.path.isfile(path + "/h19_chr20and21_test" + ".nbpb") is True
-    assert os.path.getsize(path + "/h19_chr20and21_test" + ".nbpb") > 0
+    assert os.path.isfile(path + "test_runChicago/h19_chr20and21_test" + ".nbpb") is True
+    assert os.path.getsize(path + "test_runChicago/h19_chr20and21_test" + ".nbpb") > 0
 
-    assert os.path.isfile(path + "/h19_chr20and21_test" + ".npb") is True
-    assert os.path.getsize(path + "/h19_chr20and21_test" + ".npb") > 0
+    assert os.path.isfile(path + "test_runChicago/h19_chr20and21_test" + ".npb") is True
+    assert os.path.getsize(path + "test_runChicago/h19_chr20and21_test" + ".npb") > 0
 
-    assert os.path.isfile(path + "/h19_chr20and21_test" + ".poe") is True
-    assert os.path.getsize(path + "/h19_chr20and21_test" + ".poe") > 0
+    assert os.path.isfile(path + "test_runChicago/h19_chr20and21_test" + ".poe") is True
+    assert os.path.getsize(path + "test_runChicago/h19_chr20and21_test" + ".poe") > 0

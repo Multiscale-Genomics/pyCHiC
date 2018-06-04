@@ -46,7 +46,7 @@ def test_makeRmapFileTool():
 
 
     output_files = {
-        "out_dir_makeRmap" : path + "test_Design/",
+        "out_dir_makeRmap" : path + "test_runChicago/",
         "out_prefix_makeRmap" : "test",
         "Rtree_files" : path + "test_makeRmap/rtree_file"
         }

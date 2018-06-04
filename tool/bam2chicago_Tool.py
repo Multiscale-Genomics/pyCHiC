@@ -18,6 +18,7 @@ import os
 import shlex
 import subprocess
 import sys
+import pandas as pd
 
 from utils import logger
 
@@ -65,52 +66,48 @@ class bam2chicagoTool(Tool):
 
         self.configuration.update(configuration)
 
-    def check_chr_format(self, rmap_file, baitmap_file):
+    def check_chr_format(self, rmap_file, baitmap_file, chrRMAP, chrBAITMAP):
         """
         This function check that the chromosome format is right for
-        bam3chicago.sh
+        bam2chicago.sh
         """
         rmapfile_new = rmap_file.split(".")[0]+"rfmt.rmap"
         baitmapfile_new = baitmap_file.split(".")[0]+"rfmt.baitmap"
-        rm_old_rmap = True
-        rm_old_baitmap = True
+        rformat_rmap = True
+        rformat_baitmap = True
 
+        logger.info("checking .rmap chr format")
 
-        with open(rmap_file, "r") as file_in:
-            for line in file_in:
-                if line[0:3] == "chr":
-                    rmapfile_new = rmap_file
-                    rm_old_rmap = False
-                    break
-                else:
-                    line_hdl = line.rstrip().split("\t")
-                    with open(rmapfile_new, "a") as file_out:
-                        print("chr"+line, file=file_out, end="")
-            logger.info("Checking rmap chromosome format..")
+        rmapfile_new = pd.read_csv(rmap_file, header=None, sep="\t")
+        chr_rmap = str(rmapfile_new.iloc[0,0])
+        if str(chr_rmap[0:3]) == "chr":
+            logger.info("rmap file chromosome on the right format")
+            rformat_rmap = False
+            pass
+        else:
+            rmapfile_new.iloc[:,0] = rmapfile_new.iloc[:,0].apply(lambda x : "chr"+str(x))
 
+        logger.info("checking .baitmap chr format")
+        baitmapfile_new = pd.read_table(baitmap_file, header=None, sep="\t")
+        chr_baitmap = str(baitmapfile_new.iloc[0,0])
+        if chr_baitmap[0:3] == "chr":
+            logger.info("baitmap file chromosome on the right format")
+            rformat_baitmap = False
+            pass
+        else:
+            baitmapfile_new.iloc[:,0] = baitmapfile_new.iloc[:,0].apply(lambda x : "chr"+str(x))
 
-        with open(baitmap_file, "r") as file_in:
-            for line in file_in:
-                if line[0:3] == "chr":
-                    baitmapfile_new = baitmap_file
-                    rm_old_baitmap = False
-                    break
-                else:
-                    line_hdl = line.rstrip().split("\t")
-                    with open(baitmapfile_new, "a") as file_out:
-                        print("chr"+line, file=file_out, end="")
-            logger.info("Checking baitmap chromosome format..")
+        if rformat_rmap:
+            rmapfile_new.to_csv(chrRMAP, sep="\t", header=None, index=False)
+        else:
+            chrRMAP = rmap_file
 
+        if rformat_baitmap:
+            baitmapfile_new.to_csv(chrBAITMAP, sep="\t", header=None, index=False)
+        else:
+            chrBAITMAP = baitmap_file
 
-        if rm_old_rmap:
-            logger.info("removing old rmap file to avoid conflicts")
-            os.remove(rmap_file)
-
-        if rm_old_baitmap:
-            logger.info("removing old baitmap_file file to avoid conflicts")
-            os.remove(baitmap_file)
-
-        return rmapfile_new, baitmapfile_new
+        return chrRMAP, chrBAITMAP
 
 
     def bam2chicago(self, bamFiles, rmapFile, baitmapFile, sample_name):
@@ -203,7 +200,9 @@ class bam2chicagoTool(Tool):
 
         rfmat_rmap, rfmat_baitmap = self.check_chr_format(
             input_files["RMAP"],
-            input_files["BAITMAP"])
+            input_files["BAITMAP"],
+            output_files["chrRMAP"],
+            output_files["chrBAITMAP"])
 
         results = self.bam2chicago(
             input_files["BAM"],
@@ -234,12 +233,10 @@ class bam2chicagoTool(Tool):
 
         return(results, output_metadata)
 
-
+"""
 if __name__ == "__main__":
 
-    path = os.path.join(os.path.dirname(__file__),"tests/data/")
-
-    path = "/home/pablo/MuG/C-HiC/tests/data/"
+    path = os.path.join(os.path.dirname(__file__),"data/")
 
     input_files = {
         "RMAP" : path + "test_makeRmap/test.rmap",
@@ -270,35 +267,4 @@ if __name__ == "__main__":
 
     out_path = output_files["sample_name"] + "/sampleout.chinput"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"""

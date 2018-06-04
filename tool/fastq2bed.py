@@ -65,10 +65,11 @@ class Fastq2bed(Tool):
         """
         This function uncompress the gem indexed genome in is compressed
         """
-        print(gem_idx_gz)
+        uncom_gem = "/".join(gem_idx_gz.split("/")[:-1])+"/chr21_hg19.fa.gem"
+        print(uncom_gem)
         if gem_idx_gz[-2:] == "gz":
 
-            args = ["gunzip", "-c", gem_idx_gz, ">", "chr21_hg19.fa.gem"]
+            args = ["gunzip", "-c", gem_idx_gz, ">", uncom_gem]
 
             logger.info("args for decompress:"+" ".join(args))
             process = subprocess.Popen(" ".join(args), shell=True,
