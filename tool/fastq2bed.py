@@ -68,7 +68,8 @@ class Fastq2bed(Tool):
         print(gem_idx_gz)
         if gem_idx_gz[-2:] == "gz":
 
-            args = ["gunzip", gem_idx_gz]
+            args = ["gunzip", "-c", gem_idx_gz, ">", "chr21_hg19.fa.gem"]
+
             logger.info("args for decompress:"+" ".join(args))
             process = subprocess.Popen(" ".join(args), shell=True,
                                        stdout=subprocess.PIPE,

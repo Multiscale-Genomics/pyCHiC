@@ -27,6 +27,6 @@ For the terms of use, run the program with the option --show-license.
 * WARNING: this is a beta version, provided for testing purposes only; *
 *          check for updates at <http://gemlibrary.sourceforge.net>.   *
 ************************************************************************
-Sat Jun  2 11:47:20 2018 -- Binary encoding of sequence finished
-Sat Jun  2 11:47:21 2018 -- Binary encoding of BWT finished
+Mon Jun  4 09:48:34 2018 -- Binary encoding of sequence finished
+Mon Jun  4 09:48:35 2018 -- Binary encoding of BWT finished
 -------rm -f

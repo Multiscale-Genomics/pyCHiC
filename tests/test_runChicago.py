@@ -29,7 +29,7 @@ def test_chicago():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "chinput_file": path + "test_bam2chicago_Tool/sampleout/sampleout.chinput"
+        "chinput_file": path + "test_runChicago/GM_rep1.chinput"
         }
 
     output_files = {
@@ -46,7 +46,7 @@ def test_chicago():
 
     config = {
         "chicago_setting_file": path + "test_runChicago/sGM12878.settingsFile",
-        "chicago_desing_dir": path + "test_Design/",
+        "chicago_desing_dir": path + "test_runChicago/",
         #"chicago_print_memory": None,
         "chicago_cutoff": "5",
         "chicago_export_format": "washU_text",

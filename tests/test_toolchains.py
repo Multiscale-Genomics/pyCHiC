@@ -35,7 +35,7 @@ def all_toolchain(verbose=False):
     if verbose is True:
         params.append('-')
 
-    params.append('test_gem_indexer.py')
+   #params.append('test_gem_indexer.py')
     params.append('test_truncater.py')
     params.append('test_makeRmap_Tool.py')
     params.append('test_makeBaitmap.py')
@@ -43,7 +43,7 @@ def all_toolchain(verbose=False):
     params.append('test_fastq2bed.py')
     params.append('test_bed2bamchicago.py')
     params.append('test_bam2chicago_Tool.py')
-    #params.append('test_runChicago.py')
+    params.append('test_runChicago.py')
 
     return pytest.main(params)
 
