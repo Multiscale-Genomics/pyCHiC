@@ -16,9 +16,9 @@
    limitations under the License.
 """
 
-from pytadbit.parsers.hic_parser import load_hic_data_from_reads
-from pytadbit.parsers.map_parser import parse_map
-import pickle
+#from pytadbit.parsers.hic_parser import load_hic_data_from_reads
+#from pytadbit.parsers.map_parser import parse_map
+#import pickle
 from pytadbit.utils.file_handling import mkdir, which
 from collections                  import OrderedDict
 #from pytadbit.mapping.filter      import MASKED
@@ -207,7 +207,7 @@ def bed2D_to_BAMhic(infile, valid, ncpus, outbam, frmt ='chicago', masked=None, 
                         pass
             # get output in sam format
             proc.stdin.write(map2sam(line, flag))
-            
+
     proc.stdin.close()
     proc.wait()
 
