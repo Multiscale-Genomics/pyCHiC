@@ -111,4 +111,4 @@ install:
 # command to run tests
 script:
     - python ./scripts/from_bed_to_BAM_for_chicago.py ./tests/data/test_fastq2bed/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv 1 ./tests/data/test_bed2bam/outbam
-    - cat ./tests/data/test_bed2bam/outbam.bam
+    - samtools view ./tests/data/test_bed2bam/outbam.bam
