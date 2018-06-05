@@ -213,9 +213,7 @@ def bed2D_to_BAMhic(infile, valid, ncpus, outbam, frmt ='chicago', masked=None, 
     proc.wait()
 
     # Index BAM
-    #_ = Po
-
-    pen(samtools + ' index %s.bam' % (outbam), shell=True).communicate()
+    #_ = Popen(samtools + ' index %s.bam' % (outbam), shell=True).communicate()
     print(6)
     # close file handlers
     fhandler.close()
