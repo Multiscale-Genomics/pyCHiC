@@ -22,7 +22,8 @@ addons:
   apt:
     packages:
       - libspatialindex-dev
-
+      - samtools
+	
 #create folders for installation
 before_install:
      - chmod +x ./tests/run_tests.sh
@@ -69,13 +70,13 @@ before_install:
 #     - chmod +x ${HOME}/lib/TADbit-master/scripts/tadbit
 #     - ln -s ${HOME}/lib/TADbit-master/scripts/tadbit .
 # install samtools
-     - wget https://sourceforge.net/projects/samtools/files/samtools/1.8/samtools-1.8.tar.bz2
-     - bunzip2 samtools-1.8.tar.bz2
-     - tar -xf samtools-1.8.tar
-     - cd samtools-1.8/
-     - sudo ./configure
-     - sudo make
-     - sudo make install
+     -  git clone https://github.com/samtools/htslib.git
+     - cd htslib
+     - autoheader
+     - autoconf
+     - ./configure --prefix=${HOME}/lib/htslib
+     - make
+     - make install
 
      - cd ${HOME}/build/pabloacera/C-HiC/
 
