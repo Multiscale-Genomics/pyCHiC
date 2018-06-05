@@ -3,10 +3,10 @@ from pytadbit.parsers.map_parser import parse_map
 import pickle
 from pytadbit.utils.file_handling import mkdir, which
 from collections                  import OrderedDict
-from pytadbit.mapping.filter      import MASKED
+#from pytadbit.mapping.filter      import MASKED
 from distutils.version            import LooseVersion
 from subprocess                   import Popen, PIPE
-
+import sys
 
 def _map2sam_chicago(line, flag=0):
     """
@@ -75,7 +75,7 @@ def bed2D_to_BAMhic(infile, valid, ncpus, outbam, frmt ='chicago', masked=None, 
     Each pair of contacts produces two lines in the output BAM
     """
 
-MASKED = {1 : {'name': 'self-circle'       , 'reads': 0},
+    MASKED = {1 : {'name': 'self-circle'       , 'reads': 0},
           2 : {'name': 'dangling-end'      , 'reads': 0},
           3 : {'name': 'error'             , 'reads': 0},
           4 : {'name': 'extra dangling-end', 'reads': 0},
