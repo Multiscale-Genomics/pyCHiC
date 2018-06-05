@@ -193,7 +193,7 @@ def bed2D_to_BAMhic(infile, valid, ncpus, outbam, frmt ='chicago', masked=None, 
             flag = 0
             # get output in sam format
             proc.stdin.write(map2sam(line, flag))
-    print(4)
+        print(4)
     else:
         for line in fhandler:
             flag = 0
