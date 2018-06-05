@@ -193,7 +193,7 @@ def bed2D_to_BAMhic(infile, valid, ncpus, outbam, frmt ='chicago', masked=None, 
             flag = 0
             # get output in sam format
             proc.stdin.write(map2sam(line, flag))
-        print(4)
+            print(4)
     else:
         for line in fhandler:
             flag = 0
@@ -223,8 +223,7 @@ def bed2D_to_BAMhic(infile, valid, ncpus, outbam, frmt ='chicago', masked=None, 
     print(7)
 
 if "__main__" == __name__:
-    print(0)
-    print(sys.argv)
+
     bed2D_to_BAMhic(sys.argv[1],"valid",int(sys.argv[2]),sys.argv[3])
 
     #bed2D_to_BAMhic("/home/pablo/MuG/data/trim_galore_output/tadbit_truncated/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv",
