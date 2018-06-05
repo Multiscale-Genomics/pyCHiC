@@ -73,9 +73,9 @@ before_install:
      - bunzip2 samtools-1.8.tar.bz2
      - tar -xf samtools-1.8.tar
      - cd samtools-1.8/
-     - ./configure
-     - make
-     - make install
+     - sudo ./configure
+     - sudo make
+     - sudo make install
      - samtools
 
 
