@@ -69,7 +69,16 @@ before_install:
 #     - chmod +x ${HOME}/lib/TADbit-master/scripts/tadbit
 #     - ln -s ${HOME}/lib/TADbit-master/scripts/tadbit .
 # install samtools
-     - sudo apt-get install samtools
+     - wget https://sourceforge.net/projects/samtools/files/samtools/1.8/samtools-1.8.tar.bz2
+     - bunzip2 samtools-1.8.tar.bz2
+     - tar -xf samtools-1.8.tar
+     - cd samtools-1.8/
+     - ./configure --prefix=${HOME}/bin/
+     - make
+     - make install
+     - samtools
+
+
      - cd ${HOME}/build/pabloacera/C-HiC/
 
 # command to install dependencies

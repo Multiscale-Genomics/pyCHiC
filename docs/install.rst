@@ -26,6 +26,11 @@ Software
 - R >=3.1.2
 - bedtools
 - perl
+- HiCUP
+- bwa
+- GEM
+- TADbit
+- samtools
 
 
 Python Modules
@@ -34,6 +39,8 @@ Python Modules
 - mg-tool-api
 - pylint
 - pytest
+
+
 
 R Modules
 ^^^^^^^^^
