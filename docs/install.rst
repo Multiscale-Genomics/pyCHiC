@@ -32,14 +32,14 @@ Software
 - TADbit
 - samtools
 
-
 Python Modules
 ^^^^^^^^^^^^^^
 
 - mg-tool-api
 - pylint
 - pytest
-
+- pandas
+- rtree
 
 
 R Modules
