@@ -23,7 +23,7 @@ addons:
     packages:
       - libspatialindex-dev
       - samtools
-	
+
 #create folders for installation
 before_install:
      - chmod +x ./tests/run_tests.sh
