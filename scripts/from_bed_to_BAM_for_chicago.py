@@ -161,7 +161,7 @@ def bed2D_to_BAMhic(infile, valid, ncpus, outbam, frmt ='chicago', masked=None, 
     output += ("\t".join(("@CO" ,"E4:i", "Position of the right RE site of 2nd read-end\n")))
     output += ("\t".join(("@CO" ,"S1:i", "Strand of the 1st read-end (1: positive, 0: negative)\n")))
     output += ("\t".join(("@CO" ,"S2:i", "Strand of the 2nd read-end  (1: positive, 0: negative)\n")))
-
+    print(1)
     # open and init filter files
     if not valid:
         filter_line, filter_handler = get_filters(infile, masked)
@@ -172,13 +172,13 @@ def bed2D_to_BAMhic(infile, valid, ncpus, outbam, frmt ='chicago', masked=None, 
                             if 'Version' in l][0])
     version = "1.9"
     pre = '-o' if version >= LooseVersion('1.3') else ''
-
+    print(2)
     proc = Popen(samtools + ' view -Shb -@ %d - | samtools sort -@ %d - %s %s' % (
         ncpus, ncpus, pre,
         outbam + '.bam' if  version >= LooseVersion('1.3') else ''),  # in new version '.bam' is no longer added
                  shell=True, stdin=PIPE)
     proc.stdin.write(output)
-
+    print(3)
     if frmt == 'chicago':
         map2sam = _map2sam_chicago
     elif frmt == 'mid':
@@ -193,6 +193,7 @@ def bed2D_to_BAMhic(infile, valid, ncpus, outbam, frmt ='chicago', masked=None, 
             flag = 0
             # get output in sam format
             proc.stdin.write(map2sam(line, flag))
+    print(4)
     else:
         for line in fhandler:
             flag = 0
@@ -207,22 +208,24 @@ def bed2D_to_BAMhic(infile, valid, ncpus, outbam, frmt ='chicago', masked=None, 
                         pass
             # get output in sam format
             proc.stdin.write(map2sam(line, flag))
-
+    print(5)
     proc.stdin.close()
     proc.wait()
 
     # Index BAM
-    #_ = Popen(samtools + ' index %s.bam' % (outbam), shell=True).communicate()
+    #_ = Po
 
+    pen(samtools + ' index %s.bam' % (outbam), shell=True).communicate()
+    print(6)
     # close file handlers
     fhandler.close()
     if not valid:
         for i in filter_handler:
             filter_handler[i].close()
-
+    print(7)
 
 if "__main__" == __name__:
-
+    print(0)
     print(sys.argv)
     bed2D_to_BAMhic(sys.argv[1],"valid",int(sys.argv[2]),sys.argv[3])
 
