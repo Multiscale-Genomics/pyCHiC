@@ -69,6 +69,22 @@ before_install:
      - chmod +x tadbit
 #     - chmod +x ${HOME}/lib/TADbit-master/scripts/tadbit
 #     - ln -s ${HOME}/lib/TADbit-master/scripts/tadbit .
+
+#install htslib
+     - cd ${HOME}/lib
+     - git clone https://github.com/samtools/htslib.git
+     - cd htslib
+     - autoheader
+     - autoconf
+     - ./configure --prefix=${HOME}/lib/htslib
+     - make
+     - make install
+     
+     - cd ${HOME}/bin
+     - ln -s ${HOME}/lib/htslib/bin/bgzip bgzip
+     - ln -s ${HOME}/lib/htslib/bin/htsfile htsfile
+     - ln -s ${HOME}/lib/htslib/bin/tabix tabix
+
 # install samtools
      - cd ${HOME}/lib
      - git clone https://github.com/samtools/samtools.git
