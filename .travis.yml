@@ -71,7 +71,7 @@ before_install:
 #     - ln -s ${HOME}/lib/TADbit-master/scripts/tadbit .
 # install samtools
      - cd ${HOME}/lib
-     - git clone git clone https://github.com/samtools/samtools.git
+     - git clone https://github.com/samtools/samtools.git
      - cd samtools
      - autoheader
      - autoconf -Wno-syntax
