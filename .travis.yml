@@ -70,7 +70,7 @@ before_install:
 #     - chmod +x ${HOME}/lib/TADbit-master/scripts/tadbit
 #     - ln -s ${HOME}/lib/TADbit-master/scripts/tadbit .
 # install samtools
-     - sudo apt-get install samtools
+     - apt-get install samtools
      - cd ${HOME}/build/pabloacera/C-HiC/
 
 # command to install dependencies
