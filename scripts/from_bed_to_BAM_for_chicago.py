@@ -170,7 +170,7 @@ def bed2D_to_BAMhic(infile, valid, ncpus, outbam, frmt ='chicago', masked=None, 
     version = LooseVersion([l.split()[1]
                             for l in Popen(samtools, stderr=PIPE).communicate()[1].split('\n')
                             if 'Version' in l][0])
-    version = "1.9"
+    version = "1.8"
     pre = '-o' if version >= LooseVersion('1.3') else ''
     print(2)
     proc = Popen(samtools + ' view -Shb -@ %d - | samtools sort -@ %d - %s %s' % (
