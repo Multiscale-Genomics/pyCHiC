@@ -70,7 +70,6 @@ before_install:
 #     - ln -s ${HOME}/lib/TADbit-master/scripts/tadbit .
 # install samtools
      - sudo apt-get install samtools
-     - samtools
      - cd ${HOME}/build/pabloacera/C-HiC/
 
 # command to install dependencies
@@ -79,4 +78,4 @@ install:
     - pip install -r requirements.txt
 
 # command to run tests
-script: pytest ./tests/test_bed2bamchicago.py
+script: ./scripts/run_from_bed
