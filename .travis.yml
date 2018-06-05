@@ -85,4 +85,4 @@ install:
     - pip install -r requirements.txt
 
 # command to run tests
-script: pyenv ./tests/test_bed2bamchicago.py
+script: pytest ./tests/test_bed2bamchicago.py

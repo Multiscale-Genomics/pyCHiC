@@ -30,7 +30,7 @@ Software
 - bwa
 - GEM
 - TADbit
-- samtools
+- samtools>1.3
 
 Python Modules
 ^^^^^^^^^^^^^^
