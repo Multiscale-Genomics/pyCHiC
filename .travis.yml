@@ -132,5 +132,5 @@ script:
 #     - samtools view outbam.bam
      - cd tests 
      - pytest test_bed2bamchicago.py
-     - ls -l tests/data/test_bed2bam
+     - ls -l data/test_bed2bam
 
