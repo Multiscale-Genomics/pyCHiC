@@ -76,7 +76,7 @@ class bed2bam(Tool):
         Bool
         """
 
-        args = ["python", "../from_bed_to_bam.py",
+        args = ["python", "from_bed_to_bam.py",
               bed, "2", bam_out]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
@@ -122,7 +122,6 @@ class bed2bam(Tool):
         else:
             logger.fatal("samtools didnt generate sorted bam_out")
             return False
-
 
     def run(self, input_files, input_metadata, output_files):
         """
