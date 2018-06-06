@@ -130,5 +130,5 @@ install:
 script:
 #     - python from_bed_to_bam.py ./tests/data/test_fastq2bed/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv 1 outbam
 #     - samtools view outbam.bam
-     - ./tests/run_tests
+     - ./tests/run_tests.sh
 
