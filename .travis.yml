@@ -144,9 +144,11 @@ script:
       - bedtools
       - perl -V
       - cd ./scripts/
-      - samtools view /home/travis/build/pabloacera/C-HiC/tests/data/test_bed2bam/outbam_sorted.bam
-      - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.baitmap
-      - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.rmap
+      - samtools view /home/travis/build/pabloacera/C-HiC/tests/data/test_bed2bam/outbam_sorted.bam | head
+      - samtools view /home/travis/build/pabloacera/C-HiC/tests/data/test_bed2bam/outbam_sorted.bam | wc -l
+      - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.baitmap | head
+      - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.baitmap | wc -l
+      - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.rmap | head
+      - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.rmap | wc -l
       - ./bam2chicago.sh /home/travis/build/pabloacera/C-HiC/tests/data/test_bed2bam/outbam_sorted.bam /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.baitmap /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.rmap sampleout
       - ls -l
-
