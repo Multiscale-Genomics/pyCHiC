@@ -45,7 +45,7 @@ def test_bed2bam():
         }
 
     output_files = {
-        "bam_out" : "outbami"
+        "bam_out" : path + "test_bed2bam/outbami"
     }
 
 
