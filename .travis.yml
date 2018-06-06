@@ -26,8 +26,7 @@ addons:
 
 #create folders for installation
 before_install:
-     - sudo apt-get install r-base-core
-     - 
+#     - sudo apt-get install r-base-core 
      - chmod +x ./tests/run_tests.sh
      - mkdir -p ${HOME}/bin
      - mkdir -p ${HOME}/lib
