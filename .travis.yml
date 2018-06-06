@@ -141,7 +141,12 @@ install:
 script:
 #     - python from_bed_to_bam.py ./tests/data/test_fastq2bed/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv 1 outbam
 #     - samtools view outbam.bam
+      - bedtools
+      - perl -V
       - cd ./scripts/
+      - samtools view /home/travis/build/pabloacera/C-HiC/tests/data/test_bed2bam/outbam_sorted.bam
+      - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.baitmap
+      - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.rmap
       - ./bam2chicago.sh /home/travis/build/pabloacera/C-HiC/tests/data/test_bed2bam/outbam_sorted.bam /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.baitmap /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago_Tool/chrtest.rmap sampleout
       - ls -l
 
