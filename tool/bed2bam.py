@@ -76,7 +76,7 @@ class bed2bam(Tool):
         Bool
         """
 
-        args = ["python", "../scripts/from_bed_to_BAM_for_chicago.py",
+        args = ["python", "../scripts/from_bed_to_bam.py",
               bed, "2", bam_out]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
