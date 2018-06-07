@@ -19,7 +19,7 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
-
+import pandas
 from utils import logger
 
 
@@ -66,6 +66,27 @@ class ChicagoTool(Tool):
             configuration = {}
 
         self.configuration.update(configuration)
+
+
+    def check_chr_frmt(self,  ):
+        """
+        check that the chromorosme format is just a number, necesary for CHiCAGO
+        """
+        logger.info("runChicago is checking the chr format of rmap anf baitmap files")
+
+        try:
+            rmap = pd.read_table(RMAP, header=None)
+        except IOError:
+            logger.fatal("rmap rows contain"+
+                         "different number of columns")
+            return False
+
+        if rmap.shape[1] != 4:
+            logger.fatal("rmap file does not have 4 columns")
+
+
+
+
 
     #@task(some decorators)
     def chicago(self, input_files, output_prefix, output_dir, params):
