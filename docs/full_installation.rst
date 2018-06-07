@@ -72,9 +72,6 @@ space.
 Installation Process
 --------------------
 
-- perl
-- HiCUP
-
 
 HiCUP
 ^^^^^
@@ -147,6 +144,19 @@ Install TADbit
    # If the pyenv env is not called C-HiC then change this to match,
    # the sme is true for teh version of python
    python setup.py install --install-lib=${HOME}/.pyenv/versions/C-HiC/lib/python2.7/site-packages/ --install-scripts=${HOME}/bin
+
+
+Install TADbit
+^^^^^^^^^^^^^^
+
+.. code-block:: none
+   :linenos:
+
+   cd ${HOME}/lib
+   source("https://bioconductor.org/biocLite.R")
+   biocLite("argparser")
+   biocLite("devtools")
+   devtools::install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
 
 
 Setup the symlinks
