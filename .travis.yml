@@ -145,4 +145,5 @@ script:
       - cd tests/
       - python test_toolchains.py
       - cd data/test_bam2chicago_Tool/
-      - ls -l
+      - cd sampleout
+      - wc -l sampleout.chinput
