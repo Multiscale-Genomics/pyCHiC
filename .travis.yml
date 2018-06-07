@@ -36,11 +36,7 @@ before_install:
 
 #installing chicago
      -  cd ${HOME}/lib
-     -  sudo R
-     -  source("https://bioconductor.org/biocLite.R")
-     -  biocLite("argparser")
-     -  biocLite("devtools")
-     -  devtools::install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
+     -  sudo Rscript ${HOME}/build/pabloacera/C-HiC/scripts/install_packages.R 
 
      - cd ${HOME}/build/pabloacera/C-HiC/
 
