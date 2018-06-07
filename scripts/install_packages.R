@@ -17,6 +17,7 @@
 
 source("http://bioconductor.org/biocLite.R")
 biocLite("argparser")
+if(!require("rhdf5")) biocLite("rhdf5")
 install.packages("devtools")
 devtools::install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
 
