@@ -36,6 +36,7 @@ before_install:
 
 #installing chicago
      -  cd ${HOME}/lib
+     -  sudo R
      -  source("https://bioconductor.org/biocLite.R")
      -  biocLite("argparser")
      -  biocLite("devtools")
