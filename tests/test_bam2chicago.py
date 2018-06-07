@@ -27,8 +27,8 @@ def test_bam2chicago():
     path = os.path.join(os.path.dirname(__file__),"data/")
 
     input_files = {
-        "RMAP" : path + "test_bam2chicago_Tool/chrtest.rmap",
-        "BAITMAP" : path +  "test_bam2chicago_Tool/chrtest.baitmap",
+        "RMAP" : path + "test_bam2chicago/chrtest.rmap",
+        "BAITMAP" : path +  "test_bam2chicago/chrtest4.baitmap",
         "BAM" : path + "test_bed2bam/outbam_sorted.bam"
     }
 

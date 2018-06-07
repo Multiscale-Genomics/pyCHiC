@@ -114,6 +114,7 @@ class bam2chicago(Tool):
             return False
 
         if baitmap.shape[1] != 4:
+            print(baitmap.shape)
             logger.fatal("baitmap does not contain 4 columns")
 
         #retrieve baitmap IDs
@@ -237,7 +238,7 @@ class bam2chicago(Tool):
     def filter_reads(self, out_dir, mappedToBaitsBoRAndRFrag):
         """
         This function filter reads that do not pass the minimun required overhand.
-        
+
         Parameters
         ----------
         out_dir: str
