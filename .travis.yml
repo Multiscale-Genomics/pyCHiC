@@ -41,7 +41,7 @@ before_install:
      -  biocLite("devtools")
      -  devtools::install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
 
-    - cd ${HOME}/build/pabloacera/C-HiC/
+     - cd ${HOME}/build/pabloacera/C-HiC/
 
 # command to install dependencies
 install:
