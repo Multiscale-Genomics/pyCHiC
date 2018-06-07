@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source("https://bioconductor.org/biocLite.R")
+source("http://bioconductor.org/biocLite.R")
 biocLite("argparser")
 biocLite("devtools")
 devtools::install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
