@@ -42,7 +42,7 @@ def all_toolchain(verbose=False):
     params.append('test_makeDesignFiles_Tool.py')
     params.append('test_fastq2bed.py')
     params.append('test_bed2bamchicago.py')
-    params.append('test_bam2chicago_Tool.py')
+   # params.append('test_bam2chicago_Tool.py')
    # params.append('test_runChicago.py')
 
     return pytest.main(params)

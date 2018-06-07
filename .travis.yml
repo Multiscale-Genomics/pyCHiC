@@ -144,3 +144,9 @@ script:
 #      - ./bam2chicago.sh ../tests/data/test_bed2bam/outbam_sorted.bam ../tests/data/test_bam2chicago/chrtest.baitmap ../tests/data/test_bam2chicago/chrtest.rmap sampleout
       - cd tests/
       - python test_toolchains.py
+      - cd data/test_runChicago
+      - ls -l 
+      - head test.rmap
+      - head test.baitmap
+      - cd ../test_bed2bam/
+      - samtools view outbam_sorted.bam | head
