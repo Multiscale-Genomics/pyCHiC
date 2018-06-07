@@ -27,131 +27,23 @@ addons:
 
 #create folders for installation
 before_install:
-     - sudo apt-get install r-base-core 
+     - sudo apt-get install r-base-core
      - sudo apt-get install gawk
      - chmod +x ./tests/run_tests.sh
      - mkdir -p ${HOME}/bin
      - mkdir -p ${HOME}/lib
      - export PATH="${HOME}/bin:$PATH"
-     - cd ${HOME}/lib
-
-# install hicup   
-#     - wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
-#     - tar -xzf hicup_v0.6.1.tar.gz
-#     - cd hicup_v0.6.1
-#     - chmod a+x *
-#     - cd ${HOME}/bin
-#     - ln -s ${HOME}/lib/hicup_v0.6.1/* ${HOME}/bin/
-     
-# install bwa
-#     - cd ${HOME}/lib
-#     - wget https://sourceforge.net/projects/bio-bwa/files/bwa-0.7.17.tar.bz2
-#     - bzip2 -d bwa-0.7.17.tar.bz2 
-#     - tar -xf bwa-0.7.17.tar
-#     - cd bwa-0.7.17
-#     - make
-#     - cd ${HOME}/bin
-#     - ln -s ${HOME}/lib/bwa-0.7.17/bwa ${HOME}/bin/
-
-# install GEM
-#     - cd ${HOME}/lib
-#     - wget barnaserver.com/gemtools/releases/GEMTools-static-i3-1.7.1.tar.gz
-#     - tar -xzf GEMTools-static-i3-1.7.1.tar.gz
-#     - cd ${HOME}/bin
-#     - ln -s ${HOME}/lib/gemtools-1.7.1-i3/bin/* .
-
-# install  TADbit
-#     - wget https://github.com/3DGenomes/tadbit/archive/master.zip -O tadbit.zip
-#     - unzip tadbit.zip
-#     - cd TADbit-master/
-#     - pip install scipy
-#     - pip install matplotlib
-#     - yes | python setup.py install --install-scripts=${HOME}/bin 
-#     - cd ${HOME}/bin
-#     - ls -s 
-#     - chmod +x tadbit
-#     - chmod +x ${HOME}/lib/TADbit-master/scripts/tadbit
-#     - ln -s ${HOME}/lib/TADbit-master/scripts/tadbit .
-
-#install htslib
-#     - cd ${HOME}/lib
-#     - git clone https://github.com/samtools/htslib.git
-#     - cd htslib
-#     - autoheader
-#     - autoconf
-#     - ./configure --prefix=${HOME}/lib/htslib
-#     - make
-#     - make install
-     
-#     - cd ${HOME}/bin
-#     - ln -s ${HOME}/lib/htslib/bin/bgzip bgzip
-#     - ln -s ${HOME}/lib/htslib/bin/htsfile htsfile
-#     - ln -s ${HOME}/lib/htslib/bin/tabix tabix
-
-# install samtools
-#     - cd ${HOME}/lib
-#     - git clone https://github.com/samtools/samtools.git
-#     - cd samtools
-#     - autoheader
-#     - autoconf -Wno-syntax
-#     - ./configure --prefix=${HOME}/lib/samtools
-#     - make
-#     - make install
-
-#     - cd ${HOME}/bin
-#     - ln -s ${HOME}/lib/samtools/bin/ace2sam ace2sam
-#     - ln -s ${HOME}/lib/samtools/bin/blast2sam.pl blast2sam.pl
-#     - ln -s ${HOME}/lib/samtools/bin/bowtie2sam.pl bowtie2sam.pl
-#     - ln -s ${HOME}/lib/samtools/bin/export2sam.pl export2sam.pl
-#     - ln -s ${HOME}/lib/samtools/bin/interpolate_sam.pl interpolate_sam.pl
-#     - ln -s ${HOME}/lib/samtools/bin/maq2sam-long maq2sam-long
-#     - ln -s ${HOME}/lib/samtools/bin/maq2sam-short maq2sam-short
-#     - ln -s ${HOME}/lib/samtools/bin/md5fa md5fa
-#     - ln -s ${HOME}/lib/samtools/bin/md5sum-lite md5sum-lite
-#     - ln -s ${HOME}/lib/samtools/bin/novo2sam.pl novo2sam.pl
-#     - ln -s ${HOME}/lib/samtools/bin/plot-bamstats plot-bamstats
-#     - ln -s ${HOME}/lib/samtools/bin/psl2sam.pl psl2sam.pl
-#     - ln -s ${HOME}/lib/samtools/bin/sam2vcf.pl sam2vcf.pl
-#     - ln -s ${HOME}/lib/samtools/bin/samtools samtools
-#     - ln -s ${HOME}/lib/samtools/bin/samtools.pl samtools.pl
-#     - ln -s ${HOME}/lib/samtools/bin/seq_cache_populate.pl seq_cache_populate.pl
-#     - ln -s ${HOME}/lib/samtools/bin/soap2sam.pl soap2sam.pl
-#     - ln -s ${HOME}/lib/samtools/bin/varfilter.py varfilter.py
-#     - ln -s ${HOME}/lib/samtools/bin/wgsim wgsim
-#     - ln -s ${HOME}/lib/samtools/bin/wgsim_eval.pl wgsim_eval.pl
-#     - ln -s ${HOME}/lib/samtools/bin/zoom2sam.pl zoom2sam.pl
-
-# install bedtools
-#     - cd ${HOME}/lib
-#     -  wget https://github.com/arq5x/bedtools2/releases/download/v2.26.0/bedtools-2.26.0.tar.gz
-#     - tar -zxvf bedtools-2.26.0.tar.gz
-#     - cd bedtools2
-#     - make
-#     - cd ${HOME}/bin
-#     - ln -s ${HOME}/lib/bedtools2/bin/bedtools bedtools
 
 #installing chicago
-      -  cd ${HOME}/lib
-      -  source("https://bioconductor.org/biocLite.R")
-      -  biocLite("argparser")
-      -  biocLite("devtools")
-      -  devtools::install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
+     -  cd ${HOME}/lib
+     -  source("https://bioconductor.org/biocLite.R")
+     -  biocLite("argparser")
+     -  biocLite("devtools")
+     -  devtools::install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
 
-
-     
-     - cd ${HOME}/build/pabloacera/C-HiC/
+    - cd ${HOME}/build/pabloacera/C-HiC/
 
 # command to install dependencies
 install:
     - pip install -e .
     - pip install -r requirements.txt
-
-# command to run tests
-script:
-#     - python from_bed_to_bam.py ./tests/data/test_fastq2bed/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv 1 outbam
-#      - ./bam2chicago.sh ../tests/data/test_bed2bam/outbam_sorted.bam ../tests/data/test_bam2chicago/chrtest.baitmap ../tests/data/test_bam2chicago/chrtest.rmap sampleout
-      - cd tests/
-      - python test_toolchains.py
-      - cd data/test_bam2chicago_Tool/
-      - cd sampleout
-      - wc -l sampleout.chinput
