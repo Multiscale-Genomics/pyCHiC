@@ -35,6 +35,7 @@ before_install:
      - export PATH="${HOME}/bin:$PATH"
 
 #installing chicago
+     -  sudo apt-get libssl-dev
      -  cd ${HOME}/lib
      -  sudo Rscript ${HOME}/build/pabloacera/C-HiC/scripts/install_packages.R 
 
