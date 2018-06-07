@@ -35,8 +35,15 @@ before_install:
      - export PATH="${HOME}/bin:$PATH"
 
 #installing chicago
-     -  sudo apt-get install libssl-dev
-     -  cd ${HOME}/lib
+     -  sudo apt-get install libtbb-dev
+     -  cd ${HOME}/build/pabloacera/C-HiC/
+     -  echo "R_LIB=${HOME}/R" > ${HOME}/.Renviron
+     -  echo "options(repos = c(CRAN = 'http://mirrors.ebi.ac.uk/CRAN/'))" > ${HOME}/.Rprofile
+     -  echo ".libPaths('~/R')" >> ${HOME}/.Rprofile
+     -  echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
+     -  Rscript scripts/install_packages.R
+
+
      -  sudo Rscript ${HOME}/build/pabloacera/C-HiC/scripts/install_packages.R 
 
      - cd ${HOME}/build/pabloacera/C-HiC/
