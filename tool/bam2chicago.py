@@ -224,7 +224,7 @@ class bam2chicago(Tool):
                       "-wao", "-f", "0.6", "-b", RMAP, ">",
                       out_dir+"/mappedToBaitsBoRAndRFrag.bedpe"]
 
-        logger.info("bedtools inteersect parameters: "
+        logger.info("bedtools intersect parameters: "
                     + " ".join(bashCommand))
 
         process = subprocess.Popen(" ".join(basCommand), shell=True,
@@ -435,6 +435,38 @@ class bam2chicago(Tool):
             logger.fatal("write_output function failed to "\
                          "generate output")
         return True
+
+if __name__ == "__main__":
+
+    path = "../test/data/"
+
+    input_files = {
+        "RMAP" : path + "test_bam2chicago/chrtest.rmap",
+        "BAITMAP" : path +  "test_bam2chicago/chrtest4.baitmap",
+        "BAM" : path + "test_bed2bam/outbam_sorted.bam"
+    }
+
+    output_files = {
+        "out_dir" : path,
+        "output_file" :  "test_bam2chicago/out_py"
+    }
+
+    input_metadata = {
+        ".rmap" : Metadata(
+            "data_chicago_input", ".rmap",
+            path+"/h19_chr20and21_chr.rmap", None, {}, 9606),
+        ".baitmap" : Metadata(
+            "data_chicago_input", ".baitmap",
+            path+"/h19_chr20and21.baitmap_4col_chr.txt", None, {}, 9606),
+        "bam" : Metadata(
+            "txt", "bamfile", path + "/SRR3535023_1_2.hicup.bam",
+            {"fastq1" : "SRR3535023_1.fastq",
+             "fastq2" : "SRR3535023_2.fastq", "genome" : "human_hg19"},
+            9606)
+    }
+
+    bam2chicago_handle = bam2chicago()
+    bam2chicago_handle.run(input_files, input_metadata, output_files)
 
 
 

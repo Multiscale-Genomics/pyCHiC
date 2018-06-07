@@ -145,8 +145,8 @@ script:
       - bedtools
       - perl -V
       - cd ./scripts/
-      - samtools view /home/travis/build/pabloacera/C-HiC/tests/data/test_bed2bam/outbam_sorted.bam | head
-      - samtools view /home/travis/build/pabloacera/C-HiC/tests/data/test_bed2bam/outbam_sorted.bam | wc -l
+      - samtools view ../tests/data/test_bed2bam/outbam_sorted.bam | head
+      - samtools view ../tests/data/test_bed2bam/outbam_sorted.bam | wc -l
       - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago/chrtest4.baitmap | head
       - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago/chrtest4.baitmap | wc -l
       - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago/chrtest.rmap | head
