@@ -146,8 +146,8 @@ Install TADbit
    python setup.py install --install-lib=${HOME}/.pyenv/versions/C-HiC/lib/python2.7/site-packages/ --install-scripts=${HOME}/bin
 
 
-Install TADbit
-^^^^^^^^^^^^^^
+Install CHiCAGO
+^^^^^^^^^^^^^^^
 
 .. code-block:: none
    :linenos:
