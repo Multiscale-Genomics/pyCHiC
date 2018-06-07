@@ -151,5 +151,6 @@ script:
       - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago/chrtest4.baitmap | wc -l
       - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago/chrtest.rmap | head
       - cat /home/travis/build/pabloacera/C-HiC/tests/data/test_bam2chicago/chrtest.rmap | wc -l
-      - ./bam2chicago.sh ../tests/data/test_bed2bam/outbam_sorted.bam ../tests/data/test_bam2chicago/chrtest4.baitmap ../tests/data/test_bam2chicago/chrtest.rmap sampleout
-      - ls -l
+      - ./bam2chicago.sh ../tests/data/test_bed2bam/outbam_sorted.bam ../tests/data/test_bam2chicago/chrtest.baitmap ../tests/data/test_bam2chicago/chrtest.rmap sampleout
+      - cd sampleout
+      - ls -l 
