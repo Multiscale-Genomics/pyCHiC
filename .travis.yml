@@ -22,7 +22,6 @@ addons:
   apt:
     packages:
       - libspatialindex-dev
-      - samtools
       - bedtools
 
 #create folders for installation
@@ -61,3 +60,7 @@ before_install:
 install:
     - pip install -e .
     - pip install -r requirements.txt
+
+script:
+    - cd ./tests/
+    - pytest pytest test_runChicago.py
