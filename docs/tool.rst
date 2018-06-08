@@ -40,21 +40,39 @@ Tools for processing fastq C-HiC files
 
    makeRmap
    ---------
-   .. autoclass:: tool.makeRmap_Tool.makeRmapFile           
+   .. autoclass:: tool.makeRmap_Tool.makeRmapFile
       :members:
 
-   makeBaitmap     
+   makeBaitmap
    -----------
    .. autoclass:: tool.makeRmap_Tool.makeRmapFile
       :members:
 
+   makeDesignFiles
+   ---------------
+   .. autoclass:: tool.makeDesignFiles_Tool.makeDesignFilesTool
+      :members:
 
+   Convert bed files in bam files
+   ================================
 
-test_makeRmap_Tool.py')
-    params.append('test_makeBaitmap.py')
-    params.append('test_makeDesignFiles_Tool.py')
-    params.append('test_fastq2bed.py')
-    params.append('test_bed2bamchicago.py')
-    params.append('test_bam2chicago_Tool.py')
-   # params.append('test_runChicago.py')
+   bed2bamchicago
+   ---------------
+   .. autoclass:: tool.bed2bam.bed2bam
+      :members:
 
+   Convert bam files into chicago input
+   =====================================
+
+   bam2chicago
+   -----------
+   .. autoclass:: tool.bam2chicago_Tool.bam2chicagoTool
+      :members:
+
+   Normalize data and call C-HiC peaks
+   ===================================
+
+   CHiCAGO
+   -------
+   .. autoclass:: tool.runChicago.ChicagoTool
+      :members:

@@ -63,4 +63,4 @@ install:
 
 script:
     - cd ./tests/
-    - pytest pytest test_runChicago.py
+    - pytest test_runChicago.py
