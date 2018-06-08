@@ -15,7 +15,6 @@
 from __future__ import print_function
 
 import os
-import shlex
 import subprocess
 import sys
 import pandas as pd
@@ -79,23 +78,23 @@ class bam2chicagoTool(Tool):
         logger.info("checking .rmap chr format")
 
         rmapfile_new = pd.read_csv(rmap_file, header=None, sep="\t")
-        chr_rmap = str(rmapfile_new.iloc[0,0])
+        chr_rmap = str(rmapfile_new.iloc[0, 0])
         if str(chr_rmap[0:3]) == "chr":
             logger.info("rmap file chromosome on the right format")
             rformat_rmap = False
-            pass
+
         else:
-            rmapfile_new.iloc[:,0] = rmapfile_new.iloc[:,0].apply(lambda x : "chr"+str(x))
+            rmapfile_new.iloc[:,0] = rmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
 
         logger.info("checking .baitmap chr format")
         baitmapfile_new = pd.read_table(baitmap_file, header=None, sep="\t")
-        chr_baitmap = str(baitmapfile_new.iloc[0,0])
+        chr_baitmap = str(baitmapfile_new.iloc[0, 0])
         if chr_baitmap[0:3] == "chr":
             logger.info("baitmap file chromosome on the right format")
             rformat_baitmap = False
             pass
         else:
-            baitmapfile_new.iloc[:,0] = baitmapfile_new.iloc[:,0].apply(lambda x : "chr"+str(x))
+            baitmapfile_new.iloc[:, 0] = baitmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
 
         if rformat_rmap:
             rmapfile_new.to_csv(chrRMAP, sep="\t", header=None, index=False)
@@ -232,39 +231,3 @@ class bam2chicagoTool(Tool):
         }
 
         return(results, output_metadata)
-
-"""
-if __name__ == "__main__":
-
-    path = os.path.join(os.path.dirname(__file__),"data/")
-
-    input_files = {
-        "RMAP" : path + "test_makeRmap/test.rmap",
-        "BAITMAP" : path +  "test_makeBaitmap/test.baitmap",
-        "BAM" : path + "test_bed2bam/outbam_sorted.bam"
-    }
-
-    output_files = {
-        "sample_name" :  path + "test_bam2chicago_Tool/sampleout"
-    }
-
-    input_metadata = {
-        "RMAP" : Metadata(
-            "data_chicago_input", ".rmap",
-            path+"/h19_chr20and21_chr.rmap", None, {}, 9606),
-        "BAITMAP" : Metadata(
-            "data_chicago_input", ".baitmap",
-            path+"/h19_chr20and21.baitmap_4col_chr.txt", None, {}, 9606),
-        "BAM" : Metadata(
-            "txt", "bamfile", path + "/SRR3535023_1_2.hicup.bam",
-            {"fastq1" : "SRR3535023_1.fastq",
-             "fastq2" : "SRR3535023_2.fastq", "genome" : "human_hg19"},
-            9606)
-    }
-
-    bam2chicago_handle = bam2chicagoTool()
-    bam2chicago_handle.run(input_files, input_metadata, output_files)
-
-    out_path = output_files["sample_name"] + "/sampleout.chinput"
-
-"""

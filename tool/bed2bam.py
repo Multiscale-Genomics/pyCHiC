@@ -77,13 +77,13 @@ class bed2bam(Tool):
         """
 
         args = ["python", "../scripts/from_bed_to_bam.py",
-              bed, "2", bam_out]
+                bed, "2", bam_out]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
         process = subprocess.Popen(" ".join(args), shell=True,
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
         process.wait()
 
         if os.path.isfile(bam_out + ".bam") is True:
@@ -163,3 +163,31 @@ class bed2bam(Tool):
         }
 
         return sorted_results, output_metadata
+
+if __name__ == "__main__" :
+
+
+    path = "data/"
+    input_files = {
+        "bed" : path + "test_fastq2bed/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv",
+            "ncpus" : "2"
+    }
+
+    input_metadata = {
+            "bed": Metadata(
+                data_type="text",
+                file_type="tsv",
+                file_path=input_files["bed"],
+                sources="",
+                taxon_id=9606,
+                meta_data=""
+            )
+        }
+
+    output_files = {
+        "bam_out" : path + "test_bed2bam/outbam"
+    }
+
+
+    bed2bam_hdl = bed2bam()
+    bed2bam_hdl.run(input_files, input_metadata, output_files)

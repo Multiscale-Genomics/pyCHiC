@@ -79,11 +79,11 @@ class Fastq2bed(Tool):
 
             if os.path.getsize(gem_idx_gz[:-3]) > 0:
                 return gem_idx_gz[:-3]
-            else:
-                logger.fatal("fastq2bed.unzip_gem failed to uncompress gem indexed genome")
-                return False
-        else:
-            return gem_idx_gz
+
+            logger.fatal("fastq2bed.unzip_gem failed to uncompress gem indexed genome")
+            return False
+
+        return gem_idx_gz
 
     def tadbit_map(self, fastq1, fastq2, gem_idx, RE, wd, chromosome):
         """
@@ -112,7 +112,7 @@ class Fastq2bed(Tool):
         bool
         """
         logger.info(chromosome)
-        if chromosome is "":
+        if chromosome == "":
             args1 = ["tadbit", "map",
                      "--fastq", fastq1,
                      "--index", gem_idx,
@@ -133,7 +133,7 @@ class Fastq2bed(Tool):
                      "--read", "1",
                      "--renz", RE,
                      "-w", wd,
-                    "--chr_name", chromosome]
+                     "--chr_name", chromosome]
 
             args2 = ["tadbit", "map",
                      "--fastq", fastq2,
@@ -147,8 +147,8 @@ class Fastq2bed(Tool):
         logger.info("tadbit map1 arguments:" + " ".join(args1))
 
         process1 = subprocess.Popen(" ".join(args1), shell=True,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
         process1.wait()
 
         try:

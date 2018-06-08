@@ -164,26 +164,26 @@ class makeDesignFilesTool(Tool):
 
         logger.info("makeDesignFiles command parameters " + " ".join(commands_params))
 
-        results = self.makeDesignFiles( input_files["designDir"],
-                                  output_files["outPrefixDesign"],
-                                  commands_params)
+        results = self.makeDesignFiles(input_files["designDir"],
+                                       output_files["outPrefixDesign"],
+                                       commands_params)
 
-        resutls = compss_wait_on(results)
+        results = compss_wait_on(results)
 
-        output_metadata ={
+        output_metadata = {
             "output" : Metadata(
-                data_type = "Designfiles",
-                file_type = [".nbpb", ".npb", ".poe"],
-                file_path = input_files["designDir"],
-                sources = [
+                data_type="Designfiles",
+                file_type=[".nbpb", ".npb", ".poe"],
+                file_path=input_files["designDir"],
+                sources=[
                     input_metadata[".rmap"].file_path,
                     input_metadata[".baitmap"].file_path
                     ],
-                taxon_id = [
+                taxon_id=[
                     input_metadata[".rmap"].taxon_id,
                     input_metadata[".baitmap"].taxon_id
                     ],
-                meta_data = {
+                meta_data={
                     "tool" : "makeDesignFiles, make the design files"+
                         "used by chicago as part of the input file"
                 }

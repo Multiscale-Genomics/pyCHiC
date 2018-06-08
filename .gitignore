@@ -19,3 +19,4 @@ pytest.ini
 pytest.ini
 build/
 dist/
+tool/chr_format_rmapBaitmap.py

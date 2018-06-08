@@ -105,10 +105,11 @@ class Truncater(Tool):
             pass
         else:
             return False
+
         if os.path.getsize(out_dir+name_trunc1) > 0:
             return True
-        else:
-            return False
+
+        return False
 
     def get_params(self,configuration):
         """
