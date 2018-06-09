@@ -2,3 +2,4 @@ output/
 data/test_makeRmap/
 test_gem_indexer.py
 test_gem_indexer.py
+test_chr_format.py

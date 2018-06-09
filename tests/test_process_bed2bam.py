@@ -28,26 +28,26 @@ def test_process_bed2bam():
     Test for bed2chicagobamWra.py
     """
 
-    path = os.path.join(os.getcwd(), "data/test_process_bed2bam/")
+    path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "bed" : path + "valid_r1-r2_intersection_b51cdf1282.tsv",
+        "bed" : path + "test_fastq2bed/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv",
         "ncpus" : "2"
     }
 
     input_metadata = {
-        "bed": Metadata(
-            data_type="text",
-            file_type="tsv",
-            file_path=input_files["bed"],
-            sources="",
-            taxon_id=9606,
-            meta_data=""
+            "bed": Metadata(
+                data_type="text",
+                file_type="tsv",
+                file_path=input_files["bed"],
+                sources="",
+                taxon_id=9606,
+                meta_data=""
             )
         }
 
     output_files = {
-        "bam_out" : path + "outbam"
+        "bam_out" : path + "test_bed2bam/outbam"
     }
 
     bed2bam_hdl = process_bed2bam()

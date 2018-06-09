@@ -28,16 +28,16 @@ def test_process_fastq2bed():
     path = os.path.join(os.path.dirname(__file__), "data")
 
     input_files = {
-        "fastq1" : path + "/test_process_fastq2bed/SRR3535023_1.fastq",
-        "fastq2" : path + "/test_process_fastq2bed/SRR3535023_2.fastq",
-        "genindex" : path + "/test_gem_indexer/tb.Human.GCA_000001405.21.fasta.gem",
-        "genome_fasta" : path + "/test_gem_indexer/chr21.fa",
+        "fastq1" : path + "/test_truncater/SRR3535023_1.trunc.fastq",
+        "fastq2" : path + "/test_truncater/SRR3535023_2.trunc.fastq",
+        "gem_idx" : path + "/test_makeBaitmap/chr21_hg19.fa.gem.gz",
+        "genome_fa" : path + "/test_makeBaitmap/chr21_hg19.fa",
         "RE" : "HindIII",
         "chromosome" : ""
     }
 
     input_metadata = {
-            "fastq1": Metadata(
+        "fastq1": Metadata(
                 data_type="text",
                 file_type="fastq",
                 file_path=input_files["fastq1"],
@@ -45,7 +45,7 @@ def test_process_fastq2bed():
                 taxon_id=9606,
                 meta_data=""
             ),
-            "fastq2": Metadata(
+        "fastq2": Metadata(
                 data_type="text",
                 file_type="fastq",
                 file_path=input_files["fastq2"],
@@ -53,10 +53,10 @@ def test_process_fastq2bed():
                 taxon_id=9606,
                 meta_data=""
             ),
-            "genome_fasta": Metadata(
+        "genome_fa": Metadata(
                 data_type="text",
                 file_type="fasta",
-                file_path=input_files["genome_fasta"],
+                file_path=input_files["genome_fa"],
                 sources="",
                 taxon_id=9606,
                 meta_data=""
@@ -64,7 +64,7 @@ def test_process_fastq2bed():
         }
 
     output_files = {
-        "wd" : path + "/test_process_fastq2bed"
+        "wd" : path + "/test_fastq2bed"
     }
 
     fastq2bed_hdl = process_Fastq2bed()

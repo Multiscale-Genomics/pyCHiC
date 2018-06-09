@@ -231,3 +231,35 @@ class bam2chicagoTool(Tool):
         }
 
         return(results, output_metadata)
+
+if "__main__" == __name__:
+
+    path = "../tests/data/"
+    input_files = {
+        "RMAP" : path + "test_runChicago/test.rmap",
+        "BAITMAP" : path +  "test_runChicago/test.baitmap",
+        "BAM" : path + "test_bed2bam/outbam_sorted.bam",
+    }
+
+    output_files = {
+        "sample_name" :  path + "test_bam2chicago_Tool/sampleout",
+        "chrRMAP" : path + "test_bam2chicago_Tool/chrtest.rmap",
+        "chrBAITMAP" : path + "test_bam2chicago_Tool/chrtest.baitmap"
+    }
+
+    input_metadata = {
+        "RMAP" : Metadata(
+            "data_chicago_input", ".rmap",
+            path+"/h19_chr20and21_chr.rmap", None, {}, 9606),
+        "BAITMAP" : Metadata(
+            "data_chicago_input", ".baitmap",
+            path+"/h19_chr20and21.baitmap_4col_chr.txt", None, {}, 9606),
+        "BAM" : Metadata(
+            "txt", "bamfile", path + "/SRR3535023_1_2.hicup.bam",
+            {"fastq1" : "SRR3535023_1.fastq",
+             "fastq2" : "SRR3535023_2.fastq", "genome" : "human_hg19"},
+            9606)
+    }
+
+    bam2chicago_handle = bam2chicagoTool()
+    bam2chicago_handle.run(input_files, input_metadata, output_files)

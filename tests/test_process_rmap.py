@@ -30,35 +30,40 @@ def test_process_rmap():
     input files for CHiCAGO pipeline
     """
 
-    path = os.path.join(os.path.dirname(__file__) + "/data")
+    path = os.path.join(os.path.dirname(__file__), "data/")
 
-    configuration = {"RE" : {"HindIII" : 'A|AGCTT'},
+
+    configuration = {"RE" : {"HindIII" : 'A|AGCTT'}
                     }
 
     input_files = {
-        "genome_fa":  path + "/test_makeRmap/toy_hg19.fa",
+        "genome_fa" : path+ "test_makeBaitmap/chr21_hg19.fa",
         }
 
-    input_metadata = {
 
-        "Rtree_files" : Metadata(
-            "Rtree files", [".dat", ".idx"], path + "/test_makeRmap/rtree_file",
-            {"genome_fa" : path + "/test_makeRmap/toy_hg19.fa",
-             "RE" : {"HindIII" : 'A|AGCTT'}},
-            None, 9606),
-
-        "genome_fa" : Metadata(
-            "hg19", "fasta", path + "/test_makeRmap/toy_hg19.fa", None, "HindIII", 9606),
+    metadata = {"genome_fa" : Metadata(
+        "txt", "fasta", path+ "test_makeBaitmap/chr21_hg19.fa",
+        None, 9606, ""),
         }
+
 
     output_files = {
-        "out_dir_makeRmap" : path + "/test_process_rmap/",
-        "out_prefix_makeRmap" : "restriction_enzyme_test2",
-        "Rtree_files" : path + "/test_process_rmap/rtree_file",
-    }
+        "out_dir_makeRmap" : path + "test_runChicago/",
+        "out_prefix_makeRmap" : "test",
+        "Rtree_files" : path + "test_makeRmap/rtree_file"
+        }
 
-    generate_CHiCAGO_rmap_hand = generate_CHiCAGO_rmap(configuration)
-    generate_CHiCAGO_rmap_hand.run(input_files, input_metadata, output_files)
 
-    assert os.path.getsize(output_files["out_dir_makeRmap"] +
-                           output_files["out_prefix_makeRmap"] + ".rmap") > 0
+    makeRmap_handle = generate_CHiCAGO_rmap(configuration)
+    makeRmap_handle.run(input_files, metadata, output_files)
+
+    out = "".join(
+        [
+            f for f in os.listdir(output_files["out_dir_makeRmap"])
+            if f.startswith("Digest_") and f.endswith(".map")
+        ]
+    )
+
+    assert os.path.getsize(output_files["out_dir_makeRmap"] + out) > 0
+    assert os.path.getsize(output_files["Rtree_files"] + ".dat")
+    assert os.path.getsize(output_files["Rtree_files"] + ".idx")

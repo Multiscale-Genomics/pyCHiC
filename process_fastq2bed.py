@@ -95,12 +95,12 @@ class process_Fastq2bed(Workflow):
                 "fastq2" : input_files["fastq2"],
                 "RE" : input_files["RE"],
                 "chromosome": input_files["chromosome"],
-                "genindex": input_files["genindex"],
-                "genome_fasta" : input_files["genome_fasta"]
+                "gem_idx": input_files["gem_idx"],
+                "genome_fa" : input_files["genome_fa"]
             }, {
                 "fastq1": input_metadata["fastq1"],
                 "fastq2": input_metadata["fastq2"],
-                "genome_fasta": input_metadata["genome_fasta"]
+                "genome_fa": input_metadata["genome_fa"]
             }, {
                 "wd": output_files["wd"]
             }

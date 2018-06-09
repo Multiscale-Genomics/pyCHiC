@@ -87,7 +87,7 @@ class generate_CHiCAGO_baitmap(Workflow):
         makeBaitmapTool_caller = makeBaitmapTool(self.configuration)
         output_files_Baitmap, output_metadata_Baitmap = makeBaitmapTool_caller.run(
             {
-                "genome" : input_files["genome"],
+                "genome_idx" : input_files["genome_idx"],
                 "probes_fa": input_files["probes_fa"],
                 "Rtree_files": input_files["Rtree_files"]
             },

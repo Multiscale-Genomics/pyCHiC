@@ -29,28 +29,27 @@ def test_process_chicago():
 
     Running the chicago pipeline with the test data from the command line
     """
-
-    path = os.path.join(os.path.dirname(__file__), "data/test_process_runChicago/")
+    path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "chinput_file" : path + "GM_rep1.chinput"
-    }
+        "chinput_file": path + "test_runChicago/data_chicago/GM_rep1.chinput"
+        }
 
     output_files = {
-        "output_dir" : path + "output_chicago/",
-        "output_prefix" : "output_test_chicago"
-    }
+        "output_dir": path + "test_runChicago",
+        "output_prefix" : "output_test"
+        }
 
     metadata = {
         "chinput_1" : Metadata(
             "data_chicago", "chinput", [], None, None, 9606),
         "chinput_2" : Metadata(
             "data_chicago", "chinput", [], None, None, 9606)
-    }
+        }
 
     config = {
-        "chicago_setting_file": path + "sGM12878.settingsFile",
-        "chicago_desing_dir": path + "hg19TestDesign/",
+        "chicago_setting_file": path + "test_runChicago/data_chicago/sGM12878.settingsFile",
+        "chicago_desing_dir": path + "test_runChicago/data_chicago",
         #"chicago_print_memory": None,
         "chicago_cutoff": "5",
         "chicago_export_format": "washU_text",
@@ -68,12 +67,11 @@ def test_process_chicago():
         #"chicago_en_trans": None,
         #"chicago_features_only":None}
 
-
     chicago_handle = process_runChicago(config)
     chicago_handle.run(input_files, metadata, output_files)
 
     assert os.path.isfile(output_files["output_dir"] +
-                          "data/" + output_files["output_prefix"] + ".Rds") is True
+                          "/data/" + output_files["output_prefix"] + ".Rds") is True
 
     assert os.path.getsize(output_files["output_dir"] +
-                           "data/" + output_files["output_prefix"] + ".Rds") > 0
+                           "/data/" + output_files["output_prefix"] + ".Rds") > 0

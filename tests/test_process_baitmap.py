@@ -30,36 +30,39 @@ def test_process_rmapBaitmap():
     input files for CHiCAGO pipeline
     """
 
-    path = os.path.join(os.path.dirname(__file__) + "/data")
+    path = os.path.join(os.path.dirname(__file__),"data/")
 
     configuration = {"RE" : {"HindIII" : 'A|AGCTT'},
                     }
 
     input_files = {
-        "genome" :  path + "/test_makeBaitmap/toy_hg19.fa",
-        "probes_fa": path + "/test_makeBaitmap/baits.fa",
-        "Rtree_files" : path + "/test_process_rmap/rtree_file",
-        }
+        "genome_idx" : path + "test_makeBaitmap/chr21_hg19.fa",
+        "probes_fa" : path + "test_makeBaitmap/baits.fa",
+        "Rtree_files" : path + "test_makeRmap/rtree_file"
+    }
+
+    output_files = {
+        "out_sam" :  path + "test_makeBaitmap/baits.sam",
+        "out_baitmap" : path + "test_runChicago/test.baitmap"
+    }
 
     input_metadata = {
+        "genome_digest" : Metadata(
+            "hg38", "fasta", path + "test_makeRmap/chr21_hg19.fa",
+            None, "HindIII", 9606),
+
         "probes" : Metadata(
-            "C-HiC probes", "fasta", path + "/test_makeBaitmap/baits.fa",
+            "C-HiC probes", "fasta", path + "test_makeBaitmap/baits.fa",
             None, None, 9606),
 
         "Rtree_files" : Metadata(
-            "Rtree files", [".dat", ".idx"], path + "/test_makeRmap/rtree_file",
-            {"genome" : path + "/test_makeRmap/toy_hg19.fa",
+            "Rtree files", [".dat", ".idx"], path + "test_makeRmap/rtree_file",
+            {"genome" : path + "test_makeRmap/chr21_hg19.fa",
              "RE" : {"HindIII" : 'A|AGCTT'}},
-            None, 9606),
-
-        "genome_digest" : Metadata(
-            "hg38", "fasta", path + "/test_makeRmap/toy_hg19.fa", None, "HindIII", 9606),
-        }
-
-    output_files = {
-        "out_sam" :  path + "/test_process_baitmap/baits.sam",
-        "out_baitmap" : path + "/test_process_baitmap/test.baitmap"
+            None, 9606
+            )
     }
+
 
     generate_CHiCAGO_baitmap_hand = generate_CHiCAGO_baitmap(configuration)
     generate_CHiCAGO_baitmap_hand.run(input_files, input_metadata, output_files)

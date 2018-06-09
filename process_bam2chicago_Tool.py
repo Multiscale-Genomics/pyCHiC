@@ -92,7 +92,8 @@ class process_bam2chicago(Workflow):
                 "BAITMAP" : input_metadata["BAITMAP"]
             },
             {
-                "out_dir": output_files["out_dir"],
+                "chrRMAP": output_files["chrRMAP"],
+                "chrBAITMAP": output_files["chrBAITMAP"],
                 "sample_name": output_files["sample_name"]
             }
         )

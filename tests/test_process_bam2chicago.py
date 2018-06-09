@@ -24,17 +24,18 @@ def test_process_bam2chicago():
     """
     Function to test bam2chicago.py
     """
-    path = os.path.join(os.path.dirname(__file__),"data/test_process_bam2chicago")
+    path = os.path.join(os.path.dirname(__file__),"data/")
 
     input_files = {
-        "RMAP" : path + "/h19_chr20and21_chr.rmap",
-        "BAITMAP" : path +  "/h19_chr20and21.baitmap_4col_chr.txt",
-        "BAM" : path + "/outbam_sorted.bam"
+        "RMAP" : path + "test_runChicago/test.rmap",
+        "BAITMAP" : path +  "test_runChicago/test.baitmap",
+        "BAM" : path + "test_bed2bam/outbam_sorted.bam",
     }
 
     output_files = {
-        "out_dir" : path,
-        "sample_name" :  path + "/sampleout"
+        "sample_name" :  path + "test_bam2chicago_Tool/sampleout",
+        "chrRMAP" : path + "test_bam2chicago_Tool/chrtest.rmap",
+        "chrBAITMAP" : path + "test_bam2chicago_Tool/chrtest.baitmap"
     }
 
     input_metadata = {
