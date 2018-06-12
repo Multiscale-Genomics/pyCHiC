@@ -25,11 +25,11 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.makeRmap_tool import makeRmapFile
+from tool.rmap_tool import makeRmapFile
 
 ################################################
 
-class generate_CHiCAGO_rmap(Workflow):
+class process_rmap(Workflow):
     """
     This class generate all input files that are needed for
     CHiCAGO to run
@@ -66,7 +66,7 @@ class generate_CHiCAGO_rmap(Workflow):
             input metadata
 
         output_files: dict
-            out_dir_makeRmap: str
+            out_dir_rmap: str
                     path to the output diretory
             out_prefix_makeRmap: str
                     prefix for the output file .rmap
@@ -90,13 +90,13 @@ class generate_CHiCAGO_rmap(Workflow):
                 "genome_fa" : input_metadata["genome_fa"]
             },
             {
-                "out_dir_makeRmap" : output_files["out_dir_makeRmap"],
+                "out_dir_rmap" : output_files["out_dir_rmap"],
                 "out_prefix_makeRmap" : output_files["out_prefix_makeRmap"],
                 "Rtree_files" : output_files["Rtree_files"]
             }
         )
 
-        if os.path.getsize(output_files["out_dir_makeRmap"] +
+        if os.path.getsize(output_files["out_dir_rmap"] +
             output_files["out_prefix_makeRmap"] + ".rmap") > 0:
             pass
         else:

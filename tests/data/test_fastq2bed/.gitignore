@@ -1,2 +1,6 @@
 toy_hg19.fa
 toy_hg19.gem
+01_mapped_r1
+01_mapped_r2
+02_parsed_reads
+03_filtered_reads

@@ -16,8 +16,9 @@
 """
 
 from __future__ import print_function
-from basic_modules.metadata import Metadata
+
 import os
+from basic_modules.metadata import Metadata
 
 from process_truncater import process_truncater
 
@@ -25,8 +26,7 @@ def test_truncater():
     """
     Test for the truncater function
     """
-
-    path = os.path.join(os.getcwd(),"data/test_truncater/")
+    path = os.path.join(os.getcwd(), "data/test_truncater/")
 
     input_files = {
         "fastq1" : path + "SRR3535023_1.fastq",
@@ -34,21 +34,21 @@ def test_truncater():
     }
 
     input_metadata = {
-            "fastq1": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq1"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+        "fastq1": Metadata(
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq1"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             ),
-            "fastq2": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq2"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+        "fastq2": Metadata(
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq2"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             )
         }
 

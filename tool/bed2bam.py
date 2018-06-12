@@ -54,7 +54,14 @@ class bed2bam(Tool):
         configuration: dict
          contain info to run the functions of the class
         """
+
         logger.info("Initiating bed2chicago")
+        Tool.__init__(self)
+
+        if configuration is None:
+            configuration = {}
+
+        self.configuration.update(configuration)
 
     def wrapper_bed2bam(self, bed, bam_out):
         """

@@ -20,7 +20,7 @@ from __future__ import print_function
 import os
 import pytest
 
-from process_rmap import generate_CHiCAGO_rmap
+from process_rmap import process_rmap
 from basic_modules.metadata import Metadata
 
 def test_process_rmap():
@@ -41,29 +41,30 @@ def test_process_rmap():
         }
 
 
-    metadata = {"genome_fa" : Metadata(
-        "txt", "fasta", path+ "test_makeBaitmap/chr21_hg19.fa",
-        None, 9606, ""),
-        }
+    metadata = {
+        "genome_fa" : Metadata(
+            "txt", "fasta", path+ "test_makeBaitmap/chr21_hg19.fa",
+            None, 9606, ""),
+    }
 
 
     output_files = {
-        "out_dir_makeRmap" : path + "test_runChicago/",
+        "out_dir_rmap" : path + "test_runChicago/",
         "out_prefix_makeRmap" : "test",
         "Rtree_files" : path + "test_makeRmap/rtree_file"
         }
 
 
-    makeRmap_handle = generate_CHiCAGO_rmap(configuration)
-    makeRmap_handle.run(input_files, metadata, output_files)
+    rmap_handle = process_rmap(configuration)
+    rmap_handle.run(input_files, metadata, output_files)
 
     out = "".join(
         [
-            f for f in os.listdir(output_files["out_dir_makeRmap"])
+            f for f in os.listdir(output_files["out_dir_rmap"])
             if f.startswith("Digest_") and f.endswith(".map")
         ]
     )
 
-    assert os.path.getsize(output_files["out_dir_makeRmap"] + out) > 0
+    assert os.path.getsize(output_files["out_dir_rmap"] + out) > 0
     assert os.path.getsize(output_files["Rtree_files"] + ".dat")
     assert os.path.getsize(output_files["Rtree_files"] + ".idx")

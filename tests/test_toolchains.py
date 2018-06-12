@@ -37,13 +37,13 @@ def all_toolchain(verbose=False):
 
    #params.append('test_gem_indexer.py')
     params.append('test_truncater.py')
-    params.append('test_makeRmap_Tool.py')
-    params.append('test_makeBaitmap.py')
-    params.append('test_makeDesignFiles_Tool.py')
+    params.append('test_rmap_tool.py')
+    params.append('test_baitmap.py')
+    params.append('test_design.py')
     params.append('test_fastq2bed.py')
     params.append('test_bed2bamchicago.py')
-    params.append('test_bam2chicago_Tool.py')
-    params.append('test_runChicago.py')
+    params.append('test_bam2chicago_tool.py')
+    params.append('test_run_chicago.py')
 
     return pytest.main(params)
 

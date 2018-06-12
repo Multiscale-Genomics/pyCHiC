@@ -16,8 +16,9 @@
 """
 
 from __future__ import print_function
-from basic_modules.metadata import Metadata
 import os
+
+from basic_modules.metadata import Metadata
 
 from tool.fastq2bed import Fastq2bed
 
@@ -30,36 +31,36 @@ def test_fastq2bed():
     input_files = {
         "fastq1" : path + "/test_truncater/SRR3535023_1.trunc.fastq",
         "fastq2" : path + "/test_truncater/SRR3535023_2.trunc.fastq",
-        "gem_idx" : path + "/test_makeBaitmap/chr21_hg19.fa.gem.gz",
-        "genome_fa" : path + "/test_makeBaitmap/chr21_hg19.fa",
+        "gem_idx" : path + "/test_baitmap/chr21_hg19.fa.gem.gz",
+        "genome_fa" : path + "/test_baitmap/chr21_hg19.fa",
         "RE" : "HindIII",
-        "chromosome" : ""
+        "chromosome" : "22"
     }
 
     input_metadata = {
-            "fastq1": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq1"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+        "fastq1": Metadata(
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq1"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             ),
-            "fastq2": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq2"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+        "fastq2": Metadata(
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq2"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             ),
-            "genome_fa": Metadata(
-                data_type="text",
-                file_type="fasta",
-                file_path=input_files["genome_fa"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+        "genome_fa": Metadata(
+            data_type="text",
+            file_type="fasta",
+            file_path=input_files["genome_fa"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             )
         }
 

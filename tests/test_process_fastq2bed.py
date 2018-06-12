@@ -14,12 +14,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-
 from __future__ import print_function
-from basic_modules.metadata import Metadata
-import os
 
-from process_fastq2bed import process_Fastq2bed
+import os
+from basic_modules.metadata import Metadata
+
+from process_fastq2bed import process_fastq2bed
 
 def test_process_fastq2bed():
     """
@@ -38,28 +38,28 @@ def test_process_fastq2bed():
 
     input_metadata = {
         "fastq1": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq1"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq1"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             ),
         "fastq2": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq2"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq2"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             ),
         "genome_fa": Metadata(
-                data_type="text",
-                file_type="fasta",
-                file_path=input_files["genome_fa"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+            data_type="text",
+            file_type="fasta",
+            file_path=input_files["genome_fa"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             )
         }
 
@@ -67,7 +67,7 @@ def test_process_fastq2bed():
         "wd" : path + "/test_fastq2bed"
     }
 
-    fastq2bed_hdl = process_Fastq2bed()
+    fastq2bed_hdl = process_fastq2bed()
     fastq2bed_hdl.run(input_files, input_metadata, output_files)
 
     try:

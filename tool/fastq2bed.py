@@ -58,8 +58,15 @@ class Fastq2bed(Tool):
         configuration: dict
             contains parameters to run the functino
         """
+
         logger.info("initialising Fastq2bed")
 
+        Tool.__init__(self)
+
+        if configuration is None:
+            configuration = {}
+
+        self.configuration.update(configuration)
 
     def gunzip_gem(self, gem_idx_gz):
         """
@@ -112,36 +119,27 @@ class Fastq2bed(Tool):
         bool
         """
         logger.info(chromosome)
-        if chromosome == "":
-            args1 = ["tadbit", "map",
-                     "--fastq", fastq1,
-                     "--index", gem_idx,
-                     "--read", "1",
-                     "--renz", RE,
-                     "-w", wd]
 
-            args2 = ["tadbit", "map",
-                     "--fastq", fastq2,
-                     "--index", gem_idx,
-                     "--read", "2",
-                     "--renz", RE,
-                     "-w", wd]
-        else:
-            args1 = ["tadbit", "map",
-                     "--fastq", fastq1,
-                     "--index", gem_idx,
-                     "--read", "1",
-                     "--renz", RE,
-                     "-w", wd,
-                     "--chr_name", chromosome]
+        args1 = ["tadbit", "map",
+                 "--fastq", fastq1,
+                 "--index", gem_idx,
+                 "--read", "1",
+                 "--renz", RE,
+                 "-w", wd]
 
-            args2 = ["tadbit", "map",
-                     "--fastq", fastq2,
-                     "--index", gem_idx,
-                     "--read", "2",
-                     "--renz", RE,
-                     "-w", wd,
-                     "--chr_name", chromosome]
+        args2 = ["tadbit", "map",
+                 "--fastq", fastq2,
+                 "--index", gem_idx,
+                 "--read", "2",
+                 "--renz", RE,
+                 "-w", wd]
+
+        if chromosome is not "":
+            args1.append("--chr_name")
+            args1.append(chromosome)
+
+            args2.append("--chr_name")
+            args2.append(chromosome)
 
 
         logger.info("tadbit map1 arguments:" + " ".join(args1))

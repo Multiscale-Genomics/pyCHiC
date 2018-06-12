@@ -29,7 +29,7 @@ from tool.fastq2bed import Fastq2bed
 
 #################################################
 
-class process_Fastq2bed(Workflow):
+class process_fastq2bed(Workflow):
     """
     This class convert pair fastq reads to bed files
     that will feed process_bed2chicagobamWrap.py

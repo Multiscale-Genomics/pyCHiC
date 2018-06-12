@@ -29,7 +29,7 @@ from tool.makeBaitmap import makeBaitmapTool
 
 ################################################
 
-class generate_CHiCAGO_baitmap(Workflow):
+class process_baitmap(Workflow):
     """
     This class generate all input files that are needed for
     CHiCAGO to run
