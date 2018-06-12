@@ -166,7 +166,7 @@ if __name__ == "__name__":
 
     if LOCAL:
         import sys
-        sys._run_from_cmdl = True
+        sys._run_from_cmdl = True # pylint: disable=protected-access
 
     RESULTS = main_json(CONFIG, IN_METADATA, OUT_METADATA)
 

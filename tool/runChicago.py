@@ -225,7 +225,6 @@ class ChicagoTool(Tool):
                 file_path=output_files["output_dir"],
                 sources=[
                     input_metadata["chinput_1"].file_path,
-                    input_metadata["chinput_2"].file_path
                 ],
                 taxon_id=input_metadata["chinput_1"].taxon_id,
                 meta_data={
