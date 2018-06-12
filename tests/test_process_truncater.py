@@ -19,7 +19,7 @@ from __future__ import print_function
 from basic_modules.metadata import Metadata
 import os
 
-from tool.truncater import Truncater
+from process_truncater import process_truncater
 
 def test_truncater():
     """
@@ -62,7 +62,7 @@ def test_truncater():
         "threads" : "2"
         }
 
-    truncater_hdl = Truncater(configuration)
+    truncater_hdl = process_truncater(configuration)
     truncater_hdl.run(input_files, input_metadata, output_files)
 
     assert os.path.isfile(output_files["out_dir"]+"SRR3535023_1.trunc.fastq") is True

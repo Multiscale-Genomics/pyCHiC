@@ -39,8 +39,6 @@ def test_chicago():
 
     metadata = {
         "chinput_1" : Metadata(
-            "data_chicago", "chinput", [], None, None, 9606),
-        "chinput_2" : Metadata(
             "data_chicago", "chinput", [], None, None, 9606)
         }
 

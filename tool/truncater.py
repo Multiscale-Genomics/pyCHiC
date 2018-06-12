@@ -175,7 +175,7 @@ class Truncater(Tool):
         output_files: dict
             fastq_trunc1
             fastq_trunc2
-        outut_metadata: dict
+        output_metadata: dict
         """
 
         param_truncater = self.get_params(self.configuration)
