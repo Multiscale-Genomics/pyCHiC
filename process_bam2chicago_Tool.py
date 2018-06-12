@@ -20,9 +20,6 @@
 from __future__ import print_function
 import os
 
-#Required for ReadTheDocs
-from functools import wraps
-
 import argparse
 
 from basic_modules.workflow import Workflow
