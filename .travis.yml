@@ -18,7 +18,7 @@ addons:
   apt:
     packages:
       - libspatialindex-dev
-      - samtools
+#      - samtools
       - bedtools
 
 #create folders for installation
@@ -116,16 +116,6 @@ before_install:
      - ln -s ${HOME}/lib/samtools/bin/wgsim wgsim
      - ln -s ${HOME}/lib/samtools/bin/wgsim_eval.pl wgsim_eval.pl
      - ln -s ${HOME}/lib/samtools/bin/zoom2sam.pl zoom2sam.pl
-
-# install bedtools
-#     - cd ${HOME}/lib
-#     -  wget https://github.com/arq5x/bedtools2/releases/download/v2.26.0/bedtools-2.26.0.tar.gz
-#     - tar -zxvf bedtools-2.26.0.tar.gz
-#     - cd bedtools2
-#     - make
-#     - cd ${HOME}/bin
-#     - ln -s ${HOME}/lib/bedtools2/bin/bedtools bedtools
-
      
      - cd ${HOME}/build/pabloacera/C-HiC/
 
