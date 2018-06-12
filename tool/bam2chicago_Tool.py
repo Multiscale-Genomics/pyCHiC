@@ -84,7 +84,7 @@ class bam2chicagoTool(Tool):
             rformat_rmap = False
 
         else:
-            rmapfile_new.iloc[:,0] = rmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
+            rmapfile_new.iloc[:, 0] = rmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
 
         logger.info("checking .baitmap chr format")
         baitmapfile_new = pd.read_table(baitmap_file, header=None, sep="\t")
@@ -92,7 +92,7 @@ class bam2chicagoTool(Tool):
         if chr_baitmap[0:3] == "chr":
             logger.info("baitmap file chromosome on the right format")
             rformat_baitmap = False
-            pass
+
         else:
             baitmapfile_new.iloc[:, 0] = baitmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
 
@@ -231,35 +231,3 @@ class bam2chicagoTool(Tool):
         }
 
         return(results, output_metadata)
-
-if "__main__" == __name__:
-
-    path = "../tests/data/"
-    input_files = {
-        "RMAP" : path + "test_runChicago/test.rmap",
-        "BAITMAP" : path +  "test_runChicago/test.baitmap",
-        "BAM" : path + "test_bed2bam/outbam_sorted.bam",
-    }
-
-    output_files = {
-        "sample_name" :  path + "test_bam2chicago_Tool/sampleout",
-        "chrRMAP" : path + "test_bam2chicago_Tool/chrtest.rmap",
-        "chrBAITMAP" : path + "test_bam2chicago_Tool/chrtest.baitmap"
-    }
-
-    input_metadata = {
-        "RMAP" : Metadata(
-            "data_chicago_input", ".rmap",
-            path+"/h19_chr20and21_chr.rmap", None, {}, 9606),
-        "BAITMAP" : Metadata(
-            "data_chicago_input", ".baitmap",
-            path+"/h19_chr20and21.baitmap_4col_chr.txt", None, {}, 9606),
-        "BAM" : Metadata(
-            "txt", "bamfile", path + "/SRR3535023_1_2.hicup.bam",
-            {"fastq1" : "SRR3535023_1.fastq",
-             "fastq2" : "SRR3535023_2.fastq", "genome" : "human_hg19"},
-            9606)
-    }
-
-    bam2chicago_handle = bam2chicagoTool()
-    bam2chicago_handle.run(input_files, input_metadata, output_files)
