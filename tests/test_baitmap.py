@@ -30,7 +30,7 @@ def test_baitmap():
     input_files = {
         "genome_idx" : path + "test_baitmap/chr21_hg19.fa",
         "probes_fa" : path + "test_baitmap/baits.fa",
-        "Rtree_files" : path + "test_baitmap/rtree_file"
+        "Rtree_files" : path + "test_rmap/rtree_file"
     }
 
     output_files = {
