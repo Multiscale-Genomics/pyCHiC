@@ -38,6 +38,7 @@ except ImportError:
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
+from tool.bwa_mem_aligner import bwaAlignerMEMTool
 
 ##################################################
 
@@ -126,7 +127,6 @@ class makeBaitmapTool(Tool):
         ------
          bool
         """
-        from tool.bwa_mem_aligner import bwaAlignerMEMTool
 
         out_bam = out_sam.split(".")[0]+".bam"
 
@@ -142,12 +142,12 @@ class makeBaitmapTool(Tool):
 
         metadata_mem = {
 
-            "genome": Metadata("Assembly", "fasta", genome_fa, None,{"assembly": "test"}),
+            "genome": Metadata("Assembly", "fasta", genome_fa, None, {"assembly": "test"}),
 
-            "index": Metadata("index_bwa", "", [genome_fa],{
-                                "assembly": "test",
-                                "tool": "bwa_indexer"
-                                }
+            "index": Metadata("index_bwa", "", [genome_fa], {
+                "assembly": "test",
+                "tool": "bwa_indexer"
+                }
                              ),
 
             "loc": Metadata("probes", "fastq", probes_fa, None, {"assembly": "test"})

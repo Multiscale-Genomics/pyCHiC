@@ -18,16 +18,16 @@
 from __future__ import print_function
 
 import os
-from rtree import index
 import sys
 from utils import logger
+from basic_modules.tool import Tool
+from basic_modules.metadata import Metadata
 
 import re
 re.compile("pattern")
 
+from rtree import index
 
-from basic_modules.tool import Tool
-from basic_modules.metadata import Metadata
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:

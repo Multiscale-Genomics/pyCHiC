@@ -19,3 +19,5 @@ aligner_utils.py
 common.py
 gem_indexer.py
 .Rhistory
+bam2chicago.py
+bam2chicago.pyc

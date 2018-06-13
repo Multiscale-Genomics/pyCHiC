@@ -25,29 +25,27 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.makeDesignFiles import makeDesignFilesTool
+from tool.makeBaitmap import makeBaitmapTool
 
-#####################################################
+################################################
 
-class process_design(Workflow):
+class process_baitmap(Workflow):
     """
-    This class generates the Design files and chinput files,
-    imput for CHiCAGO. Starting from rmap and baitmap and capture
-    HiC BAM files.
+    This class generate all input files that are needed for
+    CHiCAGO to run
     """
-
     def __init__(self, configuration=None):
         """
-        Initiate the class
+        initiate the class
 
         Parameters
-        -----------
-        Configuration: dict
-         dictionary with parameters for different tools from the class
-         indicating how to run each of them.
+        ----------
+        configuration: dict
+            dictionary with parameters for different Tools, indicating
+            how to run each of them
         """
 
-        logger.info("Generating CHiCAGO input Design files")
+        logger.info("Generating CHiCAGO input file .baitmap")
         if configuration is None:
             configuration = {}
 
@@ -55,53 +53,59 @@ class process_design(Workflow):
 
     def run(self, input_files, metadata, output_files):
         """
-        Main function to run the tools, MakeDesignFiles_Tool.py and
-        bam2chicago_Tool.py
+        This is the main function that run the tools to create
+        .baitmap.
 
-        Parameters
+        Parameters:
         ----------
         input_files: dict
-            designDir: path to the folder with .rmap and .baitmap files
-            rmapFile: path to the .rmap file
-            baitmapFile: path to the .baitmap file
-            bamFile: path to the capture HiC bamfiles
+            genome: str
+                Indexed Ref genome used used in the experiment.
 
         metadata: dict
             input metadata
 
         output_files: dict
-            outPrefixDesign : Path and name of the output prefix,
-                recommend to be the same as rmap and baitmap files.
-            sample_name: Path and name of the .chinput file
+            Rtree_files: str
+                    Name of the Rtree files
+            out_sam: str
+                whole path of SAM file, generated to locate baits
+            out_baitmap: str
+                whole path for the .baitmap file
 
-        Returns
-        -------
-        bool
-        output_metadata
+        Returns:
+        --------
+        output_files_Baitmap : bool
+        output_metadata_Baitmap : dict
+            metadata for baitmap
+            files
         """
 
-        design_caller = makeDesignFilesTool(self.configuration)
-        makeDesgin_out, makeDesign_outMeta = design_caller.run(
+        baitmap_caller = makeBaitmapTool(self.configuration)
+        output_files_baitmap, output_metadata_baitmap = baitmap_caller.run(
             {
-                "designDir" : input_files["designDir"]
+                "genome_idx" : input_files["genome_idx"],
+                "probes_fa": input_files["probes_fa"],
+                "Rtree_files": input_files["Rtree_files"]
             },
             {
-                ".rmap" : metadata[".rmap"],
-                ".baitmap" : metadata[".baitmap"]
+                "genome_digest" : metadata["genome_digest"],
+                "probes" : metadata["probes"],
+                "Rtree_files" : metadata["Rtree_files"]
             },
             {
-                "outPrefixDesign" : output_files["outPrefixDesign"]
+                "out_sam" : output_files["out_sam"],
+                "out_baitmap" : output_files["out_baitmap"]
             }
         )
 
-        if os.path.isfile(output_files["outPrefixDesign"] + ".nbpb") is True:
+        if os.path.getsize(output_files["out_baitmap"]) > 0:
             pass
         else:
-            logger.fatal("process_makeDesign failed to" +
-                         "generate design files")
+            logger.fatal("generate_CHiCAGO_baitmap failed to generate .baitmap file")
             return False
 
-        return makeDesgin_out, makeDesign_outMeta
+        return output_files_baitmap, output_metadata_baitmap
 
 #############################################################
 
@@ -109,31 +113,32 @@ def main_json(config, in_metadata, out_metadata):
     """
     Alternative main function
 
-    This function lauch the app using the configuration written
-    in two json files:
+    This function launch the app using the configuration written
+    in two json files: config_process_rmapBaitmap.json  and
+    input_process_rmapBaitmap.json
     """
-    #1.Instantiate and launch the app
-    print("Instantiate and launch the App")
+    #Instantiate and lauch the app
+    print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(process_design,
+    results = app.launch(process_baitmap,
                          config,
                          in_metadata,
                          out_metadata)
-
     #2. The App has finished
     print("2. Execution finished: see " + out_metadata)
     print(results)
 
     return results
 
-#########################################################
+#########################################################################
 
-if __name__ == "__main__":
 
-    #sert up the command line parameters
+if __name__ == "__name__":
+
+    #set up the command line parameters
     PARSER = argparse.ArgumentParser(
-        description="Pipeline to generate Design files")
+        description="Pipeline to generate .baitmap file")
 
     PARSER.add_argument("--config", help="Configuration file")
     PARSER.add_argument(
@@ -147,9 +152,10 @@ if __name__ == "__main__":
     ARGS = PARSER.parse_args()
 
     CONFIG = ARGS.config
-    IN_METADATA = ARGS.IN_METADATA
-    OUT_METADATA = ARGS.OUT_METADATA
+    IN_METADATA = ARGS.in_metadata
+    OUT_METADATA = ARGS.out_metadata
     LOCAL = ARGS.local
+
     if LOCAL:
         import sys
         sys._run_from_cmdl = True # pylint: disable=protected-access

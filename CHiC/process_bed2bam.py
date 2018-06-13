@@ -25,14 +25,14 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.bam2chicago_tool import bam2chicagoTool
+from tool.bed2bam import bed2bam
 
 ################################################
 
-class process_bam2chicago(Workflow):
+class process_bed2bam(Workflow):
     """
-    This class creates .chinput files.
-    input files for CHiCAGO
+    This class generate bam file compatible with
+    bam2chicago.py from .tsv file ourput of process_fastq2bed.py
     """
     def __init__(self, configuration=None):
         """
@@ -45,62 +45,59 @@ class process_bam2chicago(Workflow):
             how to run each of them
         """
 
-        logger.info("Initialising process_bam2chicago")
+        logger.info("Initialising process_bed2bam")
         if configuration is None:
             configuration = {}
 
         self.configuration.update(configuration)
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
-        This is the main function that run the tools to create
-        .chinput files
+        This is the main function that run the tools to create bamfile
 
         Parameters:
         ----------
         input_files: dict
-            BAM: str
-                path to BAM files
-            RMAP: str
-                path to RMAP file
-            BAITMAP: str
-                path to BAITMAP file
+            bed : str
+                path to the bed file
 
-        input_metadata: dict
+
+        metadata: dict
             input metadata
+
+        output_files: dict
+            bam_out : str
+                complete path and prefix of output
 
         Returns:
         --------
         bool
-        output_metadata: dict
-            metadata for .chinput file
+        output_metadata_Baitmap : dict
+            metadata for both rmap and baitmap
+            files
         """
 
-        bam2chicago_caller = bam2chicagoTool(self.configuration)
-        output_files_bam2chicago, output_metadata_bam2chicago = bam2chicago_caller.run(
+        bed2bam_caller = bed2bam(self.configuration)
+        output_files_bed2bam, output_metadata_bed2bam = bed2bam_caller.run(
             {
-                "BAM" : input_files["BAM"],
-                "RMAP" : input_files["RMAP"],
-                "BAITMAP" : input_files["BAITMAP"]
+                "bed" : input_files["bed"],
+                "ncpus" : "2"
             },
             {
-                "BAM" : input_metadata["BAM"],
-                "RMAP" : input_metadata["RMAP"],
-                "BAITMAP" : input_metadata["BAITMAP"]
+                "bed" : metadata["bed"]
             },
             {
-                "chrRMAP": output_files["chrRMAP"],
-                "chrBAITMAP": output_files["chrBAITMAP"],
-                "sample_name": output_files["sample_name"]
+                "bam_out" : output_files["bam_out"],
             }
         )
 
-        out_path = output_files["sample_name"] + "/sampleout.chinput"
-
-        if os.path.getsize(out_path) > 0:
-            return output_files_bam2chicago, output_metadata_bam2chicago
+        if os.path.getsize(output_files["bam_out"] + "_sorted.bam") > 0:
+            pass
         else:
-            logger.fatal("process_bam2chicago failed to generate .chinput files")
+            logger.fatal("process_bed2bam failed to generate BAM file")
+            return False
+
+        return output_files_bed2bam, output_metadata_bed2bam
 
 #############################################################
 
@@ -117,7 +114,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(process_bam2chicago,
+    results = app.launch(process_bed2bam,
                          config,
                          in_metadata,
                          out_metadata)
@@ -134,7 +131,7 @@ if __name__ == "__name__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
-        description="Pipeline to generate .chinput file")
+        description="Pipeline to generate BAM files")
 
     PARSER.add_argument("--config", help="Configuration file")
     PARSER.add_argument(
