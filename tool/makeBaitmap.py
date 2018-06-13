@@ -105,6 +105,77 @@ class makeBaitmapTool(Tool):
         logger.fatal("bwa stderr" + proc_err)
         return False
 
+    def bwa_for_probes2(self, genome_fa, genome_index, probes_fa, out_sam):
+        """
+        This function run bwa using an index genome and a probes file
+        in fasta format. bwa is used as single end and with high
+        gap penalty and missmacht score
+
+        Parameters:
+        -----------
+        genome_index: str
+            path to the reference genome with indexed files
+            in the same folder. This genome should
+            be the same used to generate the .rmap file
+        probes_fa: str
+            path to probes files in fasta format,
+            every sequences representing one
+        out: str
+            Name of the output file
+        Return:
+        ------
+         bool
+        """
+        from tool.bwa_mem_aligner import bwaAlignerMEMTool
+
+        out_bam = out_sam.split(".")[0]+".bam"
+
+        input_mem = {
+            "genome": genome_fa,
+            "index": genome_index,
+            "loc": probes_fa
+            }
+
+        output_mem = {
+            "output": out_bam
+        }
+
+        metadata_mem = {
+
+            "genome": Metadata("Assembly", "fasta", genome_fa, None,{"assembly": "test"}),
+
+            "index": Metadata("index_bwa", "", [genome_fa],{
+                                "assembly": "test",
+                                "tool": "bwa_indexer"
+                                }
+                             ),
+
+            "loc": Metadata("probes", "fastq", probes_fa, None, {"assembly": "test"})
+        }
+
+        bwaAlignerMEMTool.run(input_mem, metadata_mem, output_mem)
+
+        """
+
+        args = " ".join(["bwa", "mem", "-O", "100", "-B", "20",
+                         genome_index, probes_fa, ">", out_sam])
+
+        logger.info("bwa_for_probes CMD: " + args)
+
+        process = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        process.wait()
+        proc_out, proc_err = process.communicate()
+
+        if os.path.getsize(out_sam) > 0:
+            return True
+
+        logger.fatal("bwa failed to generate sam file")
+        logger.fatal("bwa stdout" + proc_out)
+        logger.fatal("bwa stderr" + proc_err)
+        return False
+        """
+
     def sam_to_baitmap(self, sam_file, Rtree_files):
         """
         This function take the sam file, output of bwa
@@ -200,6 +271,10 @@ class makeBaitmapTool(Tool):
         Parameters
         ----------
         input_files : Dict
+            genome_fa
+            genome_idx
+            probes_fa
+            Rtree_files
 
 
         metadata : dict
@@ -210,8 +285,9 @@ class makeBaitmapTool(Tool):
         output_metadata : list
             List of matching metadata dict objects
         """
-
+        """
         self.bwa_for_probes(
+            input_files["genome_fa"],
             input_files["genome_idx"],
             input_files["probes_fa"],
             output_files["out_sam"]
@@ -243,4 +319,12 @@ class makeBaitmapTool(Tool):
             )
         }
 
+
         return results, output_metadata
+        """
+        self.bwa_for_probes2(
+            input_files["genome_fa"],
+            input_files["genome_idx"],
+            input_files["probes_fa"],
+            output_files["out_sam"]
+            )
