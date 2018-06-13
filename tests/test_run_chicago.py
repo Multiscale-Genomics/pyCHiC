@@ -66,5 +66,8 @@ def test_chicago():
     chicago_handle = ChicagoTool(config)
     chicago_handle.run(input_files, metadata, output_files)
 
-    assert os.path.isfile(output_files["output_dir"] + "/data/" + output_files["output_prefix"] + ".Rds") is True
-    assert os.path.getsize(output_files["output_dir"] + "/data/" + output_files["output_prefix"] + ".Rds") > 0
+    assert os.path.isfile(output_files["output_dir"] +
+                          "/data/" + output_files["output_prefix"] + ".Rds") is True
+
+    assert os.path.getsize(output_files["output_dir"] +
+                           "/data/" + output_files["output_prefix"] + ".Rds") > 0
