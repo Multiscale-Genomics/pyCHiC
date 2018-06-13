@@ -130,7 +130,7 @@ class bed2bam(Tool):
             logger.fatal("samtools didnt generate sorted bam_out")
             return False
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         This function runs the wrapper_bed2chicago function
         and produce the bam_out
@@ -140,7 +140,7 @@ class bed2bam(Tool):
         input_files: dict
             deb
             ncpus
-        input_metadata: dict
+        metadata: dict
         output_files: dict
             bam_out
 
@@ -163,7 +163,7 @@ class bed2bam(Tool):
                 data_type="",
                 file_type="bam",
                 file_path=output_files["bam_out"]+".bam",
-                sources=input_metadata["bed"].file_path,
+                sources=metadata["bed"].file_path,
                 taxon_id=9606,
                 meta_data=""
                 )

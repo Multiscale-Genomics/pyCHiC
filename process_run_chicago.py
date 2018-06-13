@@ -51,7 +51,7 @@ class process_run_chicago(Workflow):
 
         self.configuration.update(configuration)
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         This main function that run the chicago pipeline with runChicago.R wrapper
 
@@ -64,7 +64,7 @@ class process_run_chicago(Workflow):
                 chinput_file: comma separated list in case there
                     is more than one input file.
 
-        input_metadata: dict
+        metadata: dict
                 Input metadata, str
 
         output: dict
@@ -93,8 +93,8 @@ class process_run_chicago(Workflow):
             {
                 "chinput_file" : input_files["chinput_file"],
             }, {
-                "chinput_1" : input_metadata["chinput_1"],
-                "chinput_2" : input_metadata["chinput_2"]
+                "chinput_1" : metadata["chinput_1"],
+                "chinput_2" : metadata["chinput_2"]
             }, {
                 "output_prefix" : output_files["output_prefix"],
                 "output_dir" : output_files["output_dir"]
@@ -112,14 +112,14 @@ def main_json(config, in_metadata, out_metadata):
     Alternative main function
 
     This function launches the app using configuration written in
-    two json files: config.json and input_metadata.json
+    two json files: config.json and metadata.json
     """
 
     # 1. Instantiate and launch the App
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(process_runChicago,
+    results = app.launch(process_run_chicago,
                          config,
                          in_metadata,
                          out_metadata)

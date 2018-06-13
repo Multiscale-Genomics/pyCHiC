@@ -16,6 +16,8 @@
 """
 from __future__ import print_function
 
+import pytest # pylint: disable=unused-import
+
 import os
 from basic_modules.metadata import Metadata
 
@@ -36,7 +38,7 @@ def test_process_fastq2bed():
         "chromosome" : ""
     }
 
-    input_metadata = {
+    metadata = {
         "fastq1": Metadata(
             data_type="text",
             file_type="fastq",
@@ -68,7 +70,7 @@ def test_process_fastq2bed():
     }
 
     fastq2bed_hdl = process_fastq2bed()
-    fastq2bed_hdl.run(input_files, input_metadata, output_files)
+    fastq2bed_hdl.run(input_files, metadata, output_files)
 
     try:
         file_list = os.listdir(output_files["wd"]+"/01_mapped_r1/")

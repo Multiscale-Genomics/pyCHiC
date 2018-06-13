@@ -14,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-import pytest
+import pytest # pylint: disable=unused-import
 import os
 
 from basic_modules.metadata import Metadata
@@ -27,18 +27,18 @@ def test_process_bam2chicago():
     path = os.path.join(os.path.dirname(__file__),"data/")
 
     input_files = {
-        "RMAP" : path + "test_runChicago/test.rmap",
-        "BAITMAP" : path +  "test_runChicago/test.baitmap",
+        "RMAP" : path + "test_run_chicago/test.rmap",
+        "BAITMAP" : path +  "test_run_chicago/test.baitmap",
         "BAM" : path + "test_bed2bam/outbam_sorted.bam",
     }
 
     output_files = {
-        "sample_name" :  path + "test_bam2chicago_Tool/sampleout",
-        "chrRMAP" : path + "test_bam2chicago_Tool/chrtest.rmap",
-        "chrBAITMAP" : path + "test_bam2chicago_Tool/chrtest.baitmap"
+        "sample_name" :  path + "test_bam2chicago_tool/sampleout",
+        "chrRMAP" : path + "test_bam2chicago_tool/chrtest.rmap",
+        "chrBAITMAP" : path + "test_bam2chicago_tool/chrtest.baitmap"
     }
 
-    input_metadata = {
+    metadata = {
         "RMAP" : Metadata(
             "data_chicago_input", ".rmap",
             path+"/h19_chr20and21_chr.rmap", None, {}, 9606),
@@ -53,7 +53,7 @@ def test_process_bam2chicago():
     }
 
     bam2chicago_handle = process_bam2chicago()
-    bam2chicago_handle.run(input_files, input_metadata, output_files)
+    bam2chicago_handle.run(input_files, metadata, output_files)
 
     out_path = output_files["sample_name"] + "/sampleout.chinput"
 

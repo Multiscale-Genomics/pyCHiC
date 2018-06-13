@@ -51,7 +51,7 @@ class process_baitmap(Workflow):
 
         self.configuration.update(configuration)
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         This is the main function that run the tools to create
         .baitmap.
@@ -81,8 +81,8 @@ class process_baitmap(Workflow):
             files
         """
 
-        makeBaitmapTool_caller = makeBaitmapTool(self.configuration)
-        output_files_Baitmap, output_metadata_Baitmap = makeBaitmapTool_caller.run(
+        baitmap_caller = makeBaitmapTool(self.configuration)
+        output_files_baitmap, output_metadata_baitmap = baitmap_caller.run(
             {
                 "genome_idx" : input_files["genome_idx"],
                 "probes_fa": input_files["probes_fa"],
@@ -105,7 +105,7 @@ class process_baitmap(Workflow):
             logger.fatal("generate_CHiCAGO_baitmap failed to generate .baitmap file")
             return False
 
-        return output_files_Baitmap, output_metadata_Baitmap
+        return output_files_baitmap, output_metadata_baitmap
 
 #############################################################
 
@@ -121,7 +121,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(generate_CHiCAGO_baitmap,
+    results = app.launch(process_baitmap,
                          config,
                          in_metadata,
                          out_metadata)

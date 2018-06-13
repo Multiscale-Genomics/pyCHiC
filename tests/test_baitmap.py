@@ -38,7 +38,7 @@ def test_baitmap():
         "out_baitmap" : path + "test_run_chicago/test.baitmap"
     }
 
-    input_metadata = {
+    metadata = {
         "genome_digest" : Metadata(
             "hg38", "fasta", path + "test_rmap/chr21_hg19.fa",
             None, "HindIII", 9606),
@@ -56,7 +56,7 @@ def test_baitmap():
     }
 
     makeBaitmap_handler = makeBaitmapTool()
-    makeBaitmap_handler.run(input_files, input_metadata, output_files)
+    makeBaitmap_handler.run(input_files, metadata, output_files)
 
     assert os.path.getsize(output_files["out_sam"]) > 0
     assert os.path.getsize(output_files["out_baitmap"]) > 0

@@ -18,7 +18,7 @@
 from __future__ import print_function
 
 import os
-import pytest
+import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
 from process_baitmap import process_baitmap
@@ -43,10 +43,10 @@ def test_process_baitmap():
 
     output_files = {
         "out_sam" :  path + "test_baitmap/baits.sam",
-        "out_baitmap" : path + "test_runChicago/test.baitmap"
+        "out_baitmap" : path + "test_run_chicago/test.baitmap"
     }
 
-    input_metadata = {
+    metadata = {
         "genome_digest" : Metadata(
             "hg38", "fasta", path + "test_rmap/chr21_hg19.fa",
             None, "HindIII", 9606),
@@ -65,6 +65,6 @@ def test_process_baitmap():
 
 
     process_baitmap_handl = process_baitmap(configuration)
-    process_baitmap_handl.run(input_files, input_metadata, output_files)
+    process_baitmap_handl.run(input_files, metadata, output_files)
 
     assert os.path.getsize(output_files["out_baitmap"]) > 0

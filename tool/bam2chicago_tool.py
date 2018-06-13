@@ -176,7 +176,7 @@ class bam2chicagoTool(Tool):
 
         return True
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         Function that runs and pass the parameters to bam2chicago
 
@@ -214,17 +214,17 @@ class bam2chicagoTool(Tool):
 
         output_metadata = {
             "chinput": Metadata(
-                data_type=input_metadata['BAM'].data_type,
+                data_type=metadata['BAM'].data_type,
                 file_type="chinput",
                 file_path=output_files["sample_name"],
                 sources=[
-                    input_metadata["BAM"].file_path,
-                    input_metadata["RMAP"].file_path,
-                    input_metadata["BAITMAP"].file_path
+                    metadata["BAM"].file_path,
+                    metadata["RMAP"].file_path,
+                    metadata["BAITMAP"].file_path
                 ],
-                taxon_id=input_metadata["BAM"].taxon_id,
+                taxon_id=metadata["BAM"].taxon_id,
                 meta_data={
-                    "assembly": input_metadata["BAM"].meta_data,
+                    "assembly": metadata["BAM"].meta_data,
                     "tool": "bam2chicago"
                 }
             )

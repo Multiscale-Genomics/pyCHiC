@@ -44,7 +44,7 @@ def test_design_process():
         "designDir" : path + "test_run_chicago"
     }
 
-    input_metadata = {
+    metadata = {
         ".rmap" : Metadata(
             "data_chicago_input", ".rmap",
             path + "test_run_chicago", None, {}, 9606),
@@ -58,7 +58,7 @@ def test_design_process():
     }
 
     design_handle = process_design(config_file)
-    design_handle.run(input_files, input_metadata, output_files)
+    design_handle.run(input_files, metadata, output_files)
 
     assert os.path.isfile(path + "test_run_chicago/h19_chr20and21_test" + ".nbpb") is True
     assert os.path.getsize(path + "test_run_chicago/h19_chr20and21_test" + ".nbpb") > 0

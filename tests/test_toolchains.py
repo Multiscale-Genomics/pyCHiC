@@ -19,8 +19,9 @@ from __future__ import print_function
 
 import os
 import argparse
-import pytest  # pylint: disable=unused-import
 import sys
+
+import pytest  # pylint: disable=unused-import
 
 
 def all_toolchain(verbose=False):
@@ -56,6 +57,7 @@ def all_toolchain(verbose=False):
     params.append('test_run_chicago.py')
 
     return pytest.main(params)
+
 
 if __name__ == "__main__":
 

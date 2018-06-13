@@ -50,7 +50,7 @@ class process_truncater(Workflow):
 
         self.configuration.update(configuration)
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         This is the main function that runs
 
@@ -60,7 +60,7 @@ class process_truncater(Workflow):
             fastq1
             fastq2
 
-        input_metadata: dict
+        metadata: dict
 
         output_files: dict
             out_dir: str
@@ -79,8 +79,8 @@ class process_truncater(Workflow):
                 "fastq2": input_files["fastq2"]
             },
             {
-                "fastq1": input_metadata["fastq1"],
-                "fastq2": input_metadata["fastq2"]
+                "fastq1": metadata["fastq1"],
+                "fastq2": metadata["fastq2"]
             },
             {
                 "out_dir": output_files["out_dir"]
@@ -125,7 +125,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(generate_CHiCAGO_baitmap,
+    results = app.launch(process_truncater,
                          config,
                          in_metadata,
                          out_metadata)

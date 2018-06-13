@@ -51,7 +51,7 @@ class process_rmap(Workflow):
 
         self.configuration.update(configuration)
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         This is the main function that run the tools to create .rmap and
         .baitmap.
@@ -62,7 +62,7 @@ class process_rmap(Workflow):
             genome_fa: str
                     Ref genome used in the experiment.
 
-        input_metadata: dict
+        metadata: dict
             input metadata
 
         output_files: dict
@@ -81,13 +81,13 @@ class process_rmap(Workflow):
             files
         """
 
-        makeRmap_caller = makeRmapFile(self.configuration)
-        output_files_makeRmap, output_metadata_makeRmap = makeRmap_caller.run(
+        rmap_caller = makeRmapFile(self.configuration)
+        output_files_makeRmap, output_metadata_makeRmap = rmap_caller.run(
             {
                 "genome_fa" : input_files["genome_fa"]
             },
             {
-                "genome_fa" : input_metadata["genome_fa"]
+                "genome_fa" : metadata["genome_fa"]
             },
             {
                 "out_dir_rmap" : output_files["out_dir_rmap"],
@@ -97,7 +97,7 @@ class process_rmap(Workflow):
         )
 
         if os.path.getsize(output_files["out_dir_rmap"] +
-            output_files["out_prefix_makeRmap"] + ".rmap") > 0:
+                           output_files["out_prefix_makeRmap"] + ".rmap") > 0:
             pass
         else:
             logger.fatal("generate_CHiCAGO_rmap failed to generate .rmap file")
@@ -120,7 +120,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(generate_CHiCAGO_rmap,
+    results = app.launch(process_rmap,
                          config,
                          in_metadata,
                          out_metadata)

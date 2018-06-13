@@ -15,7 +15,7 @@
    limitations under the License.
 """
 import os
-import pytest
+import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
 from tool.bam2chicago_tool import bam2chicagoTool
@@ -24,7 +24,7 @@ def test_bam2chicago():
     """
     Function to test bam2chicago.py
     """
-    path = os.path.join(os.path.dirname(__file__),"data/")
+    path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
         "RMAP" : path + "test_run_chicago/test.rmap",
@@ -38,7 +38,7 @@ def test_bam2chicago():
         "chrBAITMAP" : path + "test_bam2chicago_tool/chrtest.baitmap"
     }
 
-    input_metadata = {
+    metadata = {
         "RMAP" : Metadata(
             "data_chicago_input", ".rmap",
             path+"/h19_chr20and21_chr.rmap", None, {}, 9606),
@@ -53,7 +53,7 @@ def test_bam2chicago():
     }
 
     bam2chicago_handle = bam2chicagoTool()
-    bam2chicago_handle.run(input_files, input_metadata, output_files)
+    bam2chicago_handle.run(input_files, metadata, output_files)
 
     out_path = output_files["sample_name"] + "/sampleout.chinput"
 

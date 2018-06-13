@@ -176,7 +176,7 @@ class ChicagoTool(Tool):
 
         return command_params
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         The main function to run chicago for peak calling. The input files
         are .chinput and are transformed from BAM files using bam2chicago.sh
@@ -223,9 +223,9 @@ class ChicagoTool(Tool):
                 file_type=self.configuration["chicago_export_format"],
                 file_path=output_files["output_dir"],
                 sources=[
-                    input_metadata["chinput_1"].file_path,
+                    metadata["chinput_1"].file_path,
                 ],
-                taxon_id=input_metadata["chinput_1"].taxon_id,
+                taxon_id=metadata["chinput_1"].taxon_id,
                 meta_data={
                     "tool": "Chicago, capture Capture-HiC algorithm"
                 }

@@ -254,7 +254,7 @@ class Fastq2bed(Tool):
 
         return True
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         This function run all the functions and generate the output files
 
@@ -267,7 +267,7 @@ class Fastq2bed(Tool):
             chromosome,
             gem_idx
             genome_fa
-        input_metadata: dict
+        metadata: dict
         output_files: dict
             wd
 
@@ -280,8 +280,8 @@ class Fastq2bed(Tool):
                 data_type="text",
                 file_type="tsv",
                 file_path=output_files["wd"]+"/03_filtered_reads",
-                sources=[input_metadata["fastq1"].file_path,
-                         input_metadata["fastq2"].file_path],
+                sources=[metadata["fastq1"].file_path,
+                         metadata["fastq2"].file_path],
                 taxon_id=9606,
                 meta_data=""
             )

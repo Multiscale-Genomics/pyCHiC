@@ -14,8 +14,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-import pytest
 import os.path
+import pytest # pylint: disable=unused-import
+
 
 from basic_modules.metadata import Metadata
 
@@ -45,7 +46,7 @@ def test_design():
         "designDir" : path + "test_run_chicago"
     }
 
-    input_metadata = {
+    metadata = {
         ".rmap" : Metadata(
             "data_chicago_input", ".rmap",
             path + "test_run_chicago", None, {}, 9606),
@@ -59,7 +60,7 @@ def test_design():
     }
 
     design_handle = makeDesignFilesTool(config_file)
-    design_handle.run(input_files, input_metadata, output_files)
+    design_handle.run(input_files, metadata, output_files)
 
     assert os.path.isfile(path + "test_run_chicago/h19_chr20and21_test" + ".nbpb") is True
     assert os.path.getsize(path + "test_run_chicago/h19_chr20and21_test" + ".nbpb") > 0

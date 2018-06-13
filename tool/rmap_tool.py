@@ -17,13 +17,17 @@
 
 from __future__ import print_function
 
+import os
+from rtree import index
 import sys
+from utils import logger
 
 import re
 re.compile("pattern")
-import os
 
-from utils import logger
+
+from basic_modules.tool import Tool
+from basic_modules.metadata import Metadata
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -38,12 +42,6 @@ except ImportError:
     from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import compss_wait_on # pylint: disable=ungrouped-imports
-
-
-from basic_modules.tool import Tool
-from basic_modules.metadata import Metadata
-
-from rtree import index
 
 ####################################################
 
@@ -233,14 +231,18 @@ class makeRmapFile(Tool):
                     counter_id += 1
                     counter += 1
                     if counter == 1:
-                        print("{}\t{}\t{}\t{}".format(str(crm), 1,
-                                                      RE_site, counter_id),
-                              file=out)
+                        out.write("{}\t{}\t{}\t{}".format(str(crm),
+                                                          1,
+                                                          RE_site,
+                                                          counter_id),
+                                 )
                         idx.insert(counter_id, (1, crm, RE_site, crm))
                     else:
-                        print("{}\t{}\t{}\t{}".format(str(crm),
-                                                      prev_RE_site+1, RE_site, counter_id),
-                              file=out)
+                        out.write("{}\t{}\t{}\t{}".format(str(crm),
+                                                          prev_RE_site+1, # pylint: disable=used-before-assignment
+                                                          RE_site,
+                                                          counter_id),
+                                 )
                         idx.insert(counter_id, (prev_RE_site+1, crm, RE_site, crm))
 
                     prev_RE_site = RE_site
@@ -253,7 +255,7 @@ class makeRmapFile(Tool):
         logger.fatal("makeRmap_Tool.py failed to generate .rmap file")
         return False
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         This function run the tool
 
@@ -262,7 +264,7 @@ class makeRmapFile(Tool):
 
         input_files: dict
             genome in fasta file
-        input_metadata: dict
+        metadata: dict
             input metadata
 
         Returns
@@ -285,15 +287,15 @@ class makeRmapFile(Tool):
 
         output_metadata = {
             "rmap": Metadata(
-                data_type=input_metadata['genome_fa'].data_type,
+                data_type=metadata['genome_fa'].data_type,
                 file_type="rmap",
                 file_path=output_files["out_dir_rmap"],
                 sources=[
-                    input_metadata["genome_fa"].file_path,
+                    metadata["genome_fa"].file_path,
                 ],
-                taxon_id=input_metadata["genome_fa"].taxon_id,
+                taxon_id=metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : input_metadata["genome_fa"].meta_data,
+                    "RE" : metadata["genome_fa"].meta_data,
                     "tool": "makeRmapFileTool"
                 }
             )

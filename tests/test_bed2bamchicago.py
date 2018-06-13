@@ -33,7 +33,7 @@ def test_bed2bam():
 		    "ncpus" : "2"
     }
 
-    input_metadata = {
+    metadata = {
             "bed": Metadata(
                 data_type="text",
                 file_type="tsv",
@@ -50,7 +50,7 @@ def test_bed2bam():
 
 
     bed2bam_hdl = bed2bam()
-    bed2bam_hdl.run(input_files, input_metadata, output_files)
+    bed2bam_hdl.run(input_files, metadata, output_files)
 
     assert os.path.isfile(output_files["bam_out"]+"_sorted.bam") is True
     assert os.path.isfile(output_files["bam_out"]+"_sorted.bam") is True

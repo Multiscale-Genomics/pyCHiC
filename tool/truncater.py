@@ -55,7 +55,14 @@ class Truncater(Tool):
         configuration: dict
             contains parameters to run the functino
         """
+
         logger.info("Initialising truncater")
+
+        Tool.__init__(self)
+
+        if configuration is None:
+            configuration = {}
+
         self.configuration.update(configuration)
 
     def truncate_reads(self, fastq1, fastq2, parameters, out_dir):
@@ -156,7 +163,7 @@ class Truncater(Tool):
 
         return params
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         This is the function that runs all the functions
 
@@ -165,7 +172,7 @@ class Truncater(Tool):
         input_files: dict
             fastq1
             fastq2
-        input_metadata: dict
+        metadata: dict
         output_files: dict
             out_dir: str
                 directory to write the output
@@ -191,7 +198,7 @@ class Truncater(Tool):
                 data_type="text",
                 file_type="tsv",
                 file_path=output_files["out_dir"],
-                sources=[input_metadata["fastq1"].file_path, input_metadata["fastq2"].file_path],
+                sources=[metadata["fastq1"].file_path, metadata["fastq2"].file_path],
                 taxon_id=9606,
                 meta_data=""
             )

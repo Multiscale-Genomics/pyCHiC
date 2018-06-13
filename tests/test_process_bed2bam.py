@@ -18,7 +18,7 @@
 from __future__ import print_function
 
 import os
-import pytest
+import pytest # pylint: disable=unused-import
 
 from process_bed2bam import process_bed2bam
 from basic_modules.metadata import Metadata
@@ -35,7 +35,7 @@ def test_process_bed2bam():
         "ncpus" : "2"
     }
 
-    input_metadata = {
+    metadata = {
             "bed": Metadata(
                 data_type="text",
                 file_type="tsv",
@@ -51,7 +51,7 @@ def test_process_bed2bam():
     }
 
     bed2bam_hdl = process_bed2bam()
-    bed2bam_hdl.run(input_files, input_metadata, output_files)
+    bed2bam_hdl.run(input_files, metadata, output_files)
 
     assert os.path.isfile(output_files["bam_out"]+"_sorted.bam") is True
     assert os.path.isfile(output_files["bam_out"]+"_sorted.bam") is True

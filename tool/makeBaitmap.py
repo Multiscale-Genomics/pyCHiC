@@ -18,7 +18,6 @@ import os
 import subprocess
 import sys
 from rtree import index
-import shlex
 
 from utils import logger
 
@@ -48,9 +47,10 @@ class makeBaitmapTool(Tool):
     Then using bwa can tell which baits correspond
     to the probes
     """
-    def __init__(self, configuration = None):
+    def __init__(self, configuration=None):
         """
         Initialise the tool with its configuration
+
         Parameters:
         -----------
         configuration: dict
@@ -70,6 +70,7 @@ class makeBaitmapTool(Tool):
         This function run bwa using an index genome and a probes file
         in fasta format. bwa is used as single end and with high
         gap penalty and missmacht score
+
         Parameters:
         -----------
         genome_index: str
@@ -191,7 +192,7 @@ class makeBaitmapTool(Tool):
         logger.fatal("baitmap file not generated")
         return False
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         The main function to produce a .baitmap file, starting from rtree files,
         indexed genome and probes.
@@ -230,13 +231,13 @@ class makeBaitmapTool(Tool):
                 file_type=".baitmap",
                 file_path=output_files["out_baitmap"],
                 sources=[
-                    input_metadata["genome_digest"].file_path,
-                    input_metadata["probes"].file_path,
-                    input_metadata["Rtree_files"].file_path,
+                    metadata["genome_digest"].file_path,
+                    metadata["probes"].file_path,
+                    metadata["Rtree_files"].file_path,
                 ],
-                taxon_id=input_metadata["genome_digest"].taxon_id,
+                taxon_id=metadata["genome_digest"].taxon_id,
                 meta_data={
-                    "RE" : input_metadata["Rtree_files"].meta_data,
+                    "RE" : metadata["Rtree_files"].meta_data,
                     "tool": "makeBaitmap",
                 }
             )

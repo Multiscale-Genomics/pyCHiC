@@ -53,7 +53,7 @@ class process_design(Workflow):
 
         self.configuration.update(configuration)
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         Main function to run the tools, MakeDesignFiles_Tool.py and
         bam2chicago_Tool.py
@@ -66,7 +66,7 @@ class process_design(Workflow):
             baitmapFile: path to the .baitmap file
             bamFile: path to the capture HiC bamfiles
 
-        input_metadata: dict
+        metadata: dict
             input metadata
 
         output_files: dict
@@ -80,14 +80,14 @@ class process_design(Workflow):
         output_metadata
         """
 
-        makeDesign_caller = makeDesignFilesTool(self.configuration)
-        makeDesgin_out, makeDesign_outMeta = makeDesign_caller.run(
+        design_caller = makeDesignFilesTool(self.configuration)
+        makeDesgin_out, makeDesign_outMeta = design_caller.run(
             {
                 "designDir" : input_files["designDir"]
             },
             {
-                ".rmap" : input_metadata[".rmap"],
-                ".baitmap" : input_metadata[".baitmap"]
+                ".rmap" : metadata[".rmap"],
+                ".baitmap" : metadata[".baitmap"]
             },
             {
                 "outPrefixDesign" : output_files["outPrefixDesign"]
@@ -116,7 +116,7 @@ def main_json(config, in_metadata, out_metadata):
     print("Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(process_makeDesign,
+    results = app.launch(process_design,
                          config,
                          in_metadata,
                          out_metadata)

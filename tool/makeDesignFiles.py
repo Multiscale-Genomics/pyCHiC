@@ -55,6 +55,7 @@ class makeDesignFilesTool(Tool):
             Dictionary containing parameters defining how the tool
             should work
         """
+        Tool.__init__(self)
         print("Initialising makeDesingFiles")
 
         if configuration is None:
@@ -136,7 +137,7 @@ class makeDesignFilesTool(Tool):
         return command_params
 
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         The main function to run makeDesignFiles.
 
@@ -145,7 +146,7 @@ class makeDesignFilesTool(Tool):
 
         input_files: dict
             designDir : path to the designDir containin .rmap and .baitmap files
-        input_metadata: dict
+        metadata: dict
         output_files: dict
             outFilePrefix : path to the output folder and prefix name of files
                 example: "/folder1/folder2/prefixname". Recommended to use the
@@ -175,12 +176,12 @@ class makeDesignFilesTool(Tool):
                 file_type=[".nbpb", ".npb", ".poe"],
                 file_path=input_files["designDir"],
                 sources=[
-                    input_metadata[".rmap"].file_path,
-                    input_metadata[".baitmap"].file_path
+                    metadata[".rmap"].file_path,
+                    metadata[".baitmap"].file_path
                     ],
                 taxon_id=[
-                    input_metadata[".rmap"].taxon_id,
-                    input_metadata[".baitmap"].taxon_id
+                    metadata[".rmap"].taxon_id,
+                    metadata[".baitmap"].taxon_id
                     ],
                 meta_data={
                     "tool" : "makeDesignFiles, make the design files"

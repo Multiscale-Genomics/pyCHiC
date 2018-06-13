@@ -33,7 +33,7 @@ def test_truncater():
         "fastq2" : path + "SRR3535023_2.fastq"
     }
 
-    input_metadata = {
+    metadata = {
             "fastq1": Metadata(
                 data_type="text",
                 file_type="fastq",
@@ -63,7 +63,7 @@ def test_truncater():
         }
 
     truncater_hdl = Truncater(configuration)
-    truncater_hdl.run(input_files, input_metadata, output_files)
+    truncater_hdl.run(input_files, metadata, output_files)
 
     assert os.path.isfile(output_files["out_dir"]+"SRR3535023_1.trunc.fastq") is True
     assert os.path.isfile(output_files["out_dir"]+"SRR3535023_2.trunc.fastq") is True
