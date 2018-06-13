@@ -17,9 +17,10 @@
 
 from __future__ import print_function
 
+import os
 import argparse
-import subprocess
 import pytest  # pylint: disable=unused-import
+import sys
 
 
 def all_toolchain(verbose=False):
@@ -29,6 +30,15 @@ def all_toolchain(verbose=False):
     This set is only required for determining code coverage.
     run from home of the repo
     """
+    directories = ["./data/test_bam2chicago_tool",
+                   "./data/test_bed2bam",
+                   "./data/test_design",
+                   "./data/test_fastq2bed",
+                   "./data/test_rmap"]
+
+    for directory in directories:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
     params = []
 
@@ -48,7 +58,7 @@ def all_toolchain(verbose=False):
     return pytest.main(params)
 
 if __name__ == "__main__":
-    import sys
+
     sys._run_from_cmdl = True # pylint: disable=protected-access
 
     PARSER = argparse.ArgumentParser(description="Test for running all tools in a chain")
