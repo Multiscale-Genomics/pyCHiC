@@ -19,7 +19,7 @@ from __future__ import print_function
 from basic_modules.metadata import Metadata
 import os
 
-from process_chicago_CHiC import process_chicago_CHiC
+from CHiC.process_chicago_CHiC import process_chicago_CHiC
 
 def test_process_CHiC():
     """

@@ -20,8 +20,8 @@ from __future__ import print_function
 import os
 import pytest # pylint: disable=unused-import
 
-from process_rmap import process_rmap
 from basic_modules.metadata import Metadata
+from CHiC.process_rmap import process_rmap
 
 def test_process_rmap():
     """

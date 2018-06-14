@@ -20,8 +20,8 @@ from __future__ import print_function
 import os
 import pytest # pylint: disable=unused-import
 
-from process_bed2bam import process_bed2bam
 from basic_modules.metadata import Metadata
+from CHiC.process_bed2bam import process_bed2bam
 
 def test_process_bed2bam():
     """

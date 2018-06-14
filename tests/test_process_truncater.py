@@ -20,7 +20,7 @@ from __future__ import print_function
 import os
 from basic_modules.metadata import Metadata
 
-from process_truncater import process_truncater
+from CHiC.process_truncater import process_truncater
 
 def test_truncater():
     """

@@ -20,7 +20,7 @@ import os
 import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
-from tool.rmap_tool import makeRmapFile
+from CHiC.tool.rmap_tool import makeRmapFile
 
 
 def test_rmap_tool():

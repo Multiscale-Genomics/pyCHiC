@@ -16,10 +16,11 @@
 """
 
 from __future__ import print_function
-from basic_modules.metadata import Metadata
 import os
 
-from tool.truncater import Truncater
+from basic_modules.metadata import Metadata
+
+from CHiC.tool.truncater import Truncater
 
 def test_truncater():
     """

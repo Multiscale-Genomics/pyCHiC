@@ -106,7 +106,7 @@ class makeBaitmapTool(Tool):
         logger.fatal("bwa stderr" + proc_err)
         return False
 
-    def bwa_for_probes2(self, genome_fa, genome_index, probes_fa, out_sam):
+    def bwa_for_probes2(self, genome_fa, genome_index, probes_fa, out_bam, out_sam):
         """
         This function run bwa using an index genome and a probes file
         in fasta format. bwa is used as single end and with high
@@ -133,11 +133,12 @@ class makeBaitmapTool(Tool):
         input_mem = {
             "genome": genome_fa,
             "index": genome_index,
-            "loc": probes_fa
+            "loc": probes_fa,
+            "bam_loc": out_bam
             }
 
         output_mem = {
-            "output": out_bam
+            "output": out_bam,
         }
 
         metadata_mem = {
@@ -153,14 +154,16 @@ class makeBaitmapTool(Tool):
             "loc": Metadata("probes", "fastq", probes_fa, None, {"assembly": "test"})
         }
 
-        bwaAlignerMEMTool.run(input_mem, metadata_mem, output_mem)
+        bwa_aligner = bwaAlignerMEMTool()
 
-        """
+        bwa_aligner.run(input_mem, metadata_mem, output_mem)
 
-        args = " ".join(["bwa", "mem", "-O", "100", "-B", "20",
-                         genome_index, probes_fa, ">", out_sam])
 
-        logger.info("bwa_for_probes CMD: " + args)
+        tmp_bam = "/".join(probes_fa.split("/")[:-1]) + "/tmp/" + probes_fa.split("/")[-1]+".bam"
+
+        args = " ".join(["samtools", "view", "-h", "-o", out_sam, tmp_bam])
+
+        logger.info("samtools args: " + args)
 
         process = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
@@ -174,7 +177,8 @@ class makeBaitmapTool(Tool):
         logger.fatal("bwa stdout" + proc_out)
         logger.fatal("bwa stderr" + proc_err)
         return False
-        """
+
+
 
     def sam_to_baitmap(self, sam_file, Rtree_files):
         """
@@ -285,11 +289,11 @@ class makeBaitmapTool(Tool):
         output_metadata : list
             List of matching metadata dict objects
         """
-        """
-        self.bwa_for_probes(
+        self.bwa_for_probes2(
             input_files["genome_fa"],
             input_files["genome_idx"],
             input_files["probes_fa"],
+            output_files["out_bam"],
             output_files["out_sam"]
             )
 
@@ -300,7 +304,7 @@ class makeBaitmapTool(Tool):
         results = self.create_baitmap(
             baitmap_list,
             output_files["out_baitmap"])
-
+        """
         output_metadata = {
             "baitmap": Metadata(
                 data_type="RE sites with baits",
@@ -319,12 +323,44 @@ class makeBaitmapTool(Tool):
             )
         }
 
-
-        return results, output_metadata
         """
-        self.bwa_for_probes2(
-            input_files["genome_fa"],
-            input_files["genome_idx"],
-            input_files["probes_fa"],
-            output_files["out_sam"]
-            )
+        #return results, output_metadata
+
+
+
+if __name__ == "__main__":
+    import sys
+    sys._run_from_cmdl = True # pylint: disable=protected-access
+
+    path = "../../tests/data/"
+
+
+
+    configuration = {
+        "no-untar" : True
+    }
+
+    input_files = {
+        "genome_idx" : path + "test_baitmap/chr21_hg19.fa",
+        "probes_fa" : path + "test_baitmap/baits.fa",
+        "Rtree_files" : path + "test_rmap/rtree_file",
+        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
+    }
+
+
+    output_files = {
+        "out_bam" : path + "tests/baits.bam",
+        "out_sam" :  path + "test_baitmap/baits.sam",
+        "out_baitmap" : path + "test_run_chicago/test.baitmap"
+    }
+
+
+    metadata = {}
+
+    test = makeBaitmapTool(configuration)
+
+    test.run(
+        input_files,
+        metadata,
+        output_files
+        )

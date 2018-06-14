@@ -231,14 +231,14 @@ class makeRmapFile(Tool):
                     counter_id += 1
                     counter += 1
                     if counter == 1:
-                        out.write("{}\t{}\t{}\t{}".format(str(crm),
+                        out.write("{}\t{}\t{}\t{}\n".format(str(crm),
                                                           1,
                                                           RE_site,
                                                           counter_id),
                                  )
                         idx.insert(counter_id, (1, crm, RE_site, crm))
                     else:
-                        out.write("{}\t{}\t{}\t{}".format(str(crm),
+                        out.write("{}\t{}\t{}\t{}\n".format(str(crm),
                                                           prev_RE_site+1, # pylint: disable=used-before-assignment
                                                           RE_site,
                                                           counter_id),

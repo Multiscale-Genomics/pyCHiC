@@ -18,7 +18,7 @@ import os
 import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
-from tool.makeBaitmap import makeBaitmapTool
+from CHiC.tool.makeBaitmap import makeBaitmapTool
 
 def test_baitmap():
     """
@@ -56,8 +56,8 @@ def test_baitmap():
             )
     }
 
-    makeBaitmap_handler = makeBaitmapTool()
-    makeBaitmap_handler.run(input_files, metadata, output_files)
+    baitmap_handler = makeBaitmapTool()
+    baitmap_handler.run(input_files, metadata, output_files)
 
     assert os.path.getsize(output_files["out_sam"]) > 0
     assert os.path.getsize(output_files["out_baitmap"]) > 0

@@ -20,7 +20,7 @@ from __future__ import print_function
 import os.path
 import pytest  # pylint: disable=unused-import
 
-from process_run_chicago import process_run_chicago
+from CHiC.process_run_chicago import process_run_chicago
 from basic_modules.metadata import Metadata
 
 def test_process_chicago():

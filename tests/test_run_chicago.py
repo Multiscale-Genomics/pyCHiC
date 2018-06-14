@@ -19,7 +19,7 @@ import os.path
 import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
-from tool.run_chicago import ChicagoTool
+from CHiC.tool.run_chicago import ChicagoTool
 
 def test_chicago():
     """

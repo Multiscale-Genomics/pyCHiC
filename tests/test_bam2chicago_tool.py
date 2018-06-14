@@ -18,7 +18,7 @@ import os
 import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
-from tool.bam2chicago_tool import bam2chicagoTool
+from CHiC.tool.bam2chicago_tool import bam2chicagoTool
 
 def test_bam2chicago():
     """

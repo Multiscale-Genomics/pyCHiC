@@ -16,10 +16,11 @@
 """
 
 from __future__ import print_function
-from basic_modules.metadata import Metadata
 import os
 
-from tool.bed2bam import bed2bam
+from basic_modules.metadata import Metadata
+
+from CHiC.tool.bed2bam import bed2bam
 
 def test_bed2bam():
     """
@@ -30,17 +31,17 @@ def test_bed2bam():
 
     input_files = {
         "bed" : path + "test_fastq2bed/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv",
-		    "ncpus" : "2"
+		"ncpus" : "2"
     }
 
     metadata = {
-            "bed": Metadata(
-                data_type="text",
-                file_type="tsv",
-                file_path=input_files["bed"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+        "bed": Metadata(
+            data_type="text",
+            file_type="tsv",
+            file_path=input_files["bed"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             )
         }
 

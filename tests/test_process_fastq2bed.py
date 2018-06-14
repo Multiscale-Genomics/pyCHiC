@@ -21,7 +21,7 @@ import pytest # pylint: disable=unused-import
 import os
 from basic_modules.metadata import Metadata
 
-from process_fastq2bed import process_fastq2bed
+from CHiC.process_fastq2bed import process_fastq2bed
 
 def test_process_fastq2bed():
     """

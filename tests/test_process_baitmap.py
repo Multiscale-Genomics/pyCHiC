@@ -21,7 +21,7 @@ import os
 import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
-from process_baitmap import process_baitmap
+from CHiC.process_baitmap import process_baitmap
 
 def test_process_baitmap():
     """
