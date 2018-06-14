@@ -161,6 +161,22 @@ class bam2chicagoTool(Tool):
 
         logger.info("bam2chicago CMD: " + " ".join(args))
 
+        try:
+            with open(sample_name + ".chinput", "w") as f_out:
+                process = subprocess.Popen(
+                    ' '.join(args),
+                    shell=True,
+                    stdout=f_out, stderr=f_out
+                    )
+            process.wait()
+
+        except (IOError, OSError) as msg:
+            logger.fatal("I/O error({0}): {1}\n{2}".format(
+                msg.errno, msg.strerror, args))
+            return False
+
+
+        """
         process = subprocess.Popen(args, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         process.wait()
@@ -175,6 +191,7 @@ class bam2chicagoTool(Tool):
             return False
 
         return True
+        """
 
     def run(self, input_files, metadata, output_files):
         """

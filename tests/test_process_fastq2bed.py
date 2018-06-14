@@ -15,10 +15,10 @@
    limitations under the License.
 """
 from __future__ import print_function
+import os
 
 import pytest # pylint: disable=unused-import
 
-import os
 from basic_modules.metadata import Metadata
 
 from CHiC.process_fastq2bed import process_fastq2bed

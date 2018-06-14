@@ -161,23 +161,23 @@ class makeBaitmapTool(Tool):
 
         tmp_bam = "/".join(probes_fa.split("/")[:-1]) + "/tmp/" + probes_fa.split("/")[-1]+".bam"
 
-        args = " ".join(["samtools", "view", "-h", "-o", out_sam, tmp_bam])
+        args = ["samtools", "view", "-h", "-o", out_sam, tmp_bam]
 
-        logger.info("samtools args: " + args)
+        logger.info("samtools args: " + ' '.join(args))
 
-        process = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
-        process.wait()
-        proc_out, proc_err = process.communicate()
+        try:
+            with open(out_sam, "w") as f_out:
+                process = subprocess.Popen(
+                    ' '.join(args),
+                    shell=True,
+                    stdout=f_out, stderr=f_out
+                    )
+            process.wait()
 
-        if os.path.getsize(out_sam) > 0:
-            return True
-
-        logger.fatal("bwa failed to generate sam file")
-        logger.fatal("bwa stdout" + proc_out)
-        logger.fatal("bwa stderr" + proc_err)
-        return False
-
+        except (IOError, OSError) as msg:
+            logger.fatal("I/O error({0}): {1}\n{2}".format(
+                msg.errno, msg.strerror, args))
+            return False
 
 
     def sam_to_baitmap(self, sam_file, Rtree_files):
@@ -304,7 +304,7 @@ class makeBaitmapTool(Tool):
         results = self.create_baitmap(
             baitmap_list,
             output_files["out_baitmap"])
-        """
+
         output_metadata = {
             "baitmap": Metadata(
                 data_type="RE sites with baits",
@@ -323,44 +323,5 @@ class makeBaitmapTool(Tool):
             )
         }
 
-        """
-        #return results, output_metadata
 
-
-
-if __name__ == "__main__":
-    import sys
-    sys._run_from_cmdl = True # pylint: disable=protected-access
-
-    path = "../../tests/data/"
-
-
-
-    configuration = {
-        "no-untar" : True
-    }
-
-    input_files = {
-        "genome_idx" : path + "test_baitmap/chr21_hg19.fa",
-        "probes_fa" : path + "test_baitmap/baits.fa",
-        "Rtree_files" : path + "test_rmap/rtree_file",
-        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
-    }
-
-
-    output_files = {
-        "out_bam" : path + "tests/baits.bam",
-        "out_sam" :  path + "test_baitmap/baits.sam",
-        "out_baitmap" : path + "test_run_chicago/test.baitmap"
-    }
-
-
-    metadata = {}
-
-    test = makeBaitmapTool(configuration)
-
-    test.run(
-        input_files,
-        metadata,
-        output_files
-        )
+        return results, output_metadata

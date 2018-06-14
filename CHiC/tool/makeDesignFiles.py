@@ -193,43 +193,6 @@ class makeDesignFilesTool(Tool):
 
         return (results, output_metadata)
 
-if __name__ == "__main__":
-
-    path = "../../tests/data/"
-
-    config_file = {
-        "makeDesignFiles_minFragLen" : "150",
-        "makeDesignFiles_maxFragLen" : "40000",
-        "makeDesignFiles_maxLBrownEst" : "1.5e6",
-        "makeDesignFiles_binSize" : "20000",
-        "makeDesignFiles_removeb2b" : True,
-        "makeDesignFiles_removeAdjacent" : True,
-        #"rmapFile" : "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/"+
-        #             "PCHiCdata/inst/extdata/hg19TestDesign/h19_chr20and21.rmap",
-        #"baitMapFile" : "/Users/pacera/MuG/chicagoTeam-chicago-ceffddda8ea3/"+
-        #                "PCHiCdata/inst/extdata/hg19TestDesign/h19_chr20and21.baitmap"
-        }
-
-    input_files = {
-        "designDir" : path + "test_run_chicago"
-    }
-
-    metadata = {
-        ".rmap" : Metadata(
-            "data_chicago_input", ".rmap",
-            path + "test_run_chicago", None, {}, 9606),
-        ".baitmap" : Metadata(
-            "data_chicago_input", ".baitmap",
-            path + "test_run_chicago", None, {}, 9606)
-    }
-
-    output_files = {
-        "outPrefixDesign" : path + "test_run_chicago/h19_chr20and21_test",
-    }
-
-    design_handle = makeDesignFilesTool(config_file)
-    design_handle.run(input_files, metadata, output_files)
-
 
 
 

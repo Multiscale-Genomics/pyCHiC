@@ -31,7 +31,7 @@ def test_bed2bam():
 
     input_files = {
         "bed" : path + "test_fastq2bed/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv",
-		"ncpus" : "2"
+		    "ncpus" : "2"
     }
 
     metadata = {

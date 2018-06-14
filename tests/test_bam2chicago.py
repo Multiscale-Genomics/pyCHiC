@@ -18,7 +18,7 @@ import pytest
 import os
 
 from basic_modules.metadata import Metadata
-from tool.bam2chicago import bam2chicago
+from CHiC.tool.bam2chicago import bam2chicago
 
 def test_bam2chicago():
     """

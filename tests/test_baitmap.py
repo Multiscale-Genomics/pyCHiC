@@ -25,7 +25,16 @@ def test_baitmap():
     Function to test the makeBaitmap tool. Tool that
     generate .baitmap files
     """
+
+    import sys
+    sys._run_from_cmdl = True # pylint: disable=protected-access
+
+
     path = os.path.join(os.path.dirname(__file__), "data/")
+
+    configuration = {
+        "no-untar" : True
+    }
 
     input_files = {
         "genome_idx" : path + "test_baitmap/chr21_hg19.fa",
@@ -36,6 +45,7 @@ def test_baitmap():
 
     output_files = {
         "out_sam" :  path + "test_baitmap/baits.sam",
+        "out_bam" : path +  "tests/baits.bam",
         "out_baitmap" : path + "test_run_chicago/test.baitmap"
     }
 
@@ -56,7 +66,7 @@ def test_baitmap():
             )
     }
 
-    baitmap_handler = makeBaitmapTool()
+    baitmap_handler = makeBaitmapTool(configuration)
     baitmap_handler.run(input_files, metadata, output_files)
 
     assert os.path.getsize(output_files["out_sam"]) > 0

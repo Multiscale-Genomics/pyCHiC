@@ -18,7 +18,7 @@ import pytest # pylint: disable=unused-import
 import os
 
 from basic_modules.metadata import Metadata
-from CHiC.process_bam2chicago_Tool import process_bam2chicago
+from CHiC.process_bam2chicago_tool import process_bam2chicago
 
 def test_process_bam2chicago():
     """

@@ -89,8 +89,8 @@ class bed2bam(Tool):
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
         process = subprocess.Popen(" ".join(args), shell=True,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE)
         process.wait()
 
         if os.path.isfile(bam_out + ".bam") is True:
@@ -111,23 +111,23 @@ class bed2bam(Tool):
             path to bam_out directory and file
         """
         args = ["samtools", "sort",
-                "-n", bam_out+".bam",
-                ">", bam_out+"_sorted.bam"]
+                "-n", bam_out+".bam"]
 
         logger.info("samtools args:"+ " ".join(args))
 
-        process = subprocess.Popen(
-            " ".join(args), shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
 
-        process.wait()
+        try:
+            with open(bam_out+"_sorted.bam", "w") as f_out:
+                process = subprocess.Popen(
+                    ' '.join(args),
+                    shell=True,
+                    stdout=f_out, stderr=f_out
+                    )
+            process.wait()
 
-        if os.path.isfile(bam_out+"_sorted.bam") is True:
-            if os.path.getsize(bam_out+"_sorted.bam") > 0:
-                return True
-        else:
-            logger.fatal("samtools didnt generate sorted bam_out")
+        except (IOError, OSError) as msg:
+            logger.fatal("I/O error({0}): {1}\n{2}".format(
+                msg.errno, msg.strerror, args))
             return False
 
     def run(self, input_files, metadata, output_files):
