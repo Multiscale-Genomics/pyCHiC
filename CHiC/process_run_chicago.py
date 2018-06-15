@@ -94,7 +94,6 @@ class process_run_chicago(Workflow):
                 "chinput_file" : input_files["chinput_file"],
             }, {
                 "chinput_1" : metadata["chinput_1"],
-                "chinput_2" : metadata["chinput_2"]
             }, {
                 "output_prefix" : output_files["output_prefix"],
                 "output_dir" : output_files["output_dir"]

@@ -29,20 +29,26 @@ def test_process_baitmap():
     This pipeline generate .baitmap files,
     input files for CHiCAGO pipeline
     """
+    import sys
+    sys._run_from_cmdl = True # pylint: disable=protected-access
+
 
     path = os.path.join(os.path.dirname(__file__), "data/")
 
-    configuration = {"RE" : {"HindIII" : 'A|AGCTT'},
-                    }
+    configuration = {
+        "no-untar" : True
+    }
 
     input_files = {
-        "genome_idx" : path + "test_baitmap/chr21_hg19.fa",
-        "probes_fa" : path + "test_baitmap/baits.fa",
-        "Rtree_files" : path + "test_rmap/rtree_file"
+        "genome_idx" : path + "test_baitmap/chr21_hg19.fa.gem.gz",
+        "probes_fa" : path + "test_baitmap/baits.fa.tar.gz",
+        "Rtree_files" : path + "test_rmap/rtree_file",
+        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
     }
 
     output_files = {
         "out_sam" :  path + "test_baitmap/baits.sam",
+        "out_bam" : path +  "tests/baits.bam",
         "out_baitmap" : path + "test_run_chicago/test.baitmap"
     }
 
@@ -62,7 +68,6 @@ def test_process_baitmap():
             None, 9606
             )
     }
-
 
     process_baitmap_handl = process_baitmap(configuration)
     process_baitmap_handl.run(input_files, metadata, output_files)

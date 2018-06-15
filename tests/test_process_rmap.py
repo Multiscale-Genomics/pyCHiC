@@ -37,21 +37,21 @@ def test_process_rmap():
                     }
 
     input_files = {
-        "genome_fa" : path+ "test_makeBaitmap/chr21_hg19.fa",
+        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa",
         }
 
 
     metadata = {
         "genome_fa" : Metadata(
-            "txt", "fasta", path+ "test_makeBaitmap/chr21_hg19.fa",
+            "txt", "fasta", path+ "test_baitmap/chr21_hg19.fa",
             None, 9606, ""),
     }
 
 
     output_files = {
-        "out_dir_rmap" : path + "test_runChicago/",
+        "out_dir_rmap" : path + "test_run_chicago/",
         "out_prefix_makeRmap" : "test",
-        "Rtree_files" : path + "test_makeRmap/rtree_file"
+        "Rtree_files" : path + "test_rmap/rtree_file"
         }
 
 

@@ -1,0 +1,80 @@
+{
+    "input_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "genome_idx",
+            "value": "<unique_file_id>"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "probes_fa",
+            "value": "<unique_file_id>"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "Rtree_files",
+            "value": "<unique_file_id>"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "genome_fa",
+            "value": "<unique_file_id>"
+        }
+
+    ],
+    "arguments": [],
+    "output_files": [
+        {
+            "name": "out_baitmap",
+            "required": true,
+            "allow_multiple": false,
+            "file": {
+                "file_type": ".baitmap",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeBaitmap.py",
+                    "description": "Subset of the .ramp file. Contains RE fragments coordinated from the digested genome that contain baits sequences"
+                },
+                "file_path": "tests/data/test_run_chicago/test.baitmap",
+                "data_type": ".baitmap",
+                "compressed": ""
+            }
+        },
+        {
+            "name": "out_sam",
+            "required": true,
+            "allow_multiple": false,
+            "file": {
+                "file_type": ".sam",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "baitmap.py",
+                    "description": "output of map the probes into the reference genome with bwa"
+                },
+                "file_path": "baits.sam",
+                "data_type": "text",
+                "compressed": ""
+            }
+        }
+        {
+            "name": "out_bam",
+            "required": true,
+            "allow_multiple": false,
+            "file": {
+                "file_type": ".bam",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "baitmap.py",
+                    "description": "output of map the probes into the reference genome with bwa"
+                },
+                "file_path": "baits.bam",
+                "data_type": "binary",
+                "compressed": ""
+            }
+        }
+    ]
+}

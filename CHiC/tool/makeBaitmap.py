@@ -289,11 +289,11 @@ class makeBaitmapTool(Tool):
         output_metadata : list
             List of matching metadata dict objects
         """
-        self.bwa_for_probes2(
-            input_files["genome_fa"],
+        self.bwa_for_probes(
+           # input_files["genome_fa"],
             input_files["genome_idx"],
             input_files["probes_fa"],
-            output_files["out_bam"],
+          #  output_files["out_bam"],
             output_files["out_sam"]
             )
 

@@ -86,7 +86,8 @@ class process_baitmap(Workflow):
             {
                 "genome_idx" : input_files["genome_idx"],
                 "probes_fa": input_files["probes_fa"],
-                "Rtree_files": input_files["Rtree_files"]
+                "Rtree_files": input_files["Rtree_files"],
+                "genome_fa" : input_files["genome_fa"]
             },
             {
                 "genome_digest" : metadata["genome_digest"],
@@ -95,7 +96,8 @@ class process_baitmap(Workflow):
             },
             {
                 "out_sam" : output_files["out_sam"],
-                "out_baitmap" : output_files["out_baitmap"]
+                "out_baitmap" : output_files["out_baitmap"],
+                "out_bam" : output_files["out_bam"]
             }
         )
 

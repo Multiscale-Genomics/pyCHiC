@@ -32,8 +32,8 @@ def test_process_fastq2bed():
     input_files = {
         "fastq1" : path + "/test_truncater/SRR3535023_1.trunc.fastq",
         "fastq2" : path + "/test_truncater/SRR3535023_2.trunc.fastq",
-        "gem_idx" : path + "/test_makeBaitmap/chr21_hg19.fa.gem.gz",
-        "genome_fa" : path + "/test_makeBaitmap/chr21_hg19.fa",
+        "gem_idx" : path + "/test_baitmap/chr21_hg19.fa.gem.gz",
+        "genome_fa" : path + "/test_baitmap/chr21_hg19.fa",
         "RE" : "HindIII",
         "chromosome" : ""
     }

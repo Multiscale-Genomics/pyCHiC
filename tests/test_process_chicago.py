@@ -43,7 +43,7 @@ def test_process_chicago():
     metadata = {
         "chinput_1" : Metadata(
             "data_chicago", "chinput", [], None, None, 9606)
-       }
+        }
 
     config = {
         "chicago_setting_file": path + "test_run_chicago/data_chicago/sGM12878.settingsFile",
