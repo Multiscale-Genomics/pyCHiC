@@ -40,7 +40,7 @@ def test_process_baitmap():
     }
 
     input_files = {
-        "genome_idx" : path + "test_baitmap/chr21_hg19.fa.gem.gz",
+        "genome_idx" : path + "test_baitmap/chr21_hg19.fa",
         "probes_fa" : path + "test_baitmap/baits.fa.tar.gz",
         "Rtree_files" : path + "test_rmap/rtree_file",
         "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
