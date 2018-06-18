@@ -110,8 +110,7 @@ class makeBaitmapTool(Tool):
         return False
 
     @task(returns=bool, genome_index=FILE_IN, probes_fa=FILE_IN,
-           genome_fa=FILE_IN, out_sam=FILE_OUT, out_bam=FILE_OUT,
-           out_sam=FILE_OUT)
+          genome_fa=FILE_IN, out_sam=FILE_OUT, out_bam=FILE_OUT)
     def bwa_for_probes2(self, genome_fa, genome_index, probes_fa, out_bam, out_sam):
         """
         This function run bwa using an index genome and a probes file

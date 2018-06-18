@@ -127,14 +127,14 @@ before_install:
 #installing chicago
      -  sudo apt-get install libtbb-dev
      -  sudo apt-get install libssl-dev
-     -  cd ${HOME}/build/pabloacera/C-HiC/
+     -  cd ${HOME}/build/Multiscale-Genomics/C-HiC/
      -  echo "R_LIB=${HOME}/R" > ${HOME}/.Renviron
      -  echo "options(repos = c(CRAN = 'http://mirrors.ebi.ac.uk/CRAN/'))" > ${HOME}/.Rprofile
      -  echo ".libPaths('~/R')" >> ${HOME}/.Rprofile
      -  echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
      -  sudo Rscript scripts/install_packages.R
 
-     - cd ${HOME}/build/pabloacera/C-HiC/
+     - cd ${HOME}/build/Multiscale-Genomics/C-HiC/
 
 # command to install dependencies
 install:

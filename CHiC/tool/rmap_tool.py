@@ -132,7 +132,7 @@ class makeRmapFile(Tool):
         return genome_dict
 
     @task(returns=bool, enzyme_name=IN, genome_fa=FILE_IN, out_dir_rmap=FILE_OUT,
-           out_prefix_rmap=OUT, Rtree_files=FILE_OUT)
+           out_prefix_rmap=IN, Rtree_files=FILE_OUT)
     def map_re_sites2(
             self, enzyme_name, genome_fa, out_dir_rmap, out_prefix_rmap,
             Rtree_files, verbose=False):
@@ -204,11 +204,11 @@ class makeRmapFile(Tool):
             self.from_frag_to_rmap(frags, out_dir_rmap, out_prefix_rmap, Rtree_files)
             return True
 
-        except IOerror:
+        except IOError:
             logger.fatal("map_re_sites2 function from rmap_tool failed =(")
             return False
 
-    @task(returns=bool, frags=FILE_IN, out_dir_rmap=FILE_OUT, out_prefix_rmap=OUT,
+    @task(returns=bool, frags=FILE_IN, out_dir_rmap=FILE_OUT, out_prefix_rmap=IN,
           Rtree_files=FILE_OUT)
     def from_frag_to_rmap(self, frags, out_dir_rmap, out_prefix_rmap, Rtree_files):
         """

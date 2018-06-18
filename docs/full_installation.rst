@@ -151,12 +151,23 @@ Install CHiCAGO
 
 .. code-block:: none
    :linenos:
+	
+   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+   sudo add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/'
+   sudo apt-get update -qq
+   sudo apt-get install r-base-core
+   sudo apt-get install python-rpy2
+
 
    cd ${HOME}/lib
-   source("https://bioconductor.org/biocLite.R")
-   biocLite("argparser")
-   biocLite("devtools")
-   devtools::install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
+   sudo apt-get install libtbb-dev
+   sudo apt-get install libssl-dev
+   cd ${HOME}/C-HiC/
+   echo "R_LIB=${HOME}/R" > ${HOME}/.Renviron
+   echo "options(repos = c(CRAN = 'http://mirrors.ebi.ac.uk/CRAN/'))" > ${HOME}/.Rprofile
+   echo ".libPaths('~/R')" >> ${HOME}/.Rprofile
+   echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
+   sudo Rscript scripts/install_packages.R
 
 
 Setup the symlinks
