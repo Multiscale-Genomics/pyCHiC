@@ -90,6 +90,7 @@ class makeRmapFile(Tool):
         restring = restring.replace('N', '[ATGC]')
         return restring
 
+    @task(returns=dict, genome_fa=FILE_IN)
     def genome_to_dict(self, genome_fa):
         """
         This function takes a genome file in fasta format
@@ -130,8 +131,10 @@ class makeRmapFile(Tool):
 
         return genome_dict
 
+    @task(returns=bool, enzyme_name=IN, genome_fa=FILE_IN, out_dir_rmap=FILE_OUT,
+           out_prefix_rmap=OUT, Rtree_files=FILE_OUT)
     def map_re_sites2(
-            self, enzyme_name, genome_fa, out_dir_rmap, out_prefix_makeRmap,
+            self, enzyme_name, genome_fa, out_dir_rmap, out_prefix_rmap,
             Rtree_files, verbose=False):
         """
         map all restriction enzyme (RE) sites of a given enzyme in a genome.
@@ -162,44 +165,52 @@ class makeRmapFile(Tool):
             bool
             Fragments
         """
-        enzymes = enzyme_name
+        try:
+            enzymes = enzyme_name
 
-        #the genome should be in a dictionary
-        genome_seq = self.genome_to_dict(genome_fa)
+            #the genome should be in a dictionary
+            genome_seq = self.genome_to_dict(genome_fa)
 
-        # we match the full cut-site but report the position after the cut site
-        # (third group of the regexp)
-        restring = ('%s') % (
-            '|'.join(
-                [
-                    '(?<=%s(?=%s))' % tuple(enzymes[n].split('|'))
-                    for n in enzymes]
+            # we match the full cut-site but report the position after the cut site
+            # (third group of the regexp)
+            restring = ('%s') % (
+                '|'.join(
+                    [
+                        '(?<=%s(?=%s))' % tuple(enzymes[n].split('|'))
+                        for n in enzymes]
+                    )
                 )
-            )
 
-        # IUPAC conventions
-        restring = self.iupac2regex(restring)
+            # IUPAC conventions
+            restring = self.iupac2regex(restring)
 
-        enz_pattern = re.compile(restring)
+            enz_pattern = re.compile(restring)
 
-        frags = {}
-        count = 0
+            frags = {}
+            count = 0
 
-        logger.info("searching RE sites")
+            logger.info("searching RE sites")
 
-        for crm in genome_seq:
-            seq = genome_seq[crm]
-            frags[crm] = []
-            for match in enz_pattern.finditer(seq):
-                pos = match.end()
-                frags[crm].append(pos)
-                count += 1
-            # at the end of last chunk we add the chromosome length
-            frags[crm].append(len(seq))
+            for crm in genome_seq:
+                seq = genome_seq[crm]
+                frags[crm] = []
+                for match in enz_pattern.finditer(seq):
+                    pos = match.end()
+                    frags[crm].append(pos)
+                    count += 1
+                # at the end of last chunk we add the chromosome length
+                frags[crm].append(len(seq))
 
-        self.from_frag_to_rmap(frags, out_dir_rmap, out_prefix_makeRmap, Rtree_files)
+            self.from_frag_to_rmap(frags, out_dir_rmap, out_prefix_rmap, Rtree_files)
+            return True
 
-    def from_frag_to_rmap(self, frags, out_dir_rmap, out_prefix_makeRmap, Rtree_files):
+        except IOerror:
+            logger.fatal("map_re_sites2 function from rmap_tool failed =(")
+            return False
+
+    @task(returns=bool, frags=FILE_IN, out_dir_rmap=FILE_OUT, out_prefix_rmap=OUT,
+          Rtree_files=FILE_OUT)
+    def from_frag_to_rmap(self, frags, out_dir_rmap, out_prefix_rmap, Rtree_files):
         """
         This function takes the fragment output from digestion and
         convert them into rmap files.
@@ -215,7 +226,7 @@ class makeRmapFile(Tool):
             RE sites as values
         out_dir_rmap: str
             path to the output directory
-        out_prefix_makeRmap: str
+        out_prefix_rmap: str
             name of the output file.
         """
 
@@ -223,7 +234,7 @@ class makeRmapFile(Tool):
 
         idx = index.Rtree(Rtree_files)
 
-        with open(out_dir_rmap + out_prefix_makeRmap + ".rmap", "w") as out:
+        with open(out_dir_rmap + out_prefix_rmap + ".rmap", "w") as out:
             counter_id = 0
             for crm in frags:
                 counter = 0
@@ -249,11 +260,14 @@ class makeRmapFile(Tool):
 
         idx.close()
 
-        if os.path.getsize(out_dir_rmap + out_prefix_makeRmap + ".rmap") > 0:
+        #tar and zip folder for the mandage of COMPSs
+
+        if os.path.getsize(out_dir_rmap + out_prefix_rmap + ".rmap") > 0:
             return True
 
         logger.fatal("makeRmap_Tool.py failed to generate .rmap file")
         return False
+
 
     def run(self, input_files, metadata, output_files):
         """
@@ -279,7 +293,7 @@ class makeRmapFile(Tool):
             self.configuration["RE"],
             input_files["genome_fa"],
             output_files["out_dir_rmap"],
-            output_files["out_prefix_makeRmap"],
+            output_files["out_prefix_rmap"],
             output_files["Rtree_files"]
             )
 

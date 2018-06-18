@@ -12,7 +12,6 @@
    limitations under the License.
 """
 
-
 import os.path
 import os
 import pytest # pylint: disable=unused-import
@@ -38,6 +37,11 @@ def test_baitmap():
 
     input_files = {
         "genome_idx" : path + "test_baitmap/chr21_hg19.fa",
+        ".amb" : path + "test_baitmap/chr21_hg19.fa.amb",
+        ".ann" : path + "test_baitmap/chr21_hg19.fa.ann",
+        ".bwt" : path + "test_baitmap/chr21_hg19.fa.bwt",
+        ".pac" : path + "test_baitmap/chr21_hg19.fa.pca",
+        ".sa" : path + "test_baitmap/chr21_hg19.fa.sa",
         "probes_fa" : path + "test_baitmap/baits.fa",
         "Rtree_files" : path + "test_rmap/rtree_file",
         "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"

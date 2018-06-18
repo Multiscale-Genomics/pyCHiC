@@ -51,4 +51,70 @@
             "validated": 1
         }
     },
+    {
+        "_id": "<unique_file_id>",
+        "data_type": "index",
+        "file_type": ".amb",
+        "file_path": "tests/data/test_rmap/chr21_hg19.fa.amb",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": "9606",
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+     {
+        "_id": "<unique_file_id>",
+        "data_type": "index",
+        "file_type": ".ann",
+        "file_path": "tests/data/test_rmap/chr21_hg19.fa.ann",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": "9606",
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+     {
+        "_id": "<unique_file_id>",
+        "data_type": "index",
+        "file_type": ".bwt",
+        "file_path": "tests/data/test_rmap/chr21_hg19.fa.bwt",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": "9606",
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+     {
+        "_id": "<unique_file_id>",
+        "data_type": "index",
+        "file_type": ".pac",
+        "file_path": "tests/data/test_rmap/chr21_hg19.fa.pac",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": "9606",
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+     {
+        "_id": "<unique_file_id>",
+        "data_type": "index",
+        "file_type": ".sa",
+        "file_path": "tests/data/test_rmap/chr21_hg19.fa.sa",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": "9606",
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+
 ]

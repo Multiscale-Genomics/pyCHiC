@@ -23,6 +23,31 @@
             "allow_multiple": false,
             "name": "genome_fa",
             "value": "<unique_file_id>"
+        }, {
+            "required": true,
+            "allow_multiple": false,
+            "name": ".amb",
+            "value": "<unique_file_id>"
+        }, {
+            "required": true,
+            "allow_multiple": false,
+            "name": ".ann",
+            "value": "<unique_file_id>"
+        }, {
+            "required": true,
+            "allow_multiple": false,
+            "name": ".bwt",
+            "value": "<unique_file_id>"
+        }, {
+            "required": true,
+            "allow_multiple": false,
+            "name": ".pac",
+            "value": "<unique_file_id>"
+        }, {
+            "required": true,
+            "allow_multiple": false,
+            "name": ".sa",
+            "value": "<unique_file_id>"
         }
 
     ],

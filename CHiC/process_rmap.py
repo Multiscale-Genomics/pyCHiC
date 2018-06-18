@@ -25,7 +25,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.rmap_tool import makeRmapFile
+from CHiC.tool.rmap_tool import makeRmapFile
 
 ################################################
 
@@ -68,7 +68,7 @@ class process_rmap(Workflow):
         output_files: dict
             out_dir_rmap: str
                     path to the output diretory
-            out_prefix_makeRmap: str
+            out_prefix_rmap: str
                     prefix for the output file .rmap
             Rtree_files: str
                     Name of the Rtree files
@@ -82,7 +82,7 @@ class process_rmap(Workflow):
         """
 
         rmap_caller = makeRmapFile(self.configuration)
-        output_files_makeRmap, output_metadata_makeRmap = rmap_caller.run(
+        output_files_rmap, output_metadata_rmap = rmap_caller.run(
             {
                 "genome_fa" : input_files["genome_fa"]
             },
@@ -91,19 +91,19 @@ class process_rmap(Workflow):
             },
             {
                 "out_dir_rmap" : output_files["out_dir_rmap"],
-                "out_prefix_makeRmap" : output_files["out_prefix_makeRmap"],
+                "out_prefix_rmap" : output_files["out_prefix_rmap"],
                 "Rtree_files" : output_files["Rtree_files"]
             }
         )
 
         if os.path.getsize(output_files["out_dir_rmap"] +
-                           output_files["out_prefix_makeRmap"] + ".rmap") > 0:
+                           output_files["out_prefix_rmap"] + ".rmap") > 0:
             pass
         else:
             logger.fatal("generate_CHiCAGO_rmap failed to generate .rmap file")
             return False
 
-        return output_files_makeRmap, output_metadata_makeRmap
+        return output_files_rmap, output_metadata_rmap
 
 #############################################################
 

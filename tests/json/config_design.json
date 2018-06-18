@@ -1,0 +1,111 @@
+{
+    "input_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "designDir",
+            "value": "<unique_file_id>"
+        },
+         {
+            "required": true,
+            "allow_multiple": false,
+            "name": "RMAP",
+            "value": "<unique_file_id>"
+        },
+         {
+            "required": true,
+            "allow_multiple": false,
+            "name": "BAITMAP",
+            "value": "<unique_file_id>"
+        },
+    ],
+    "arguments": [
+        {
+            "name": "makeDesignFiles_minFragLen",
+            "value": "150"
+        },
+        {
+            "name": "makeDesignFiles_maxFragLen",
+            "value": "40000"
+        },
+        {
+            "name": "makeDesignFiles_maxLBrownEst",
+            "value": "1.5e6"
+        },
+        {
+            "name": "makeDesignFiles_binSize",
+            "value": "20000"
+        },
+        {
+            "name" : "makeDesignFiles_removeb2b",
+            "value": "True"
+        },
+         {
+            "name" : "makeDesignFiles_removeAdjacent",
+            "value": "True"
+        }
+    ],
+    "output_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "outPrefixDesign",
+            "file": {
+                "file_type": "TXT",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeDesignFiles.py",
+                    "description": "directory where the desgin files are going to be produced"
+                },
+                "file_path": "tests/data/test_run_chicago",
+                "data_type": "text",
+                "compressed": ""
+            }
+        }, {
+            "required": true,
+            "allow_multiple": false,
+            "name": ".nbpb",
+            "file": {
+                "file_type": ".nbpb",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeDesignFiles.py",
+                    "description": " <otherEndID> <Total no. valid baits in distance bin 1> ... <Total no. valid baits in distance bin N>, where the bins map within the 'proximal' distance range from each other end (0; maxLBrownEst] and bin size is defined by the binsize parameter. "
+                },
+                "file_path": "tests/data/test.txt",
+                "data_type": "text",
+                "compressed": ""
+            }
+        }, {
+            "required": true,
+            "allow_multiple": false,
+            "name": ".npb",
+            "file": {
+                "file_type": ".npb",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeDesignFiles.py",
+                    "description": " <baitID> <Total no. valid restriction fragments in distance bin 1> ... <Total no. valid restriction fragments in distance bin N>, where the bins map within the 'proximal' distance range from each bait (0; maxLBrownEst] and bin size is defined by the binsize parameter. "
+                },
+                "file_path": "tests/data/test.txt",
+                "data_type": "text",
+                "compressed": ""
+            }
+        }, {
+            "required": true,
+            "allow_multiple": false,
+            "name": ".poe",
+            "file": {
+                "file_type": ".poe",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeDesignFiles.py",
+                    "description": " <baitID> <otherEndID> <absolute distance> for all combinations of baits and other ends that map within the 'proximal' distance range from each other (0; maxLBrownEst]. Data in each file is preceded by a comment line listing the input parameters used to generate them. "
+                },
+                "file_path": "tests/data/test.txt",
+                "data_type": "text",
+                "compressed": ""
+            }
+        }
+    ]
+}

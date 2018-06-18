@@ -8,8 +8,12 @@
         }
 
     ],
-    "arguments": [{"RE" : {"HindIII" : "A|AGCTT"}
-                    }
+    "arguments": [
+        {
+            "name": "RE",
+            "value": {"HindIII" : "A|AGCTT"}
+
+        }
     ],
     "output_files": [
         {
@@ -45,7 +49,7 @@
             }
         }
         {
-            "name": "out_prefix_makeRmap",
+            "name": "out_prefix_rmap",
             "required": true,
             "allow_multiple": false,
             "file": {

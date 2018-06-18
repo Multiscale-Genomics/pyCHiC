@@ -43,7 +43,9 @@ def test_design():
         }
 
     input_files = {
-        "designDir" : path + "test_run_chicago"
+        "designDir" : path + "test_run_chicago",
+        "RMAP" : path + "test_run_chicago/test.rmap",
+        "BAITMAP": path + "test_run_chicago/test.baitmap"
     }
 
     metadata = {
@@ -57,6 +59,9 @@ def test_design():
 
     output_files = {
         "outPrefixDesign" : path + "test_run_chicago/h19_chr20and21_test",
+        ".nbpb" : path + "test_run_chicago/h19_chr20and21_test.nbpb",
+        ".npb" : path + "test_run_chicago/h19_chr20and21_test.npb",
+        ".poe" : path + "test_run_chicago/h19_chr20and21_test.poe"
     }
 
     design_handle = makeDesignFilesTool(config_file)

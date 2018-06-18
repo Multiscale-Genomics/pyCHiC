@@ -66,7 +66,10 @@ class makeBaitmapTool(Tool):
 
         self.configuration.update(configuration)
 
-    def bwa_for_probes(self, genome_index, probes_fa, out_sam):
+    @task(returns=bool, genome_index=FILE_IN, probes_fa=FILE_IN,
+          out_sam=FILE_OUT, amb=FILE_IN, ann=FILE_IN, bwt=FILE_IN,
+          pac=FILE_IN, sa=FILE_IN)
+    def bwa_for_probes(self, amb, ann, bwt, pac, sa, genome_index, probes_fa, out_sam):
         """
         This function run bwa using an index genome and a probes file
         in fasta format. bwa is used as single end and with high
@@ -106,6 +109,9 @@ class makeBaitmapTool(Tool):
         logger.fatal("bwa stderr" + proc_err)
         return False
 
+    @task(returns=bool, genome_index=FILE_IN, probes_fa=FILE_IN,
+           genome_fa=FILE_IN, out_sam=FILE_OUT, out_bam=FILE_OUT,
+           out_sam=FILE_OUT)
     def bwa_for_probes2(self, genome_fa, genome_index, probes_fa, out_bam, out_sam):
         """
         This function run bwa using an index genome and a probes file
@@ -179,7 +185,7 @@ class makeBaitmapTool(Tool):
                 msg.errno, msg.strerror, args))
             return False
 
-
+    @task(returns = str, sam_file=FILE_IN, Rtree_files=FILE_IN)
     def sam_to_baitmap(self, sam_file, Rtree_files):
         """
         This function take the sam file, output of bwa
@@ -290,10 +296,15 @@ class makeBaitmapTool(Tool):
             List of matching metadata dict objects
         """
         self.bwa_for_probes(
-           # input_files["genome_fa"],
+            input_files[".amb"],
+            input_files[".ann"],
+            input_files[".bwt"],
+            input_files[".pac"],
+            input_files[".sa"],
+            input_files["genome_fa"],
             input_files["genome_idx"],
             input_files["probes_fa"],
-          #  output_files["out_bam"],
+            #output_files["out_bam"],
             output_files["out_sam"]
             )
 
