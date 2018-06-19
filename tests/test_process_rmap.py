@@ -50,9 +50,10 @@ def test_process_rmap():
     output_files = {
         "out_dir_rmap" : path + "test_run_chicago/",
         "out_prefix_rmap" : "test",
-        "Rtree_path" : path + "test_rmap/rtree_file",
-        "Rtree_file.dat" : path + "test_rmap/rtree_file.dat",
-        "Rtree_file.idx" : path + "test_rmap/rtree_file.idx"
+        "Rtree_files" : path + "test_rmap/rtree_file"
+        #"Rtree_path" : path + "test_rmap/rtree_file",
+        #"Rtree_file.dat" : path + "test_rmap/rtree_file.dat",
+        #"Rtree_file.idx" : path + "test_rmap/rtree_file.idx"
 
         }
 
