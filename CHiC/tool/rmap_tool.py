@@ -293,8 +293,8 @@ class makeRmapFile(Tool):
         output_metadata: dict
             lest of matching metadata
         """
-        rtree_dat = input_files["Rtree_files"]+".dat"
-        rtree_idx = input_files["Rtree_files"]+".idx"
+        rtree_dat = output_files["Rtree_files"]+".dat"
+        rtree_idx = output_files["Rtree_files"]+".idx"
         RMAP = output_files["out_dir_rmap"]+output_files["out_prefix_rmap"]+".rmap"
 
         results = self.from_frag_to_rmap(
