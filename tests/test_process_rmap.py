@@ -37,7 +37,7 @@ def test_process_rmap():
                     }
 
     input_files = {
-        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa",
+        "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
         }
 
 
@@ -47,11 +47,13 @@ def test_process_rmap():
             None, 9606, ""),
     }
 
-
     output_files = {
         "out_dir_rmap" : path + "test_run_chicago/",
         "out_prefix_rmap" : "test",
-        "Rtree_files" : path + "test_rmap/rtree_file"
+        "Rtree_path" : path + "test_rmap/rtree_file",
+        "Rtree_file.dat" : path + "test_rmap/rtree_file.dat",
+        "Rtree_file.idx" : path + "test_rmap/rtree_file.idx"
+
         }
 
 

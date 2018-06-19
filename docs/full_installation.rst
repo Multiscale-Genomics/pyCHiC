@@ -73,6 +73,13 @@ Installation Process
 --------------------
 
 
+bedtools
+^^^^^^^^
+.. code-block:: none
+   :linenos:
+   
+   sudo apt-get install bedtools
+
 HiCUP
 ^^^^^
 .. code-block:: none
@@ -235,6 +242,8 @@ Checkout the code for the DM API and the C-HiC pipelines:
    pyenv activate C-HiC
    pip install git+https://github.com/Multiscale-Genomics/mg-dm-api.git
    pip install git+https://github.com/Multiscale-Genomics/mg-tool-api.git
+   pip install git+https://github.com/Multiscale-Genomics/mg-process-fastq.git
+
 
    git clone https://github.com/pabloacera/C-HiC.git
    cd C-HiC

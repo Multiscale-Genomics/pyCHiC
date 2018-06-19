@@ -17,16 +17,18 @@
 
 from __future__ import print_function
 
+from rtree import index
 import os
 import sys
+import re
+
 from utils import logger
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
+from tool.common import common
 
-import re
 re.compile("pattern")
 
-from rtree import index
 
 
 try:
@@ -90,7 +92,6 @@ class makeRmapFile(Tool):
         restring = restring.replace('N', '[ATGC]')
         return restring
 
-    @task(returns=dict, genome_fa=FILE_IN)
     def genome_to_dict(self, genome_fa):
         """
         This function takes a genome file in fasta format
@@ -131,11 +132,7 @@ class makeRmapFile(Tool):
 
         return genome_dict
 
-    @task(returns=bool, enzyme_name=IN, genome_fa=FILE_IN, out_dir_rmap=FILE_OUT,
-           out_prefix_rmap=IN, Rtree_files=FILE_OUT)
-    def map_re_sites2(
-            self, enzyme_name, genome_fa, out_dir_rmap, out_prefix_rmap,
-            Rtree_files, verbose=False):
+    def map_re_sites2(self, enzyme_name, genome_fa, verbose=False):
         """
         map all restriction enzyme (RE) sites of a given enzyme in a genome.
         Position of a RE site is defined as the genomic coordinate of the first
@@ -201,16 +198,16 @@ class makeRmapFile(Tool):
                 # at the end of last chunk we add the chromosome length
                 frags[crm].append(len(seq))
 
-            self.from_frag_to_rmap(frags, out_dir_rmap, out_prefix_rmap, Rtree_files)
-            return True
+            return frags
 
         except IOError:
             logger.fatal("map_re_sites2 function from rmap_tool failed =(")
             return False
 
-    @task(returns=bool, frags=FILE_IN, out_dir_rmap=FILE_OUT, out_prefix_rmap=IN,
-          Rtree_files=FILE_OUT)
-    def from_frag_to_rmap(self, frags, out_dir_rmap, out_prefix_rmap, Rtree_files):
+    @task(returns=bool, enzyme_name=IN, genome_fa=FILE_IN, out_dir_rmap=FILE_OUT,
+        out_prefix_rmap=IN, Rtree_file=FILE_OUT)
+    def from_frag_to_rmap(self, enzyme_name, genome_fa, out_dir_rmap,
+                          out_prefix_rmap, Rtree_files):
         """
         This function takes the fragment output from digestion and
         convert them into rmap files.
@@ -221,6 +218,10 @@ class makeRmapFile(Tool):
 
         Parameters:
         -----------
+        enzyme_name: str
+            described in map_re_sites2
+        genome_fa: str
+            full path to genome FASTA format
         frags : dict
             dict containing chromosomes as keys and
             RE sites as values
@@ -229,6 +230,7 @@ class makeRmapFile(Tool):
         out_prefix_rmap: str
             name of the output file.
         """
+        frags = self.map_re_sites2(enzyme_name, genome_fa, verbose=False)
 
         logger.info("coverting RE fragments into rmap file")
 
@@ -243,22 +245,23 @@ class makeRmapFile(Tool):
                     counter += 1
                     if counter == 1:
                         out.write("{}\t{}\t{}\t{}\n".format(str(crm),
-                                                          1,
-                                                          RE_site,
-                                                          counter_id),
+                                                            1,
+                                                            RE_site,
+                                                            counter_id),
                                  )
                         idx.insert(counter_id, (1, crm, RE_site, crm))
                     else:
                         out.write("{}\t{}\t{}\t{}\n".format(str(crm),
-                                                          prev_RE_site+1, # pylint: disable=used-before-assignment
-                                                          RE_site,
-                                                          counter_id),
+                                                            prev_RE_site+1, # pylint: disable=used-before-assignment
+                                                            RE_site,
+                                                            counter_id),
                                  )
                         idx.insert(counter_id, (prev_RE_site+1, crm, RE_site, crm))
 
                     prev_RE_site = RE_site
 
         idx.close()
+
 
         #tar and zip folder for the mandage of COMPSs
 
@@ -289,7 +292,7 @@ class makeRmapFile(Tool):
         output_metadata: dict
             lest of matching metadata
         """
-        results = self.map_re_sites2(
+        results = self.from_frag_to_rmap(
             self.configuration["RE"],
             input_files["genome_fa"],
             output_files["out_dir_rmap"],
