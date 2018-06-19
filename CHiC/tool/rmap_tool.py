@@ -295,9 +295,7 @@ class makeRmapFile(Tool):
         """
         rtree_dat = input_files["Rtree_files"]+".dat"
         rtree_idx = input_files["Rtree_files"]+".idx"
-        RMAP = output_files["out_dir_rmap"]+
-               output_files["out_prefix_rmap"]+
-               ".rmap"
+        RMAP = output_files["out_dir_rmap"]+output_files["out_prefix_rmap"]+".rmap"
 
         results = self.from_frag_to_rmap(
             self.configuration["RE"],
