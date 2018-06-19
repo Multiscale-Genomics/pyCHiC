@@ -1,6 +1,6 @@
 [
     {
-        "_id": "<unique_file_id>",
+        "_id": "genome_FASTA",
         "data_type": "reference genome",
         "file_type": "FASTA",
         "file_path": "tests/data/test_baitmap/chr21_hg19.fa",

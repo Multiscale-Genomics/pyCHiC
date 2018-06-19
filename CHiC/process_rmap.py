@@ -92,7 +92,8 @@ class process_rmap(Workflow):
             {
                 "out_dir_rmap" : output_files["out_dir_rmap"],
                 "out_prefix_rmap" : output_files["out_prefix_rmap"],
-                "Rtree_files" : output_files["Rtree_files"]
+                "Rtree_file_dat" : output_files["Rtree_file_dat"],
+                "Rtree_file_idx" : output_files["Rtree_file_idx"]
             }
         )
 

@@ -49,7 +49,9 @@ def test_rmap_tool():
     output_files = {
         "out_dir_rmap" : path + "test_run_chicago/",
         "out_prefix_rmap" : "test",
-        "Rtree_files" : path + "test_rmap/rtree_file"
+        "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
+        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx"
+
         }
 
 
@@ -64,5 +66,5 @@ def test_rmap_tool():
     )
 
     assert os.path.getsize(output_files["out_dir_rmap"] + out) > 0
-    assert os.path.getsize(output_files["Rtree_files"] + ".dat")
-    assert os.path.getsize(output_files["Rtree_files"] + ".idx")
+    assert os.path.getsize(output_files["Rtree_file_dat"])
+    assert os.path.getsize(output_files["Rtree_file_idx"])

@@ -264,6 +264,7 @@ class makeRmapFile(Tool):
         idx.close()
 
 
+
         #tar and zip folder for the mandage of COMPSs
 
         if os.path.getsize(out_dir_rmap + out_prefix_rmap + ".rmap") > 0:
@@ -293,16 +294,26 @@ class makeRmapFile(Tool):
         output_metadata: dict
             lest of matching metadata
         """
-        rtree_dat = output_files["Rtree_files"]+".dat"
-        rtree_idx = output_files["Rtree_files"]+".idx"
+
         RMAP = output_files["out_dir_rmap"]+output_files["out_prefix_rmap"]+".rmap"
+
+        if "".join(output_files["Rtree_file_dat"].split(".")[:-1]) != \
+           "".join(output_files["Rtree_file_idx"].split(".")[:-1]):
+           logger.fatal("Rtree_file_dat and Rtree_file_idx"
+                        "should have the same prefix name")
+        else:
+            rtree_dat = output_files["Rtree_file_dat"]
+            rtree_idx = output_files["Rtree_file_idx"]
+
+        rtree = "".join(output_files["Rtree_file_dat"].split(".")[:-1])
+
 
         results = self.from_frag_to_rmap(
             self.configuration["RE"],
             input_files["genome_fa"],
             output_files["out_dir_rmap"],
             output_files["out_prefix_rmap"],
-            output_files["Rtree_files"],
+            rtree,
         )
 
         results = compss_wait_on(results)

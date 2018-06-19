@@ -4,7 +4,7 @@
             "required": true,
             "allow_multiple": false,
             "name": "genome_fa",
-            "value": "<unique_file_id>"
+            "value": "genome_FASTA"
         }
 
     ],
@@ -27,27 +27,43 @@
                     "tool": "rmap_tool.py",
                     "description": "file with coordinates of RE fragments from the digested genome"
                 },
-                "file_path": "tests/data/test_run_chicago",
+                "file_path": "tests/data/test_run_chicago/",
                 "data_type": "rmap",
                 "compressed": ""
             }
-        }
+        },
           {
-            "name": "Rtree_files",
+            "name": "Rtree_file_dat",
             "required": true,
             "allow_multiple": false,
             "file": {
-                "file_type": "['.idx','.dat']",
+                "file_type": ".dat",
                 "meta_data": {
                     "visible": true,
                     "tool": "rmap_tool.py",
                     "description": "Binary files with the information for RE coordinates to perform spatial index"
                 },
-                "file_path": ["tests/data/test_rmap/rtree_file.idx", "tests/data/test_rmap/rtree_file.dat"],
+                "file_path": "tests/data/test_rmap/rtree_file.dat",
                 "data_type": "binary",
                 "compressed": ""
             }
-        }
+        },
+        {
+            "name": "Rtree_file_idx",
+            "required": true,
+            "allow_multiple": false,
+            "file": {
+                "file_type": ".idx",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "rmap_tool.py",
+                    "description": "Binary files with the information for RE coordinates to perform spatial index"
+                },
+                "file_path": "tests/data/test_rmap/rtree_file.idx",
+                "data_type": "binary",
+                "compressed": ""
+            }
+        },
         {
             "name": "out_prefix_rmap",
             "required": true,
