@@ -204,8 +204,9 @@ class makeRmapFile(Tool):
             logger.fatal("map_re_sites2 function from rmap_tool failed =(")
             return False
 
-    @task(returns=bool, enzyme_name=IN, genome_fa=FILE_IN, out_dir_rmap=FILE_OUT,
-        out_prefix_rmap=IN, Rtree_file=FILE_OUT)
+    @task(returns=bool, enzyme_name=IN, genome_fa=FILE_IN, out_dir_rmap=IN,
+          out_prefix_rmap=IN, Rtree_file=IN, rtree_dat=FILE_OUT, rtree_idx=FILE_OUT,
+          RMAP=FILE_OUT)
     def from_frag_to_rmap(self, enzyme_name, genome_fa, out_dir_rmap,
                           out_prefix_rmap, Rtree_files):
         """
@@ -292,13 +293,19 @@ class makeRmapFile(Tool):
         output_metadata: dict
             lest of matching metadata
         """
+        rtree_dat = input_files["Rtree_files"]+".dat"
+        rtree_idx = input_files["Rtree_files"]+".idx"
+        RMAP = output_files["out_dir_rmap"]+
+               output_files["out_prefix_rmap"]+
+               ".rmap"
+
         results = self.from_frag_to_rmap(
             self.configuration["RE"],
             input_files["genome_fa"],
             output_files["out_dir_rmap"],
             output_files["out_prefix_rmap"],
-            output_files["Rtree_files"]
-            )
+            output_files["Rtree_files"],
+        )
 
         results = compss_wait_on(results)
 
