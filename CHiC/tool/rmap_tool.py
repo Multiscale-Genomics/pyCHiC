@@ -205,10 +205,10 @@ class makeRmapFile(Tool):
             return False
 
     @task(returns=bool, enzyme_name=IN, genome_fa=FILE_IN, out_dir_rmap=IN,
-          out_prefix_rmap=IN, Rtree_file=IN, rtree_dat=FILE_OUT, rtree_idx=FILE_OUT,
+          out_prefix_rmap=IN, rtree=IN, rtree_dat=FILE_OUT, rtree_idx=FILE_OUT,
           RMAP=FILE_OUT)
     def from_frag_to_rmap(self, enzyme_name, genome_fa, out_dir_rmap,
-                          out_prefix_rmap, Rtree_files):
+                          out_prefix_rmap, rtree, rtree_dat, rtree_idx, RMAP):
         """
         This function takes the fragment output from digestion and
         convert them into rmap files.
@@ -235,7 +235,7 @@ class makeRmapFile(Tool):
 
         logger.info("coverting RE fragments into rmap file")
 
-        idx = index.Rtree(Rtree_files)
+        idx = index.Rtree(rtree)
 
         with open(out_dir_rmap + out_prefix_rmap + ".rmap", "w") as out:
             counter_id = 0
@@ -314,6 +314,9 @@ class makeRmapFile(Tool):
             output_files["out_dir_rmap"],
             output_files["out_prefix_rmap"],
             rtree,
+            output_files["Rtree_file_dat"],
+            output_files["Rtree_file_idx"],
+            RMAP
         )
 
         results = compss_wait_on(results)
