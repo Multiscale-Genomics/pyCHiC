@@ -48,8 +48,7 @@ def test_process_rmap():
     }
 
     output_files = {
-        "out_dir_rmap" : path + "test_run_chicago/",
-        "out_prefix_rmap" : "test",
+        "RMAP" : path + "test_run_chicago/test.rmap",
         "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
         "Rtree_file_idx" : path + "test_rmap/rtree_file.idx"
         }
@@ -58,13 +57,5 @@ def test_process_rmap():
     rmap_handle = process_rmap(configuration)
     rmap_handle.run(input_files, metadata, output_files)
 
-    out = "".join(
-        [
-            f for f in os.listdir(output_files["out_dir_rmap"])
-            if f.startswith("Digest_") and f.endswith(".map")
-        ]
-    )
-
-    assert os.path.getsize(output_files["out_dir_rmap"] + out) > 0
     assert os.path.getsize(output_files["Rtree_file_dat"])
     assert os.path.getsize(output_files["Rtree_file_idx"])

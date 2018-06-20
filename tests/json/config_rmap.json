@@ -4,80 +4,60 @@
             "required": true,
             "allow_multiple": false,
             "name": "genome_fa",
-            "value": "genome_FASTA"
+            "value": "59b7e020d9422a5969b65378"
         }
-
     ],
     "arguments": [
         {
             "name": "RE",
             "value": {"HindIII" : "A|AGCTT"}
-
         }
     ],
     "output_files": [
         {
-            "name": "out_dir_rmap",
             "required": true,
             "allow_multiple": false,
-            "file": {
-                "file_type": ".rmap",
-                "meta_data": {
-                    "visible": true,
-                    "tool": "rmap_tool.py",
-                    "description": "file with coordinates of RE fragments from the digested genome"
-                },
-                "file_path": "tests/data/test_run_chicago/",
-                "data_type": "rmap",
-                "compressed": ""
-            }
-        },
-          {
             "name": "Rtree_file_dat",
-            "required": true,
-            "allow_multiple": false,
             "file": {
-                "file_type": ".dat",
+                "file_type": "Rtree_file_dat",
                 "meta_data": {
                     "visible": true,
-                    "tool": "rmap_tool.py",
-                    "description": "Binary files with the information for RE coordinates to perform spatial index"
+                    "tool": "rmap_tool",
+                    "description": "Output"
                 },
                 "file_path": "tests/data/test_rmap/rtree_file.dat",
-                "data_type": "binary",
-                "compressed": ""
+                "data_type": "data_rtree",
+                "compressed": "null"
             }
-        },
-        {
-            "name": "Rtree_file_idx",
+        },{
             "required": true,
             "allow_multiple": false,
+            "name": "Rtree_file_idx",
             "file": {
-                "file_type": ".idx",
+                "file_type": "Rtree_file_idx",
                 "meta_data": {
                     "visible": true,
-                    "tool": "rmap_tool.py",
-                    "description": "Binary files with the information for RE coordinates to perform spatial index"
+                    "tool": "rmap_tool",
+                    "description": "Output"
                 },
                 "file_path": "tests/data/test_rmap/rtree_file.idx",
-                "data_type": "binary",
-                "compressed": ""
+                "data_type": "data_rtree",
+                "compressed": "null"
             }
-        },
-        {
-            "name": "out_prefix_rmap",
+        },{
             "required": true,
             "allow_multiple": false,
+            "name": "RMAP",
             "file": {
-                "file_type": ".rmap",
+                "file_type": "RMAP",
                 "meta_data": {
                     "visible": true,
-                    "tool": "makeBaitmap.py",
-                    "description": "output of map the probes into the reference genome with bwa"
+                    "tool": "rmap_tool",
+                    "description": "Output"
                 },
-                "file_path": "test",
-                "data_type": "text",
-                "compressed": ""
+                "file_path": "tests/data/test_run_chicago/test.rmap",
+                "data_type": "data_rmap",
+                "compressed": "null"
             }
         }
     ]

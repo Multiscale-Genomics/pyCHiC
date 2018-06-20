@@ -90,15 +90,13 @@ class process_rmap(Workflow):
                 "genome_fa" : metadata["genome_fa"]
             },
             {
-                "out_dir_rmap" : output_files["out_dir_rmap"],
-                "out_prefix_rmap" : output_files["out_prefix_rmap"],
+                "RMAP" : output_files["RMAP"],
                 "Rtree_file_dat" : output_files["Rtree_file_dat"],
                 "Rtree_file_idx" : output_files["Rtree_file_idx"]
             }
         )
 
-        if os.path.getsize(output_files["out_dir_rmap"] +
-                           output_files["out_prefix_rmap"] + ".rmap") > 0:
+        if os.path.getsize(output_files["RMAP"]) > 0:
             pass
         else:
             logger.fatal("generate_CHiCAGO_rmap failed to generate .rmap file")
@@ -134,7 +132,7 @@ def main_json(config, in_metadata, out_metadata):
 #########################################################################
 
 
-if __name__ == "__name__":
+if __name__ == "__main__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
@@ -146,9 +144,9 @@ if __name__ == "__name__":
     PARSER.add_argument(
         "--out_metadata", help="Location of output metadata file")
     PARSER.add_argument(
-        "--local", action="store_const", cont=True, default=False)
+        "--local", action="store_const", const=True, default=False)
 
-    #Get matching parameters from the command line
+    #Get matching Parametersmeters from the command line
     ARGS = PARSER.parse_args()
 
     CONFIG = ARGS.config
@@ -159,6 +157,7 @@ if __name__ == "__name__":
     if LOCAL:
         import sys
         sys._run_from_cmdl = True # pylint: disable=protected-access
+
 
     RESULTS = main_json(CONFIG, IN_METADATA, OUT_METADATA)
 

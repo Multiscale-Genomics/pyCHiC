@@ -16,16 +16,15 @@
 """
 
 from __future__ import print_function
-
-from rtree import index
 import os
 import sys
 import re
 
+from rtree import index
+
 from utils import logger
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
-from tool.common import common
 
 re.compile("pattern")
 
@@ -204,11 +203,11 @@ class makeRmapFile(Tool):
             logger.fatal("map_re_sites2 function from rmap_tool failed =(")
             return False
 
-    @task(returns=bool, enzyme_name=IN, genome_fa=FILE_IN, out_dir_rmap=IN,
-          out_prefix_rmap=IN, rtree=IN, rtree_dat=FILE_OUT, rtree_idx=FILE_OUT,
+    @task(returns=bool, enzyme_name=IN, genome_fa=FILE_IN,
+          rtree=IN, rtree_dat=FILE_OUT, rtree_idx=FILE_OUT,
           RMAP=FILE_OUT)
-    def from_frag_to_rmap(self, enzyme_name, genome_fa, out_dir_rmap,
-                          out_prefix_rmap, rtree, rtree_dat, rtree_idx, RMAP):
+    def from_frag_to_rmap(self, enzyme_name, genome_fa,
+                          rtree, rtree_dat, rtree_idx, RMAP):
         """
         This function takes the fragment output from digestion and
         convert them into rmap files.
@@ -237,7 +236,7 @@ class makeRmapFile(Tool):
 
         idx = index.Rtree(rtree)
 
-        with open(out_dir_rmap + out_prefix_rmap + ".rmap", "w") as out:
+        with open(RMAP, "w") as out:
             counter_id = 0
             for crm in frags:
                 counter = 0
@@ -267,7 +266,7 @@ class makeRmapFile(Tool):
 
         #tar and zip folder for the mandage of COMPSs
 
-        if os.path.getsize(out_dir_rmap + out_prefix_rmap + ".rmap") > 0:
+        if os.path.getsize(RMAP) > 0:
             return True
 
         logger.fatal("makeRmap_Tool.py failed to generate .rmap file")
@@ -294,16 +293,10 @@ class makeRmapFile(Tool):
         output_metadata: dict
             lest of matching metadata
         """
-
-        RMAP = output_files["out_dir_rmap"]+output_files["out_prefix_rmap"]+".rmap"
-
         if "".join(output_files["Rtree_file_dat"].split(".")[:-1]) != \
            "".join(output_files["Rtree_file_idx"].split(".")[:-1]):
-           logger.fatal("Rtree_file_dat and Rtree_file_idx"
-                        "should have the same prefix name")
-        else:
-            rtree_dat = output_files["Rtree_file_dat"]
-            rtree_idx = output_files["Rtree_file_idx"]
+            logger.fatal("Rtree_file_dat and Rtree_file_idx"
+                         "should have the same prefix name")
 
         rtree = "".join(output_files["Rtree_file_dat"].split(".")[:-1])
 
@@ -311,30 +304,55 @@ class makeRmapFile(Tool):
         results = self.from_frag_to_rmap(
             self.configuration["RE"],
             input_files["genome_fa"],
-            output_files["out_dir_rmap"],
-            output_files["out_prefix_rmap"],
             rtree,
             output_files["Rtree_file_dat"],
             output_files["Rtree_file_idx"],
-            RMAP
+            output_files["RMAP"]
         )
 
         results = compss_wait_on(results)
 
         output_metadata = {
-            "rmap": Metadata(
+            "RMAP": Metadata(
                 data_type=metadata['genome_fa'].data_type,
                 file_type="rmap",
-                file_path=output_files["out_dir_rmap"],
+                file_path=output_files["RMAP"],
                 sources=[
                     metadata["genome_fa"].file_path,
                 ],
                 taxon_id=metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : metadata["genome_fa"].meta_data,
-                    "tool": "makeRmapFileTool"
+                    "RE" : self.configuration["RE"],
+                    "tool": "rmap_tool"
+                }
+            ),
+            "Rtree_file_dat": Metadata(
+                data_type=metadata['genome_fa'].data_type,
+                file_type="Rtree_file_dat",
+                file_path=output_files["Rtree_file_dat"],
+                sources=[
+                    metadata["genome_fa"].file_path,
+                ],
+                taxon_id=metadata["genome_fa"].taxon_id,
+                meta_data={
+                    "RE" : self.configuration["RE"],
+                    "tool": "rmap_tool"
+                }
+            ),
+            "Rtree_file_idx": Metadata(
+                data_type=metadata['genome_fa'].data_type,
+                file_type="Rtree_file_idx",
+                file_path=output_files["Rtree_file_dat"],
+                sources=[
+                    metadata["genome_fa"].file_path,
+                ],
+                taxon_id=metadata["genome_fa"].taxon_id,
+                meta_data={
+                    "RE" : self.configuration["RE"],
+                    "tool": "rmap_tool"
                 }
             )
+
         }
 
-        return(results, output_metadata)
+        return(output_files , output_metadata)

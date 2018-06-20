@@ -35,36 +35,26 @@ def test_rmap_tool():
                     }
 
     input_files = {
-        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa",
+        "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
         }
 
 
     metadata = {
         "genome_fa" : Metadata(
-            "txt", "fasta", path+ "test_baitmap/chr21_hg19.fa",
+            "txt", "fasta", path + "test_baitmap/chr21_hg19.fa",
             None, 9606, ""),
     }
 
 
     output_files = {
-        "out_dir_rmap" : path + "test_run_chicago/",
-        "out_prefix_rmap" : "test",
+        "RMAP" : path + "test_run_chicago/test.rmap",
         "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
         "Rtree_file_idx" : path + "test_rmap/rtree_file.idx"
-
         }
 
 
     rmap_handle = makeRmapFile(configuration)
     rmap_handle.run(input_files, metadata, output_files)
 
-    out = "".join(
-        [
-            f for f in os.listdir(output_files["out_dir_rmap"])
-            if f.startswith("Digest_") and f.endswith(".map")
-        ]
-    )
-
-    assert os.path.getsize(output_files["out_dir_rmap"] + out) > 0
-    assert os.path.getsize(output_files["Rtree_file_dat"])
-    assert os.path.getsize(output_files["Rtree_file_idx"])
+    assert os.path.getsize(output_files["Rtree_file_dat"]) > 0
+    assert os.path.getsize(output_files["Rtree_file_idx"]) > 0

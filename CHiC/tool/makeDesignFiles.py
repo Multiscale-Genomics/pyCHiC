@@ -18,7 +18,6 @@ import os
 import subprocess
 import sys
 from utils import logger
-import shutil
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
