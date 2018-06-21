@@ -73,7 +73,6 @@ class makeRmapFile(Tool):
         self.configuration.update(configuration)
 
 
-
     def iupac2regex(self, restring):
         """
         Convert target sites with IUPAC nomenclature to regex pattern
@@ -90,6 +89,7 @@ class makeRmapFile(Tool):
         restring = restring.replace('D', '[AGT]')
         restring = restring.replace('N', '[ATGC]')
         return restring
+
 
     def genome_to_dict(self, genome_fa):
         """
@@ -130,6 +130,7 @@ class makeRmapFile(Tool):
             genome_dict[chromo] = sequence
 
         return genome_dict
+
 
     def map_re_sites2(self, enzyme_name, genome_fa, verbose=False):
         """
@@ -230,6 +231,7 @@ class makeRmapFile(Tool):
         out_prefix_rmap: str
             name of the output file.
         """
+        #include creation folders
         frags = self.map_re_sites2(enzyme_name, genome_fa, verbose=False)
 
         logger.info("coverting RE fragments into rmap file")
@@ -309,7 +311,7 @@ class makeRmapFile(Tool):
                          "should have the same prefix name")
 
         rtree = "".join(output_files["Rtree_file_dat"].split(".")[:-1])
-
+        rtree = "".join("/")[-1]
 
         results = self.from_frag_to_rmap(
             self.configuration["RE"],
