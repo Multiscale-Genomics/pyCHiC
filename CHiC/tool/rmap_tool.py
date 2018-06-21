@@ -293,6 +293,16 @@ class makeRmapFile(Tool):
         output_metadata: dict
             lest of matching metadata
         """
+        out_dir_rmap = "/".join(output_files["RMAP"].split("/")[:-1])
+        out_dir_rtree = "/".join(output_files["Rtree_file_dat"].split("/")[:-1])
+
+        if not os.path.isdir(out_dir_rmap):
+            os.mkdir(out_dir_rmap)
+
+        if not os.path.isdir(out_dir_rtree):
+            os.mkdir(out_dir_rtree)
+
+
         if "".join(output_files["Rtree_file_dat"].split(".")[:-1]) != \
            "".join(output_files["Rtree_file_idx"].split(".")[:-1]):
             logger.fatal("Rtree_file_dat and Rtree_file_idx"
@@ -318,7 +328,7 @@ class makeRmapFile(Tool):
                 file_type="rmap",
                 file_path=output_files["RMAP"],
                 sources=[
-                    metadata["genome_fa"].file_path,
+                    metadata["genome_fa"].file_path
                 ],
                 taxon_id=metadata["genome_fa"].taxon_id,
                 meta_data={
@@ -327,11 +337,11 @@ class makeRmapFile(Tool):
                 }
             ),
             "Rtree_file_dat": Metadata(
-                data_type=metadata['genome_fa'].data_type,
+                data_type="Rtree_file_dat",
                 file_type="Rtree_file_dat",
                 file_path=output_files["Rtree_file_dat"],
                 sources=[
-                    metadata["genome_fa"].file_path,
+                    metadata["genome_fa"].file_path
                 ],
                 taxon_id=metadata["genome_fa"].taxon_id,
                 meta_data={
@@ -340,11 +350,11 @@ class makeRmapFile(Tool):
                 }
             ),
             "Rtree_file_idx": Metadata(
-                data_type=metadata['genome_fa'].data_type,
+                data_type="Rtree_file_idx",
                 file_type="Rtree_file_idx",
                 file_path=output_files["Rtree_file_dat"],
                 sources=[
-                    metadata["genome_fa"].file_path,
+                    metadata["genome_fa"].file_path
                 ],
                 taxon_id=metadata["genome_fa"].taxon_id,
                 meta_data={

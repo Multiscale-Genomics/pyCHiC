@@ -47,13 +47,13 @@ def test_process_baitmap():
     }
 
     output_files = {
-        "out_sam" :  path + "test_baitmap/baits.sam",
+        "bait_sam " :  path + "test_baitmap/baits.sam",
         "out_bam" : path +  "tests/baits.bam",
         "out_baitmap" : path + "test_run_chicago/test.baitmap"
     }
 
     metadata = {
-        "genome_digest" : Metadata(
+        "genome_fa" : Metadata(
             "hg38", "fasta", path + "test_rmap/chr21_hg19.fa",
             None, "HindIII", 9606),
 
@@ -61,11 +61,11 @@ def test_process_baitmap():
             "C-HiC probes", "fasta", path + "test_baitmap/baits.fa",
             None, None, 9606),
 
-        "Rtree_files" : Metadata(
-            "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
+        "Rtree_file_dat" : Metadata(
+            "Rtree_file_dat", "Rtree_file_dat", path + "test_rmap/rtree_file.dat",
             {"genome" : path + "test_rmap/chr21_hg19.fa",
              "RE" : {"HindIII" : 'A|AGCTT'}},
-            None, 9606
+            , 9606
             )
     }
 

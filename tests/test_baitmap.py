@@ -37,19 +37,15 @@ def test_baitmap():
 
     input_files = {
         "genome_idx" : path + "test_baitmap/chr21_hg19.fa",
-        ".amb" : path + "test_baitmap/chr21_hg19.fa.amb",
-        ".ann" : path + "test_baitmap/chr21_hg19.fa.ann",
-        ".bwt" : path + "test_baitmap/chr21_hg19.fa.bwt",
-        ".pac" : path + "test_baitmap/chr21_hg19.fa.pca",
-        ".sa" : path + "test_baitmap/chr21_hg19.fa.sa",
         "probes_fa" : path + "test_baitmap/baits.fa",
-        "Rtree_files" : path + "test_rmap/rtree_file",
+        "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
+        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
         "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
     }
 
     output_files = {
         "out_sam" :  path + "test_baitmap/baits.sam",
-        "out_bam" : path +  "tests/baits.bam",
+        #"out_bam" : path +  "tests/baits.bam",
         "out_baitmap" : path + "test_run_chicago/test.baitmap"
     }
 
