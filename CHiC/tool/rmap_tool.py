@@ -274,9 +274,6 @@ class makeRmapFile(Tool):
             logger.fatal("makeRmap_Tool.py failed to generate .rmap file")
             return False
 
-        if os.path.getsize(RMAP) > 0:
-            return True
-
 
     def run(self, input_files, metadata, output_files):
         """
