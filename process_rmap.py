@@ -96,11 +96,6 @@ class process_rmap(Workflow):
             }
         )
 
-        if os.path.getsize(output_files["RMAP"]) > 0:
-            pass
-        else:
-            logger.fatal("generate_CHiCAGO_rmap failed to generate .rmap file")
-            return False
 
         return output_files_rmap, output_metadata_rmap
 
