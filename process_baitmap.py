@@ -68,7 +68,7 @@ class process_baitmap(Workflow):
         output_files: dict
             Rtree_files: str
                     Name of the Rtree files
-            out_sam: str
+            bait_sam: str
                 whole path of SAM file, generated to locate baits
             out_baitmap: str
                 whole path for the .baitmap file
@@ -95,7 +95,7 @@ class process_baitmap(Workflow):
                 "Rtree_files" : metadata["Rtree_files"]
             },
             {
-                "out_sam" : output_files["out_sam"],
+                "bait_sam" : output_files["bait_sam"],
                 "out_baitmap" : output_files["out_baitmap"],
                 "out_bam" : output_files["out_bam"]
             }

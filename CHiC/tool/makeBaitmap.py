@@ -18,6 +18,7 @@ import os
 import subprocess
 import sys
 from rtree import index
+from shutil import copy2
 
 from utils import logger
 
@@ -66,10 +67,10 @@ class makeBaitmapTool(Tool):
 
         self.configuration.update(configuration)
 
-    @task(returns=bool, genome_index=FILE_IN, probes_fa=FILE_IN,
-          out_sam=FILE_OUT, amb=FILE_IN, ann=FILE_IN, bwt=FILE_IN,
-          pac=FILE_IN, sa=FILE_IN)
-    def bwa_for_probes(self, amb, ann, bwt, pac, sa, genome_index, probes_fa, out_sam):
+    @task(returns=bool, amb=FILE_IN, ann=FILE_IN, bwt=FILE_IN,
+          pac=FILE_IN, sa=FILE_IN, genome_index=FILE_IN, probes_fa=FILE_IN,
+          bait_sam=FILE_OUT, )
+    def bwa_for_probes(self, amb, ann, bwt, pac, sa, genome_index, probes_fa, bait_sam):
         """
         This function run bwa using an index genome and a probes file
         in fasta format. bwa is used as single end and with high
@@ -92,7 +93,7 @@ class makeBaitmapTool(Tool):
         """
 
         args = " ".join(["bwa", "mem", "-O", "100", "-B", "20",
-                         genome_index, probes_fa, ">", out_sam])
+                         genome_index, probes_fa, ">", bait_sam])
 
         logger.info("bwa_for_probes CMD: " + args)
 
@@ -101,7 +102,7 @@ class makeBaitmapTool(Tool):
         process.wait()
         proc_out, proc_err = process.communicate()
 
-        if os.path.getsize(out_sam) > 0:
+        if os.path.getsize(bait_sam) > 0:
             return True
 
         logger.fatal("bwa failed to generate sam file")
@@ -110,8 +111,11 @@ class makeBaitmapTool(Tool):
         return False
 
     @task(returns=bool, genome_index=FILE_IN, probes_fa=FILE_IN,
-          genome_fa=FILE_IN, out_sam=FILE_OUT, out_bam=FILE_OUT)
-    def bwa_for_probes2(self, genome_fa, genome_index, probes_fa, out_bam, out_sam):
+          genome_fa=FILE_IN, bait_sam=FILE_OUT, out_bam=FILE_OUT,
+          amb=FILE_IN, ann=FILE_IN, bwt=FILE_IN, pac=FILE_IN,
+          sa=FILE_IN)
+    def bwa_for_probes2(self, amb, ann, bwt, pac, sa, genome_fa,
+                        probes_fa, out_bam, bait_sam):
         """
         This function run bwa using an index genome and a probes file
         in fasta format. bwa is used as single end and with high
@@ -133,11 +137,11 @@ class makeBaitmapTool(Tool):
          bool
         """
 
-        out_bam = out_sam.split(".")[0]+".bam"
+        out_bam = bait_sam.split(".")[0]+".bam"
 
         input_mem = {
             "genome": genome_fa,
-            "index": genome_index,
+            "index": genome_fa,
             "loc": probes_fa,
             "bam_loc": out_bam
             }
@@ -163,15 +167,17 @@ class makeBaitmapTool(Tool):
 
         bwa_aligner.run(input_mem, metadata_mem, output_mem)
 
+        compss_wait_on(bwa_aligner)
 
         tmp_bam = "/".join(probes_fa.split("/")[:-1]) + "/tmp/" + probes_fa.split("/")[-1]+".bam"
 
-        args = ["samtools", "view", "-h", "-o", out_sam, tmp_bam]
+        args = ["samtools", "view", "-h", "-o", bait_sam, tmp_bam]
 
         logger.info("samtools args: " + ' '.join(args))
 
+
         try:
-            with open(out_sam, "w") as f_out:
+            with open(bait_sam, "w") as f_out:
                 process = subprocess.Popen(
                     ' '.join(args),
                     shell=True,
@@ -184,8 +190,9 @@ class makeBaitmapTool(Tool):
                 msg.errno, msg.strerror, args))
             return False
 
-    @task(returns = str, sam_file=FILE_IN, Rtree_files=FILE_IN)
-    def sam_to_baitmap(self, sam_file, Rtree_files):
+    @task(returns = str, sam_file=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
+          rtree_prefix=IN)
+    def sam_to_baitmap(self, sam_file, rtree_dat, rtree_idx, rtree_prefix):
         """
         This function take the sam file, output of bwa
         and the Rtree_files, and output a baitmap file
@@ -196,7 +203,10 @@ class makeBaitmapTool(Tool):
         rmap: str
             complete path to .rmap file
         """
-        idx = index.Rtree(Rtree_files)
+        copy2(rtree_idx, rtree_prefix+".idx")
+        copy2(rtree_dat, rtree_prefix+".dat")
+
+        idx = index.Rtree(rtree_prefix)
 
         baitmap = []
 
@@ -240,6 +250,10 @@ class makeBaitmapTool(Tool):
 
                         if fragment_coord not in baitmap:
                             baitmap.append(fragment_coord)
+
+        os.remove(rtree_prefix+".dat")
+        os.remove(rtree_prefix+".idx")
+
         return baitmap
 
     def create_baitmap(self, baitmap_list, out_baitmap):
@@ -281,7 +295,6 @@ class makeBaitmapTool(Tool):
         ----------
         input_files : Dict
             genome_fa
-            genome_idx
             probes_fa
             Rtree_files
 
@@ -294,22 +307,40 @@ class makeBaitmapTool(Tool):
         output_metadata : list
             List of matching metadata dict objects
         """
-        self.bwa_for_probes(
-            input_files[".amb"],
-            input_files[".ann"],
-            input_files[".bwt"],
-            input_files[".pac"],
-            input_files[".sa"],
+
+        index_files = {
+            "amb": input_files["genome_fa"] + ".amb",
+            "ann": input_files["genome_fa"] + ".ann",
+            "bwt": input_files["genome_fa"] + ".bwt",
+            "pac": input_files["genome_fa"] + ".pac",
+            "sa": input_files["genome_fa"] + ".sa"
+        }
+
+        self.bwa_for_probes2(
+            index_files["amb"],
+            index_files["ann"],
+            index_files["bwt"],
+            index_files["pac"],
+            index_files["sa"],
             input_files["genome_fa"],
-            input_files["genome_idx"],
             input_files["probes_fa"],
-            #output_files["out_bam"],
-            output_files["out_sam"]
+            output_files["out_bam"],
+            output_files["bait_sam"]
             )
 
+        if "".join(input_files["Rtree_file_dat"].split(".")[:-1]) != \
+           "".join(input_files["Rtree_file_idx"].split(".")[:-1]):
+            logger.fatal("Rtree_file_dat and Rtree_file_idx"
+                         "should have the same prefix name")
+            return False
+
+        prefix_rtree = "".join(input_files["Rtree_file_idx"].split(".")[-1])
+
         baitmap_list = self.sam_to_baitmap(
-            output_files["out_sam"],
-            input_files["Rtree_files"],)
+            output_files["bait_sam"],
+            input_files["Rtree_file_dat"],
+            input_files["Rtree_file_idx"],
+            prefix_rtree,)
 
         results = self.create_baitmap(
             baitmap_list,
@@ -321,17 +352,32 @@ class makeBaitmapTool(Tool):
                 file_type=".baitmap",
                 file_path=output_files["out_baitmap"],
                 sources=[
-                    metadata["genome_digest"].file_path,
+                    metadata["genome_fa"].file_path,
                     metadata["probes"].file_path,
-                    metadata["Rtree_files"].file_path,
+                    metadata["Rtree_file_dat"].file_path,
+                    metadata["Rtree_file_dat"].file_path,
                 ],
-                taxon_id=metadata["genome_digest"].taxon_id,
+                taxon_id=metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : metadata["Rtree_files"].meta_data,
+                    "RE" : metadata["Rtree_file_idx"].meta_data,
+                    "tool": "makeBaitmap",
+                }
+            ),
+            "bait_sam": Metadata(
+                data_type="TXT",
+                file_type=".sam",
+                file_path=output_files["bait_sam"],
+                sources=[
+                    metadata["genome_fa"].file_path,
+                    metadata["probes"].file_path,
+                    metadata["Rtree_file_idx"].file_path,
+                ],
+                taxon_id=metadata["genome_fa"].taxon_id,
+                meta_data={
+                    "RE" : metadata["Rtree_file_idx"].meta_data,
                     "tool": "makeBaitmap",
                 }
             )
         }
-
 
         return results, output_metadata

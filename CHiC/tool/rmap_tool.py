@@ -264,7 +264,6 @@ class makeRmapFile(Tool):
                     prev_RE_site = RE_site
 
         idx.close()
-        compss_wait_on()
 
         try:
             move(rtree+".dat", rtree_dat)

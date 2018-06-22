@@ -44,13 +44,13 @@ def test_baitmap():
     }
 
     output_files = {
-        "out_sam" :  path + "test_baitmap/baits.sam",
-        #"out_bam" : path +  "tests/baits.bam",
+        "bait_sam" :  path + "test_baitmap/baits.sam",
+        "out_bam" : path +  "tests/baits.bam",
         "out_baitmap" : path + "test_run_chicago/test.baitmap"
     }
 
     metadata = {
-        "genome_digest" : Metadata(
+        "genome_fa" : Metadata(
             "hg38", "fasta", path + "test_rmap/chr21_hg19.fa",
             None, "HindIII", 9606),
 
@@ -58,7 +58,14 @@ def test_baitmap():
             "C-HiC probes", "fasta", path + "test_baitmap/baits.fa",
             None, None, 9606),
 
-        "Rtree_files" : Metadata(
+        "Rtree_file_dat" : Metadata(
+            "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
+            {"genome" : path + "test_rmap/chr21_hg19.fa",
+             "RE" : {"HindIII" : 'A|AGCTT'}},
+            None, 9606
+            ),
+
+        "Rtree_file_idx" : Metadata(
             "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
             {"genome" : path + "test_rmap/chr21_hg19.fa",
              "RE" : {"HindIII" : 'A|AGCTT'}},
@@ -69,5 +76,5 @@ def test_baitmap():
     baitmap_handler = makeBaitmapTool(configuration)
     baitmap_handler.run(input_files, metadata, output_files)
 
-    assert os.path.getsize(output_files["out_sam"]) > 0
+    assert os.path.getsize(output_files["bait_sam"]) > 0
     assert os.path.getsize(output_files["out_baitmap"]) > 0

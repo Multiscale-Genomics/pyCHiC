@@ -38,13 +38,11 @@ def test_rmap_tool():
         "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
         }
 
-
     metadata = {
         "genome_fa" : Metadata(
             "txt", "fasta", path + "test_baitmap/chr21_hg19.fa",
             None, 9606, ""),
     }
-
 
     output_files = {
         "RMAP" : path + "test_run_chicago/test.rmap",
