@@ -19,6 +19,7 @@ from __future__ import print_function
 import os
 import sys
 import re
+from shutil import move
 
 from rtree import index
 
@@ -264,15 +265,18 @@ class makeRmapFile(Tool):
 
         idx.close()
 
+        try:
+            #rtree_path = "/".join(rtree_dat.split("/")[:-1])
 
+            move(rtree+".dat", rtree_dat)
+            move(rtree+".idx", rtree_idx)
 
-        #tar and zip folder for the mandage of COMPSs
+        except IOError:
+            logger.fatal("makeRmap_Tool.py failed to generate .rmap file")
+            return False
 
         if os.path.getsize(RMAP) > 0:
             return True
-
-        logger.fatal("makeRmap_Tool.py failed to generate .rmap file")
-        return False
 
 
     def run(self, input_files, metadata, output_files):
@@ -311,7 +315,9 @@ class makeRmapFile(Tool):
                          "should have the same prefix name")
 
         rtree = "".join(output_files["Rtree_file_dat"].split(".")[:-1])
-        rtree = "".join("/")[-1]
+
+        rtree = "".join(rtree.split("/")[-1])
+        print(rtree)
 
         results = self.from_frag_to_rmap(
             self.configuration["RE"],
