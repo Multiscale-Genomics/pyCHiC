@@ -264,10 +264,9 @@ class makeRmapFile(Tool):
                     prev_RE_site = RE_site
 
         idx.close()
+        compss_wait_on()
 
         try:
-            #rtree_path = "/".join(rtree_dat.split("/")[:-1])
-
             move(rtree+".dat", rtree_dat)
             move(rtree+".idx", rtree_idx)
 
