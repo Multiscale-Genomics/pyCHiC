@@ -4,101 +4,79 @@
             "required": true,
             "allow_multiple": false,
             "name": "genome_idx",
-            "value": "<unique_file_id>"
+            "value": "59b7e020d9422a5969b65373"
         },
         {
             "required": true,
             "allow_multiple": false,
             "name": "probes_fa",
-            "value": "<unique_file_id>"
+            "value": "baits"
         },
         {
             "required": true,
             "allow_multiple": false,
-            "name": "Rtree_files",
-            "value": "<unique_file_id>"
+            "name": "Rtree_file_dat",
+            "value": "Rtree_dat"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "Rtree_file_idx",
+            "value": "Rtree_idx"
         },
         {
             "required": true,
             "allow_multiple": false,
             "name": "genome_fa",
-            "value": "<unique_file_id>"
-        }, {
-            "required": true,
-            "allow_multiple": false,
-            "name": ".amb",
-            "value": "<unique_file_id>"
-        }, {
-            "required": true,
-            "allow_multiple": false,
-            "name": ".ann",
-            "value": "<unique_file_id>"
-        }, {
-            "required": true,
-            "allow_multiple": false,
-            "name": ".bwt",
-            "value": "<unique_file_id>"
-        }, {
-            "required": true,
-            "allow_multiple": false,
-            "name": ".pac",
-            "value": "<unique_file_id>"
-        }, {
-            "required": true,
-            "allow_multiple": false,
-            "name": ".sa",
-            "value": "<unique_file_id>"
+            "value": "genome_fasta"
         }
-
     ],
     "arguments": [],
     "output_files": [
         {
-            "name": "out_baitmap",
             "required": true,
             "allow_multiple": false,
+            "name": "out_baitmap",
             "file": {
                 "file_type": ".baitmap",
                 "meta_data": {
                     "visible": true,
-                    "tool": "makeBaitmap.py",
-                    "description": "Subset of the .ramp file. Contains RE fragments coordinated from the digested genome that contain baits sequences"
+                    "tool": "makeBaitmap",
+                    "description": "Output"
                 },
                 "file_path": "tests/data/test_run_chicago/test.baitmap",
-                "data_type": ".baitmap",
-                "compressed": ""
+                "data_type": "data_baitmap",
+                "compressed": "null"
             }
-        },
-        {
-            "name": "out_sam",
+        },{
             "required": true,
             "allow_multiple": false,
+            "name": "out_sam",
             "file": {
                 "file_type": ".sam",
                 "meta_data": {
                     "visible": true,
-                    "tool": "baitmap.py",
-                    "description": "output of map the probes into the reference genome with bwa"
+                    "tool": "makeBaitmap",
+                    "description": "Output"
                 },
-                "file_path": "baits.sam",
-                "data_type": "text",
-                "compressed": ""
+                "file_path": "tests/data/test_baitmap/baits.sam",
+                "data_type": "data_sam",
+                "compressed": "null"
             }
-        }
-        {
-            "name": "out_bam",
+        },{
             "required": true,
             "allow_multiple": false,
+            "name": "out_bam",
             "file": {
                 "file_type": ".bam",
                 "meta_data": {
                     "visible": true,
-                    "tool": "baitmap.py",
-                    "description": "output of map the probes into the reference genome with bwa"
+                    "tool": "makeBaitmap",
+                    "description": "Output"
                 },
-                "file_path": "baits.bam",
-                "data_type": "binary",
-                "compressed": ""
+                "file_path": "tests/data/test_baitmap/baits.bam",
+                "data_type": "data_rmap",
+                "compressed": "null"
             }
         }
     ]

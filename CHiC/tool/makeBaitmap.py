@@ -40,6 +40,7 @@ except ImportError:
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
 from tool.bwa_mem_aligner import bwaAlignerMEMTool
+from tool.aligner_utils import alignerUtils
 
 ##################################################
 
@@ -66,6 +67,47 @@ class makeBaitmapTool(Tool):
             configuration = {}
 
         self.configuration.update(configuration)
+
+
+    @task(returns=bool, genome_file_name=IN, genome_idx=FILE_IN,
+          amb_file=FILE_OUT, ann_file=FILE_OUT, bwt_file=FILE_OUT,
+          pac_file=FILE_OUT, sa_file=FILE_OUT)
+    def untar_index(  # pylint: disable=too-many-locals,too-many-arguments
+            self, genome_file_name, genome_idx,
+            amb_file, ann_file, bwt_file, pac_file, sa_file):
+        """
+        Extracts the BWA index files from the genome index tar file.
+        Parameters
+        ----------
+        genome_file_name : str
+            Location string of the genome fasta file
+        genome_idx : str
+            Location of the BWA index file
+        amb_file : str
+            Location of the amb index file
+        ann_file : str
+            Location of the ann index file
+        bwt_file : str
+            Location of the bwt index file
+        pac_file : str
+            Location of the pac index file
+        sa_file : str
+            Location of the sa index file
+        Returns
+        -------
+        bool
+            Boolean indicating if the task was successful
+        """
+        if "no-untar" in self.configuration and self.configuration["no-untar"] is True:
+            return True
+
+        gfl = genome_file_name.split("/")
+        au_handle = alignerUtils()
+        au_handle.bwa_untar_index(
+            gfl[-1], genome_idx, amb_file, ann_file, bwt_file, pac_file, sa_file)
+
+        return True
+
 
     @task(returns=bool, amb=FILE_IN, ann=FILE_IN, bwt=FILE_IN,
           pac=FILE_IN, sa=FILE_IN, genome_index=FILE_IN, probes_fa=FILE_IN,
@@ -316,6 +358,15 @@ class makeBaitmapTool(Tool):
             "sa": input_files["genome_fa"] + ".sa"
         }
 
+        self.untar_index(input_files["genome_fa"],
+                         input_files["genome_idx"],
+                         index_files["amb"],
+                         index_files["ann"],
+                         index_files["bwt"],
+                         index_files["pac"],
+                         index_files["sa"],
+                         )
+
         self.bwa_for_probes2(
             index_files["amb"],
             index_files["ann"],
@@ -381,3 +432,52 @@ class makeBaitmapTool(Tool):
         }
 
         return results, output_metadata
+
+if __name__ == "__main__":
+
+    path = "../../tests/data/"
+
+    configuration = {
+    }
+
+    input_files = {
+        "genome_idx" : path + "test_baitmap/chr21_hg19.fa.tar.gz",
+        "probes_fa" : path + "test_baitmap/baits.fa",
+        "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
+        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
+        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
+    }
+
+    output_files = {
+        "bait_sam" :  path + "test_baitmap/baits.sam",
+        "out_bam" : path +  "tests/baits.bam",
+        "out_baitmap" : path + "test_run_chicago/test.baitmap"
+    }
+
+    metadata = {
+        "genome_fa" : Metadata(
+            "hg38", "fasta", path + "test_rmap/chr21_hg19.fa",
+            None, "HindIII", 9606),
+
+        "probes" : Metadata(
+            "C-HiC probes", "fasta", path + "test_baitmap/baits.fa",
+            None, None, 9606),
+
+        "Rtree_file_dat" : Metadata(
+            "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
+            {"genome" : path + "test_rmap/chr21_hg19.fa",
+             "RE" : {"HindIII" : 'A|AGCTT'}},
+            None, 9606
+            ),
+
+        "Rtree_file_idx" : Metadata(
+
+            "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
+            {"genome" : path + "test_rmap/chr21_hg19.fa",
+             "RE" : {"HindIII" : 'A|AGCTT'}},
+            None, 9606
+            )
+    }
+
+    baitmap_handler = makeBaitmapTool(configuration)
+    baitmap_handler.run(input_files, metadata, output_files)
