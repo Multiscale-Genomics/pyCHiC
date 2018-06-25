@@ -32,11 +32,10 @@ def test_baitmap():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     configuration = {
-        "no-untar" : True
     }
 
     input_files = {
-        "genome_idx" : path + "test_baitmap/chr21_hg19.fa",
+        "genome_idx" : path + "test_baitmap/bwa.tar.gz",
         "probes_fa" : path + "test_baitmap/baits.fa",
         "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
         "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
@@ -66,6 +65,7 @@ def test_baitmap():
             ),
 
         "Rtree_file_idx" : Metadata(
+
             "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
             {"genome" : path + "test_rmap/chr21_hg19.fa",
              "RE" : {"HindIII" : 'A|AGCTT'}},

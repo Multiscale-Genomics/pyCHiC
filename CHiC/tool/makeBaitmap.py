@@ -19,6 +19,8 @@ import subprocess
 import sys
 from rtree import index
 from shutil import copy2
+import tarfile
+import shutil
 
 from utils import logger
 
@@ -73,7 +75,7 @@ class makeBaitmapTool(Tool):
           amb_file=FILE_OUT, ann_file=FILE_OUT, bwt_file=FILE_OUT,
           pac_file=FILE_OUT, sa_file=FILE_OUT)
     def untar_index(  # pylint: disable=too-many-locals,too-many-arguments
-            self, genome_file_name, genome_idx,
+            self, tar_file,
             amb_file, ann_file, bwt_file, pac_file, sa_file):
         """
         Extracts the BWA index files from the genome index tar file.
@@ -101,10 +103,35 @@ class makeBaitmapTool(Tool):
         if "no-untar" in self.configuration and self.configuration["no-untar"] is True:
             return True
 
-        gfl = genome_file_name.split("/")
-        au_handle = alignerUtils()
-        au_handle.bwa_untar_index(
-            gfl[-1], genome_idx, amb_file, ann_file, bwt_file, pac_file, sa_file)
+        try:
+            g_dir = tar_file.split("/")
+            g_dir = "/".join(g_dir[:-1])
+
+            tar = tarfile.open(tar_file)
+            tar.extractall(path=g_dir)
+            tar.close()
+            index_files = {
+                "amb": amb_file,
+                "ann": ann_file,
+                "bwt": bwt_file,
+                "pac": pac_file,
+                "sa": sa_file
+            }
+            #gidx_folder = tar_file.replace('.tar.gz', '/')
+            gidx_folder = g_dir
+            genome_name = ".".join(tar_file.split("/")[-1].split(".")[:-2])
+            print(gidx_folder, genome_name)
+            for suffix in list(index_files.keys()):
+                with open(index_files[suffix], "wb") as f_out:
+                    with open(gidx_folder + "/" + genome_name +"."+ suffix, "rb") as f_in:
+                        f_out.write(f_in.read())
+            shutil.rmtree(tar_file.replace('.tar.gz', ''))
+
+        except IOError as error:
+            logger.fatal("UNTAR: I/O error({0}): {1}".format(error.errno, error.strerror))
+            return False
+
+        return True
 
         return True
 
@@ -357,15 +384,15 @@ class makeBaitmapTool(Tool):
             "pac": input_files["genome_fa"] + ".pac",
             "sa": input_files["genome_fa"] + ".sa"
         }
-
-        self.untar_index(input_files["genome_fa"],
+        """
+        self.untar_index(
                          input_files["genome_idx"],
                          index_files["amb"],
                          index_files["ann"],
                          index_files["bwt"],
                          index_files["pac"],
                          index_files["sa"],
-                         )
+                        )
 
         self.bwa_for_probes2(
             index_files["amb"],
@@ -378,6 +405,37 @@ class makeBaitmapTool(Tool):
             output_files["out_bam"],
             output_files["bait_sam"]
             )
+        """
+
+        input_bwa = {
+            "genome": input_files["genome_fa"],
+            "index": input_files["genome_idx"],
+            "loc": input_files["probes_fa"]
+        }
+
+        output_bwa = {
+            "output": input_files["probes_fa"].replace("fa", "_mem.bam")
+        }
+        metadata_bwa = {
+            "genome": Metadata(
+                "Assembly", "fasta", input_files["genome_fa"], None,
+                {"assembly": "test"}),
+            "index": Metadata(
+                "index_bwa", "", input_files["genome_fa"],
+                {
+                    "assembly": "test",
+                    "tool": "bwa_indexer"
+                }
+            ),
+            "loc": Metadata(
+                "data_chip_seq", "fastq", output_files["out_bam"], None,
+                {"assembly": "test"}
+            )
+        }
+
+        bwa_t = bwaAlignerMEMTool()
+        bwa_files, bwa_meta = bwa_t.run(input_bwa, metadata_bwa, output_bwa)
+        """
 
         if "".join(input_files["Rtree_file_dat"].split(".")[:-1]) != \
            "".join(input_files["Rtree_file_idx"].split(".")[:-1]):
@@ -481,3 +539,4 @@ if __name__ == "__main__":
 
     baitmap_handler = makeBaitmapTool(configuration)
     baitmap_handler.run(input_files, metadata, output_files)
+    """
