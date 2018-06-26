@@ -71,7 +71,7 @@ class makeBaitmapTool(Tool):
         self.configuration.update(configuration)
 
 
-    @task(returns = str, sam_file=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
+    @task(returns = list, probes_fa=FILE_IN, sam_file=FILE_OUT, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
           rtree_prefix=IN)
     def sam_to_baitmap(self, probes_fa, sam_file, rtree_dat, rtree_idx, rtree_prefix):
         """
@@ -81,7 +81,6 @@ class makeBaitmapTool(Tool):
         -----------
         sam_file : str
             path to output file from bwa_for_probes
-        rmap: str
             complete path to .rmap file
         """
         tmp_bam = "/".join(probes_fa.split("/")[:-1]) + "/tmp/" + probes_fa.split("/")[-1]+".bam"
@@ -156,6 +155,9 @@ class makeBaitmapTool(Tool):
 
         return baitmap
 
+
+    @task(returns = bool, baitmap_list=FILE_IN,
+        out_baitmap=FILE_OUT)
     def create_baitmap(self, baitmap_list, out_baitmap):
         """
         This function takes a list with RE fragments that
@@ -169,7 +171,7 @@ class makeBaitmapTool(Tool):
         out: str
             entire pat and name of the .baitmap file
         """
-        print(out_baitmap)
+        #print(out_baitmap)
         with open(out_baitmap, "a") as file_out:
             for frag_coord in baitmap_list:
                 print("{}\t{}\t{}\t{}\t{}".format(
