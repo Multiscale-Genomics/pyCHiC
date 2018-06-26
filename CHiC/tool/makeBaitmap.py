@@ -238,15 +238,29 @@ class makeBaitmapTool(Tool):
 
         compss_wait_on(bwa_aligner)
 
+
+    @task(returns = str, sam_file=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
+          rtree_prefix=IN)
+    def sam_to_baitmap(self, probes_fa, sam_file, rtree_dat, rtree_idx, rtree_prefix):
+        """
+        This function take the sam file, output of bwa
+        and the Rtree_files, and output a baitmap file
+        Parameters:
+        -----------
+        sam_file : str
+            path to output file from bwa_for_probes
+        rmap: str
+            complete path to .rmap file
+        """
         tmp_bam = "/".join(probes_fa.split("/")[:-1]) + "/tmp/" + probes_fa.split("/")[-1]+".bam"
 
-        args = ["samtools", "view", "-h", "-o", bait_sam, tmp_bam]
+        args = ["samtools", "view", "-h", "-o", sam_file, tmp_bam]
 
         logger.info("samtools args: " + ' '.join(args))
 
 
         try:
-            with open(bait_sam, "w") as f_out:
+            with open(sam_file, "w") as f_out:
                 process = subprocess.Popen(
                     ' '.join(args),
                     shell=True,
@@ -258,20 +272,6 @@ class makeBaitmapTool(Tool):
             logger.fatal("I/O error({0}): {1}\n{2}".format(
                 msg.errno, msg.strerror, args))
             return False
-
-    @task(returns = str, sam_file=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
-          rtree_prefix=IN)
-    def sam_to_baitmap(self, sam_file, rtree_dat, rtree_idx, rtree_prefix):
-        """
-        This function take the sam file, output of bwa
-        and the Rtree_files, and output a baitmap file
-        Parameters:
-        -----------
-        sam_file : str
-            path to output file from bwa_for_probes
-        rmap: str
-            complete path to .rmap file
-        """
         copy2(rtree_idx, rtree_prefix+".idx")
         copy2(rtree_dat, rtree_prefix+".dat")
 
@@ -414,7 +414,7 @@ class makeBaitmapTool(Tool):
         }
 
         output_bwa = {
-            "output": input_files["probes_fa"].replace("fa", "_mem.bam")
+            "output": output_files["out_bam"]
         }
         metadata_bwa = {
             "genome": Metadata(
@@ -435,7 +435,7 @@ class makeBaitmapTool(Tool):
 
         bwa_t = bwaAlignerMEMTool()
         bwa_files, bwa_meta = bwa_t.run(input_bwa, metadata_bwa, output_bwa)
-        """
+
 
         if "".join(input_files["Rtree_file_dat"].split(".")[:-1]) != \
            "".join(input_files["Rtree_file_idx"].split(".")[:-1]):
@@ -446,6 +446,7 @@ class makeBaitmapTool(Tool):
         prefix_rtree = "".join(input_files["Rtree_file_idx"].split(".")[-1])
 
         baitmap_list = self.sam_to_baitmap(
+            input_files["probes_fa"],
             output_files["bait_sam"],
             input_files["Rtree_file_dat"],
             input_files["Rtree_file_idx"],
@@ -539,4 +540,3 @@ if __name__ == "__main__":
 
     baitmap_handler = makeBaitmapTool(configuration)
     baitmap_handler.run(input_files, metadata, output_files)
-    """
