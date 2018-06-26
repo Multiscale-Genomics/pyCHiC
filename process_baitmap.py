@@ -139,7 +139,7 @@ def main_json(config, in_metadata, out_metadata):
 #########################################################################
 
 
-if __name__ == "__name__":
+if __name__ == "__main__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
@@ -151,7 +151,7 @@ if __name__ == "__name__":
     PARSER.add_argument(
         "--out_metadata", help="Location of output metadata file")
     PARSER.add_argument(
-        "--local", action="store_const", cont=True, default=False)
+        "--local", action="store_const", const=True, default=False)
 
     #Get matching parameters from the command line
     ARGS = PARSER.parse_args()

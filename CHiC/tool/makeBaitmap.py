@@ -18,7 +18,7 @@ import os
 import subprocess
 import sys
 from rtree import index
-from shutil import copy2
+from shutil import copy
 import tarfile
 import shutil
 
@@ -71,174 +71,6 @@ class makeBaitmapTool(Tool):
         self.configuration.update(configuration)
 
 
-    @task(returns=bool, genome_file_name=IN, genome_idx=FILE_IN,
-          amb_file=FILE_OUT, ann_file=FILE_OUT, bwt_file=FILE_OUT,
-          pac_file=FILE_OUT, sa_file=FILE_OUT)
-    def untar_index(  # pylint: disable=too-many-locals,too-many-arguments
-            self, tar_file,
-            amb_file, ann_file, bwt_file, pac_file, sa_file):
-        """
-        Extracts the BWA index files from the genome index tar file.
-        Parameters
-        ----------
-        genome_file_name : str
-            Location string of the genome fasta file
-        genome_idx : str
-            Location of the BWA index file
-        amb_file : str
-            Location of the amb index file
-        ann_file : str
-            Location of the ann index file
-        bwt_file : str
-            Location of the bwt index file
-        pac_file : str
-            Location of the pac index file
-        sa_file : str
-            Location of the sa index file
-        Returns
-        -------
-        bool
-            Boolean indicating if the task was successful
-        """
-        if "no-untar" in self.configuration and self.configuration["no-untar"] is True:
-            return True
-
-        try:
-            g_dir = tar_file.split("/")
-            g_dir = "/".join(g_dir[:-1])
-
-            tar = tarfile.open(tar_file)
-            tar.extractall(path=g_dir)
-            tar.close()
-            index_files = {
-                "amb": amb_file,
-                "ann": ann_file,
-                "bwt": bwt_file,
-                "pac": pac_file,
-                "sa": sa_file
-            }
-            #gidx_folder = tar_file.replace('.tar.gz', '/')
-            gidx_folder = g_dir
-            genome_name = ".".join(tar_file.split("/")[-1].split(".")[:-2])
-            print(gidx_folder, genome_name)
-            for suffix in list(index_files.keys()):
-                with open(index_files[suffix], "wb") as f_out:
-                    with open(gidx_folder + "/" + genome_name +"."+ suffix, "rb") as f_in:
-                        f_out.write(f_in.read())
-            shutil.rmtree(tar_file.replace('.tar.gz', ''))
-
-        except IOError as error:
-            logger.fatal("UNTAR: I/O error({0}): {1}".format(error.errno, error.strerror))
-            return False
-
-        return True
-
-        return True
-
-
-    @task(returns=bool, amb=FILE_IN, ann=FILE_IN, bwt=FILE_IN,
-          pac=FILE_IN, sa=FILE_IN, genome_index=FILE_IN, probes_fa=FILE_IN,
-          bait_sam=FILE_OUT, )
-    def bwa_for_probes(self, amb, ann, bwt, pac, sa, genome_index, probes_fa, bait_sam):
-        """
-        This function run bwa using an index genome and a probes file
-        in fasta format. bwa is used as single end and with high
-        gap penalty and missmacht score
-
-        Parameters:
-        -----------
-        genome_index: str
-            path to the reference genome with indexed files
-            in the same folder. This genome should
-            be the same used to generate the .rmap file
-        probes_fa: str
-            path to probes files in fasta format,
-            every sequences representing one
-        out: str
-            Name of the output file
-        Return:
-        ------
-         bool
-        """
-
-        args = " ".join(["bwa", "mem", "-O", "100", "-B", "20",
-                         genome_index, probes_fa, ">", bait_sam])
-
-        logger.info("bwa_for_probes CMD: " + args)
-
-        process = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
-        process.wait()
-        proc_out, proc_err = process.communicate()
-
-        if os.path.getsize(bait_sam) > 0:
-            return True
-
-        logger.fatal("bwa failed to generate sam file")
-        logger.fatal("bwa stdout" + proc_out)
-        logger.fatal("bwa stderr" + proc_err)
-        return False
-
-    @task(returns=bool, genome_index=FILE_IN, probes_fa=FILE_IN,
-          genome_fa=FILE_IN, bait_sam=FILE_OUT, out_bam=FILE_OUT,
-          amb=FILE_IN, ann=FILE_IN, bwt=FILE_IN, pac=FILE_IN,
-          sa=FILE_IN)
-    def bwa_for_probes2(self, amb, ann, bwt, pac, sa, genome_fa,
-                        probes_fa, out_bam, bait_sam):
-        """
-        This function run bwa using an index genome and a probes file
-        in fasta format. bwa is used as single end and with high
-        gap penalty and missmacht score
-
-        Parameters:
-        -----------
-        genome_index: str
-            path to the reference genome with indexed files
-            in the same folder. This genome should
-            be the same used to generate the .rmap file
-        probes_fa: str
-            path to probes files in fasta format,
-            every sequences representing one
-        out: str
-            Name of the output file
-        Return:
-        ------
-         bool
-        """
-
-        out_bam = bait_sam.split(".")[0]+".bam"
-
-        input_mem = {
-            "genome": genome_fa,
-            "index": genome_fa,
-            "loc": probes_fa,
-            "bam_loc": out_bam
-            }
-
-        output_mem = {
-            "output": out_bam,
-        }
-
-        metadata_mem = {
-
-            "genome": Metadata("Assembly", "fasta", genome_fa, None, {"assembly": "test"}),
-
-            "index": Metadata("index_bwa", "", [genome_fa], {
-                "assembly": "test",
-                "tool": "bwa_indexer"
-                }
-                             ),
-
-            "loc": Metadata("probes", "fastq", probes_fa, None, {"assembly": "test"})
-        }
-
-        bwa_aligner = bwaAlignerMEMTool()
-
-        bwa_aligner.run(input_mem, metadata_mem, output_mem)
-
-        compss_wait_on(bwa_aligner)
-
-
     @task(returns = str, sam_file=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
           rtree_prefix=IN)
     def sam_to_baitmap(self, probes_fa, sam_file, rtree_dat, rtree_idx, rtree_prefix):
@@ -271,8 +103,8 @@ class makeBaitmapTool(Tool):
             logger.fatal("I/O error({0}): {1}\n{2}".format(
                 msg.errno, msg.strerror, args))
             return False
-        copy2(rtree_idx, rtree_prefix+".idx")
-        copy2(rtree_dat, rtree_prefix+".dat")
+        copy(rtree_idx, rtree_prefix+".idx")
+        copy(rtree_dat, rtree_prefix+".dat")
 
         idx = index.Rtree(rtree_prefix)
 
@@ -285,7 +117,7 @@ class makeBaitmapTool(Tool):
 
                     try:
                         crm = int(line[2][3:])
-                    except:
+                    except IOError:
                         continue
 
                     srt_pos = int(line[3])
@@ -331,7 +163,6 @@ class makeBaitmapTool(Tool):
 
         Parameters:
         -----------
-
         baitmap_list: list
             lsit with all the RE fragments corresponding
             to baits
@@ -366,44 +197,14 @@ class makeBaitmapTool(Tool):
             probes_fa
             Rtree_files
 
-
         metadata : dict
+
         Returns
         -------
         output_files : list
             List of locations for the output files.
         output_metadata : list
             List of matching metadata dict objects
-        """
-
-        index_files = {
-            "amb": input_files["genome_fa"] + ".amb",
-            "ann": input_files["genome_fa"] + ".ann",
-            "bwt": input_files["genome_fa"] + ".bwt",
-            "pac": input_files["genome_fa"] + ".pac",
-            "sa": input_files["genome_fa"] + ".sa"
-        }
-        """
-        self.untar_index(
-                         input_files["genome_idx"],
-                         index_files["amb"],
-                         index_files["ann"],
-                         index_files["bwt"],
-                         index_files["pac"],
-                         index_files["sa"],
-                        )
-
-        self.bwa_for_probes2(
-            index_files["amb"],
-            index_files["ann"],
-            index_files["bwt"],
-            index_files["pac"],
-            index_files["sa"],
-            input_files["genome_fa"],
-            input_files["probes_fa"],
-            output_files["out_bam"],
-            output_files["bait_sam"]
-            )
         """
 
         input_bwa = {
@@ -456,7 +257,7 @@ class makeBaitmapTool(Tool):
             output_files["out_baitmap"])
 
         output_metadata = {
-            "baitmap": Metadata(
+            "out_baitmap": Metadata(
                 data_type="RE sites with baits",
                 file_type=".baitmap",
                 file_path=output_files["out_baitmap"],
@@ -486,57 +287,23 @@ class makeBaitmapTool(Tool):
                     "RE" : metadata["Rtree_file_idx"].meta_data,
                     "tool": "makeBaitmap",
                 }
-            )
-        }
-
-        return results, output_metadata
-
-
-if __name__ == "__main__":
-
-    path = "/home/pacera/MuG/C-HiC/tests/data/"
-
-    configuration = {
-    }
-
-    input_files = {
-        "genome_idx" : path + "test_baitmap/bwa.tar.gz",
-        "probes_fa" : path + "test_baitmap/baits.fa",
-        "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
-        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
-        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
-    }
-
-    output_files = {
-        "bait_sam" :  path + "test_baitmap/baits.sam",
-        "out_bam" : path +  "tests_baitmap/baits.bam",
-        "out_baitmap" : path + "test_run_chicago/test.baitmap"
-    }
-
-    metadata = {
-        "genome_fa" : Metadata(
-            "hg38", "fasta", path + "test_rmap/chr21_hg19.fa",
-            None, "HindIII", 9606),
-
-        "probes" : Metadata(
-            "C-HiC probes", "fasta", path + "test_baitmap/baits.fa",
-            None, None, 9606),
-
-        "Rtree_file_dat" : Metadata(
-            "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
-            {"genome" : path + "test_rmap/chr21_hg19.fa",
-             "RE" : {"HindIII" : 'A|AGCTT'}},
-            None, 9606
+            ),
+            "out_bam": Metadata(
+                data_type=".bam",
+                file_type=".bam",
+                file_path=output_files["out_bam"],
+                sources=[
+                    metadata["genome_fa"].file_path,
+                    metadata["probes_fa"].file_path,
+                    metadata["Rtree_file_idx"].file_path,
+                ],
+                taxon_id=metadata["genome_fa"].taxon_id,
+                meta_data={
+                    "RE" : metadata["Rtree_file_idx"].meta_data,
+                    "tool": "makeBaitmap",
+                }
             ),
 
-        "Rtree_file_idx" : Metadata(
+        }
 
-            "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
-            {"genome" : path + "test_rmap/chr21_hg19.fa",
-             "RE" : {"HindIII" : 'A|AGCTT'}},
-            None, 9606
-            )
-    }
-
-    baitmap_handler = makeBaitmapTool(configuration)
-    baitmap_handler.run(input_files, metadata, output_files)
+        return output_files, output_metadata

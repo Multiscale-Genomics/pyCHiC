@@ -1,120 +1,69 @@
 [
     {
-        "_id": "<unique_file_id>",
-        "data_type": "DNA indexed genome",
-        "file_type": "BWA indexes files",
-        "file_path": "tests/data/test_baitmap/chr21_hg19.fa",
-        "compressed": 0,
-        "sources": ["chr21 from GRCh37"],
-        "taxon_id": "9606",
-        "meta_data": {
-            "visible": true,
-            "validated": 1
-        }
-    },
-    {
-        "_id": "<unique_file_id>",
+        "_id": "59b7e020d9422a5969b34",
         "data_type": "DNA sequence probes",
         "file_type": "FASTA",
         "file_path": "tests/data/test_baitmap/baits.fa",
         "compressed": 0,
         "sources": ["user"],
-        "taxon_id": "9606",
+        "taxon_id": 9606,
         "meta_data": {
             "visible": true,
             "validated": 1
         }
     },
     {
-        "_id": "<unique_file_id>",
+        "_id": "59b7e020d9422a5969b",
         "data_type": "rtree",
-        "file_type": "rtree",
-        "file_path": "tests/data/test_rmap/rtree_file",
+        "file_type": "Rtree_file_dat",
+        "file_path": "tests/data/test_rmap/rtree_file.dat",
         "compressed": 0,
         "sources": ["user"],
-        "taxon_id": "9606",
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+     {
+        "_id": "59b7e020d9422a5969b653",
+        "data_type": "rtree",
+        "file_type": "Rtree_file_idx",
+        "file_path": "tests/data/test_rmap/rtree_file.idx",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
         "meta_data": {
             "visible": true,
             "validated": 1
         }
     },
     {
-        "_id": "<unique_file_id>",
+        "_id": "59b7e020d9422a5969b65370",
         "data_type": "DNA reference genome",
         "file_type": "FASTA",
-        "file_path": "tests/data/test_rmap/chr21_hg19.fa",
+        "file_path": "tests/data/test_baitmap/chr21_hg19.fa",
         "compressed": 0,
         "sources": ["user"],
-        "taxon_id": "9606",
+        "taxon_id": 9606,
         "meta_data": {
             "visible": true,
             "validated": 1
         }
     },
     {
-        "_id": "<unique_file_id>",
-        "data_type": "index",
-        "file_type": ".amb",
-        "file_path": "tests/data/test_rmap/chr21_hg19.fa.amb",
-        "compressed": 0,
-        "sources": ["user"],
-        "taxon_id": "9606",
+        "_id": "59b7e020d9422a5969b65373",
+        "data_type": "sequence_mapping_index_bwa",
+        "file_type": "TAR",
+        "file_path": "tests/data/test_baitmap/bwa.tar.gz",
+        "sources": ["tests/data/test_baitmap/bwa"],
+        "taxon_id": 9606,
         "meta_data": {
             "visible": true,
-            "validated": 1
+            "validated": 1,
+            "tool": "bwa_indexer",
+            "assembly": "hg19"
         }
-    },
-     {
-        "_id": "<unique_file_id>",
-        "data_type": "index",
-        "file_type": ".ann",
-        "file_path": "tests/data/test_rmap/chr21_hg19.fa.ann",
-        "compressed": 0,
-        "sources": ["user"],
-        "taxon_id": "9606",
-        "meta_data": {
-            "visible": true,
-            "validated": 1
-        }
-    },
-     {
-        "_id": "<unique_file_id>",
-        "data_type": "index",
-        "file_type": ".bwt",
-        "file_path": "tests/data/test_rmap/chr21_hg19.fa.bwt",
-        "compressed": 0,
-        "sources": ["user"],
-        "taxon_id": "9606",
-        "meta_data": {
-            "visible": true,
-            "validated": 1
-        }
-    },
-     {
-        "_id": "<unique_file_id>",
-        "data_type": "index",
-        "file_type": ".pac",
-        "file_path": "tests/data/test_rmap/chr21_hg19.fa.pac",
-        "compressed": 0,
-        "sources": ["user"],
-        "taxon_id": "9606",
-        "meta_data": {
-            "visible": true,
-            "validated": 1
-        }
-    },
-     {
-        "_id": "<unique_file_id>",
-        "data_type": "index",
-        "file_type": ".sa",
-        "file_path": "tests/data/test_rmap/chr21_hg19.fa.sa",
-        "compressed": 0,
-        "sources": ["user"],
-        "taxon_id": "9606",
-        "meta_data": {
-            "visible": true,
-            "validated": 1
-        }
-    },
+    }
 
 ]

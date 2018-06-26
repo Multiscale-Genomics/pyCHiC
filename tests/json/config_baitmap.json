@@ -10,25 +10,25 @@
             "required": true,
             "allow_multiple": false,
             "name": "probes_fa",
-            "value": "baits"
+            "value": "59b7e020d9422a5969b34"
         },
         {
             "required": true,
             "allow_multiple": false,
             "name": "Rtree_file_dat",
-            "value": "Rtree_dat"
+            "value": "59b7e020d9422a5969b"
         },
         {
             "required": true,
             "allow_multiple": false,
             "name": "Rtree_file_idx",
-            "value": "Rtree_idx"
+            "value": "59b7e020d9422a5969b653"
         },
         {
             "required": true,
             "allow_multiple": false,
             "name": "genome_fa",
-            "value": "genome_fasta"
+            "value": "59b7e020d9422a5969b65370"
         }
     ],
     "arguments": [],
@@ -51,7 +51,7 @@
         },{
             "required": true,
             "allow_multiple": false,
-            "name": "out_sam",
+            "name": "bait_sam",
             "file": {
                 "file_type": ".sam",
                 "meta_data": {
