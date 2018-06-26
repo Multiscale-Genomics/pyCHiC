@@ -44,7 +44,7 @@ def test_baitmap():
 
     output_files = {
         "bait_sam" :  path + "test_baitmap/baits.sam",
-        "out_bam" : path +  "tests/baits.bam",
+        "out_bam" : path +  "tests_baitmap/baits.bam",
         "out_baitmap" : path + "test_run_chicago/test.baitmap"
     }
 

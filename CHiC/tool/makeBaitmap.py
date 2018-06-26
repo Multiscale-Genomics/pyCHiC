@@ -258,7 +258,6 @@ class makeBaitmapTool(Tool):
 
         logger.info("samtools args: " + ' '.join(args))
 
-
         try:
             with open(sam_file, "w") as f_out:
                 process = subprocess.Popen(
@@ -463,7 +462,7 @@ class makeBaitmapTool(Tool):
                 file_path=output_files["out_baitmap"],
                 sources=[
                     metadata["genome_fa"].file_path,
-                    metadata["probes"].file_path,
+                    metadata["probes_fa"].file_path,
                     metadata["Rtree_file_dat"].file_path,
                     metadata["Rtree_file_dat"].file_path,
                 ],
@@ -479,7 +478,7 @@ class makeBaitmapTool(Tool):
                 file_path=output_files["bait_sam"],
                 sources=[
                     metadata["genome_fa"].file_path,
-                    metadata["probes"].file_path,
+                    metadata["probes_fa"].file_path,
                     metadata["Rtree_file_idx"].file_path,
                 ],
                 taxon_id=metadata["genome_fa"].taxon_id,
@@ -492,15 +491,16 @@ class makeBaitmapTool(Tool):
 
         return results, output_metadata
 
+
 if __name__ == "__main__":
 
-    path = "../../tests/data/"
+    path = "/home/pacera/MuG/C-HiC/tests/data/"
 
     configuration = {
     }
 
     input_files = {
-        "genome_idx" : path + "test_baitmap/chr21_hg19.fa.tar.gz",
+        "genome_idx" : path + "test_baitmap/bwa.tar.gz",
         "probes_fa" : path + "test_baitmap/baits.fa",
         "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
         "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
@@ -509,7 +509,7 @@ if __name__ == "__main__":
 
     output_files = {
         "bait_sam" :  path + "test_baitmap/baits.sam",
-        "out_bam" : path +  "tests/baits.bam",
+        "out_bam" : path +  "tests_baitmap/baits.bam",
         "out_baitmap" : path + "test_run_chicago/test.baitmap"
     }
 

@@ -25,7 +25,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.makeBaitmap import makeBaitmapTool
+from CHiC.tool.makeBaitmap import makeBaitmapTool
 
 ################################################
 
@@ -86,13 +86,16 @@ class process_baitmap(Workflow):
             {
                 "genome_idx" : input_files["genome_idx"],
                 "probes_fa": input_files["probes_fa"],
-                "Rtree_files": input_files["Rtree_files"],
+                "Rtree_file_dat": input_files["Rtree_file_dat"],
+                "Rtree_file_idx": input_files["Rtree_file_idx"],
                 "genome_fa" : input_files["genome_fa"]
             },
             {
-                "genome_digest" : metadata["genome_digest"],
-                "probes" : metadata["probes"],
-                "Rtree_files" : metadata["Rtree_files"]
+                "genome_fa" : metadata["genome_fa"],
+                "probes_fa" : metadata["probes_fa"],
+                "Rtree_file_dat": metadata["Rtree_file_dat"],
+                "Rtree_file_idx": metadata["Rtree_file_idx"],
+                "genome_idx": metadata["genome_idx"]
             },
             {
                 "bait_sam" : output_files["bait_sam"],

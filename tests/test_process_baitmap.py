@@ -32,42 +32,56 @@ def test_process_baitmap():
     import sys
     sys._run_from_cmdl = True # pylint: disable=protected-access
 
-
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     configuration = {
-        "no-untar" : True
     }
 
     input_files = {
-        "genome_idx" : path + "test_baitmap/chr21_hg19.fa",
-        "probes_fa" : path + "test_baitmap/baits.fa.tar.gz",
-        "Rtree_files" : path + "test_rmap/rtree_file",
+        "genome_idx" : path + "test_baitmap/bwa.tar.gz",
+        "probes_fa" : path + "test_baitmap/baits.fa",
+        "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
+        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
         "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
     }
 
     output_files = {
-        "bait_sam " :  path + "test_baitmap/baits.sam",
-        "out_bam" : path +  "tests/baits.bam",
+        "bait_sam" :  path + "test_baitmap/baits.sam",
+        "out_bam" : path +  "tests_baitmap/baits.bam",
         "out_baitmap" : path + "test_run_chicago/test.baitmap"
     }
 
     metadata = {
+        "genome_idx" : Metadata(
+            "index_bwa", "", input_files["genome_fa"],
+                {
+                    "assembly": "test",
+                    "tool": "bwa_indexer"
+                }
+            ),
         "genome_fa" : Metadata(
             "hg38", "fasta", path + "test_rmap/chr21_hg19.fa",
             None, "HindIII", 9606),
 
-        "probes" : Metadata(
+        "probes_fa" : Metadata(
             "C-HiC probes", "fasta", path + "test_baitmap/baits.fa",
             None, None, 9606),
 
         "Rtree_file_dat" : Metadata(
-            "Rtree_file_dat", "Rtree_file_dat", path + "test_rmap/rtree_file.dat",
+            "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
             {"genome" : path + "test_rmap/chr21_hg19.fa",
              "RE" : {"HindIII" : 'A|AGCTT'}},
-            , 9606
+            None, 9606
+            ),
+
+        "Rtree_file_idx" : Metadata(
+
+            "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
+            {"genome" : path + "test_rmap/chr21_hg19.fa",
+             "RE" : {"HindIII" : 'A|AGCTT'}},
+            None, 9606
             )
-    }
+      }
 
     process_baitmap_handl = process_baitmap(configuration)
     process_baitmap_handl.run(input_files, metadata, output_files)
