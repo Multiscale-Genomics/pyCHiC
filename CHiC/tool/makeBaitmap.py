@@ -70,9 +70,9 @@ class makeBaitmapTool(Tool):
         self.configuration.update(configuration)
 
 
-    @task(returns = list, probes_fa=FILE_IN, sam_file=FILE_OUT, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
+    @task(returns = list, out_bam=FILE_IN, sam_file=FILE_OUT, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
           rtree_prefix=IN)
-    def sam_to_baitmap(self, probes_fa, sam_file, rtree_dat, rtree_idx, rtree_prefix):
+    def sam_to_baitmap(self, out_bam, sam_file, rtree_dat, rtree_idx, rtree_prefix):
         """
         This function take the sam file, output of bwa
         and the Rtree_files, and output a baitmap file
@@ -82,9 +82,7 @@ class makeBaitmapTool(Tool):
             path to output file from bwa_for_probes
             complete path to .rmap file
         """
-        tmp_bam = "/".join(probes_fa.split("/")[:-1]) + "/tmp/" + probes_fa.split("/")[-1]+".bam"
-
-        args = ["samtools", "view", "-h", "-o", sam_file, tmp_bam]
+        args = ["samtools", "view", "-h", "-o", sam_file, out_bam]
 
         logger.info("samtools args: " + ' '.join(args))
 
@@ -247,7 +245,7 @@ class makeBaitmapTool(Tool):
         prefix_rtree = "".join(input_files["Rtree_file_idx"].split(".")[-1])
 
         baitmap_list = self.sam_to_baitmap(
-            input_files["probes_fa"],
+            output_files["out_bam"],
             output_files["bait_sam"],
             input_files["Rtree_file_dat"],
             input_files["Rtree_file_idx"],
