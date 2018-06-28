@@ -42,7 +42,6 @@ except ImportError:
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
 from tool.bwa_mem_aligner import bwaAlignerMEMTool
-from tool.aligner_utils import alignerUtils
 
 ##################################################
 
@@ -156,7 +155,7 @@ class makeBaitmapTool(Tool):
         return baitmap
 
 
-    @task(returns = bool, baitmap_list=FILE_IN,
+    @task(returns = bool, baitmap_list=IN,
         out_baitmap=FILE_OUT)
     def create_baitmap(self, baitmap_list, out_baitmap):
         """
@@ -238,7 +237,7 @@ class makeBaitmapTool(Tool):
         bwa_t = bwaAlignerMEMTool()
         bwa_files, bwa_meta = bwa_t.run(input_bwa, metadata_bwa, output_bwa)
 
-
+        """
         if "".join(input_files["Rtree_file_dat"].split(".")[:-1]) != \
            "".join(input_files["Rtree_file_idx"].split(".")[:-1]):
             logger.fatal("Rtree_file_dat and Rtree_file_idx"
@@ -257,7 +256,7 @@ class makeBaitmapTool(Tool):
         results = self.create_baitmap(
             baitmap_list,
             output_files["out_baitmap"])
-
+        """
         output_metadata = {
             "out_baitmap": Metadata(
                 data_type="RE sites with baits",
@@ -309,3 +308,8 @@ class makeBaitmapTool(Tool):
         }
 
         return output_files, output_metadata
+
+"""
+runcompss --lang=python --pythonpath=${HOME}/.pyenv/versions/chic/lib/python2.7/site-packages/ --log_level=debug process_baitmap.py --config tests/json/config_baitmap.json --in_metadata tests/json/input_baitmap.json --out_metadata tests/json/out_baitmap.json
+
+"""
