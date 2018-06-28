@@ -93,7 +93,7 @@ class makeBaitmapTool(Tool):
                     shell=True,
                     stdout=f_out, stderr=f_out
                     )
-            process.wait()
+                process.wait()
 
         except (IOError, OSError) as msg:
             logger.fatal("I/O error({0}): {1}\n{2}".format(
@@ -249,7 +249,7 @@ class makeBaitmapTool(Tool):
             output_files["bait_sam"],
             input_files["Rtree_file_dat"],
             input_files["Rtree_file_idx"],
-            prefix_rtree,)
+            prefix_rtree)
 
         results = self.create_baitmap(
             baitmap_list,

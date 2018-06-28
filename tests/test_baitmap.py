@@ -84,4 +84,4 @@ def test_baitmap():
     baitmap_handler.run(input_files, metadata, output_files)
 
     assert os.path.getsize(output_files["out_bam"]) > 0
-    # assert os.path.getsize(output_files["out_baitmap"]) > 0
+     assert os.path.getsize(output_files["out_baitmap"]) > 0
