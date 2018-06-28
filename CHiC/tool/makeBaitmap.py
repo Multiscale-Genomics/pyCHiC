@@ -235,7 +235,7 @@ class makeBaitmapTool(Tool):
         bwa_t = bwaAlignerMEMTool()
         bwa_files, bwa_meta = bwa_t.run(input_bwa, metadata_bwa, output_bwa)
 
-
+        
         if "".join(input_files["Rtree_file_dat"].split(".")[:-1]) != \
            "".join(input_files["Rtree_file_idx"].split(".")[:-1]):
             logger.fatal("Rtree_file_dat and Rtree_file_idx"
@@ -254,7 +254,7 @@ class makeBaitmapTool(Tool):
         results = self.create_baitmap(
             baitmap_list,
             output_files["out_baitmap"])
-
+	
         output_metadata = {
             "out_baitmap": Metadata(
                 data_type="RE sites with baits",
