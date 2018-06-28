@@ -142,7 +142,9 @@ Install TADbit
 
 .. code-block:: none
    :linenos:
-	
+   
+   pip install scipy
+   pip install matplotlib	
    cd ${HOME}/lib
    wget https://github.com/3DGenomes/tadbit/archive/master.zip -O tadbit.zip
    unzip tadbit.zip
