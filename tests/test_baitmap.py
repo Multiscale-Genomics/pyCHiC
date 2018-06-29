@@ -51,7 +51,7 @@ def test_baitmap():
     metadata = {
         "genome_idx" : Metadata(
             "index_bwa", "", input_files["genome_fa"],
-                {
+               {
                     "assembly": "test",
                     "tool": "bwa_indexer"
                 }
