@@ -21,7 +21,7 @@ import os
 import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
-from CHiC.process_rmap import process_rmap
+from process_rmap import process_rmap
 
 def test_process_rmap():
     """

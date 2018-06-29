@@ -42,6 +42,7 @@ except ImportError:
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
 from tool.bwa_mem_aligner import bwaAlignerMEMTool
+from tool.aligner_utils import alignerUtils
 
 ##################################################
 
@@ -70,9 +71,9 @@ class makeBaitmapTool(Tool):
         self.configuration.update(configuration)
 
 
-    @task(returns = list, out_bam=FILE_IN, sam_file=FILE_OUT, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
+    @task(returns = list, probes_fa=FILE_IN, sam_file=FILE_OUT, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
           rtree_prefix=IN)
-    def sam_to_baitmap(self, out_bam, sam_file, rtree_dat, rtree_idx, rtree_prefix):
+    def sam_to_baitmap(self, probes_fa, sam_file, rtree_dat, rtree_idx, rtree_prefix):
         """
         This function take the sam file, output of bwa
         and the Rtree_files, and output a baitmap file
@@ -82,7 +83,9 @@ class makeBaitmapTool(Tool):
             path to output file from bwa_for_probes
             complete path to .rmap file
         """
-        args = ["samtools", "view", "-h", "-o", sam_file, out_bam]
+        tmp_bam = "/".join(probes_fa.split("/")[:-1]) + "/tmp/" + probes_fa.split("/")[-1]+".bam"
+
+        args = ["samtools", "view", "-h", "-o", sam_file, tmp_bam]
 
         logger.info("samtools args: " + ' '.join(args))
 
@@ -93,7 +96,7 @@ class makeBaitmapTool(Tool):
                     shell=True,
                     stdout=f_out, stderr=f_out
                     )
-                process.wait()
+            process.wait()
 
         except (IOError, OSError) as msg:
             logger.fatal("I/O error({0}): {1}\n{2}".format(
@@ -150,6 +153,7 @@ class makeBaitmapTool(Tool):
         os.remove(rtree_prefix+".dat")
         os.remove(rtree_prefix+".idx")
 
+	print("length baitmap list", len(baitmap))
         return baitmap
 
 
@@ -235,7 +239,8 @@ class makeBaitmapTool(Tool):
         bwa_t = bwaAlignerMEMTool()
         bwa_files, bwa_meta = bwa_t.run(input_bwa, metadata_bwa, output_bwa)
 
-        
+        bwa_meta = compss_wait_on(bwa_meta)
+
         if "".join(input_files["Rtree_file_dat"].split(".")[:-1]) != \
            "".join(input_files["Rtree_file_idx"].split(".")[:-1]):
             logger.fatal("Rtree_file_dat and Rtree_file_idx"
@@ -245,16 +250,16 @@ class makeBaitmapTool(Tool):
         prefix_rtree = "".join(input_files["Rtree_file_idx"].split(".")[-1])
 
         baitmap_list = self.sam_to_baitmap(
-            output_files["out_bam"],
+            input_files["probes_fa"],
             output_files["bait_sam"],
             input_files["Rtree_file_dat"],
             input_files["Rtree_file_idx"],
-            prefix_rtree)
+            prefix_rtree,)
 
         results = self.create_baitmap(
             baitmap_list,
             output_files["out_baitmap"])
-	
+
         output_metadata = {
             "out_baitmap": Metadata(
                 data_type="RE sites with baits",
@@ -306,8 +311,3 @@ class makeBaitmapTool(Tool):
         }
 
         return output_files, output_metadata
-
-"""
-runcompss --lang=python --pythonpath=${HOME}/.pyenv/versions/chic/lib/python2.7/site-packages/ --log_level=debug process_baitmap.py --config tests/json/config_baitmap.json --in_metadata tests/json/input_baitmap.json --out_metadata tests/json/out_baitmap.json
-
-"""
