@@ -84,6 +84,7 @@ class makeDesignFilesTool(Tool):
             writes the output files in the defined location
 
         """
+        logger.info("oooooloooocooooooo")
         script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
 
         args = ["python", script]
@@ -169,13 +170,12 @@ class makeDesignFilesTool(Tool):
 
         results = compss_wait_on(results)
 
-
         out_design_dir = "".join(input_files["RMAP"].split("/")[-1])
         out_design_dir = "".join(out_design_dir.split(".")[0])
 
         output_metadata = {
             ".nbpb" : Metadata(
-                data_type="Designfiles",
+                data_type=".nbpb",
                 file_type=".nbpb",
                 file_path=out_design_dir+".nbpb",
                 sources=[
@@ -187,12 +187,11 @@ class makeDesignFilesTool(Tool):
                     metadata["BAITMAP"].taxon_id
                     ],
                 meta_data={
-                    "tool" : "makeDesignFiles, make the design files"
-                             "used by chicago as part of the input file"
+                    "tool" : "makeDesignFiles.py"
                 }
             ),
             ".npb" : Metadata(
-                data_type="Designfiles",
+                data_type=".npb",
                 file_type=".npb",
                 file_path=out_design_dir+".npb",
                 sources=[
@@ -204,12 +203,11 @@ class makeDesignFilesTool(Tool):
                     metadata["BAITMAP"].taxon_id
                     ],
                 meta_data={
-                    "tool" : "makeDesignFiles, make the design files"
-                             "used by chicago as part of the input file"
+                    "tool" : "makeDesignFiles.py"
                 }
             ),
             ".poe" : Metadata(
-                data_type="Designfiles",
+                data_type=".poe",
                 file_type=".poe",
                 file_path=out_design_dir+".poe",
                 sources=[
@@ -221,8 +219,7 @@ class makeDesignFilesTool(Tool):
                     metadata["BAITMAP"].taxon_id
                     ],
                 meta_data={
-                    "tool" : "makeDesignFiles, make the design files"
-                             "used by chicago as part of the input file"
+                    "tool" : "makeDesignFiles.py"
                 }
             ),
         }
