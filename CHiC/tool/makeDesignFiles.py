@@ -64,8 +64,7 @@ class makeDesignFilesTool(Tool):
 
     @task(returns=bool, RMAP=FILE_IN, BAITMAP=FILE_IN, nbpb=FILE_OUT,
           npb=FILE_OUT, poe=FILE_OUT, parameters=IN)
-    def makeDesignFiles(self, RMAP, BAITMAP, nbpb, npb, poe,
-                        parameters):
+    def makeDesignFiles(self, RMAP, BAITMAP, nbpb, npb, poe, parameters):
         """
         make the design files and store it in the specify design folder. It is a
         wrapper of makeDesignFiles.py
