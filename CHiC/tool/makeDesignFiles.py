@@ -62,7 +62,10 @@ class makeDesignFilesTool(Tool):
 
         self.configuration.update(configuration)
 
-    def makeDesignFiles(self, designDir, outFilePrefix, parameters):
+    @task(returns=bool, RMAP=FILE_IN, BAITMAP=FILE_IN, nbpb=FILE_OUT,
+          npb=FILE_OUT, poe=FILE_OUT, parameters=IN)
+    def makeDesignFiles(self, RMAP, BAITMAP, nbpb, npb, poe,
+                        parameters):
         """
         make the design files and store it in the specify design folder. It is a
         wrapper of makeDesignFiles.py
@@ -82,9 +85,9 @@ class makeDesignFilesTool(Tool):
             writes the output files in the defined location
 
         """
-        args = ["python", "../scripts/makeDesignFiles.py",
-                "--outfilePrefix", outFilePrefix,
-                "--designDir", designDir]
+        script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
+
+        args = ["python", script]
 
         args += parameters
 
@@ -93,14 +96,6 @@ class makeDesignFilesTool(Tool):
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         process.wait()
         proc_out, proc_err = process.communicate()
-
-        if os.path.isfile(outFilePrefix + ".nbpb") is True:
-            pass
-        else:
-            logger.fatal("makeDesignFiles.py failed to generate design files")
-            logger.fatal("makeDesignFiles stderr" + proc_err)
-            logger.fatal("makeDesignFiles stdout" + proc_out)
-            return False
 
         return True
 
@@ -118,11 +113,15 @@ class makeDesignFilesTool(Tool):
             "makeDesignFiles_minFragLen" : ["--minFragLen", True],
             "makeDesignFiles_maxFragLen" : ["--maxFragLen", True],
             "makeDesignFiles_maxLBrownEst" :["--maxLBrownEst", True],
-            "makeDesignFiles_binSize" : ["--binSize", True],
+            "makeDesignFiles_binsize" : ["--binsize", True],
             "makeDesignFiles_removeb2b" : ["--removeb2b", False],
             "makeDesignFiles_removeAdjacent" : ["--removeAdjacent", False],
             "makeDesignFiles_rmapfile" : ["--rmapfile", True],
-            "makeDesignFiles_baitmapfail" : ["--baitmapFIle", True]
+            "makeDesignFiles_baitmapfail" : ["--baitmapFIle", True],
+            "makeDesignFiles_outfilePrefix" : ["--outfilePrefix", True],
+            "makeDesignFiles_designDir" : ["--designDir", True],
+            "makeDesignFiles_rmap" : ["--rmapfile", True],
+            "makeDesignFiles_baitmap": ["--baitmapfile", True]
             }
 
         for parameter in params:
@@ -132,9 +131,8 @@ class makeDesignFilesTool(Tool):
                 else:
                     command_params += [command_parameters[parameter][0]]
 
-        print(command_params)
+        #print(command_params)
         return command_params
-
 
     def run(self, input_files, metadata, output_files):
         """
@@ -163,67 +161,71 @@ class makeDesignFilesTool(Tool):
 
         logger.info("makeDesignFiles command parameters " + " ".join(commands_params))
 
-        results = self.makeDesignFiles(input_files["designDir"],
-                                       output_files["outPrefixDesign"],
+        results = self.makeDesignFiles(input_files["RMAP"],
+                                       input_files["BAITMAP"],
+                                       output_files[".nbpb"],
+                                       output_files[".npb"],
+                                       output_files[".poe"],
                                        commands_params)
 
         results = compss_wait_on(results)
 
+
+        out_design_dir = "".join(input_files["RMAP"].split("/")[-1])
+        out_design_dir = "".join(out_design_dir.split(".")[0])
+
         output_metadata = {
-            "output" : Metadata(
+            ".nbpb" : Metadata(
                 data_type="Designfiles",
-                file_type=[".nbpb", ".npb", ".poe"],
-                file_path=input_files["designDir"],
+                file_type=".nbpb",
+                file_path=out_design_dir+".nbpb",
                 sources=[
-                    metadata[".rmap"].file_path,
-                    metadata[".baitmap"].file_path
+                    metadata["RMAP"].file_path,
+                    metadata["BAITMAP"].file_path
                     ],
                 taxon_id=[
-                    metadata[".rmap"].taxon_id,
-                    metadata[".baitmap"].taxon_id
+                    metadata["RMAP"].taxon_id,
+                    metadata["BAITMAP"].taxon_id
                     ],
                 meta_data={
                     "tool" : "makeDesignFiles, make the design files"
                              "used by chicago as part of the input file"
                 }
-
-            )
+            ),
+            ".npb" : Metadata(
+                data_type="Designfiles",
+                file_type=".npb",
+                file_path=out_design_dir+".npb",
+                sources=[
+                    metadata["RMAP"].file_path,
+                    metadata["BAITMAP"].file_path
+                    ],
+                taxon_id=[
+                    metadata["RMAP"].taxon_id,
+                    metadata["BAITMAP"].taxon_id
+                    ],
+                meta_data={
+                    "tool" : "makeDesignFiles, make the design files"
+                             "used by chicago as part of the input file"
+                }
+            ),
+            ".poe" : Metadata(
+                data_type="Designfiles",
+                file_type=".poe",
+                file_path=out_design_dir+".poe",
+                sources=[
+                    metadata["RMAP"].file_path,
+                    metadata["BAITMAP"].file_path
+                    ],
+                taxon_id=[
+                    metadata["RMAP"].taxon_id,
+                    metadata["BAITMAP"].taxon_id
+                    ],
+                meta_data={
+                    "tool" : "makeDesignFiles, make the design files"
+                             "used by chicago as part of the input file"
+                }
+            ),
         }
 
-        return (results, output_metadata)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return output_files, output_metadata

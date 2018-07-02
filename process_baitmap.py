@@ -138,7 +138,6 @@ def main_json(config, in_metadata, out_metadata):
 
 #########################################################################
 
-
 if __name__ == "__main__":
 
     #set up the command line parameters
@@ -168,6 +167,3 @@ if __name__ == "__main__":
     RESULTS = main_json(CONFIG, IN_METADATA, OUT_METADATA)
 
     print(RESULTS)
-
-"""
-"""

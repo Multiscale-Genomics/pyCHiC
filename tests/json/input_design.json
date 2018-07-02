@@ -1,39 +1,28 @@
 [
     {
-        "_id": "<unique_file_id>",
-        "data_type": "direrctory",
-        "file_type": "directory",
-        "file_path": "tests/data/test_run_chicago/",
-        "compressed": 0,
-        "sources": [],
-        "taxon_id": "9606",
-        "meta_data": {
-            "visible": true,
-            "validated": 1
-        }
-    }, {
-        "_id": "<unique_file_id>",
-        "data_type": "text",
+        "_id": "59b7e020d9422a5969b00",
+        "data_type": ".rmap",
         "file_type": ".rmap",
         "file_path": "tests/data/test_run_chicago/test.rmap",
         "compressed": 0,
-        "sources": [],
-        "taxon_id": "9606",
-        "meta_data": {
-            "visible": true,
-            "validated": 1
-        }
-    }, {
-        "_id": "<unique_file_id>",
-        "data_type": "test",
-        "file_type": ".baitmap",
-        "file_path": "tests/data/test_run_chicago/test.baitmap",
-        "compressed": 0,
-        "sources": [],
-        "taxon_id": "9606",
+        "sources": ["user"],
+        "taxon_id": 9606,
         "meta_data": {
             "visible": true,
             "validated": 1
         }
     },
+    {
+        "_id": "59b7e020d9422a59688",
+        "data_type": ".baitmap",
+        "file_type": ".baitmap",
+        "file_path": "tests/data/test_run_chicago/test.baitmap",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    }
 ]

@@ -25,7 +25,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.makeDesignFiles import makeDesignFilesTool
+from CHiC.tool.makeDesignFiles import makeDesignFilesTool
 
 #####################################################
 
@@ -79,29 +79,33 @@ class process_design(Workflow):
         bool
         output_metadata
         """
-
         design_caller = makeDesignFilesTool(self.configuration)
-        desgin_out, design_outMeta = design_caller.run(
+        design_out, design_meta = design_caller.run(
             {
-                "designDir" : input_files["designDir"]
+                "RMAP" : input_files["RMAP"],
+                "BAITMAP": input_files["BAITMAP"]
             },
             {
-                ".rmap" : metadata[".rmap"],
-                ".baitmap" : metadata[".baitmap"]
+                "RMAP" : metadata["RMAP"],
+                "BAITMAP" : metadata["BAITMAP"]
             },
             {
-                "outPrefixDesign" : output_files["outPrefixDesign"]
+                ".nbpb" : output_files[".nbpb"],
+                ".npb"  : output_files[".npb"],
+                ".poe" : output_files[".poe"]
             }
         )
 
-        if os.path.isfile(output_files["outPrefixDesign"] + ".nbpb") is True:
+        out_prefix = self.configuration["makeDesignFiles_outfilePrefix"]
+
+        if os.path.isfile(out_prefix + ".nbpb") is True:
             pass
         else:
             logger.fatal("process_makeDesign failed to" +
                          "generate design files")
             return False
 
-        return desgin_out, design_outMeta
+        return design_out, design_meta
 
 #############################################################
 
@@ -131,9 +135,9 @@ def main_json(config, in_metadata, out_metadata):
 
 if __name__ == "__main__":
 
-    #sert up the command line parameters
+    #set up the command line parameters
     PARSER = argparse.ArgumentParser(
-        description="Pipeline to generate Design files")
+        description="Pipeline to generate .baitmap file")
 
     PARSER.add_argument("--config", help="Configuration file")
     PARSER.add_argument(
@@ -141,15 +145,16 @@ if __name__ == "__main__":
     PARSER.add_argument(
         "--out_metadata", help="Location of output metadata file")
     PARSER.add_argument(
-        "--local", action="store_const", cont=True, default=False)
+        "--local", action="store_const", const=True, default=False)
 
     #Get matching parameters from the command line
     ARGS = PARSER.parse_args()
 
     CONFIG = ARGS.config
-    IN_METADATA = ARGS.IN_METADATA
-    OUT_METADATA = ARGS.OUT_METADATA
+    IN_METADATA = ARGS.in_metadata
+    OUT_METADATA = ARGS.out_metadata
     LOCAL = ARGS.local
+
     if LOCAL:
         import sys
         sys._run_from_cmdl = True # pylint: disable=protected-access
