@@ -188,7 +188,7 @@ class makeDesignFilesTool(Tool):
                     metadata["BAITMAP"].taxon_id
                     ],
                 meta_data={
-                    "tool" : "makeDesignFiles.py"
+                    "tool" : "makeDesignFiles"
                 }
             ),
             ".npb" : Metadata(
@@ -204,7 +204,7 @@ class makeDesignFilesTool(Tool):
                     metadata["BAITMAP"].taxon_id
                     ],
                 meta_data={
-                    "tool" : "makeDesignFiles.py"
+                    "tool" : "makeDesignFiles"
                 }
             ),
             ".poe" : Metadata(
@@ -220,7 +220,7 @@ class makeDesignFilesTool(Tool):
                     metadata["BAITMAP"].taxon_id
                     ],
                 meta_data={
-                    "tool" : "makeDesignFiles.py"
+                    "tool" : "makeDesignFiles"
                 }
             ),
         }
