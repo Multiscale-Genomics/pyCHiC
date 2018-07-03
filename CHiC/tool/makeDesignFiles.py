@@ -203,10 +203,7 @@ class makeDesignFilesTool(Tool):
                     metadata["RMAP"].file_path,
                     metadata["BAITMAP"].file_path
                     ],
-                taxon_id=[
-                    metadata["RMAP"].taxon_id,
-                    metadata["BAITMAP"].taxon_id
-                    ],
+                taxon_id=metadata["RMAP"].taxon_id,
                 meta_data={
                     "tool" : "makeDesignFiles"
                 }
@@ -219,10 +216,7 @@ class makeDesignFilesTool(Tool):
                     metadata["RMAP"].file_path,
                     metadata["BAITMAP"].file_path
                     ],
-                taxon_id=[
-                    metadata["RMAP"].taxon_id,
-                    metadata["BAITMAP"].taxon_id
-                    ],
+                taxon_id=metadata["RMAP"].taxon_id,
                 meta_data={
                     "tool" : "makeDesignFiles"
                 }
@@ -235,10 +229,7 @@ class makeDesignFilesTool(Tool):
                     metadata["RMAP"].file_path,
                     metadata["BAITMAP"].file_path
                     ],
-                taxon_id=[
-                    metadata["RMAP"].taxon_id,
-                    metadata["BAITMAP"].taxon_id
-                    ],
+                taxon_id=metadata["BAITMAP"].taxon_id,
                 meta_data={
                     "tool" : "makeDesignFiles"
                 }
