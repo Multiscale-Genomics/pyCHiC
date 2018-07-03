@@ -18,6 +18,7 @@ import os
 import subprocess
 import sys
 from utils import logger
+from shutil import copy
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -84,6 +85,8 @@ class makeDesignFilesTool(Tool):
             writes the output files in the defined location
 
         """
+        copy(RMAP, "".join(RMAP).split("/")[-1])
+        copy(BAITMAP, "".join(BAITMAP).split("/")[-1])
 
         script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
 
@@ -113,6 +116,8 @@ class makeDesignFilesTool(Tool):
             os.remove(tmp_names+".nbpb")
             os.remove(tmp_names+".npb")
             os.remove(tmp_names+".poe")
+            os.remove("".join(RMAP).split("/")[-1])
+            os.remove("".join(BAITMAP).split("/")[-1])
             return True
 
         except IOError:
@@ -148,6 +153,17 @@ class makeDesignFilesTool(Tool):
                 if command_parameters[parameter][1]:
                     if command_parameters[parameter][0] == "--outfilePrefix":
                         name = "".join(params[parameter].split("/")[-1])+"_tmp"
+
+                        command_params += [command_parameters[parameter][0],
+                                           name]
+                    elif command_parameters[parameter][0] == "--rmapfile":
+                        name = "".join(params[parameter].split("/")[-1])
+
+                        command_params += [command_parameters[parameter][0],
+                                           name]
+
+                    elif command_parameters[parameter][0] == "--baitmapfile":
+                        name = "".join(params[parameter].split("/")[-1])
 
                         command_params += [command_parameters[parameter][0],
                                            name]
