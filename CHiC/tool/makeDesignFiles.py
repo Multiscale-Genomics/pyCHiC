@@ -110,6 +110,9 @@ class makeDesignFilesTool(Tool):
                 with open(poe, "w") as f_out:
                     f_out.write(f_in.read())
 
+            os.remove(tmp_names+".nbpb")
+            os.remove(tmp_names+".npb")
+            os.remove(tmp_names+".poe")
             return True
 
         except IOError:
@@ -144,8 +147,10 @@ class makeDesignFilesTool(Tool):
             if parameter in command_parameters:
                 if command_parameters[parameter][1]:
                     if command_parameters[parameter][0] == "--outfilePrefix":
+                        name = "".join(params[parameter].split("/")[-1])+"_tmp"
+
                         command_params += [command_parameters[parameter][0],
-                                           params[parameter]+"_tmp"]
+                                           name]
                     else:
                         command_params += [command_parameters[parameter][0], params[parameter]]
                 else:
@@ -180,7 +185,7 @@ class makeDesignFilesTool(Tool):
 
         logger.info("makeDesignFiles command parameters " + " ".join(commands_params))
 
-        tmp_names = self.configuration["makeDesignFiles_outfilePrefix"]+"_tmp"
+        tmp_names = "".join(self.configuration["makeDesignFiles_outfilePrefix"].split("/")[-1])+"_tmp"
 
         results = self.makeDesignFiles(input_files["RMAP"],
                                        input_files["BAITMAP"],
