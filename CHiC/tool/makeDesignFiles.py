@@ -182,15 +182,15 @@ class makeDesignFilesTool(Tool):
 
         tmp_names = self.configuration["makeDesignFiles_outfilePrefix"]+"_tmp"
 
-        self.makeDesignFiles(input_files["RMAP"],
-                             input_files["BAITMAP"],
-                             output_files[".nbpb"],
-                             output_files[".npb"],
-                             output_files[".poe"],
-                             commands_params,
-                             tmp_names)
+        results = self.makeDesignFiles(input_files["RMAP"],
+                                       input_files["BAITMAP"],
+                                       output_files[".nbpb"],
+                                       output_files[".npb"],
+                                       output_files[".poe"],
+                                       commands_params,
+                                       tmp_names)
 
-        #results = compss_wait_on(results)
+        compss_wait_on(results)
 
         out_design_dir = self.configuration["makeDesignFiles_outfilePrefix"]
 
