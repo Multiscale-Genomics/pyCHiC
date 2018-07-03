@@ -172,8 +172,7 @@ class makeDesignFilesTool(Tool):
 
         results = compss_wait_on(results)
 
-        out_design_dir = "".join(input_files["RMAP"].split("/")[-1])
-        out_design_dir = "".join(out_design_dir.split(".")[0])
+        out_design_dir = self.configuration["makeDesignFiles_outfilePrefix"]
 
         output_metadata = {
             ".nbpb" : Metadata(
