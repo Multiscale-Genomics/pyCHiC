@@ -84,7 +84,6 @@ class makeDesignFilesTool(Tool):
             writes the output files in the defined location
 
         """
-        logger.info("oooooloooocooooooo")
         script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
 
         args = ["python", script]
@@ -131,7 +130,6 @@ class makeDesignFilesTool(Tool):
                 else:
                     command_params += [command_parameters[parameter][0]]
 
-        #print(command_params)
         return command_params
 
     def run(self, input_files, metadata, output_files):

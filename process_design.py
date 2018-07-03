@@ -96,6 +96,7 @@ class process_design(Workflow):
             }
         )
 
+        """
         out_prefix = self.configuration["makeDesignFiles_outfilePrefix"]
 
         if os.path.isfile(out_prefix + ".nbpb") is True:
@@ -104,8 +105,9 @@ class process_design(Workflow):
             logger.fatal("process_makeDesign failed to" +
                          "generate design files")
             return False
-
+        """
         return design_out, design_meta
+
 
 #############################################################
 
