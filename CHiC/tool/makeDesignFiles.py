@@ -84,19 +84,21 @@ class makeDesignFilesTool(Tool):
             writes the output files in the defined location
 
         """
-        script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
+        try:
+            script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
 
-        args = ["python", script]
+            args = ["python", script]
 
-        args += parameters
+            args += parameters
 
-        logger.info("makeDesignFile : "+ " ".join(args))
+            logger.info("makeDesignFile : "+ " ".join(args))
 
-        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        process.wait()
-        proc_out, proc_err = process.communicate()
+            process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process.wait()
+            proc_out, proc_err = process.communicate()
 
-        return True
+            return True
+        return False
 
     @staticmethod
     def get_design_params(params):
