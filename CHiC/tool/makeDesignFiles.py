@@ -84,18 +84,33 @@ class makeDesignFilesTool(Tool):
             writes the output files in the defined location
 
         """
+
+        script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
+
+        args = ["python", script]
+
+        args += parameters
+
+        logger.info("makeDesignFile : "+ " ".join(args))
+
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process.wait()
+        proc_out, proc_err = process.communicate()
+
+        temp_names = self.configuration["makeDesignFiles_outfilePrefix"]+"_tmp"
+
         try:
-            script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
+            with open(temp_names+".nbpb", "r") as f_in:
+                with open(nbpb, "w") as f_out:
+                    f_out.write(f_in.read())
 
-            args = ["python", script]
+            with open(temp_names+".npb", "r") as f_in:
+                with open(npb, "w") as f_out:
+                    f_out.write(f_in.read())
 
-            args += parameters
-
-            logger.info("makeDesignFile : "+ " ".join(args))
-
-            process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            process.wait()
-            proc_out, proc_err = process.communicate()
+            with open(temp_names+".poe", "r") as f_in:
+                with open(poe, "w") as f_out:
+                    f_out.write(f_in.read())
 
             return True
 
@@ -130,7 +145,11 @@ class makeDesignFilesTool(Tool):
         for parameter in params:
             if parameter in command_parameters:
                 if command_parameters[parameter][1]:
-                    command_params += [command_parameters[parameter][0], params[parameter]]
+                    if command_parameters[parameter][0] == "--outfilePrefix":
+                        command_params += [command_parameters[parameter][0],
+                                           params[parameter]+"_tmp"]
+                    else:
+                        command_params += [command_parameters[parameter][0], params[parameter]]
                 else:
                     command_params += [command_parameters[parameter][0]]
 
