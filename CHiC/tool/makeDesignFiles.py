@@ -63,8 +63,8 @@ class makeDesignFilesTool(Tool):
         self.configuration.update(configuration)
 
     @task(returns=bool, RMAP=FILE_IN, BAITMAP=FILE_IN, nbpb=FILE_OUT,
-          npb=FILE_OUT, poe=FILE_OUT, parameters=IN)
-    def makeDesignFiles(self, RMAP, BAITMAP, nbpb, npb, poe, parameters):
+          npb=FILE_OUT, poe=FILE_OUT, parameters=IN, tmp_names=IN)
+    def makeDesignFiles(self, RMAP, BAITMAP, nbpb, npb, poe, parameters, tmp_names):
         """
         make the design files and store it in the specify design folder. It is a
         wrapper of makeDesignFiles.py
@@ -97,18 +97,16 @@ class makeDesignFilesTool(Tool):
         process.wait()
         proc_out, proc_err = process.communicate()
 
-        temp_names = self.configuration["makeDesignFiles_outfilePrefix"]+"_tmp"
-
         try:
-            with open(temp_names+".nbpb", "r") as f_in:
+            with open(tmp_names+".nbpb", "r") as f_in:
                 with open(nbpb, "w") as f_out:
                     f_out.write(f_in.read())
 
-            with open(temp_names+".npb", "r") as f_in:
+            with open(tmp_names+".npb", "r") as f_in:
                 with open(npb, "w") as f_out:
                     f_out.write(f_in.read())
 
-            with open(temp_names+".poe", "r") as f_in:
+            with open(tmp_names+".poe", "r") as f_in:
                 with open(poe, "w") as f_out:
                     f_out.write(f_in.read())
 
@@ -182,12 +180,15 @@ class makeDesignFilesTool(Tool):
 
         logger.info("makeDesignFiles command parameters " + " ".join(commands_params))
 
+        tmp_names = self.configuration["makeDesignFiles_outfilePrefix"]+"_tmp"
+
         results = self.makeDesignFiles(input_files["RMAP"],
                                        input_files["BAITMAP"],
                                        output_files[".nbpb"],
                                        output_files[".npb"],
                                        output_files[".poe"],
-                                       commands_params)
+                                       commands_params,
+                                       tmp_names)
 
         results = compss_wait_on(results)
 
