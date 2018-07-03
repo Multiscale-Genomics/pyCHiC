@@ -98,7 +98,9 @@ class makeDesignFilesTool(Tool):
             proc_out, proc_err = process.communicate()
 
             return True
-        return False
+
+        except IOError:
+            return False
 
     @staticmethod
     def get_design_params(params):
