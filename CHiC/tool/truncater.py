@@ -219,12 +219,14 @@ class Truncater(Tool):
 
         out_dir = self.configuration["outdir"]
 
-        self.truncate_reads(
+        results = self.truncate_reads(
             input_files["fastq1"],
             input_files["fastq2"],
             output_files["fastq1_trunc"],
             output_files["fastq2_trunc"],
             param_truncater)
+
+        results = compss_wait_on(results)
 
         output_metadata = {
             "fastq1_trunc": Metadata(
