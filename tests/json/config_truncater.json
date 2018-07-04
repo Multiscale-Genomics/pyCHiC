@@ -63,6 +63,51 @@
                 "data_type": "FASTQ",
                 "compressed": "null"
             }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": "hicup_summary",
+            "file": {
+                "file_type": "TXT",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "truncater",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_truncater/hicup_truncater_summary_.txt",
+                "data_type": "TXT",
+                "compressed": "null"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": "barchat_fastq1",
+            "file": {
+                "file_type": "svg",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "truncater",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_truncater/SRR3535023_1.fastq.truncation_barchart.svg",
+                "data_type": "svg",
+                "compressed": "null"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": "barchat_fastq2",
+            "file": {
+                "file_type": "svg",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "truncater",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_truncater/SRR3535023_2.fastq.truncation_barchart.svg",
+                "data_type": "FASTQ",
+                "compressed": "null"
+            }
         }
     ]
 }

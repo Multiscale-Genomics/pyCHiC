@@ -84,7 +84,10 @@ class process_truncater(Workflow):
             },
             {
                 "fastq1_trunc": output_files["fastq1_trunc"],
-                "fastq2_trunc" : output_files["fastq2_trunc"]
+                "fastq2_trunc" : output_files["fastq2_trunc"],
+                "hicup_summary" : output_files["hicup_summary"],
+                "barchat_fastq1" : output_files["barchat_fastq1"],
+                "barchat_fastq2" : output_files["barchat_fastq2"]
             }
         )
 

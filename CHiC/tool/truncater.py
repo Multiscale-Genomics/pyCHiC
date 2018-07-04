@@ -69,8 +69,10 @@ class Truncater(Tool):
 
     @task(returns=bool, fastq1=FILE_IN, fastq2=FILE_IN,
           fastq1_trunc=FILE_OUT, fastq2_trunc=FILE_OUT,
+          hicup_summary=IN, barchat_fastq1=IN, barchat_fastq2=IN,
           parameters=IN)
     def truncate_reads(self, fastq1, fastq2, fastq1_trunc, fastq2_trunc,
+                       hicup_summary, barchat_fastq1, barchat_fastq2,
                        parameters):
         """
         Function to truncate the reads with hicup_truncater
@@ -100,6 +102,12 @@ class Truncater(Tool):
         temp_fastq2 = "".join(fastq2.split("/")[-1])
         temp_fastq1_trunc = "".join(fastq1_trunc.split("/")[-1])
         temp_fastq2_trunc = "".join(fastq2_trunc.split("/")[-1])
+        temp_summary = "".join(hicup_summary.split("/")[-1])
+        temp_bar1 = "".join(barchat_fastq1.split("/")[-1])
+        temp_bar2 = "".join(barchat_fastq2.split("/")[-1])
+
+        print(temp_fastq1, temp_fastq2, temp_fastq1_trunc, temp_fastq2_trunc, \
+              temp_summary, temp_bar1, temp_bar2)
 
         copy(fastq1, temp_fastq1)
         copy(fastq2, temp_fastq2)
@@ -114,14 +122,19 @@ class Truncater(Tool):
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         process.wait()
-
         copy(temp_fastq1_trunc, fastq1_trunc)
         copy(temp_fastq2_trunc, fastq2_trunc)
+        copy(temp_summary, hicup_summary)
+        copy(temp_bar1, barchat_fastq1)
+        copy(temp_bar2, barchat_fastq2)
 
         os.remove(temp_fastq1)
         os.remove(temp_fastq2)
         os.remove(temp_fastq1_trunc)
         os.remove(temp_fastq2_trunc)
+        os.remove(temp_summary)
+        os.remove(temp_bar1)
+        os.remove(temp_bar2)
 
         if os.path.isfile(fastq1_trunc) is True:
             if os.path.getsize(fastq1_trunc) > 0:
@@ -226,6 +239,9 @@ class Truncater(Tool):
             input_files["fastq2"],
             output_files["fastq1_trunc"],
             output_files["fastq2_trunc"],
+            output_files["hicup_summary"],
+            output_files["barchat_fastq1"],
+            output_files["barchat_fastq2"],
             param_truncater)
 
         results = compss_wait_on(results)
@@ -244,6 +260,30 @@ class Truncater(Tool):
                 file_type="FASTQ",
                 file_path=output_files["fastq1_trunc"],
                 sources=metadata["fastq1"].file_path,
+                taxon_id=9606,
+                meta_data=""
+            ),
+            "hicup_summary": Metadata(
+                data_type="TXT",
+                file_type="TXT",
+                file_path=output_files["hicup_summary"],
+                sources=[metadata["fastq1"].file_path, metadata["fastq1"].file_path],
+                taxon_id=9606,
+                meta_data=""
+            ),
+            "barchat_fastq1": Metadata(
+                data_type="svg",
+                file_type="svg",
+                file_path=output_files["barchat_fastq1"],
+                sources=metadata["fastq1"].file_path,
+                taxon_id=9606,
+                meta_data=""
+            ),
+            "barchat_fastq2": Metadata(
+                data_type="svg",
+                file_type="svg",
+                file_path=output_files["barchat_fastq2"],
+                sources=metadata["fastq2"].file_path,
                 taxon_id=9606,
                 meta_data=""
             )

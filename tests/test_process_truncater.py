@@ -55,7 +55,10 @@ def test_truncater():
 
     output_files = {
         "fastq1_trunc" : path + "SRR3535023_1.trunc.fastq",
-        "fastq2_trunc" : path + "SRR3535023_2.trunc.fastq"
+        "fastq2_trunc" : path + "SRR3535023_2.trunc.fastq",
+        "hicup_summary" : path + "hicup_truncater_summary_.txt",
+        "barchat_fastq1" : path + "SRR3535023_1.fastq.truncation_barchart.svg",
+        "barchat_fastq2" : path + "SRR3535023_2.fastq.truncation_barchart.svg"
     }
 
     configuration = {
