@@ -102,7 +102,7 @@ class Truncater(Tool):
         temp_fastq2_trunc = "".join(fastq2_trunc.split("/")[-1])
 
         copy(fastq1, temp_fastq1)
-        copy(fastq1, temp_fastq2)
+        copy(fastq2, temp_fastq2)
 
         args = ["hicup_truncater", temp_fastq1, temp_fastq2]
 
@@ -235,15 +235,15 @@ class Truncater(Tool):
                 data_type="FASTQ",
                 file_type="FASTQ",
                 file_path=output_files["fastq1_trunc"],
-                sources=[metadata["fastq1"].file_path, metadata["fastq2"].file_path],
+                sources=metadata["fastq1"].file_path,
                 taxon_id=9606,
                 meta_data=""
             ),
             "fastq2_trunc": Metadata(
-                data_type="text",
-                file_type="tsv",
+                data_type="FASTQ",
+                file_type="FASTQ",
                 file_path=output_files["fastq1_trunc"],
-                sources=[metadata["fastq1"].file_path, metadata["fastq2"].file_path],
+                sources=metadata["fastq1"].file_path,
                 taxon_id=9606,
                 meta_data=""
             )
