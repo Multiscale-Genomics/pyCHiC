@@ -67,7 +67,7 @@ class Truncater(Tool):
 
         self.configuration.update(configuration)
 
-    @task(fastq1=FILE_IN, fastq2=FILE_IN,
+    @task(returns=bool, fastq1=FILE_IN, fastq2=FILE_IN,
           fastq1_trunc=FILE_OUT, fastq2_trunc=FILE_OUT,
           parameters=IN)
     def truncate_reads(self, fastq1, fastq2, fastq1_trunc, fastq2_trunc,
