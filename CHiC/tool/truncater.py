@@ -108,7 +108,7 @@ class Truncater(Tool):
 
         args += parameters
 
-        logger.info("hicup_truncater parameters: "+ " ".join(args))
+        logger.info("hicup_truncater command: "+ " ".join(args))
 
         process = subprocess.Popen(" ".join(args), shell=True,
                                    stdout=subprocess.PIPE,
@@ -173,7 +173,7 @@ class Truncater(Tool):
                 if parameters[arg][1] is True:
                     if parameters[arg][0] == "--outdir":
                         name = "."
-                        params += [parameters[arg][0],name]
+                        params += [parameters[arg][0], name]
                     else:
                         params = [parameters[arg][0], configuration[arg]]
                 else:
@@ -218,6 +218,8 @@ class Truncater(Tool):
                          self.configuration["outdir"])
 
         out_dir = self.configuration["outdir"]
+
+        logger.info("truncater parameters: "+ param_truncater)
 
         results = self.truncate_reads(
             input_files["fastq1"],
