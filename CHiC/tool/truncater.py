@@ -21,6 +21,8 @@ import sys
 import os
 import subprocess
 from utils import logger
+from shutil import copy
+
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -65,7 +67,11 @@ class Truncater(Tool):
 
         self.configuration.update(configuration)
 
-    def truncate_reads(self, fastq1, fastq2, parameters, out_dir):
+    @task(fastq1=FILE_IN, fastq2=FILE_IN,
+          fastq1_trunc=FILE_OUT, fastq2_trunc=FILE_OUT,
+          parameters=IN)
+    def truncate_reads(self, fastq1, fastq2, fastq1_trunc, fastq2_trunc,
+                       parameters):
         """
         Function to truncate the reads with hicup_truncater
 
@@ -75,6 +81,14 @@ class Truncater(Tool):
             path to fastq file read 1
         fastq2: str
             path to feastq file read 2
+        fastq1_trunc:
+            path to the fastq1_trunc file
+            IMP: This file shoudl be called as the input file. with
+                Name.<trunc>.fastq
+        fastq2_trunc:
+            path to the fastq1_trunc file
+            IMP: This file shoudl be called as the input file. with
+                Name.<trunc>.fastq
         parameters: list
             paramters selected using get_params()
 
@@ -82,8 +96,15 @@ class Truncater(Tool):
         ------
         bool
         """
-        args = ["hicup_truncater", fastq1, fastq2, "--outdir", out_dir,
-                "--quiet"]
+        temp_fastq1 = "".join(fastq1.split("/")[-1])
+        temp_fastq2 = "".join(fastq2.split("/")[-1])
+        temp_fastq1_trunc = "".join(fastq1_trunc.split("/")[-1])
+        temp_fastq2_trunc = "".join(fastq2_trunc.split("/")[-1])
+
+        copy(fastq1, temp_fastq1)
+        copy(fastq1, temp_fastq2)
+
+        args = ["hicup_truncater", temp_fastq1, temp_fastq2]
 
         args += parameters
 
@@ -94,31 +115,24 @@ class Truncater(Tool):
                                    stderr=subprocess.PIPE)
         process.wait()
 
-        name_trunc1 = ""
-        name_trunc2 = ""
-        if "/" in fastq1:
-            name_trunc1 = fastq1.split("/")[-1]
-            name_trunc1 = name_trunc1.split(".")[-2]+".trunc.fastq"
-        else:
-            name_trunc1 = name_trunc1.split(".")[-2]+".trunc.fastq"
+        copy(temp_fastq1_trunc, fastq1_trunc)
+        copy(temp_fastq2_trunc, fastq2_trunc)
 
-        if "/" in fastq2:
-            name_trunc2 = fastq2.split("/")[-1]
-            name_trunc2 = name_trunc2.split(".")[-2]+".trunc.fastq"
-        else:
-            name_trunc2 = name_trunc2.split(".")[-2]+".trunc.fastq"
+        os.remove(temp_fastq1)
+        os.remove(temp_fastq2)
+        os.remove(temp_fastq1_trunc)
+        os.remove(temp_fastq2_trunc)
 
-        if os.path.isfile(out_dir+name_trunc1) is True:
-            pass
-        else:
-            return False
-
-        if os.path.getsize(out_dir+name_trunc1) > 0:
-            return True
+        if os.path.isfile(fastq1_trunc) is True:
+            if os.path.getsize(fastq1_trunc) > 0:
+                if os.path.isfile(fastq2_trunc) is True:
+                    if os.path.getsize(fastq2_trunc) > 0:
+                        return True
 
         return False
 
-    def get_params(self,configuration):
+    @staticmethod
+    def get_params(configuration):
         """
         this function take the parameters that
         have been selected tu run the truncater
@@ -143,13 +157,13 @@ class Truncater(Tool):
         arguments: list
            list with arguments to pass to truncate_read function
         """
-
         parameters = {
             "quiet_progress": ["--quiet", False],
             "RE_truncater": ["--re1", True],
             "sequence_junction": ["--sequences", True],
             "threads" : ["--threads", True],
             "zip": ["--zip", False],
+            "outdir": ["--outdir", True]
         }
 
         params = []
@@ -157,7 +171,11 @@ class Truncater(Tool):
         for arg in configuration:
             if arg in parameters:
                 if parameters[arg][1] is True:
-                    params += [parameters[arg][0], configuration[arg]]
+                    if parameters[arg][0] == "--outdir":
+                        name = "."
+                        params += [parameters[arg][0],name]
+                    else:
+                        params = [parameters[arg][0], configuration[arg]]
                 else:
                     params += [parameters[arg][0]]
 
@@ -180,28 +198,51 @@ class Truncater(Tool):
         Return
         ------
         output_files: dict
-            fastq_trunc1
-            fastq_trunc2
+            fastq1_trunc
+            fastq2_trunc
         output_metadata: dict
         """
 
         param_truncater = self.get_params(self.configuration)
 
-        results = self.truncate_reads(
+        out_fastq1_trunc = "/".join(output_files["fastq1_trunc"].split("/")[:-1])
+        out_fastq2_trunc = "/".join(output_files["fastq2_trunc"].split("/")[:-1])
+
+        if out_fastq1_trunc != out_fastq2_trunc:
+            logger.fatal("Output directory for the truncated reads shoudl be "+
+                         "the same", out_fastq1_trunc, out_fastq2_trunc)
+
+        if out_fastq1_trunc != self.configuration["outdir"]:
+            logger.fatal("outdir parameter should be the same directory as the fastq1_trunc"+
+                         " and fastq2_trunc: "+ out_fastq1_trunc + " " +
+                         self.configuration["outdir"])
+
+        out_dir = self.configuration["outdir"]
+
+        self.truncate_reads(
             input_files["fastq1"],
             input_files["fastq2"],
-            param_truncater,
-            output_files["out_dir"])
+            output_files["fastq1_trunc"],
+            output_files["fastq2_trunc"],
+            param_truncater)
 
         output_metadata = {
-            "tsv": Metadata(
+            "fastq1_trunc": Metadata(
+                data_type="FASTQ",
+                file_type="FASTQ",
+                file_path=output_files["fastq1_trunc"],
+                sources=[metadata["fastq1"].file_path, metadata["fastq2"].file_path],
+                taxon_id=9606,
+                meta_data=""
+            ),
+            "fastq2_trunc": Metadata(
                 data_type="text",
                 file_type="tsv",
-                file_path=output_files["out_dir"],
+                file_path=output_files["fastq1_trunc"],
                 sources=[metadata["fastq1"].file_path, metadata["fastq2"].file_path],
                 taxon_id=9606,
                 meta_data=""
             )
         }
 
-        return results, output_metadata
+        return output_files, output_metadata

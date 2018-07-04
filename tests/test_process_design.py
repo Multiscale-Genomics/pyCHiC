@@ -18,7 +18,7 @@ import pytest
 import os.path
 
 from basic_modules.metadata import Metadata
-from  process_design import process_design
+from process_design import process_design
 
 def test_design_process():
     """

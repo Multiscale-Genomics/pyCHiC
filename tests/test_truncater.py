@@ -27,7 +27,7 @@ def test_truncater():
     Test for the truncater function
     """
 
-    path = os.path.join(os.getcwd(),"data/test_truncater/")
+    path = os.path.join(os.getcwd(), "data/test_truncater/")
 
     input_files = {
         "fastq1" : path + "SRR3535023_1.fastq",
@@ -35,39 +35,41 @@ def test_truncater():
     }
 
     metadata = {
-            "fastq1": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq1"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
-            ),
-            "fastq2": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq2"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
-            )
-        }
+        "fastq1": Metadata(
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq1"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
+        ),
+        "fastq2": Metadata(
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq2"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
+        )
+    }
 
     output_files = {
-        "out_dir" : path
+        "fastq1_trunc" : path + "SRR3535023_1.trunc.fastq",
+        "fastq2_trunc" : path + "SRR3535023_2.trunc.fastq"
     }
 
     configuration = {
         "quiet_progress": True,
         "RE_truncater": "A^AGCT",
-        "threads" : "2"
-        }
+        "threads" : "2",
+        "outdir" : path
+    }
 
     truncater_hdl = Truncater(configuration)
     truncater_hdl.run(input_files, metadata, output_files)
 
-    assert os.path.isfile(output_files["out_dir"]+"SRR3535023_1.trunc.fastq") is True
-    assert os.path.isfile(output_files["out_dir"]+"SRR3535023_2.trunc.fastq") is True
+    assert os.path.isfile(output_files["fastq1_trunc"]) is True
+    assert os.path.isfile(output_files["fastq1_trunc"]) is True
 
-    assert os.path.getsize(output_files["out_dir"]+"SRR3535023_1.trunc.fastq") > 0
-    assert os.path.getsize(output_files["out_dir"]+"SRR3535023_2.trunc.fastq") > 0
+    assert os.path.getsize(output_files["fastq1_trunc"]) > 0
+    assert os.path.getsize(output_files["fastq1_trunc"]) > 0

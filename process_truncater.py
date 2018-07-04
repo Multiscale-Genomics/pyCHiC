@@ -25,7 +25,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.truncater import Truncater
+from CHiC.tool.truncater import Truncater
 
 ################################################
 
@@ -83,30 +83,13 @@ class process_truncater(Workflow):
                 "fastq2": metadata["fastq2"]
             },
             {
-                "out_dir": output_files["out_dir"]
+                "fastq1_trunc": output_files["fastq1_trunc"],
+                "fastq2_trunc" : output_files["fastq2_trunc"]
             }
         )
 
-        fastq1 = input_files["fastq1"]
-        fastq2 = input_files["fastq2"]
-
-        name_trunc1 = ""
-        name_trunc2 = ""
-
-        if "/" in fastq1:
-            name_trunc1 = fastq1.split("/")[-1]
-            name_trunc1 = name_trunc1.split(".")[-2]+".trunc.fastq"
-        else:
-            name_trunc1 = name_trunc1.split(".")[-2]+".trunc.fastq"
-
-        if "/" in fastq2:
-            name_trunc2 = fastq2.split("/")[-1]
-            name_trunc2 = name_trunc2.split(".")[-2]+".trunc.fastq"
-        else:
-            name_trunc2 = name_trunc2.split(".")[-2]+".trunc.fastq"
-
-        if os.path.isfile(output_files["out_dir"]+name_trunc1) is True:
-            if os.path.getsize(output_files["out_dir"]+name_trunc1) > 0:
+        if os.path.isfile(output_files["fastq1_trunc"]) is True:
+            if os.path.getsize(output_files["fastq1_trunc"]) > 0:
                 return output_files_truncater, output_metadata_truncater
 
         return False
@@ -138,7 +121,7 @@ def main_json(config, in_metadata, out_metadata):
 #########################################################################
 
 
-if __name__ == "__name__":
+if __name__ == "__main__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
@@ -150,7 +133,7 @@ if __name__ == "__name__":
     PARSER.add_argument(
         "--out_metadata", help="Location of output metadata file")
     PARSER.add_argument(
-        "--local", action="store_const", cont=True, default=False)
+        "--local", action="store_const", const=True, default=False)
 
     #Get matching parameters from the command line
     ARGS = PARSER.parse_args()
