@@ -175,7 +175,7 @@ class Truncater(Tool):
                         name = "."
                         params += [parameters[arg][0], name]
                     else:
-                        params = [parameters[arg][0], configuration[arg]]
+                        params += [parameters[arg][0], configuration[arg]]
                 else:
                     params += [parameters[arg][0]]
 
