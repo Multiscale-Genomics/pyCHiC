@@ -69,7 +69,7 @@ class Truncater(Tool):
 
     @task(returns=bool, fastq1=FILE_IN, fastq2=FILE_IN,
           fastq1_trunc=FILE_OUT, fastq2_trunc=FILE_OUT,
-          hicup_summary=IN, barchat_fastq1=IN, barchat_fastq2=IN,
+          hicup_summary=FILE_OUT, barchat_fastq1=FILE_OUT, barchat_fastq2=FILE_OUT,
           parameters=IN)
     def truncate_reads(self, fastq1, fastq2, fastq1_trunc, fastq2_trunc,
                        hicup_summary, barchat_fastq1, barchat_fastq2,

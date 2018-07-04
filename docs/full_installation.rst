@@ -89,6 +89,8 @@ HiCUP
     tar -xzf hicup_v0.6.1.tar.gz
     cd hicup_v0.6.1
     chmod a+x *
+    #modify hicup_truncater for delete the time of the summary file
+    
 
 
 BWA Sequence Aligner
