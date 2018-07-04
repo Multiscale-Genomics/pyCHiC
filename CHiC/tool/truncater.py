@@ -219,7 +219,7 @@ class Truncater(Tool):
 
         out_dir = self.configuration["outdir"]
 
-        logger.info("truncater parameters: "+ param_truncater)
+        logger.info("truncater parameters: "+ " ".join(param_truncater))
 
         results = self.truncate_reads(
             input_files["fastq1"],
