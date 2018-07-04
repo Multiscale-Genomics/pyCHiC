@@ -67,7 +67,7 @@ class Truncater(Tool):
 
         self.configuration.update(configuration)
 
-    @task(returns=bool, fastq1=FILE_IN, fastq2=FILE_IN,
+    @task(returns=bool, fastq1=IN, fastq2=IN,
           fastq1_trunc=FILE_OUT, fastq2_trunc=FILE_OUT,
           hicup_summary=FILE_OUT, barchat_fastq1=FILE_OUT, barchat_fastq2=FILE_OUT,
           parameters=IN)
