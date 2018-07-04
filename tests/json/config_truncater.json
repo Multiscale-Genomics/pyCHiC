@@ -1,0 +1,68 @@
+{
+    "input_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "fastq1",
+            "value": "59b7e020d9422a5969ccccc1"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "fastq2",
+            "value": "59b7e020d9422a5cccccc345"
+        }
+    ],
+    "arguments": [
+        {
+            "name": "quiet_progress",
+            "value": "True"
+        },
+        {
+            "name": "RE_truncater",
+            "value": "A^AGCT"
+        },
+        {
+            "name": "threads",
+            "value": "2"
+        },
+        {
+            "name": "outdir",
+            "value": "tests/data/test_truncater"
+        }
+    ],
+    "output_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "fastq1_trunc",
+            "file": {
+                "file_type": "FASTQ",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "truncater",
+                    "description": "Output"
+                },
+        "threads" : "2",
+                "file_path": "tests/data/test_truncater/SRR3535023_1.trunc.fastq",
+                "data_type": "FASTQ",
+                "compressed": "null"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": "fastq2_trunc",
+            "file": {
+                "file_type": "FASTQ",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "truncater",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_truncater/SRR3535023_2.trunc.fastq",
+                "data_type": "FASTQ",
+                "compressed": "null"
+            }
+        }
+    ]
+}
