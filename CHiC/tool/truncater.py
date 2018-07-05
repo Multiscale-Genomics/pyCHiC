@@ -124,11 +124,10 @@ class Truncater(Tool):
 
         logger.info("hicup_truncater command: "+ " ".join(args))
 
-        process = subprocess.Popen(args,
+        process = subprocess.Popen(" ".join(args), shell=True,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         process.wait()
-        proc_out, proc_err = process.communicate()
 
 
         try:
@@ -162,13 +161,6 @@ class Truncater(Tool):
 
             return True
 
-            """
-            if os.path.isfile(fastq1_trunc) is True:
-                if os.path.getsize(fastq1_trunc) > 0:
-                    if os.path.isfile(fastq2_trunc) is True:
-                        if os.path.getsize(fastq2_trunc) > 0:
-                            return True
-            """
         except IOError:
             logger.fatal("truncater failed to generated truncated fastq files =(")
             return False
