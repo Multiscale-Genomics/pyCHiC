@@ -129,11 +129,12 @@ class Truncater(Tool):
                                    stderr=subprocess.PIPE)
         process.wait()
 
-        print("open", temp_fastq1_trunc, "print", fastq1_trunc)
-        with open(temp_fastq1_trunc, "r") as f_in:
-            with open(fastq1_trunc, "w") as f_out:
-                f_out.write(f_in.read())
         try:
+            print("open", temp_fastq1_trunc, "print", fastq1_trunc)
+            with open(temp_fastq1_trunc, "r") as f_in:
+                with open(fastq1_trunc, "w") as f_out:
+                    f_out.write(f_in.read())
+
             print("open", temp_fastq2_trunc, "print", fastq2_trunc)
             with open(temp_fastq2_trunc, "r") as f_in:
                 with open(fastq2_trunc, "w") as f_out:
