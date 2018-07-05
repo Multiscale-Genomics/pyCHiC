@@ -118,8 +118,14 @@ class Truncater(Tool):
         temp_bar2 = "".join(barchat_fastq2.split("/")[-1])
 
         try:
-            copy(fastq1, temp_fastq1)
-            copy(fastq2, temp_fastq2)
+            with open(fastq1, "r") as f_in:
+                with open(temp_fastq1, "w") as f_out:
+                    f_out.write(f_in.read())
+
+            with open(fastq2, "r") as f_in:
+                with open(temp_fastq2, "w") as f_out:
+                    f_out.write(f_in.read())
+
         except IOError:
             logger.fatal("not possible to copy files")
             return False
