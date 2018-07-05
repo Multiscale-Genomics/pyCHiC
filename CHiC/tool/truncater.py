@@ -116,7 +116,6 @@ class Truncater(Tool):
         temp_bar1 = "".join(barchat_fastq1.split("/")[-1])
         temp_bar2 = "".join(barchat_fastq2.split("/")[-1])
 
-
         args = ["hicup_truncater",
                 "".join(fastq1.split("/")[-1]),
                 "".join(fastq2.split("/")[-1])]
@@ -125,10 +124,12 @@ class Truncater(Tool):
 
         logger.info("hicup_truncater command: "+ " ".join(args))
 
-        process = subprocess.Popen(" ".join(args), shell=True,
+        process = subprocess.Popen(args,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         process.wait()
+        proc_out, proc_err = process.communicate()
+
 
         try:
             with open(temp_fastq1_trunc, "r") as f_in:
