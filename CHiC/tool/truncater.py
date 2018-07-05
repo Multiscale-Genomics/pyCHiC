@@ -106,6 +106,10 @@ class Truncater(Tool):
         bar2_true = "_".join(barchat_fastq2.split("_")[:-1])
         """
 
+        copy(fastq1, "".join(fastq1.split("/")[-1]))
+        copy(fastq2, "".join(fastq2.split("/")[-1]))
+
+
         temp_fastq1_trunc = "".join(fastq1_trunc.split("/")[-1])
         temp_fastq2_trunc = "".join(fastq2_trunc.split("/")[-1])
         temp_summary = "".join(hicup_summary.split("/")[-1])
@@ -114,7 +118,9 @@ class Truncater(Tool):
 
 
         try:
-            args = ["hicup_truncater", fastq1, fastq2]
+            args = ["hicup_truncater",
+                    "".join(fastq1.split("/")[-1]),
+                    "".join(fastq2.split("/")[-1])]
 
             args += parameters
 
@@ -145,8 +151,8 @@ class Truncater(Tool):
                 with open(barchat_fastq2, "w") as f_out:
                     f_out.write(f_in.read())
 
-            os.remove(fastq1)
-            os.remove(fastq2)
+            os.remove("".join(fastq1.split("/")[-1]))
+            os.remove("".join(fastq2.split("/")[-1]))
             os.remove(temp_fastq1_trunc)
             os.remove(temp_fastq2_trunc)
             os.remove(temp_summary)
@@ -255,15 +261,15 @@ class Truncater(Tool):
         temp_fastq1 = "".join(input_files["fastq1"].split("/")[-1])
         temp_fastq2 = "".join(input_files["fastq2"].split("/")[-1])
 
-        copy(input_files["fastq1"], temp_fastq1)
-        copy(input_files["fastq2"], temp_fastq2)
+        #copy(input_files["fastq1"], temp_fastq1)
+        #copy(input_files["fastq2"], temp_fastq2)
 
         logger.info("truncater parameters: "+ " ".join(param_truncater))
 
 
         results = self.truncate_reads(
-            temp_fastq1,
-            temp_fastq2,
+            input_files["fastq1"],
+            input_files["fastq2"],
             output_files["fastq1_trunc"],
             output_files["fastq2_trunc"],
             output_files["hicup_summary"],
