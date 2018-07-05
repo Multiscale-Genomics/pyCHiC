@@ -98,13 +98,6 @@ class Truncater(Tool):
         ------
         bool
         """
-        """
-        fastq1_trunc_true = "_".join(fastq1_trunc.split("_")[:-1])
-        fastq2_trunc_true = "_".join(fastq2_trunc.split("_")[:-1])
-        hicup_sumary_true = "_".join(hicup_summary.split("_")[:-1])
-        bar1_true = "_".join(barchat_fastq1.split("_")[:-1])
-        bar2_true = "_".join(barchat_fastq2.split("_")[:-1])
-        """
         temp_fastq1 = "temp_"+"".join(fastq1.split("/")[-1])
         temp_fastq2 = "temp_"+"".join(fastq2.split("/")[-1])
 
@@ -115,7 +108,9 @@ class Truncater(Tool):
         temp_fastq2_trunc = "temp_"+"".join(fastq2_trunc.split("/")[-1])
         temp_bar1 = "temp_"+"".join(barchat_fastq1.split("/")[-1])
         temp_bar2 = "temp_"+"".join(barchat_fastq2.split("/")[-1])
-        temp_summary = "".join(hicup_summary.split("/")[-1])
+        temp_summary = "temp_"+"".join(hicup_summary.split("/")[-1])
+
+        copy(hicup_summary, temp_summary)
 
         args = ["hicup_truncater",
                 temp_fastq1,
