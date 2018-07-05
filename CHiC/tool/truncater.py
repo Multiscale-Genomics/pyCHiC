@@ -119,13 +119,13 @@ class Truncater(Tool):
         temp_bar2 = "temp_"+"".join(barchat_fastq2.split("/")[-1])
         temp_summary = "temp_"+"".join(hicup_summary.split("/")[-1])
 
-        cwd =  os.getcwd()
+        cwd = os.getcwd()
 
         args = ["hicup_truncater",
                 temp_fastq1,
                 temp_fastq2,
                 "--outdir",
-                cwd]
+                cwd+"/sandbox/job_1"]
 
         args += parameters
         print(args)

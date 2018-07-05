@@ -24,7 +24,7 @@
         },
         {
             "name": "threads",
-            "value": "2"
+            "value": "1"
         },
         {
             "name": "outdir",
@@ -105,7 +105,7 @@
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_truncater/SRR3535023_2.fastq.truncation_barchart.svg",
-                "data_type": "FASTQ",
+                "data_type": "TXT",
                 "compressed": "null"
             }
         }
