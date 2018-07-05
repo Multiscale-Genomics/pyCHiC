@@ -117,8 +117,12 @@ class Truncater(Tool):
         temp_bar1 = "".join(barchat_fastq1.split("/")[-1])
         temp_bar2 = "".join(barchat_fastq2.split("/")[-1])
 
-        copy(fastq1, temp_fastq1)
-        copy(fastq2, temp_fastq2)
+        try:
+            copy(fastq1, temp_fastq1)
+            copy(fastq2, temp_fastq2)
+        except IOError:
+            logger.fatal("not possible to copy files")
+            return False
 
         args = ["hicup_truncater",
                 temp_fastq1,
@@ -158,7 +162,7 @@ class Truncater(Tool):
             with open(temp_bar2, "r") as f_in:
                 with open(barchat_fastq2, "w") as f_out:
                     f_out.write(f_in.read())
-
+            """
             os.remove(temp_fastq1)
             os.remove(temp_fastq2)
             os.remove(temp_fastq1_trunc)
@@ -166,7 +170,7 @@ class Truncater(Tool):
             os.remove(temp_summary)
             os.remove(temp_bar1)
             os.remove(temp_bar2)
-
+            """
 
             return True
 
