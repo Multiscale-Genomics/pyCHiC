@@ -119,18 +119,23 @@ class Truncater(Tool):
         temp_bar2 = "temp_"+"".join(barchat_fastq2.split("/")[-1])
         temp_summary = "temp_"+"".join(hicup_summary.split("/")[-1])
 
+        cwd =  os.getcwd()
+
         args = ["hicup_truncater",
                 temp_fastq1,
-                temp_fastq2]
+                temp_fastq2,
+                "--outdir",
+                cwd]
 
         args += parameters
-
+        print(args)
         logger.info("hicup_truncater command: "+ " ".join(args))
 
         process = subprocess.Popen(" ".join(args), shell=True,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         process.wait()
+        print()
 
         try:
             print("copy hicup_summary")
@@ -218,11 +223,11 @@ class Truncater(Tool):
         for arg in configuration:
             if arg in parameters:
                 if parameters[arg][1] is True:
-                    if parameters[arg][0] == "--outdir":
-                        name = "."
-                        params += [parameters[arg][0], name]
-                    else:
-                        params += [parameters[arg][0], configuration[arg]]
+                    #if parameters[arg][0] == "--outdir":
+                        #name = "."
+                        #params += [parameters[arg][0], name]
+                    #else:
+                    params += [parameters[arg][0], configuration[arg]]
                 else:
                     params += [parameters[arg][0]]
 
