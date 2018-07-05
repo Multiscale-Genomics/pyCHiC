@@ -106,8 +106,8 @@ class Truncater(Tool):
         bar2_true = "_".join(barchat_fastq2.split("_")[:-1])
         """
 
-        copy(fastq1, "".join(fastq1.split("/")[-1]))
-        copy(fastq2, "".join(fastq2.split("/")[-1]))
+        copy(fastq1, "".join(fastq1).split("/")[-1])
+        copy(fastq2, "".join(fastq2).split("/")[-1])
 
 
         temp_fastq1_trunc = "".join(fastq1_trunc.split("/")[-1])
@@ -117,20 +117,20 @@ class Truncater(Tool):
         temp_bar2 = "".join(barchat_fastq2.split("/")[-1])
 
 
+        args = ["hicup_truncater",
+                "".join(fastq1.split("/")[-1]),
+                "".join(fastq2.split("/")[-1])]
+
+        args += parameters
+
+        logger.info("hicup_truncater command: "+ " ".join(args))
+
+        process = subprocess.Popen(" ".join(args), shell=True,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        process.wait()
+
         try:
-            args = ["hicup_truncater",
-                    "".join(fastq1.split("/")[-1]),
-                    "".join(fastq2.split("/")[-1])]
-
-            args += parameters
-
-            logger.info("hicup_truncater command: "+ " ".join(args))
-
-            process = subprocess.Popen(" ".join(args), shell=True,
-                                       stdout=subprocess.PIPE,
-                                       stderr=subprocess.PIPE)
-            process.wait()
-
             with open(temp_fastq1_trunc, "r") as f_in:
                 with open(fastq1_trunc, "w") as f_out:
                     f_out.write(f_in.read())
@@ -168,7 +168,8 @@ class Truncater(Tool):
                         if os.path.getsize(fastq2_trunc) > 0:
                             return True
             """
-        except:
+        except IOError:
+            logger.fatal("truncater failed to generated truncated fastq files =(")
             return False
 
     @staticmethod
@@ -257,12 +258,6 @@ class Truncater(Tool):
                          " and fastq2_trunc: "+ out_fastq1_trunc + " " +
                          self.configuration["outdir"])
 
-
-        temp_fastq1 = "".join(input_files["fastq1"].split("/")[-1])
-        temp_fastq2 = "".join(input_files["fastq2"].split("/")[-1])
-
-        #copy(input_files["fastq1"], temp_fastq1)
-        #copy(input_files["fastq2"], temp_fastq2)
 
         logger.info("truncater parameters: "+ " ".join(param_truncater))
 
