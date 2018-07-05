@@ -98,15 +98,17 @@ class Truncater(Tool):
         ------
         bool
         """
-        temp_fastq1 = "temp_"+"".join(fastq1.split("/")[-1])
-        temp_fastq2 = "temp_"+"".join(fastq2.split("/")[-1])
 
-        print("open", fastq1, "print", temp_fastq1)
+        loc_fq1 = os.path.split(fastq1)
+        temp_fastq1 = os.path.join(loc_fq1[0], "temp_" + loc_fq1[1])
+
+        loc_fq2 = os.path.split(fastq2)
+        temp_fastq2 = os.path.join(loc_fq2[0], "temp_" + loc_fq2[1])
+
         with open(fastq1, "r") as f_in:
             with open(temp_fastq1, "w") as f_out:
                 f_out.write(f_in.read())
 
-        print("open", fastq2, "print", temp_fastq2)
         with open(fastq2, "r") as f_in:
             with open(temp_fastq2, "w") as f_out:
                 f_out.write(f_in.read())
@@ -160,6 +162,7 @@ class Truncater(Tool):
                 with open(barchat_fastq2, "w") as f_out:
                     f_out.write(f_in.read())
 
+
             os.remove(temp_fastq1)
             os.remove(temp_fastq2)
             os.remove(temp_fastq1_trunc)
@@ -167,6 +170,7 @@ class Truncater(Tool):
             os.remove(temp_summary)
             os.remove(temp_bar1)
             os.remove(temp_bar2)
+
 
             return True
 
