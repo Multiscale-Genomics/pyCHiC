@@ -106,15 +106,21 @@ class Truncater(Tool):
         bar2_true = "_".join(barchat_fastq2.split("_")[:-1])
         """
         try:
-            temp_fastq1_trunc = "".join(fastq1_trunc.split("/")[-1])
-            temp_fastq2_trunc = "".join(fastq2_trunc.split("/")[-1])
+            temp_fastq1 = "temp_"+"".join(fastq1.split("/")[-1])
+            temp_fastq2 = "temp_"+"".join(fastq2.split("/")[-1])
+
+            copy(fastq1, temp_fastq1)
+            copy(fastq2, temp_fastq2)
+
+            temp_fastq1_trunc = "temp_"+"".join(fastq1_trunc.split("/")[-1])
+            temp_fastq2_trunc = "temp_"+"".join(fastq2_trunc.split("/")[-1])
+            temp_bar1 = "temp_"+"".join(barchat_fastq1.split("/")[-1])
+            temp_bar2 = "temp_"+"".join(barchat_fastq2.split("/")[-1])
             temp_summary = "".join(hicup_summary.split("/")[-1])
-            temp_bar1 = "".join(barchat_fastq1.split("/")[-1])
-            temp_bar2 = "".join(barchat_fastq2.split("/")[-1])
 
             args = ["hicup_truncater",
-                    fastq1,
-                    fastq2]
+                    temp_fastq1,
+                    temp_fastq2]
 
             args += parameters
 
@@ -124,41 +130,41 @@ class Truncater(Tool):
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE)
             process.wait()
-            """
-            try:
-                print("open", temp_fastq1_trunc, "print", fastq1_trunc)
-                with open(temp_fastq1_trunc, "r") as f_in:
-                    with open(fastq1_trunc, "w") as f_out:
-                        f_out.write(f_in.read())
 
-                print("open", temp_fastq2_trunc, "print", fastq2_trunc)
-                with open(temp_fastq2_trunc, "r") as f_in:
-                    with open(fastq2_trunc, "w") as f_out:
-                        f_out.write(f_in.read())
 
-                print("open", temp_summary, "print", hicup_summary)
-                with open(temp_summary, "r") as f_in:
-                    with open(hicup_summary, "w") as f_out:
-                        f_out.write(f_in.read())
+            print("open", temp_fastq1_trunc, "print", fastq1_trunc)
+            with open(temp_fastq1_trunc, "r") as f_in:
+                with open(fastq1_trunc, "w") as f_out:
+                    f_out.write(f_in.read())
 
-                print("open", temp_bar1, "print", barchat_fastq1)
-                with open(temp_bar1, "r") as f_in:
-                    with open(barchat_fastq1, "w") as f_out:
-                        f_out.write(f_in.read())
+            print("open", temp_fastq2_trunc, "print", fastq2_trunc)
+            with open(temp_fastq2_trunc, "r") as f_in:
+                with open(fastq2_trunc, "w") as f_out:
+                    f_out.write(f_in.read())
 
-                print("open", temp_bar2, "print", barchat_fastq2)
-                with open(temp_bar2, "r") as f_in:
-                    with open(barchat_fastq2, "w") as f_out:
-                        f_out.write(f_in.read())
+            print("open", temp_summary, "print", hicup_summary)
+            with open(temp_summary, "r") as f_in:
+                with open(hicup_summary, "w") as f_out:
+                    f_out.write(f_in.read())
 
-                os.remove(temp_fastq1)
-                os.remove(temp_fastq2)
-                os.remove(temp_fastq1_trunc)
-                os.remove(temp_fastq2_trunc)
-                os.remove(temp_summary)
-                os.remove(temp_bar1)
-                os.remove(temp_bar2)
-            """
+            print("open", temp_bar1, "print", barchat_fastq1)
+            with open(temp_bar1, "r") as f_in:
+                with open(barchat_fastq1, "w") as f_out:
+                    f_out.write(f_in.read())
+
+            print("open", temp_bar2, "print", barchat_fastq2)
+            with open(temp_bar2, "r") as f_in:
+                with open(barchat_fastq2, "w") as f_out:
+                    f_out.write(f_in.read())
+
+            os.remove(temp_fastq1)
+            os.remove(temp_fastq2)
+            os.remove(temp_fastq1_trunc)
+            os.remove(temp_fastq2_trunc)
+            os.remove(temp_summary)
+            os.remove(temp_bar1)
+            os.remove(temp_bar2)
+
             return True
 
         except IOError:
@@ -205,11 +211,11 @@ class Truncater(Tool):
         for arg in configuration:
             if arg in parameters:
                 if parameters[arg][1] is True:
-                    #if parameters[arg][0] == "--outdir":
-                     #   name = "."
-                      #  params += [parameters[arg][0], name]
-                    #else:
-                    params += [parameters[arg][0], configuration[arg]]
+                    if parameters[arg][0] == "--outdir":
+                        name = "."
+                        params += [parameters[arg][0], name]
+                    else:
+                        params += [parameters[arg][0], configuration[arg]]
                 else:
                     params += [parameters[arg][0]]
 
