@@ -101,8 +101,16 @@ class Truncater(Tool):
         temp_fastq1 = "temp_"+"".join(fastq1.split("/")[-1])
         temp_fastq2 = "temp_"+"".join(fastq2.split("/")[-1])
 
-        copy(fastq1, temp_fastq1)
-        copy(fastq2, temp_fastq2)
+        print("open", fastq1, "print", temp_fastq1)
+        with open(fastq1, "r") as f_in:
+            with open(temp_fastq1, "w") as f_out:
+                f_out.write(f_in.read())
+
+        print("open", fastq2, "print", temp_fastq2)
+        with open(fastq2, "r") as f_in:
+            with open(temp_fastq2, "w") as f_out:
+                f_out.write(f_in.read())
+
 
         temp_fastq1_trunc = "temp_"+"".join(fastq1_trunc.split("/")[-1])
         temp_fastq2_trunc = "temp_"+"".join(fastq2_trunc.split("/")[-1])
@@ -110,7 +118,6 @@ class Truncater(Tool):
         temp_bar2 = "temp_"+"".join(barchat_fastq2.split("/")[-1])
         temp_summary = "temp_"+"".join(hicup_summary.split("/")[-1])
 
-        copy(hicup_summary, temp_summary)
 
         args = ["hicup_truncater",
                 temp_fastq1,
@@ -124,6 +131,10 @@ class Truncater(Tool):
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         process.wait()
+
+        print("copy hicup_summary")
+        copy("".join(hicup_summary.split("/")[-1]), temp_summary)
+        os.remove("".join(hicup_summary.split("/")[-1]))
 
         try:
             print("open", temp_fastq1_trunc, "print", fastq1_trunc)
