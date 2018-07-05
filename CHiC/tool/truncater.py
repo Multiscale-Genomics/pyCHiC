@@ -129,27 +129,32 @@ class Truncater(Tool):
                                    stderr=subprocess.PIPE)
         process.wait()
 
+        print("open", temp_fastq1_trunc, "print", fastq1_trunc)
         with open(temp_fastq1_trunc, "r") as f_in:
             with open(fastq1_trunc, "w") as f_out:
                 f_out.write(f_in.read())
-
-        with open(temp_fastq2_trunc, "r") as f_in:
-            with open(fastq2_trunc, "w") as f_out:
-                f_out.write(f_in.read())
-
-        with open(temp_summary, "r") as f_in:
-            with open(hicup_summary, "w") as f_out:
-                f_out.write(f_in.read())
-
-        with open(temp_bar1, "r") as f_in:
-            with open(barchat_fastq1, "w") as f_out:
-                f_out.write(f_in.read())
-
-        with open(temp_bar2, "r") as f_in:
-            with open(barchat_fastq2, "w") as f_out:
-                f_out.write(f_in.read())
-
         try:
+            print("open", temp_fastq2_trunc, "print", fastq2_trunc)
+            with open(temp_fastq2_trunc, "r") as f_in:
+                with open(fastq2_trunc, "w") as f_out:
+                    f_out.write(f_in.read())
+
+            print("open", temp_summary, "print", hicup_summary)
+            with open(temp_summary, "r") as f_in:
+                with open(hicup_summary, "w") as f_out:
+                    f_out.write(f_in.read())
+
+            print("open", temp_bar1, "print", barchat_fastq1)
+            with open(temp_bar1, "r") as f_in:
+                with open(barchat_fastq1, "w") as f_out:
+                    f_out.write(f_in.read())
+
+            print("open", temp_bar2, "print", barchat_fastq2)
+            with open(temp_bar2, "r") as f_in:
+                with open(barchat_fastq2, "w") as f_out:
+                    f_out.write(f_in.read())
+
+
             os.remove("".join(fastq1.split("/")[-1]))
             os.remove("".join(fastq2.split("/")[-1]))
             os.remove(temp_fastq1_trunc)
@@ -157,6 +162,7 @@ class Truncater(Tool):
             os.remove(temp_summary)
             os.remove(temp_bar1)
             os.remove(temp_bar2)
+
 
             return True
 
