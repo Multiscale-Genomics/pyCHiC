@@ -105,33 +105,32 @@ class Truncater(Tool):
         bar1_true = "_".join(barchat_fastq1.split("_")[:-1])
         bar2_true = "_".join(barchat_fastq2.split("_")[:-1])
         """
+        temp_fastq1 = "temp_"+"".join(fastq1.split("/")[-1])
+        temp_fastq2 = "temp_"+"".join(fastq2.split("/")[-1])
+
+        copy(fastq1, temp_fastq1)
+        copy(fastq2, temp_fastq2)
+
+        temp_fastq1_trunc = "temp_"+"".join(fastq1_trunc.split("/")[-1])
+        temp_fastq2_trunc = "temp_"+"".join(fastq2_trunc.split("/")[-1])
+        temp_bar1 = "temp_"+"".join(barchat_fastq1.split("/")[-1])
+        temp_bar2 = "temp_"+"".join(barchat_fastq2.split("/")[-1])
+        temp_summary = "".join(hicup_summary.split("/")[-1])
+
+        args = ["hicup_truncater",
+                temp_fastq1,
+                temp_fastq2]
+
+        args += parameters
+
+        logger.info("hicup_truncater command: "+ " ".join(args))
+
+        process = subprocess.Popen(" ".join(args), shell=True,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        process.wait()
+
         try:
-            temp_fastq1 = "temp_"+"".join(fastq1.split("/")[-1])
-            temp_fastq2 = "temp_"+"".join(fastq2.split("/")[-1])
-
-            copy(fastq1, temp_fastq1)
-            copy(fastq2, temp_fastq2)
-
-            temp_fastq1_trunc = "temp_"+"".join(fastq1_trunc.split("/")[-1])
-            temp_fastq2_trunc = "temp_"+"".join(fastq2_trunc.split("/")[-1])
-            temp_bar1 = "temp_"+"".join(barchat_fastq1.split("/")[-1])
-            temp_bar2 = "temp_"+"".join(barchat_fastq2.split("/")[-1])
-            temp_summary = "".join(hicup_summary.split("/")[-1])
-
-            args = ["hicup_truncater",
-                    temp_fastq1,
-                    temp_fastq2]
-
-            args += parameters
-
-            logger.info("hicup_truncater command: "+ " ".join(args))
-
-            process = subprocess.Popen(" ".join(args), shell=True,
-                                       stdout=subprocess.PIPE,
-                                       stderr=subprocess.PIPE)
-            process.wait()
-
-
             print("open", temp_fastq1_trunc, "print", fastq1_trunc)
             with open(temp_fastq1_trunc, "r") as f_in:
                 with open(fastq1_trunc, "w") as f_out:
