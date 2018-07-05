@@ -135,7 +135,7 @@ class Truncater(Tool):
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         process.wait()
-        print()
+        print(os.listdir(cwd+"/sandbox/job_1"))
 
         try:
             print("copy hicup_summary")
