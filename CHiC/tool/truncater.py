@@ -98,7 +98,7 @@ class Truncater(Tool):
         ------
         bool
         """
-
+        """
         loc_fq1 = os.path.split(fastq1)
         temp_fastq1 = os.path.join(loc_fq1[0], "temp_" + loc_fq1[1])
 
@@ -118,27 +118,29 @@ class Truncater(Tool):
         temp_bar1 = "temp_"+"".join(barchat_fastq1.split("/")[-1])
         temp_bar2 = "temp_"+"".join(barchat_fastq2.split("/")[-1])
         temp_summary = "temp_"+"".join(hicup_summary.split("/")[-1])
-
-        cwd = os.getcwd()
-
-        args = ["~/bin/hicup_truncater",
-                temp_fastq1,
-                temp_fastq2,
-                "--outdir",
-                cwd]
-
-        args += parameters
-
+        """
         try:
-            logger.info("hicup_truncater command: "+ " ".join(args))
-            process = subprocess.Popen(" ".join(args), shell=True)
-            process.wait()
-        except (IOError, OSError) as msg:
-            logger.info("I/O error({0}): {1}\n{2}".format(
-                msg.errno, msg.strerror, args))
+            cwd = os.getcwd()
 
+            args = ["~/bin/hicup_truncater",
+                    fastq1,
+                    fastq2]
+                  #  "--outdir",
+                  #  cwd]
 
-        try:
+            args += parameters
+
+            try:
+                logger.info("hicup_truncater command: "+ " ".join(args))
+                process = subprocess.Popen(" ".join(args), shell=True)
+                process.wait()
+            except (IOError, OSError) as msg:
+                logger.info("I/O error({0}): {1}\n{2}".format(
+                    msg.errno, msg.strerror, args))
+
+            return True
+            """
+            try:
             copy("".join(hicup_summary.split("/")[-1]), temp_summary)
             os.remove("".join(hicup_summary.split("/")[-1]))
 
@@ -170,8 +172,7 @@ class Truncater(Tool):
                 os.remove(temp_summary)
                 os.remove(temp_bar1)
                 os.remove(temp_bar2)
-
-            return True
+            """
 
         except IOError:
             logger.fatal("truncater failed to generated truncated fastq files =(")
@@ -217,8 +218,8 @@ class Truncater(Tool):
         for arg in configuration:
             if arg in parameters:
                 if parameters[arg][1] is True:
-                    if parameters[arg][0] == "--outdir":
-                        continue
+                    #if parameters[arg][0] == "--outdir":
+                    #    continue
                     params += [parameters[arg][0], configuration[arg]]
                 else:
                     params += [parameters[arg][0]]
