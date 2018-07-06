@@ -98,7 +98,7 @@ class Truncater(Tool):
         ------
         bool
         """
-        """
+
         loc_fq1 = os.path.split(fastq1)
         temp_fastq1 = os.path.join(loc_fq1[0], "temp_" + loc_fq1[1])
 
@@ -112,47 +112,32 @@ class Truncater(Tool):
         with open(fastq2, "r") as f_in:
             with open(temp_fastq2, "w") as f_out:
                 f_out.write(f_in.read())
-        """
+
         temp_fastq1_trunc = "temp_"+"".join(fastq1_trunc.split("/")[-1])
         temp_fastq2_trunc = "temp_"+"".join(fastq2_trunc.split("/")[-1])
         temp_bar1 = "temp_"+"".join(barchat_fastq1.split("/")[-1])
         temp_bar2 = "temp_"+"".join(barchat_fastq2.split("/")[-1])
         temp_summary = "temp_"+"".join(hicup_summary.split("/")[-1])
 
-        with open(fastq1, "r") as f_in:
-            with open("".join(fastq1.split("/")[-1]), "w") as f_out:
-                f_out.write(f_in.read())
+        cwd = os.getcwd()
 
-        with open(fastq2, "r") as f_in:
-            with open("".join(fastq2.split("/")[-1]), "w") as f_out:
-                f_out.write(f_in.read())
+        args = ["~/bin/hicup_truncater",
+                temp_fastq1,
+                temp_fastq2,
+                "--outdir",
+                cwd]
+
+        args += parameters
 
         try:
-            cwd = os.getcwd()
+            logger.info("hicup_truncater command: "+ " ".join(args))
+            process = subprocess.Popen(" ".join(args), shell=True)
+            process.wait()
+        except (IOError, OSError) as msg:
+            logger.info("I/O error({0}): {1}\n{2}".format(
+                msg.errno, msg.strerror, args))
 
-            args = ["~/bin/hicup_truncater",
-                    fastq1,
-                    fastq2]
-                  #  "--outdir",
-                  #  cwd]
-
-            args += parameters
-
-            try:
-                logger.info("hicup_truncater command: "+ " ".join(args))
-                process = subprocess.Popen(" ".join(args), shell=True)
-                process.wait()
-            except (IOError, OSError) as msg:
-                logger.info("I/O error({0}): {1}\n{2}".format(
-                    msg.errno, msg.strerror, args))
-
-            os.remove("".join(fastq1.split("/")[-1]))
-            os.remove("".join(fastq2.split("/")[-1]))
-
-
-            return True
-            """
-            try:
+        try:
             copy("".join(hicup_summary.split("/")[-1]), temp_summary)
             os.remove("".join(hicup_summary.split("/")[-1]))
 
@@ -177,6 +162,7 @@ class Truncater(Tool):
                     f_out.write(f_in.read())
 
             if hasattr(sys, '_run_from_cmdl') is True:
+                logger.info("Deleting temporary files")
                 os.remove(temp_fastq1)
                 os.remove(temp_fastq2)
                 os.remove(temp_fastq1_trunc)
@@ -184,7 +170,8 @@ class Truncater(Tool):
                 os.remove(temp_summary)
                 os.remove(temp_bar1)
                 os.remove(temp_bar2)
-            """
+
+            return True
 
         except IOError:
             logger.fatal("truncater failed to generated truncated fastq files =(")
@@ -230,8 +217,8 @@ class Truncater(Tool):
         for arg in configuration:
             if arg in parameters:
                 if parameters[arg][1] is True:
-                    #if parameters[arg][0] == "--outdir":
-                    #    continue
+                    if parameters[arg][0] == "--outdir":
+                        continue
                     params += [parameters[arg][0], configuration[arg]]
                 else:
                     params += [parameters[arg][0]]
