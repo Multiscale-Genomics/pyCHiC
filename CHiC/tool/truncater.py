@@ -121,11 +121,11 @@ class Truncater(Tool):
 
         cwd = os.getcwd()
 
-        args = ["hicup_truncater",
+        args = ["/home/compss/bin/hicup_truncater",
                 temp_fastq1,
                 temp_fastq2,
                 "--outdir",
-                cwd+"/sandbox/job_1"]
+                cwd]
 
         args += parameters
         print(args)
@@ -135,7 +135,7 @@ class Truncater(Tool):
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         process.wait()
-        print(os.listdir(cwd+"/sandbox/job_1"))
+        print(os.listdir(cwd+"/sandBox/job_1"))
 
         try:
             print("copy hicup_summary")
