@@ -121,21 +121,19 @@ class Truncater(Tool):
 
         cwd = os.getcwd()
 
-        args = ["/home/compss/bin/hicup_truncater",
+        args = ["~/bin/hicup_truncater",
                 temp_fastq1,
                 temp_fastq2,
                 "--outdir",
                 cwd]
 
         args += parameters
-        print(args)
         logger.info("hicup_truncater command: "+ " ".join(args))
 
         process = subprocess.Popen(" ".join(args), shell=True,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         process.wait()
-        print(os.listdir(cwd+"/sandBox/job_1"))
 
         try:
             print("copy hicup_summary")
@@ -167,7 +165,7 @@ class Truncater(Tool):
                 with open(barchat_fastq2, "w") as f_out:
                     f_out.write(f_in.read())
 
-
+            """
             os.remove(temp_fastq1)
             os.remove(temp_fastq2)
             os.remove(temp_fastq1_trunc)
@@ -175,7 +173,7 @@ class Truncater(Tool):
             os.remove(temp_summary)
             os.remove(temp_bar1)
             os.remove(temp_bar2)
-
+            """
 
             return True
 
@@ -223,7 +221,8 @@ class Truncater(Tool):
         for arg in configuration:
             if arg in parameters:
                 if parameters[arg][1] is True:
-                    #if parameters[arg][0] == "--outdir":
+                    if parameters[arg][0] == "--outdir":
+                        continue
                         #name = "."
                         #params += [parameters[arg][0], name]
                     #else:
@@ -305,8 +304,8 @@ class Truncater(Tool):
             "fastq2_trunc": Metadata(
                 data_type="FASTQ",
                 file_type="FASTQ",
-                file_path=output_files["fastq1_trunc"],
-                sources=metadata["fastq1"].file_path,
+                file_path=output_files["fastq2_trunc"],
+                sources=metadata["fastq2"].file_path,
                 taxon_id=9606,
                 meta_data=""
             ),
@@ -314,7 +313,7 @@ class Truncater(Tool):
                 data_type="TXT",
                 file_type="TXT",
                 file_path=output_files["hicup_summary"],
-                sources=[metadata["fastq1"].file_path, metadata["fastq1"].file_path],
+                sources=[metadata["fastq1"].file_path, metadata["fastq2"].file_path],
                 taxon_id=9606,
                 meta_data=""
             ),
