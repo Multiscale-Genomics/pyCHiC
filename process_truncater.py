@@ -71,31 +71,32 @@ class process_truncater(Workflow):
         results: bool
         output_metadata: dict
         """
+        try:
+            truncater_caller = Truncater(self.configuration)
+            output_files_truncater, output_metadata_truncater = truncater_caller.run(
+                {
+                    "fastq1": input_files["fastq1"],
+                    "fastq2": input_files["fastq2"]
+                },
+                {
+                    "fastq1": metadata["fastq1"],
+                    "fastq2": metadata["fastq2"]
+                },
+                {
+                    "fastq1_trunc": output_files["fastq1_trunc"],
+                    "fastq2_trunc" : output_files["fastq2_trunc"],
+                    "hicup_summary" : output_files["hicup_summary"],
+                    "barchat_fastq1" : output_files["barchat_fastq1"],
+                    "barchat_fastq2" : output_files["barchat_fastq2"]
+                }
+            )
 
-        truncater_caller = Truncater(self.configuration)
-        output_files_truncater, output_metadata_truncater = truncater_caller.run(
-            {
-                "fastq1": input_files["fastq1"],
-                "fastq2": input_files["fastq2"]
-            },
-            {
-                "fastq1": metadata["fastq1"],
-                "fastq2": metadata["fastq2"]
-            },
-            {
-                "fastq1_trunc": output_files["fastq1_trunc"],
-                "fastq2_trunc" : output_files["fastq2_trunc"],
-                "hicup_summary" : output_files["hicup_summary"],
-                "barchat_fastq1" : output_files["barchat_fastq1"],
-                "barchat_fastq2" : output_files["barchat_fastq2"]
-            }
-        )
+            #if os.path.isfile(output_files["fastq1_trunc"]) is True:
+                #if os.path.getsize(output_files["fastq1_trunc"]) > 0:
+            return output_files_truncater, output_metadata_truncater
 
-        if os.path.isfile(output_files["fastq1_trunc"]) is True:
-            if os.path.getsize(output_files["fastq1_trunc"]) > 0:
-                return output_files_truncater, output_metadata_truncater
-
-        return False
+        except:
+            return False
 
 #############################################################
 

@@ -253,4 +253,4 @@ Checkout the code for the DM API and the C-HiC pipelines:
    cd C-HiC
    pip install -e .
    pip install -r requirements.txt
-
+   pip install dill
