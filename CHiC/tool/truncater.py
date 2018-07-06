@@ -112,13 +112,21 @@ class Truncater(Tool):
         with open(fastq2, "r") as f_in:
             with open(temp_fastq2, "w") as f_out:
                 f_out.write(f_in.read())
-
+        """
         temp_fastq1_trunc = "temp_"+"".join(fastq1_trunc.split("/")[-1])
         temp_fastq2_trunc = "temp_"+"".join(fastq2_trunc.split("/")[-1])
         temp_bar1 = "temp_"+"".join(barchat_fastq1.split("/")[-1])
         temp_bar2 = "temp_"+"".join(barchat_fastq2.split("/")[-1])
         temp_summary = "temp_"+"".join(hicup_summary.split("/")[-1])
-        """
+
+        with open(fastq1, "r") as f_in:
+            with open("".join(fastq1.split("/")[-1]), "w") as f_out:
+                f_out.write(f_in.read())
+
+        with open(fastq2, "r") as f_in:
+            with open("".join(fastq2.split("/")[-1]), "w") as f_out:
+                f_out.write(f_in.read())
+
         try:
             cwd = os.getcwd()
 
@@ -137,6 +145,10 @@ class Truncater(Tool):
             except (IOError, OSError) as msg:
                 logger.info("I/O error({0}): {1}\n{2}".format(
                     msg.errno, msg.strerror, args))
+
+            os.remove("".join(fastq1.split("/")[-1]))
+            os.remove("".join(fastq2.split("/")[-1]))
+
 
             return True
             """
