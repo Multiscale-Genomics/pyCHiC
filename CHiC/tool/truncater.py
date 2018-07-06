@@ -128,12 +128,15 @@ class Truncater(Tool):
                 cwd]
 
         args += parameters
-        logger.info("hicup_truncater command: "+ " ".join(args))
 
-        process = subprocess.Popen(" ".join(args), shell=True,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
-        process.wait()
+        try:
+            logger.info("hicup_truncater command: "+ " ".join(args))
+            process = subprocess.Popen(" ".join(args), shell=True)
+            process.wait()
+        except (IOError, OSError) as msg:
+            logger.info("I/O error({0}): {1}\n{2}".format(
+                msg.errno, msg.strerror, args))
+
 
         try:
             copy("".join(hicup_summary.split("/")[-1]), temp_summary)
@@ -159,13 +162,14 @@ class Truncater(Tool):
                 with open(barchat_fastq2, "w") as f_out:
                     f_out.write(f_in.read())
 
-            os.remove(temp_fastq1)
-            os.remove(temp_fastq2)
-            os.remove(temp_fastq1_trunc)
-            os.remove(temp_fastq2_trunc)
-            os.remove(temp_summary)
-            os.remove(temp_bar1)
-            os.remove(temp_bar2)
+            if hasattr(sys, '_run_from_cmdl') is True:
+                os.remove(temp_fastq1)
+                os.remove(temp_fastq2)
+                os.remove(temp_fastq1_trunc)
+                os.remove(temp_fastq2_trunc)
+                os.remove(temp_summary)
+                os.remove(temp_bar1)
+                os.remove(temp_bar2)
 
             return True
 
