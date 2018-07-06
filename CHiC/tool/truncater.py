@@ -136,36 +136,29 @@ class Truncater(Tool):
         process.wait()
 
         try:
-            print("copy hicup_summary")
             copy("".join(hicup_summary.split("/")[-1]), temp_summary)
             os.remove("".join(hicup_summary.split("/")[-1]))
 
-            print("open", temp_fastq1_trunc, "print", fastq1_trunc)
             with open(temp_fastq1_trunc, "r") as f_in:
                 with open(fastq1_trunc, "w") as f_out:
                     f_out.write(f_in.read())
 
-            print("open", temp_fastq2_trunc, "print", fastq2_trunc)
             with open(temp_fastq2_trunc, "r") as f_in:
                 with open(fastq2_trunc, "w") as f_out:
                     f_out.write(f_in.read())
 
-            print("open", temp_summary, "print", hicup_summary)
             with open(temp_summary, "r") as f_in:
                 with open(hicup_summary, "w") as f_out:
                     f_out.write(f_in.read())
 
-            print("open", temp_bar1, "print", barchat_fastq1)
             with open(temp_bar1, "r") as f_in:
                 with open(barchat_fastq1, "w") as f_out:
                     f_out.write(f_in.read())
 
-            print("open", temp_bar2, "print", barchat_fastq2)
             with open(temp_bar2, "r") as f_in:
                 with open(barchat_fastq2, "w") as f_out:
                     f_out.write(f_in.read())
 
-            """
             os.remove(temp_fastq1)
             os.remove(temp_fastq2)
             os.remove(temp_fastq1_trunc)
@@ -173,7 +166,6 @@ class Truncater(Tool):
             os.remove(temp_summary)
             os.remove(temp_bar1)
             os.remove(temp_bar2)
-            """
 
             return True
 
@@ -223,9 +215,6 @@ class Truncater(Tool):
                 if parameters[arg][1] is True:
                     if parameters[arg][0] == "--outdir":
                         continue
-                        #name = "."
-                        #params += [parameters[arg][0], name]
-                    #else:
                     params += [parameters[arg][0], configuration[arg]]
                 else:
                     params += [parameters[arg][0]]
