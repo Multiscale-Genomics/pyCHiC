@@ -86,10 +86,10 @@ class bed2bam(Tool):
         """
         script = os.path.join(os.path.dirname(__file__), "scripts/from_bed_to_bam.py")
 
-        copy(bed, bed+"_temp")
+        print(os.getcwd())
 
         args = ["python", script,
-                bed+"_temp", self.configuration["ncpus"], "".join(bam_out.split(".")[0])]
+                bed+"_temp", self.configuration["ncpus"], "outbam_temp"]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
@@ -98,13 +98,30 @@ class bed2bam(Tool):
                                    stderr=subprocess.PIPE)
         process.wait()
 
-        if os.path.isfile(bam_out) is True:
-            if os.path.getsize(bam_out) > 0:
-                return True
-        else:
-            logger.fatal("from_bed_to_BAM_for_chicago"
-                         "generates no bam_out")
+        try:
+            with open("outbam_temp", "w") as f_out:
+                process = subprocess.Popen(
+                    ' '.join(args),
+                    shell=True,
+                    stdout=f_out, stderr=f_out
+                    )
+                process.wait()
+            return True
+
+        except (IOError, OSError) as msg:
+            logger.fatal("I/O error({0}): {1}\n{2}".format(
+                msg.errno, msg.strerror, args))
             return False
+
+        try:
+            with open("outbam_temp", "r") as f_in:
+                with open(bam_out, "w") as f_out:
+                    f_out.write(f_in.read())
+            return True
+
+        except IOError:
+            return False
+
 
     @task(returns=bool, bam_out=FILE_IN,
           bam_out_sorted=FILE_OUT)
