@@ -22,6 +22,7 @@ import sys
 import os
 import subprocess
 from utils import logger
+from shutil import copy
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -85,8 +86,10 @@ class bed2bam(Tool):
         """
         script = os.path.join(os.path.dirname(__file__), "scripts/from_bed_to_bam.py")
 
+        copy(bed, bed+"_temp")
+
         args = ["python", script,
-                bed, self.configuration["ncpus"], "".join(bam_out.split(".")[0])]
+                bed+"_temp", self.configuration["ncpus"], "".join(bam_out.split(".")[0])]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
