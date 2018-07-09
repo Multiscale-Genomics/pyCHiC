@@ -64,8 +64,9 @@ class bed2bam(Tool):
 
         self.configuration.update(configuration)
 
-    @task(returns=bool, bed=FILE_IN, bam_out=FILE_OUT)
-    def wrapper_bed2bam(self, bed, bam_out):
+    @task(returns=bool, bed=FILE_IN, bam_out=FILE_OUT,
+          ncpus=IN)
+    def wrapper_bed2bam(self, bed, bam_out, ncpus):
         """
         This function runs the script from_bed_to_BAM_for_chicago.py
         tha convert a bed file to a bam file compatible with CHiCAGO
@@ -87,14 +88,15 @@ class bed2bam(Tool):
         script = os.path.join(os.path.dirname(__file__), "scripts/from_bed_to_bam.py")
 
         print(os.getcwd())
+        copy(bed, "".join(bed).split("/")[-1]+"_temp")
 
         args = ["python", script,
-                bed, self.configuration["ncpus"], "outbam_temp"]
+                "".join(bed).split("/")[-1]+"_temp", ncpus, "outbam_temp"]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
         try:
-            with open("outbam_temp", "w") as f_out:
+            with open("".join(bed).split("/")[-1]+"_temp", "w") as f_out:
                 process = subprocess.Popen(
                     ' '.join(args),
                     shell=True,
@@ -109,7 +111,7 @@ class bed2bam(Tool):
             return False
 
         try:
-            with open("outbam_temp", "r") as f_in:
+            with open("".join(bed).split("/")[-1]+"_temp", "r") as f_in:
                 with open(bam_out, "w") as f_out:
                     f_out.write(f_in.read())
             return True
@@ -174,9 +176,12 @@ class bed2bam(Tool):
             logger.info("creating output directory")
             os.mkdir(output_dir)
 
+        ncpus = self.configuration["ncpus"]
+
         results = self.wrapper_bed2bam(
             input_files["bed"],
-            output_files["bam_out"])
+            output_files["bam_out"],
+            ncpus)
 
         results = compss_wait_on(results)
 
