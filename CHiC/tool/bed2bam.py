@@ -89,14 +89,9 @@ class bed2bam(Tool):
         print(os.getcwd())
 
         args = ["python", script,
-                bed+"_temp", self.configuration["ncpus"], "outbam_temp"]
+                bed, self.configuration["ncpus"], "outbam_temp"]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
-
-        process = subprocess.Popen(" ".join(args), shell=True,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
-        process.wait()
 
         try:
             with open("outbam_temp", "w") as f_out:
