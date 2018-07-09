@@ -183,6 +183,8 @@ class bed2bam(Tool):
             input_files["bed"],
             output_files["bam_out"])
 
+        results = compss_wait_on(results)
+
         if results is True:
             sorted_results = self.sort_bam_out(
                 output_files["bam_out"], output_files["bam_out_sorted"])
