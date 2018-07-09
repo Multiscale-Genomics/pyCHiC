@@ -63,6 +63,7 @@ class bed2bam(Tool):
 
         self.configuration.update(configuration)
 
+    @task(returns=bool, bed=FILE_IN, bam_out=FILE_OUT)
     def wrapper_bed2bam(self, bed, bam_out):
         """
         This function runs the script from_bed_to_BAM_for_chicago.py
@@ -102,6 +103,8 @@ class bed2bam(Tool):
                          "generates no bam_out")
             return False
 
+    @task(returns=bool, bam_out=FILE_IN,
+          bam_out_sorted=FILE_OUT)
     def sort_bam_out(self, bam_out, bam_out_sorted):
         """
         This function sort the bam_out using samtools
@@ -123,7 +126,8 @@ class bed2bam(Tool):
                     shell=True,
                     stdout=f_out, stderr=f_out
                     )
-            process.wait()
+                process.wait()
+            return True
 
         except (IOError, OSError) as msg:
             logger.fatal("I/O error({0}): {1}\n{2}".format(
