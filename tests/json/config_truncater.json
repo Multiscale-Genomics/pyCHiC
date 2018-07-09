@@ -43,7 +43,6 @@
                     "tool": "truncater",
                     "description": "Output"
                 },
-        "threads" : "2",
                 "file_path": "tests/data/test_truncater/SRR3535023_1.trunc.fastq",
                 "data_type": "FASTQ",
                 "compressed": "null"

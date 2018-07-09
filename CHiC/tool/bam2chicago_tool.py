@@ -153,7 +153,7 @@ class bam2chicagoTool(Tool):
          name of the sample
         """
 
-        args = ["../scripts/bam2chicago.sh",
+        args = ["./scripts/bam2chicago.sh",
                 bamFiles,
                 baitmapFile,
                 rmapFile,

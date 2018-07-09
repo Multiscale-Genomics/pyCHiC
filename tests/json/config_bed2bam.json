@@ -1,0 +1,49 @@
+{
+    "input_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "bed",
+            "value": "59b7e020d9422a5969b34909090"
+        }
+    ],
+    "arguments": [
+        {
+            "name": "ncpus",
+            "value": "2"
+        }
+    ],
+    "output_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "bam_out",
+            "file": {
+                "file_type": "bam",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "bed2bam",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_bed2bam/outbam.bam",
+                "data_type": "TXT",
+                "compressed": "null"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": "bam_out_sorted",
+            "file": {
+                "file_type": "bam",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "bed2bam",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_bed2bam/outbam_sorted.bam",
+                "data_type": "TXT",
+                "compressed": "null"
+            }
+        }
+    ]
+}

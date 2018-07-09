@@ -82,26 +82,27 @@ class bed2bam(Tool):
         -------
         Bool
         """
+        script = os.path.join(os.path.dirname(__file__), "scripts/from_bed_to_bam.py")
 
-        args = ["python", "../scripts/from_bed_to_bam.py",
-                bed, "2", bam_out]
+        args = ["python", script,
+                bed, self.configuration["ncpus"], "".join(bam_out.split(".")[0])]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
         process = subprocess.Popen(" ".join(args), shell=True,
-                                  stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE)
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
         process.wait()
 
-        if os.path.isfile(bam_out + ".bam") is True:
-            if os.path.getsize(bam_out + ".bam") > 0:
+        if os.path.isfile(bam_out) is True:
+            if os.path.getsize(bam_out) > 0:
                 return True
         else:
-            logger.fatal("from_bed_to_BAM_for_chicago\
-                generates no bam_out")
+            logger.fatal("from_bed_to_BAM_for_chicago"
+                         "generates no bam_out")
             return False
 
-    def sort_bam_out(self, bam_out):
+    def sort_bam_out(self, bam_out, bam_out_sorted):
         """
         This function sort the bam_out using samtools
 
@@ -111,13 +112,12 @@ class bed2bam(Tool):
             path to bam_out directory and file
         """
         args = ["samtools", "sort",
-                "-n", bam_out+".bam"]
+                "-n", bam_out]
 
         logger.info("samtools args:"+ " ".join(args))
 
-
         try:
-            with open(bam_out+"_sorted.bam", "w") as f_out:
+            with open(bam_out_sorted, "w") as f_out:
                 process = subprocess.Popen(
                     ' '.join(args),
                     shell=True,
@@ -149,6 +149,11 @@ class bed2bam(Tool):
         results: bool
         output_metadata:dict
         """
+        output_dir = "/".join(output_files["bam_out"].split("/")[:-1])
+
+        if os.path.isdir(output_dir) is False:
+            logger.info("creating output directory")
+            os.mkdir(output_dir)
 
         results = self.wrapper_bed2bam(
             input_files["bed"],
@@ -156,17 +161,25 @@ class bed2bam(Tool):
 
         if results is True:
             sorted_results = self.sort_bam_out(
-                output_files["bam_out"])
+                output_files["bam_out"], output_files["bam_out_sorted"])
 
         output_metadata = {
-            "BAM": Metadata(
-                data_type="",
+            "bam_out": Metadata(
+                data_type="TXT",
                 file_type="bam",
-                file_path=output_files["bam_out"]+".bam",
+                file_path=output_files["bam_out"],
                 sources=metadata["bed"].file_path,
                 taxon_id=9606,
                 meta_data=""
-                )
+                ),
+            "bam_out_sorted": Metadata(
+                data_type="TXT",
+                file_type="bam",
+                file_path=output_files["bam_out_sorted"],
+                sources=metadata["bed"].file_path,
+                taxon_id=9606,
+                meta_data=""
+                ),
         }
 
-        return sorted_results, output_metadata
+        return output_files, output_metadata

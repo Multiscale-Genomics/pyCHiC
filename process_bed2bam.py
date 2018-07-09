@@ -25,7 +25,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.bed2bam import bed2bam
+from CHiC.tool.bed2bam import bed2bam
 
 ################################################
 
@@ -80,18 +80,18 @@ class process_bed2bam(Workflow):
         bed2bam_caller = bed2bam(self.configuration)
         output_files_bed2bam, output_metadata_bed2bam = bed2bam_caller.run(
             {
-                "bed" : input_files["bed"],
-                "ncpus" : "2"
+                "bed" : input_files["bed"]
             },
             {
                 "bed" : metadata["bed"]
             },
             {
                 "bam_out" : output_files["bam_out"],
+                "bam_out_sorted" : output_files["bam_out_sorted"]
             }
         )
 
-        if os.path.getsize(output_files["bam_out"] + "_sorted.bam") > 0:
+        if os.path.getsize(output_files["bam_out_sorted"]) > 0:
             pass
         else:
             logger.fatal("process_bed2bam failed to generate BAM file")
@@ -127,7 +127,7 @@ def main_json(config, in_metadata, out_metadata):
 #########################################################################
 
 
-if __name__ == "__name__":
+if __name__ == "__main__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
@@ -139,7 +139,7 @@ if __name__ == "__name__":
     PARSER.add_argument(
         "--out_metadata", help="Location of output metadata file")
     PARSER.add_argument(
-        "--local", action="store_const", cont=True, default=False)
+        "--local", action="store_const", const=True, default=False)
 
     #Get matching parameters from the command line
     ARGS = PARSER.parse_args()
