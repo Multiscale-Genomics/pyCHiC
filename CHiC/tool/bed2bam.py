@@ -235,8 +235,7 @@ class bed2bam(Tool):
         #pre = '-o' if version >= LooseVersion('1.3') else ''
 
         proc = Popen(samtools + ' view -Shb -@ %d - | samtools sort -@ %d - %s %s' % (
-            ncpus, ncpus, "-o",
-            outbam ),  # in new version '.bam' is no longer added
+                     ncpus, ncpus, "-o", outbam),  # in new version '.bam' is no longer added
                      shell=True, stdin=PIPE)
 
         proc.stdin.write(output)
