@@ -252,7 +252,7 @@ class makeBaitmapTool(Tool):
             output_files["out_bam"],
             input_files["Rtree_file_dat"],
             input_files["Rtree_file_idx"],
-            prefix_rtree,)
+            prefix_rtree)
 
         results = self.create_baitmap(
             baitmap_list,
