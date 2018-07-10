@@ -85,32 +85,36 @@ class bed2bam(Tool):
         -------
         Bool
         """
-        script = os.path.join(os.path.dirname(__file__), "scripts/from_bed_to_bam.py")
-
-        print("cwd", os.getcwd())
-        bed_tmp = bed+".tmp"
-
-        copy(bed, bed_tmp)
-
-        if bam_out.split(".")[-1] == "bam":
-            bam_tmp = "".join(bam_out.split(".")[:-1])+".tmp"
-
-        print("bam_out", bam_out)
-        print("bam", bam_tmp)
-
-        args = ["python", script,
-                bed_tmp, ncpus, bam_tmp]
-
-        logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
-
-        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        process.wait()
-        proc_out, proc_err = process.communicate()
-
-
         try:
-            with open(bam_tmp+".bam", "rb") as f_in:
-                with open(bam_out, "wb") as f_out:
+            script = os.path.join(os.path.dirname(__file__), "scripts/from_bed_to_bam.py")
+
+            print("cwd", os.getcwd())
+            bed_tmp = bed+".tmp"
+
+            copy(bed, bed_tmp)
+
+            if bam_out.split(".")[-1] == "bam":
+                bam_tmp = "".join(bam_out.split(".")[:-1])
+
+            print("bam_out", bam_out)
+            print("bam", bam_tmp)
+
+            args = ["python", script,
+                    bed_tmp, ncpus, bam_tmp]
+
+            logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
+
+            process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process.wait()
+            proc_out, proc_err = process.communicate()
+            return True
+        except IOError:
+            logger.fatal("no bamfile no party")
+            return False
+        """
+        try:
+            with open(bam_tmp+".bam", "r") as f_in:
+                with open(bam_out, "w") as f_out:
                     f_out.write(f_in.read())
             logger.info("tmp bam file converted to bam_out")
             return True
@@ -118,6 +122,7 @@ class bed2bam(Tool):
         except IOError:
             logger.fatal("temporary file not converted to output bam file")
             return False
+        """
 
 
     @task(returns=bool, bam_out=FILE_IN,
