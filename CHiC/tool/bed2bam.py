@@ -234,7 +234,7 @@ class bed2bam(Tool):
             fhandler.seek(pos_fh)
 
             proc = Popen(samtools + ' view -Shb -@ %d - | samtools sort -@ %d - %s %s' % (
-                         ncpus, ncpus, "-o", outbam),  # in new version '.bam' is no longer added
+                         ncpus, ncpus, "-o", outbam+".tmp"),  # in new version '.bam' is no longer added
                          shell=True, stdin=PIPE)
             proc.stdin.write(output)
 
@@ -255,7 +255,18 @@ class bed2bam(Tool):
 
             # close file handlers
             fhandler.close()
-            return True
+
+            try:
+                with open(outbam+".tmp", "r") as f_in:
+                    with open(outbam, "w") as f_out:
+                        f_out.write(f_in.read())
+                logger.info("tmp bam file converted to bam_out")
+                os.remove(outbam+".tmp")
+                return True
+
+            except IOError:
+                logger.fatal("temporary file not converted to output bam file")
+                return False
 
         except IOError:
             return False
@@ -389,7 +400,6 @@ class bed2bam(Tool):
             os.mkdir(output_dir)
 
         ncpus = self.configuration["ncpus"]
-
 
         #results = self.wrapper_bed2bam(
         #    input_files["bed"],
