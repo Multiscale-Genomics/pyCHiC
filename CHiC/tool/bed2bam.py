@@ -104,7 +104,7 @@ class bed2bam(Tool):
 
             logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
-            process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process = subprocess.Popen(" ".join(args), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             process.wait()
             proc_out, proc_err = process.communicate()
             return True
