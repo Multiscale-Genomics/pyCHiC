@@ -93,7 +93,7 @@ class process_bed2bam(Workflow):
 
             return output_files_bed2bam, output_metadata_bed2bam
 
-        except:
+        except IOError:
             logger.fatal("process_bed2bam not producing outputs =(")
 
 #############################################################

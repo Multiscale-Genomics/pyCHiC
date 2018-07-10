@@ -122,8 +122,11 @@ class bed2bam(Tool):
                     flag2)               # 9
         return r1r2
 
-
-    def bed2D_to_BAMhic(self, infile, valid, ncpus, outbam, frmt ='chicago', masked=None, samtools='samtools'):
+    @task(returns=bool, infile=FILE_IN, valid=IN, ncpus=IN,
+          outbam=FILE_OUT, frmt=IN, masked=IN, samtools=IN)
+    def bed2D_to_BAMhic(self, infile, valid, ncpus, outbam,
+                        frmt ='chicago', masked=None,
+                        samtools='samtools'):
         """
         function adapted from Enrique Vidal <enrique.vidal@crg.eu> scipt to convert
         2D beds into compressed BAM format.
@@ -134,132 +137,140 @@ class bed2bam(Tool):
            - chromosome ID of the first pair of the contact
            - genomic position of the first pair of the contact
            - MAPQ set to 0
-           - pseudo CIGAR with sequence length and info about current copy (P: first copy, S: second copy)
+           - pseudo CIGAR with sequence length and info about current
+                copy (P: first copy, S: second copy)
            - chromosome ID of the second pair of the contact
            - genomic position of the second pair of the contact
            - mapped length of the second pair of the contact
            - sequence is missing (*)
            - quality is missing (*)
-           - TC tag indicating single (1) or multi contact (3 6 ... number being the number of times a given sequenced fragment is involved in a pairwise contact)
+           - TC tag indicating single (1) or multi contact
+                (3 6 ... number being the number of times a given sequenced
+                fragment is involved in a pairwise contact)
            - S1 and S2 tags are the strand orientation of the left and right read-end
         Each pair of contacts produces two lines in the output BAM
         """
-        logger.info("bed2D_to_BAMhic from bed2bam function running")
+        try:
+            logger.info("bed2D_to_BAMhic from bed2bam function running")
 
-        MASKED = {1 : {'name': 'self-circle', 'reads': 0},
-                  2 : {'name': 'dangling-end', 'reads': 0},
-                  3 : {'name': 'error', 'reads': 0},
-                  4 : {'name': 'extra dangling-end', 'reads': 0},
-                  5 : {'name': 'too close from RES', 'reads': 0},
-                  6 : {'name': 'too short', 'reads': 0},
-                  7 : {'name': 'too large', 'reads': 0},
-                  8 : {'name': 'over-represented', 'reads': 0},
-                  9 : {'name': 'duplicated', 'reads': 0},
-                  10: {'name': 'random breaks', 'reads': 0},
-                  11: {'name': 'trans-chromosomic', 'reads': 0}}
+            MASKED = {1 : {'name': 'self-circle', 'reads': 0},
+                      2 : {'name': 'dangling-end', 'reads': 0},
+                      3 : {'name': 'error', 'reads': 0},
+                      4 : {'name': 'extra dangling-end', 'reads': 0},
+                      5 : {'name': 'too close from RES', 'reads': 0},
+                      6 : {'name': 'too short', 'reads': 0},
+                      7 : {'name': 'too large', 'reads': 0},
+                      8 : {'name': 'over-represented', 'reads': 0},
+                      9 : {'name': 'duplicated', 'reads': 0},
+                      10: {'name': 'random breaks', 'reads': 0},
+                      11: {'name': 'trans-chromosomic', 'reads': 0}}
 
-        samtools = which(samtools)
-        if not samtools:
-            raise Exception('ERROR: samtools is needed to save a compressed '
-                            'version of the results. Check '
-                            'http://samtools.sourceforge.net/ \n')
+            samtools = which(samtools)
+            if not samtools:
+                raise Exception('ERROR: samtools is needed to save a compressed '
+                                'version of the results. Check '
+                                'http://samtools.sourceforge.net/ \n')
 
-        # define filter codes
-        filter_keys = OrderedDict()
-        for k in MASKED:
-            filter_keys[MASKED[k]['name'].replace(' ', '-')] = 2 ** (k - 1)
+            # define filter codes
+            filter_keys = OrderedDict()
+            for k in MASKED:
+                filter_keys[MASKED[k]['name'].replace(' ', '-')] = 2 ** (k - 1)
 
-        output = ''
+            output = ''
 
-        # write header
-        output += ("\t".join(("@HD", "VN:1.0", "SO:coordinate")) + '\n')
-        fhandler = open(infile)
-        line = fhandler.next()
-        # chromosome lengths
-        pos_fh = 0
-
-        # In samtools this is sorted alphabetically
-        header = {}
-        while line.startswith('#'):
-            (_, _, cr, ln) = line.replace("\t", " ").strip().split(" ")
-            header[cr] = ("\t".join(("@SQ", "SN:" + cr, "LN:" + ln)) + '\n')
-            #output += ("\t".join(("@SQ", "SN:" + cr, "LN:" + ln)) + '\n')
-            pos_fh += len(line)
+            # write header
+            output += ("\t".join(("@HD", "VN:1.0", "SO:coordinate")) + '\n')
+            fhandler = open(infile)
             line = fhandler.next()
-        hdrOrdr = sorted(header.keys())
-        for key in hdrOrdr:
-            output += header[key]
+            # chromosome lengths
+            pos_fh = 0
 
-        # filter codes
-        for i in filter_keys:
-            output += ("\t".join(("@CO", "filter:" + i, "flag:" + str(filter_keys[i]))) + '\n')
+            # In samtools this is sorted alphabetically
+            header = {}
+            while line.startswith('#'):
+                (_, _, cr, ln) = line.replace("\t", " ").strip().split(" ")
+                header[cr] = ("\t".join(("@SQ", "SN:" + cr, "LN:" + ln)) + '\n')
+                #output += ("\t".join(("@SQ", "SN:" + cr, "LN:" + ln)) + '\n')
+                pos_fh += len(line)
+                line = fhandler.next()
+            hdrOrdr = sorted(header.keys())
+            for key in hdrOrdr:
+                output += header[key]
 
-        # tags
-        output += ("\t".join(("@CO", "XA:i",
-                              "Number of time a sequenced fragment"
-                              " is involved in a pairwise contact\n")))
-        output += ("\t".join(("@CO", "NM:i",
-                              " Edit distance to the reference, including ambiguous bases but ",
-                              "excluding clipping\n")))
-        output += ("\t".join(("@CO", "MD:Z",
-                              " String for mismatching positions\n")))
-        output += ("\t".join(("@CO", ("Each read is duplicated: once starting with the "
-                                      "left read-end, once with the right read-end\n"))))
-        output += ("\t".join(("@CO", (" the order of RE sites and strands changes consequently "
-                                      "depending on which read-end comes first ("
-                                      "when right end is first: E3 E4 E1 E2)\n"))))
-        output += ("\t".join(("@CO", (" CIGAR code contains the length of the "
-                                      "1st read-end mapped and 'P' or 'S' "
-                                      "if the copy is the first or the second\n"))))
-        output += ("\t".join(("@CO", "E1:i",
-                              "Position of the left RE site of 1st read-end\n")))
-        output += ("\t".join(("@CO", "E2:i",
-                              "Position of the right RE site of 1st read-end\n")))
-        output += ("\t".join(("@CO", "E3:i",
-                              "Position of the left RE site of 2nd read-end\n")))
-        output += ("\t".join(("@CO", "E4:i",
-                              "Position of the right RE site of 2nd read-end\n")))
-        output += ("\t".join(("@CO", "S1:i",
-                              "Strand of the 1st read-end (1: positive, 0: negative)\n")))
-        output += ("\t".join(("@CO", "S2:i",
-                              "Strand of the 2nd read-end  (1: positive, 0: negative)\n")))
+            # filter codes
+            for i in filter_keys:
+                output += ("\t".join(("@CO", "filter:" + i, "flag:" + str(filter_keys[i]))) + '\n')
+
+            # tags
+            output += ("\t".join(("@CO", "XA:i",
+                                  "Number of time a sequenced fragment"
+                                  " is involved in a pairwise contact\n")))
+            output += ("\t".join(("@CO", "NM:i",
+                                  " Edit distance to the reference, including ambiguous bases but ",
+                                  "excluding clipping\n")))
+            output += ("\t".join(("@CO", "MD:Z",
+                                  " String for mismatching positions\n")))
+            output += ("\t".join(("@CO", ("Each read is duplicated: once starting with the "
+                                          "left read-end, once with the right read-end\n"))))
+            output += ("\t".join(("@CO", (" the order of RE sites and strands changes consequently "
+                                          "depending on which read-end comes first ("
+                                          "when right end is first: E3 E4 E1 E2)\n"))))
+            output += ("\t".join(("@CO", (" CIGAR code contains the length of the "
+                                          "1st read-end mapped and 'P' or 'S' "
+                                          "if the copy is the first or the second\n"))))
+            output += ("\t".join(("@CO", "E1:i",
+                                  "Position of the left RE site of 1st read-end\n")))
+            output += ("\t".join(("@CO", "E2:i",
+                                  "Position of the right RE site of 1st read-end\n")))
+            output += ("\t".join(("@CO", "E3:i",
+                                  "Position of the left RE site of 2nd read-end\n")))
+            output += ("\t".join(("@CO", "E4:i",
+                                  "Position of the right RE site of 2nd read-end\n")))
+            output += ("\t".join(("@CO", "S1:i",
+                                  "Strand of the 1st read-end (1: positive, 0: negative)\n")))
+            output += ("\t".join(("@CO", "S2:i",
+                                  "Strand of the 2nd read-end  (1: positive, 0: negative)\n")))
 
 
-        fhandler.seek(pos_fh)
-        # check samtools version number and modify command line
-        #version = LooseVersion([l.split()[1]
-        #                        for l in Popen(samtools, stderr=PIPE).communicate()[1].split('\n')
-        #                        if 'Version' in l][0])
+            fhandler.seek(pos_fh)
+            # check samtools version number and modify command line
+            #version = LooseVersion([l.split()[1]
+            #                        for l in Popen(samtools, stderr=PIPE).communicate()[1].split('\n')
+            #                        if 'Version' in l][0])
 
-        #logger.info("samtools version"+ str(version))
-        #pre = '-o' if version >= LooseVersion('1.3') else ''
+            #logger.info("samtools version"+ str(version))
+            #pre = '-o' if version >= LooseVersion('1.3') else ''
 
-        proc = Popen(samtools + ' view -Shb -@ %d - | samtools sort -@ %d - %s %s' % (
-                     ncpus, ncpus, "-o", outbam),  # in new version '.bam' is no longer added
-                     shell=True, stdin=PIPE)
+            proc = Popen(samtools + ' view -Shb -@ %d - | samtools sort -@ %d - %s %s' % (
+                         ncpus, ncpus, "-o", outbam),  # in new version '.bam' is no longer added
+                         shell=True, stdin=PIPE)
 
-        proc.stdin.write(output)
+            proc.stdin.write(output)
 
-        if frmt == 'chicago':
-            map2sam = self._map2sam_chicago
+            if frmt == 'chicago':
+                map2sam = self._map2sam_chicago
 
-        if valid:
-            for line in fhandler:
-                flag = 0
-                # get output in sam format
-                proc.stdin.write(map2sam(line, flag))
+            if valid:
+                for line in fhandler:
+                    flag = 0
+                    # get output in sam format
+                    proc.stdin.write(map2sam(line, flag))
 
-        proc.stdin.close()
-        proc.wait()
+            proc.stdin.close()
+            proc.wait()
 
-        # Index BAM
-        #_ = Popen(samtools + ' index %s.bam' % (outbam), shell=True).communicate()
+            # Index BAM
+            #_ = Popen(samtools + ' index %s.bam' % (outbam), shell=True).communicate()
 
-        # close file handlers
-        fhandler.close()
+            # close file handlers
+            fhandler.close()
+            return True
 
-    @task(returns=bool, bed=FILE_IN, bam_out=FILE_OUT)
-    def wrapper_bed2bam(self, bed, bam_out):
+        except IOError:
+            return False
+
+    #@task(returns=bool, bed=FILE_IN, bam_out=FILE_OUT)
+    #def wrapper_bed2bam(self, bed, bam_out):
         """
         This function runs the script from_bed_to_BAM_for_chicago.py
         tha convert a bed file to a bam file compatible with CHiCAGO
@@ -278,7 +289,7 @@ class bed2bam(Tool):
         -------
         Bool
         """
-
+        """
         try:
             self.bed2D_to_BAMhic(bed, "valid", 2, bam_out)
             return True
@@ -286,7 +297,7 @@ class bed2bam(Tool):
         except IOError:
             logger.fatal("no maaaan")
             return False
-        """
+
         try:
             script = os.path.join(os.path.dirname(__file__), "scripts/from_bed_to_bam.py")
 
@@ -316,8 +327,7 @@ class bed2bam(Tool):
         except IOError:
             logger.fatal("no bamfile no party")
             return False
-        """
-        """
+
         try:
             with open(bam_tmp+".bam", "r") as f_in:
                 with open(bam_out, "w") as f_out:
@@ -389,9 +399,16 @@ class bed2bam(Tool):
 
         ncpus = self.configuration["ncpus"]
 
-        results = self.wrapper_bed2bam(
-            input_files["bed"],
-            output_files["bam_out"])
+
+        #results = self.wrapper_bed2bam(
+        #    input_files["bed"],
+        #    output_files["bam_out"])
+
+        results = self.bed2D_to_BAMhic(
+                  input_files["bed"],
+                  "valid",
+                  2,
+                  output_files["bam_out"])
 
         results = compss_wait_on(results)
 
