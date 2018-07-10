@@ -91,7 +91,7 @@ class bed2bam(Tool):
             print("cwd", os.getcwd())
             #bed_tmp = bed+".tmp"
 
-            #copy(bed, bed_tmp)
+            copy(bed, bed_tmp)
 
             if bam_out.split(".")[-1] == "bam":
                 bam_tmp = "".join(bam_out.split(".")[:-1])
