@@ -89,14 +89,14 @@ class bed2bam(Tool):
 
         print("cwd", os.getcwd())
 
-        copy(bed, "".join(bed.split("/")[-1])+".temp")
+        copy(bed, bed+".temp")
 
         if bam_out.split(".")[-1] == "bam":
             bam = "".join(bam_out.split(".")[:-1])
 
 
         args = ["python", script,
-                "".join(bed.split("/")[-1])+".temp", ncpus, bam+".tmp"]
+                bed+".temp", ncpus, bam+".tmp"]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
