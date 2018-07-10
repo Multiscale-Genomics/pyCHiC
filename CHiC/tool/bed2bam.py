@@ -88,14 +88,15 @@ class bed2bam(Tool):
         script = os.path.join(os.path.dirname(__file__), "scripts/from_bed_to_bam.py")
 
         print("cwd", os.getcwd())
+        bed_tmp = "".join(bed).split("/")[-1]+"_tmp"
 
-        copy(bed, bed+".tmp")
+        copy(bed, bed_tmp)
 
         #if bam_out.split(".")[-1] == "bam":
         #    bam = "".join(bam_out.split(".")[:-1])
 
         args = ["python", script,
-                bed+".tmp", ncpus, "outbam.tmp"]
+                bed_tmp, ncpus, "outbam.tmp"]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
