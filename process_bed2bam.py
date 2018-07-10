@@ -76,28 +76,25 @@ class process_bed2bam(Workflow):
             metadata for both rmap and baitmap
             files
         """
+        try:
+            bed2bam_caller = bed2bam(self.configuration)
+            output_files_bed2bam, output_metadata_bed2bam = bed2bam_caller.run(
+                {
+                    "bed" : input_files["bed"]
+                },
+                {
+                    "bed" : metadata["bed"]
+                },
+                {
+                    "bam_out" : output_files["bam_out"],
+                    "bam_out_sorted" : output_files["bam_out_sorted"]
+                }
+            )
 
-        bed2bam_caller = bed2bam(self.configuration)
-        output_files_bed2bam, output_metadata_bed2bam = bed2bam_caller.run(
-            {
-                "bed" : input_files["bed"]
-            },
-            {
-                "bed" : metadata["bed"]
-            },
-            {
-                "bam_out" : output_files["bam_out"],
-                "bam_out_sorted" : output_files["bam_out_sorted"]
-            }
-        )
+            return output_files_bed2bam, output_metadata_bed2bam
 
-        if os.path.getsize(output_files["bam_out_sorted"]) > 0:
-            pass
-        else:
-            logger.fatal("process_bed2bam failed to generate BAM file")
-            return False
-
-        return output_files_bed2bam, output_metadata_bed2bam
+        except:
+            logger.fatal("process_bed2bam not producing outputs =(")
 
 #############################################################
 
