@@ -89,7 +89,7 @@ class bed2bam(Tool):
             script = os.path.join(os.path.dirname(__file__), "scripts/from_bed_to_bam.py")
 
             print("cwd", os.getcwd())
-            #bed_tmp = bed+".tmp"
+            bed_tmp = bed+".tmp"
 
             copy(bed, bed_tmp)
 
