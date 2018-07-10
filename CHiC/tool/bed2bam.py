@@ -89,14 +89,18 @@ class bed2bam(Tool):
 
         print("cwd", os.getcwd())
 
+        if bam_out.split(".")[-1] == "bam":
+            bam = "".join(bam_out.split(".")[:-1])
+
+
         args = ["python", script,
-                bed, ncpus, bam_out]
+                bed, ncpus, bam]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
 
         try:
-            with open(bam_out+".bam", "wb") as f_out:
+            with open(bam_out, "wb") as f_out:
                 process = subprocess.Popen(
                     ' '.join(args),
                     shell=True,
@@ -180,19 +184,16 @@ class bed2bam(Tool):
 
         ncpus = self.configuration["ncpus"]
 
-        if output_files["bam_out"].split(".")[-1] == "bam":
-            out_bam = "".join(output_files["bam_out"].split(".")[:-1])
-
         results = self.wrapper_bed2bam(
             input_files["bed"],
-            out_bam,
+            output_files["bam_out"],
             ncpus)
 
         results = compss_wait_on(results)
 
         if results is True:
             sorted_results = self.sort_bam_out(
-                out_bam+".bam", output_files["bam_out_sorted"])
+                output_files["bam_out"], output_files["bam_out_sorted"])
 
             sorted_results = compss_wait_on(sorted_results)
 
