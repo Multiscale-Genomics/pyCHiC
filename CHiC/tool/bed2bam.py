@@ -113,7 +113,7 @@ class bed2bam(Tool):
 
         try:
             with open(bam_out+".tmp.bam", "rb") as f_in:
-                with open(".".join(bam_out.split(".")[:2]), "wb") as f_out:
+                with open(bam_out, "wb") as f_out:
                     f_out.write(f_in.read())
             logger.info("tmp bam file converted to bam_out")
             return True
