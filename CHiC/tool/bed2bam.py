@@ -87,16 +87,15 @@ class bed2bam(Tool):
         """
         script = os.path.join(os.path.dirname(__file__), "scripts/from_bed_to_bam.py")
 
-        print(os.getcwd())
-        copy(bed, "".join(bed).split("/")[-1]+"_temp")
+        print("cwd", os.getcwd())
 
         args = ["python", script,
-                "".join(bed).split("/")[-1]+"_temp", ncpus, "outbam_temp"]
+                bed, ncpus, bam_out+".tmp"]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
         try:
-            with open("".join(bed).split("/")[-1]+"_temp", "wb") as f_out:
+            with open(bam_out+".tmp", "wb") as f_out:
                 process = subprocess.Popen(
                     ' '.join(args),
                     shell=True,
@@ -111,7 +110,7 @@ class bed2bam(Tool):
             return False
 
         try:
-            with open("".join(bed).split("/")[-1]+"_temp", "rb") as f_in:
+            with open(bam_out+".tmp", "rb") as f_in:
                 with open(bam_out, "wb") as f_out:
                     f_out.write(f_in.read())
             return True
