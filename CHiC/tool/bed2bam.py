@@ -29,8 +29,6 @@ from pytadbit.parsers.map_parser import parse_map
 import pickle
 from pytadbit.utils.file_handling import mkdir, which
 from collections                  import OrderedDict
-#from pytadbit.mapping.filter      import MASKED
-from distutils.version            import LooseVersion
 from subprocess                   import Popen, PIPE
 
 
@@ -123,10 +121,9 @@ class bed2bam(Tool):
         return r1r2
 
     @task(returns=bool, infile=FILE_IN, valid=IN, ncpus=IN,
-          outbam=FILE_OUT, frmt=IN, masked=IN, samtools=IN)
-    def bed2D_to_BAMhic(self, infile, valid, ncpus, outbam,
-                        frmt ='chicago', masked=None,
-                        samtools='samtools'):
+          outbam=FILE_OUT)
+    def bed2D_to_BAMhic(self, infile, valid, ncpus, outbam):
+
         """
         function adapted from Enrique Vidal <enrique.vidal@crg.eu> scipt to convert
         2D beds into compressed BAM format.
@@ -150,6 +147,9 @@ class bed2bam(Tool):
            - S1 and S2 tags are the strand orientation of the left and right read-end
         Each pair of contacts produces two lines in the output BAM
         """
+        frmt = 'chicago'
+        samtools = 'samtools'
+
         try:
             logger.info("bed2D_to_BAMhic from bed2bam function running")
 
@@ -231,20 +231,11 @@ class bed2bam(Tool):
             output += ("\t".join(("@CO", "S2:i",
                                   "Strand of the 2nd read-end  (1: positive, 0: negative)\n")))
 
-
             fhandler.seek(pos_fh)
-            # check samtools version number and modify command line
-            #version = LooseVersion([l.split()[1]
-            #                        for l in Popen(samtools, stderr=PIPE).communicate()[1].split('\n')
-            #                        if 'Version' in l][0])
-
-            #logger.info("samtools version"+ str(version))
-            #pre = '-o' if version >= LooseVersion('1.3') else ''
 
             proc = Popen(samtools + ' view -Shb -@ %d - | samtools sort -@ %d - %s %s' % (
                          ncpus, ncpus, "-o", outbam),  # in new version '.bam' is no longer added
                          shell=True, stdin=PIPE)
-
             proc.stdin.write(output)
 
             if frmt == 'chicago':
@@ -403,12 +394,11 @@ class bed2bam(Tool):
         #results = self.wrapper_bed2bam(
         #    input_files["bed"],
         #    output_files["bam_out"])
-
         results = self.bed2D_to_BAMhic(
-                  input_files["bed"],
-                  "valid",
-                  2,
-                  output_files["bam_out"])
+            input_files["bed"],
+            "valid",
+            2,
+            output_files["bam_out"])
 
         results = compss_wait_on(results)
 
