@@ -98,18 +98,9 @@ class bed2bam(Tool):
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
-        try:
-            with open(bam+".tmp.bam", "wb") as f_out:
-                process = subprocess.Popen(
-                    ' '.join(args),
-                    shell=True,
-                    stdout=f_out, stderr=f_out
-                    )
-                process.wait()
-
-        except (IOError, OSError) as msg:
-            logger.fatal("I/O error({0}): {1}\n{2}".format(
-                msg.errno, msg.strerror, args))
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process.wait()
+        proc_out, proc_err = process.communicate()
 
         try:
             with open(bam_out+".tmp.bam", "rb") as f_in:
