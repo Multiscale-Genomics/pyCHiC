@@ -89,14 +89,13 @@ class bed2bam(Tool):
 
         print("cwd", os.getcwd())
 
-        copy(bed, bed+".temp")
+        copy(bed, bed+".tmp")
 
-        if bam_out.split(".")[-1] == "bam":
-            bam = "".join(bam_out.split(".")[:-1])
-
+        #if bam_out.split(".")[-1] == "bam":
+        #    bam = "".join(bam_out.split(".")[:-1])
 
         args = ["python", script,
-                bed+".temp", ncpus, bam+".tmp"]
+                bed+".tmp", ncpus, "outbam.tmp"]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
@@ -105,7 +104,7 @@ class bed2bam(Tool):
         proc_out, proc_err = process.communicate()
 
         try:
-            with open(bam_out+".tmp.bam", "rb") as f_in:
+            with open("outbam.tmp.bam", "rb") as f_in:
                 with open(bam_out, "wb") as f_out:
                     f_out.write(f_in.read())
             logger.info("tmp bam file converted to bam_out")
