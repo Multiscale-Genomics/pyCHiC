@@ -123,7 +123,7 @@ class bed2bam(Tool):
         return r1r2
 
 
-    def bed2D_to_BAMhic(self,infile, valid, ncpus, outbam, frmt ='chicago', masked=None, samtools='samtools'):
+    def bed2D_to_BAMhic(self, infile, valid, ncpus, outbam, frmt ='chicago', masked=None, samtools='samtools'):
         """
         function adapted from Enrique Vidal <enrique.vidal@crg.eu> scipt to convert
         2D beds into compressed BAM format.
@@ -146,17 +146,17 @@ class bed2bam(Tool):
         """
         logger.info("bed2D_to_BAMhic from bed2bam function running")
 
-        MASKED = {1 : {'name': 'self-circle'       , 'reads': 0},
-              2 : {'name': 'dangling-end'      , 'reads': 0},
-              3 : {'name': 'error'             , 'reads': 0},
-              4 : {'name': 'extra dangling-end', 'reads': 0},
-              5 : {'name': 'too close from RES', 'reads': 0},
-              6 : {'name': 'too short'         , 'reads': 0},
-              7 : {'name': 'too large'         , 'reads': 0},
-              8 : {'name': 'over-represented'  , 'reads': 0},
-              9 : {'name': 'duplicated'        , 'reads': 0},
-              10: {'name': 'random breaks'     , 'reads': 0},
-              11: {'name': 'trans-chromosomic' , 'reads': 0}}
+        MASKED = {1 : {'name': 'self-circle', 'reads': 0},
+                  2 : {'name': 'dangling-end', 'reads': 0},
+                  3 : {'name': 'error', 'reads': 0},
+                  4 : {'name': 'extra dangling-end', 'reads': 0},
+                  5 : {'name': 'too close from RES', 'reads': 0},
+                  6 : {'name': 'too short', 'reads': 0},
+                  7 : {'name': 'too large', 'reads': 0},
+                  8 : {'name': 'over-represented', 'reads': 0},
+                  9 : {'name': 'duplicated', 'reads': 0},
+                  10: {'name': 'random breaks', 'reads': 0},
+                  11: {'name': 'trans-chromosomic', 'reads': 0}}
 
         samtools = which(samtools)
         if not samtools:
@@ -172,7 +172,7 @@ class bed2bam(Tool):
         output = ''
 
         # write header
-        output += ("\t".join(("@HD" ,"VN:1.0", "SO:coordinate")) + '\n')
+        output += ("\t".join(("@HD", "VN:1.0", "SO:coordinate")) + '\n')
         fhandler = open(infile)
         line = fhandler.next()
         # chromosome lengths
@@ -195,69 +195,61 @@ class bed2bam(Tool):
             output += ("\t".join(("@CO", "filter:" + i, "flag:" + str(filter_keys[i]))) + '\n')
 
         # tags
-        output += ("\t".join(("@CO" ,"XA:i", "Number of time a sequenced fragment is involved in a pairwise contact\n")))
-        output += ("\t".join(("@CO" ,"NM:i", " Edit distance to the reference, including ambiguous bases but ",
+        output += ("\t".join(("@CO", "XA:i",
+                              "Number of time a sequenced fragment"
+                              " is involved in a pairwise contact\n")))
+        output += ("\t".join(("@CO", "NM:i",
+                              " Edit distance to the reference, including ambiguous bases but ",
                               "excluding clipping\n")))
-        output += ("\t".join(("@CO" ,"MD:Z", " String for mismatching positions\n")))
-        output += ("\t".join(("@CO" ,("Each read is duplicated: once starting with the "
+        output += ("\t".join(("@CO", "MD:Z",
+                              " String for mismatching positions\n")))
+        output += ("\t".join(("@CO", ("Each read is duplicated: once starting with the "
                                       "left read-end, once with the right read-end\n"))))
-        output += ("\t".join(("@CO" , (" the order of RE sites and strands changes consequently "
-                                       "depending on which read-end comes first ("
-                                       "when right end is first: E3 E4 E1 E2)\n"))))
-        output += ("\t".join(("@CO" ,(" CIGAR code contains the length of the "
+        output += ("\t".join(("@CO", (" the order of RE sites and strands changes consequently "
+                                      "depending on which read-end comes first ("
+                                      "when right end is first: E3 E4 E1 E2)\n"))))
+        output += ("\t".join(("@CO", (" CIGAR code contains the length of the "
                                       "1st read-end mapped and 'P' or 'S' "
                                       "if the copy is the first or the second\n"))))
-        output += ("\t".join(("@CO" ,"E1:i", "Position of the left RE site of 1st read-end\n")))
-        output += ("\t".join(("@CO" ,"E2:i", "Position of the right RE site of 1st read-end\n")))
-        output += ("\t".join(("@CO" ,"E3:i", "Position of the left RE site of 2nd read-end\n")))
-        output += ("\t".join(("@CO" ,"E4:i", "Position of the right RE site of 2nd read-end\n")))
-        output += ("\t".join(("@CO" ,"S1:i", "Strand of the 1st read-end (1: positive, 0: negative)\n")))
-        output += ("\t".join(("@CO" ,"S2:i", "Strand of the 2nd read-end  (1: positive, 0: negative)\n")))
+        output += ("\t".join(("@CO", "E1:i",
+                              "Position of the left RE site of 1st read-end\n")))
+        output += ("\t".join(("@CO", "E2:i",
+                              "Position of the right RE site of 1st read-end\n")))
+        output += ("\t".join(("@CO", "E3:i",
+                              "Position of the left RE site of 2nd read-end\n")))
+        output += ("\t".join(("@CO", "E4:i",
+                              "Position of the right RE site of 2nd read-end\n")))
+        output += ("\t".join(("@CO", "S1:i",
+                              "Strand of the 1st read-end (1: positive, 0: negative)\n")))
+        output += ("\t".join(("@CO", "S2:i",
+                              "Strand of the 2nd read-end  (1: positive, 0: negative)\n")))
 
-        # open and init filter files
-        if not valid:
-            filter_line, filter_handler = get_filters(infile, masked)
+
         fhandler.seek(pos_fh)
         # check samtools version number and modify command line
-        version = LooseVersion([l.split()[1]
-                                for l in Popen(samtools, stderr=PIPE).communicate()[1].split('\n')
-                                if 'Version' in l][0])
-        pre = '-o' if version >= LooseVersion('1.3') else ''
+        #version = LooseVersion([l.split()[1]
+        #                        for l in Popen(samtools, stderr=PIPE).communicate()[1].split('\n')
+        #                        if 'Version' in l][0])
+
+        #logger.info("samtools version"+ str(version))
+        #pre = '-o' if version >= LooseVersion('1.3') else ''
 
         proc = Popen(samtools + ' view -Shb -@ %d - | samtools sort -@ %d - %s %s' % (
-            ncpus, ncpus, pre,
-            outbam + '.bam' if  version >= LooseVersion('1.3') else ''),  # in new version '.bam' is no longer added
+            ncpus, ncpus, "-o",
+            outbam ),  # in new version '.bam' is no longer added
                      shell=True, stdin=PIPE)
+
         proc.stdin.write(output)
 
         if frmt == 'chicago':
             map2sam = self._map2sam_chicago
-        elif frmt == 'mid':
-            map2sam = _map2sam_mid
-        elif frmt == 'long':
-            map2sam = _map2sam_long
-        else:
-            map2sam = _map2sam_short
 
         if valid:
             for line in fhandler:
                 flag = 0
                 # get output in sam format
                 proc.stdin.write(map2sam(line, flag))
-        else:
-            for line in fhandler:
-                flag = 0
-                # check if read matches any filter
-                rid = line.split("\t")[0]
-                for i in filter_line:
-                    if filter_line[i] == rid:
-                        flag += filter_keys[i]
-                        try:
-                            filter_line[i] = filter_handler[i].next().strip()
-                        except StopIteration:
-                            pass
-                # get output in sam format
-                proc.stdin.write(map2sam(line, flag))
+
         proc.stdin.close()
         proc.wait()
 
@@ -266,13 +258,9 @@ class bed2bam(Tool):
 
         # close file handlers
         fhandler.close()
-        if not valid:
-            for i in filter_handler:
-                filter_handler[i].close()
 
-    @task(returns=bool, bed=FILE_IN, bam_out=FILE_OUT,
-          ncpus=IN)
-    def wrapper_bed2bam(self, bed, bam_out, ncpus):
+    @task(returns=bool, bed=FILE_IN, bam_out=FILE_OUT)
+    def wrapper_bed2bam(self, bed, bam_out):
         """
         This function runs the script from_bed_to_BAM_for_chicago.py
         tha convert a bed file to a bam file compatible with CHiCAGO
@@ -293,10 +281,7 @@ class bed2bam(Tool):
         """
 
         try:
-            if bam_out.split(".")[-1] == "bam":
-                bam_tmp = "".join(bam_out.split(".")[:-1])
-
-            self.bed2D_to_BAMhic(bed, "valid", 2, bam_tmp)
+            self.bed2D_to_BAMhic(bed, "valid", 2, bam_out)
             return True
 
         except IOError:
@@ -407,8 +392,7 @@ class bed2bam(Tool):
 
         results = self.wrapper_bed2bam(
             input_files["bed"],
-            output_files["bam_out"],
-            ncpus)
+            output_files["bam_out"])
 
         results = compss_wait_on(results)
 
