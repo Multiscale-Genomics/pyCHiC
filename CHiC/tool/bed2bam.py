@@ -94,26 +94,23 @@ class bed2bam(Tool):
 
 
         args = ["python", script,
-                bed, ncpus, bam]
+                bed, ncpus, bam+".tmp"]
 
         logger.info("from_bed_to_BAM_for_chicago arguments:"+ " ".join(args))
 
-
         try:
-            with open(bam_out, "wb") as f_out:
+            with open(bam+".tmp.bam", "wb") as f_out:
                 process = subprocess.Popen(
                     ' '.join(args),
                     shell=True,
                     stdout=f_out, stderr=f_out
                     )
                 process.wait()
-            return True
 
         except (IOError, OSError) as msg:
             logger.fatal("I/O error({0}): {1}\n{2}".format(
                 msg.errno, msg.strerror, args))
-            return False
-        """
+
         try:
             with open(bam_out+".tmp.bam", "rb") as f_in:
                 with open(".".join(bam_out.split(".")[:2]), "wb") as f_out:
@@ -124,7 +121,7 @@ class bed2bam(Tool):
         except IOError:
             logger.fatal("temporary file not converted to output bam file")
             return False
-        """
+
 
     @task(returns=bool, bam_out=FILE_IN,
           bam_out_sorted=FILE_OUT)
