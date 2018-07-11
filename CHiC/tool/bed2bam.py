@@ -23,6 +23,7 @@ import os
 import subprocess
 from utils import logger
 from shutil import copy
+import shlex
 
 from pytadbit.parsers.hic_parser import load_hic_data_from_reads
 from pytadbit.parsers.map_parser import parse_map
@@ -153,7 +154,7 @@ class bed2bam(Tool):
         try:
             logger.info("bed2D_to_BAMhic from bed2bam function running")
 
-            MASKED = {1 : {'name': 'self-circle', 'reads': 0},
+            masked = {1 : {'name': 'self-circle', 'reads': 0},
                       2 : {'name': 'dangling-end', 'reads': 0},
                       3 : {'name': 'error', 'reads': 0},
                       4 : {'name': 'extra dangling-end', 'reads': 0},
@@ -173,8 +174,8 @@ class bed2bam(Tool):
 
             # define filter codes
             filter_keys = OrderedDict()
-            for k in MASKED:
-                filter_keys[MASKED[k]['name'].replace(' ', '-')] = 2 ** (k - 1)
+            for k in masked:
+                filter_keys[masked[k]['name'].replace(' ', '-')] = 2 ** (k - 1)
 
             output = ''
 
@@ -233,11 +234,19 @@ class bed2bam(Tool):
 
             fhandler.seek(pos_fh)
 
+            cmd_1 = samtools + " view -Shb -@ {} -".format(ncpus)
+            cmd_2 = samtools + " sort -@ {} - {} {}".format(ncpus, "-o", outbam+".tmp")
+
+            p1 = Popen(shlex.split(cmd_1), stdin=PIPE, stdout=PIPE)
+            p2 = Popen(shlex.split(cmd_2), stdin=p1.stdout)
+            p1.stdin.write(output)
+
+            """
             proc = Popen(samtools + ' view -Shb -@ %d - | samtools sort -@ %d - %s %s' % (
                          ncpus, ncpus, "-o", outbam+".tmp"),  # in new version '.bam' is no longer added
                          shell=True, stdin=PIPE)
             proc.stdin.write(output)
-
+            """
             if frmt == 'chicago':
                 map2sam = self._map2sam_chicago
 
@@ -245,11 +254,12 @@ class bed2bam(Tool):
                 for line in fhandler:
                     flag = 0
                     # get output in sam format
-                    proc.stdin.write(map2sam(line, flag))
+                    p1.stdin.write(map2sam(line, flag))
 
-            proc.stdin.close()
-            proc.wait()
+            p1.stdin.close()
+            p1.wait()
 
+            output = p2.communicate()[0]
             # close file handlers
             fhandler.close()
 
@@ -318,7 +328,7 @@ class bed2bam(Tool):
         results: bool
         output_metadata:dict
         """
-        output_dir = "/".join(output_files["bam_out"].split("/")[:-1])
+        output_dir = os.path.split(output_files["bam_out"])[0]
 
         if os.path.isdir(output_dir) is False:
             logger.info("creating output directory")
