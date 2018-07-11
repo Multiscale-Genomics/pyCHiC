@@ -250,9 +250,6 @@ class bed2bam(Tool):
             proc.stdin.close()
             proc.wait()
 
-            # Index BAM
-            #_ = Popen(samtools + ' index %s.bam' % (outbam), shell=True).communicate()
-
             # close file handlers
             fhandler.close()
 
