@@ -234,12 +234,16 @@ class bed2bam(Tool):
 
             fhandler.seek(pos_fh)
 
-            cmd_1 = samtools + " view -Shb -@ {} -".format(ncpus)
-            cmd_2 = samtools + " sort -@ {} - {} {}".format(ncpus, "-o", outbam+".tmp")
+            try:
+                cmd_1 = samtools + " view -Shb -@ {} -".format(ncpus)
+                cmd_2 = samtools + " sort -@ {} - {} {}".format(ncpus, "-o", outbam+".tmp")
 
-            p1 = Popen(shlex.split(cmd_1), stdin=PIPE, stdout=PIPE)
-            p2 = Popen(shlex.split(cmd_2), stdin=p1.stdout)
-            p1.stdin.write(output)
+                p1 = Popen(shlex.split(cmd_1), stdin=PIPE, stdout=PIPE)
+                p2 = Popen(shlex.split(cmd_2), stdin=p1.stdout)
+                p1.stdin.write(output)
+            except IOError:
+                logger.fatal("Popen function does not work for samtools =( ")
+                return False
 
             """
             proc = Popen(samtools + ' view -Shb -@ %d - | samtools sort -@ %d - %s %s' % (
