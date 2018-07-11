@@ -151,6 +151,9 @@ class bed2bam(Tool):
         frmt = 'chicago'
         samtools = 'samtools'
 
+        copy(infile, infile+".tmp")
+
+
         try:
             logger.info("bed2D_to_BAMhic from bed2bam function running")
 
@@ -192,7 +195,7 @@ class bed2bam(Tool):
                 (_, _, cr, ln) = line.replace("\t", " ").strip().split(" ")
                 header[cr] = ("\t".join(("@SQ", "SN:" + cr, "LN:" + ln)) + '\n')
                 #output += ("\t".join(("@SQ", "SN:" + cr, "LN:" + ln)) + '\n')
-                pos_fh += len(line)
+                pos_fh += len(line+".tmp")
                 line = fhandler.next()
             hdrOrdr = sorted(header.keys())
             for key in hdrOrdr:
