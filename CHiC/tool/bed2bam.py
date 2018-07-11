@@ -121,8 +121,8 @@ class bed2bam(Tool):
                     flag2)               # 9
         return r1r2
 
-    @task(returns=bool, infile=FILE_IN, valid=IN, ncpus=IN,
-          outbam=FILE_OUT)
+    #@task(returns=bool, infile=FILE_IN, valid=IN, ncpus=IN,
+    #      outbam=FILE_OUT)
     def bed2D_to_BAMhic(self, infile, valid, ncpus, outbam):
 
         """
@@ -285,8 +285,8 @@ class bed2bam(Tool):
         except IOError:
             return False
 
-    @task(returns=bool, bam_out=FILE_IN,
-          bam_out_sorted=FILE_OUT)
+    #@task(returns=bool, bam_out=FILE_IN,
+    #      bam_out_sorted=FILE_OUT)
     def sort_bam_out(self, bam_out, bam_out_sorted):
         """
         This function sort the bam_out using samtools
