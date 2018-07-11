@@ -184,7 +184,7 @@ class bed2bam(Tool):
 
             # write header
             output += ("\t".join(("@HD", "VN:1.0", "SO:coordinate")) + '\n')
-            fhandler = open(infile)
+            fhandler = open(infile+".tmp")
             line = fhandler.next()
             # chromosome lengths
             pos_fh = 0
@@ -195,7 +195,7 @@ class bed2bam(Tool):
                 (_, _, cr, ln) = line.replace("\t", " ").strip().split(" ")
                 header[cr] = ("\t".join(("@SQ", "SN:" + cr, "LN:" + ln)) + '\n')
                 #output += ("\t".join(("@SQ", "SN:" + cr, "LN:" + ln)) + '\n')
-                pos_fh += len(line+".tmp")
+                pos_fh += len(line)
                 line = fhandler.next()
             hdrOrdr = sorted(header.keys())
             for key in hdrOrdr:
