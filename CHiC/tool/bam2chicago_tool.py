@@ -169,29 +169,13 @@ class bam2chicagoTool(Tool):
                     stdout=f_out, stderr=f_out
                     )
             process.wait()
+            return True
 
         except (IOError, OSError) as msg:
             logger.fatal("I/O error({0}): {1}\n{2}".format(
                 msg.errno, msg.strerror, args))
             return False
 
-
-        """
-        process = subprocess.Popen(args, stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
-        process.wait()
-        proc_out, proc_err = process.communicate()
-
-        try:
-            os.path.isfile(sample_name + ".chinput")
-        except IOError:
-            logger.fatal("bam2chicago failed to geenerate .chinput files")
-            logger.fatal("bam2chicago stdout" + proc_out)
-            logger.fatal("bam2chicago srerr"  + proc_err)
-            return False
-
-        return True
-        """
 
     def run(self, input_files, metadata, output_files):
         """
