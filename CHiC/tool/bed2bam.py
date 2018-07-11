@@ -24,6 +24,7 @@ import subprocess
 from utils import logger
 from shutil import copy
 import shlex
+from tool.bam_utils import bamUtils
 
 from pytadbit.parsers.hic_parser import load_hic_data_from_reads
 from pytadbit.parsers.map_parser import parse_map
@@ -72,7 +73,6 @@ class bed2bam(Tool):
             configuration = {}
 
         self.configuration.update(configuration)
-
 
     def _map2sam_chicago(self, line, flag=0):
         """
@@ -274,9 +274,10 @@ class bed2bam(Tool):
         except IOError:
             return False
 
-    @task(returns=bool, bam_out=FILE_IN,
-          bam_out_sorted=FILE_OUT)
-    def sort_bam_out(self, bam_out, bam_out_sorted):
+    #@task(returns=bool, bam_out=FILE_IN,
+    #      bam_out_sorted=FILE_OUT)
+    @staticmethod
+    def sort_bam_out(bam_out, bam_out_sorted):
         """
         This function sort the bam_out using samtools
 
@@ -332,13 +333,10 @@ class bed2bam(Tool):
 
         ncpus = self.configuration["ncpus"]
 
-        #results = self.wrapper_bed2bam(
-        #    input_files["bed"],
-        #    output_files["bam_out"])
         results = self.bed2D_to_BAMhic(
             input_files["bed"],
             "valid",
-            2,
+            ncpus,
             output_files["bam_out"])
 
         results = compss_wait_on(results)
@@ -346,8 +344,8 @@ class bed2bam(Tool):
         if results is True:
             sorted_results = self.sort_bam_out(
                 output_files["bam_out"], output_files["bam_out_sorted"])
-
             sorted_results = compss_wait_on(sorted_results)
+
 
         output_metadata = {
             "bam_out": Metadata(
