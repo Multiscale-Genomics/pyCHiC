@@ -80,8 +80,6 @@ class bed2bam(Tool):
         only loses RE sites, that can be added back later
         63% of the size using RE sites, and 72% of the generation time
         """
-        logger.info("_map2sam_chicago from bed2bam function running")
-
         (qname,
          rname, pos, s1, l1, _, _,
          rnext, pnext, s2, l2, _) = line.strip().split('\t', 11)
@@ -248,20 +246,11 @@ class bed2bam(Tool):
                 logger.fatal("Popen function does not work for samtools =( ")
                 return False
 
-            """
-            proc = Popen(samtools + ' view -Shb -@ %d - | samtools sort -@ %d - %s %s' % (
-                         ncpus, ncpus, "-o", outbam+".tmp"),  # in new version '.bam' is no longer added
-                         shell=True, stdin=PIPE)
-            proc.stdin.write(output)
-            """
-            if frmt == 'chicago':
-                map2sam = self._map2sam_chicago
-
             if valid:
                 for line in fhandler:
                     flag = 0
                     # get output in sam format
-                    p1.stdin.write(map2sam(line, flag))
+                    p1.stdin.write(self._map2sam_chicago(line, flag))
 
             p1.stdin.close()
             p1.wait()
@@ -285,8 +274,8 @@ class bed2bam(Tool):
         except IOError:
             return False
 
-    #@task(returns=bool, bam_out=FILE_IN,
-    #      bam_out_sorted=FILE_OUT)
+    @task(returns=bool, bam_out=FILE_IN,
+          bam_out_sorted=FILE_OUT)
     def sort_bam_out(self, bam_out, bam_out_sorted):
         """
         This function sort the bam_out using samtools
