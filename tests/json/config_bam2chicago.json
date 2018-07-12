@@ -38,8 +38,8 @@
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_bam2chicago_tool/sampleout.tar",
-                "data_type": "TXT",
-                "compressed": "null"
+                "data_type": "tar",
+                "compressed": "tar"
             }
         },{
             "required": true,
