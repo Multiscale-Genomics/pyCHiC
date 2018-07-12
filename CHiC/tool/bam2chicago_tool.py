@@ -177,7 +177,7 @@ class bam2chicagoTool(Tool):
                 stderr=subprocess.PIPE)
 
             process.wait()
-            proc_out, proc_err = process.communicate()
+            #proc_out, proc_err = process.communicate()
 
             chinput_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+".chinput"
             b2b_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+"_bait2bait.bedpe"
