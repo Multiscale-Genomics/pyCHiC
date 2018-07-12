@@ -18,7 +18,7 @@ import pytest # pylint: disable=unused-import
 import os
 
 from basic_modules.metadata import Metadata
-from CHiC.process_bam2chicago_tool import process_bam2chicago
+from process_bam2chicago_tool import process_bam2chicago
 
 def test_process_bam2chicago():
     """
@@ -33,7 +33,7 @@ def test_process_bam2chicago():
     }
 
     output_files = {
-        "sample_name" :  path + "test_bam2chicago_tool/sampleout",
+        "chinput" :  path + "test_bam2chicago_tool/sampleout",
         "chrRMAP" : path + "test_bam2chicago_tool/chrtest.rmap",
         "chrBAITMAP" : path + "test_bam2chicago_tool/chrtest.baitmap"
     }
@@ -52,10 +52,14 @@ def test_process_bam2chicago():
             9606)
     }
 
-    bam2chicago_handle = process_bam2chicago()
+    configuration = {
+        "aligner" : "tadbit"
+    }
+
+    bam2chicago_handle = process_bam2chicago(configuration)
     bam2chicago_handle.run(input_files, metadata, output_files)
 
-    out_path = output_files["sample_name"] + "/sampleout.chinput"
+    out_path = output_files["chinput"] + "/sampleout.chinput"
 
     assert os.path.isfile(out_path) is True
     assert os.path.getsize(out_path) > 0

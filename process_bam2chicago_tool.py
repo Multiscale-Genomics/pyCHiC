@@ -25,7 +25,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.bam2chicago_tool import bam2chicagoTool
+from CHiC.tool.bam2chicago_tool import bam2chicagoTool
 
 ################################################
 
@@ -75,31 +75,29 @@ class process_bam2chicago(Workflow):
         output_metadata: dict
             metadata for .chinput file
         """
+        try:
+            bam2chicago_caller = bam2chicagoTool(self.configuration)
+            output_files_bam2chicago, output_metadata_bam2chicago = bam2chicago_caller.run(
+                {
+                    "BAM" : input_files["BAM"],
+                    "RMAP" : input_files["RMAP"],
+                    "BAITMAP" : input_files["BAITMAP"]
+                },
+                {
+                    "BAM" : metadata["BAM"],
+                    "RMAP" : metadata["RMAP"],
+                    "BAITMAP" : metadata["BAITMAP"]
+                },
+                {
+                    "chrRMAP": output_files["chrRMAP"],
+                    "chrBAITMAP": output_files["chrBAITMAP"],
+                    "chinput": output_files["chinput"]
+                }
+            )
 
-        bam2chicago_caller = bam2chicagoTool(self.configuration)
-        output_files_bam2chicago, output_metadata_bam2chicago = bam2chicago_caller.run(
-            {
-                "BAM" : input_files["BAM"],
-                "RMAP" : input_files["RMAP"],
-                "BAITMAP" : input_files["BAITMAP"]
-            },
-            {
-                "BAM" : metadata["BAM"],
-                "RMAP" : metadata["RMAP"],
-                "BAITMAP" : metadata["BAITMAP"]
-            },
-            {
-                "chrRMAP": output_files["chrRMAP"],
-                "chrBAITMAP": output_files["chrBAITMAP"],
-                "sample_name": output_files["sample_name"]
-            }
-        )
-
-        out_path = output_files["sample_name"] + "/sampleout.chinput"
-
-        if os.path.getsize(out_path) > 0:
             return output_files_bam2chicago, output_metadata_bam2chicago
-        else:
+
+        except IOError:
             logger.fatal("process_bam2chicago failed to generate .chinput files")
 
 #############################################################
@@ -130,7 +128,7 @@ def main_json(config, in_metadata, out_metadata):
 #########################################################################
 
 
-if __name__ == "__name__":
+if __name__ == "__main__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
@@ -142,7 +140,7 @@ if __name__ == "__name__":
     PARSER.add_argument(
         "--out_metadata", help="Location of output metadata file")
     PARSER.add_argument(
-        "--local", action="store_const", cont=True, default=False)
+        "--local", action="store_const", const=True, default=False)
 
     #Get matching parameters from the command line
     ARGS = PARSER.parse_args()

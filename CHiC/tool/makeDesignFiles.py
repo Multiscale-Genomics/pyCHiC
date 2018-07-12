@@ -238,9 +238,7 @@ class makeDesignFilesTool(Tool):
                     metadata["BAITMAP"].file_path
                     ],
                 taxon_id=metadata["RMAP"].taxon_id,
-                meta_data={
-                    "tool" : "makeDesignFiles"
-                }
+                meta_data=metadata["BAITMAP"].meta_data
             ),
             ".poe" : Metadata(
                 data_type=".poe",
@@ -251,10 +249,8 @@ class makeDesignFilesTool(Tool):
                     metadata["BAITMAP"].file_path
                     ],
                 taxon_id=metadata["BAITMAP"].taxon_id,
-                meta_data={
-                    "tool" : "makeDesignFiles"
-                }
-            ),
+                meta_data=metadata["BAITMAP"].meta_data
+            )
         }
 
         return output_files, output_metadata

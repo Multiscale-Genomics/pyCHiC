@@ -18,8 +18,12 @@ import os
 import subprocess
 import sys
 import pandas as pd
-
+from tool.common import common
 from utils import logger
+import shlex
+from shutil import move
+import tarfile
+
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -65,7 +69,8 @@ class bam2chicagoTool(Tool):
 
         self.configuration.update(configuration)
 
-    def check_chr_format(self, rmap_file, baitmap_file, chrRMAP, chrBAITMAP):
+    @staticmethod
+    def check_chr_format(rmap_file, baitmap_file, chrRMAP, chrBAITMAP):
         """
         This function check that the chromosome format is right for
         bam2chicago.sh
@@ -82,7 +87,6 @@ class bam2chicagoTool(Tool):
         if str(chr_rmap[0:3]) == "chr":
             logger.info("rmap file chromosome on the right format")
             rformat_rmap = False
-
         else:
             rmapfile_new.iloc[:, 0] = rmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
 
@@ -108,8 +112,9 @@ class bam2chicagoTool(Tool):
 
         return chrRMAP, chrBAITMAP
 
-
-    def bam2chicago(self, bamFiles, rmapFile, baitmapFile, sample_name):
+    @task(returns=bool, bamFile=FILE_IN, rmapFile=FILE_IN,
+        baitmapFile=FILE_IN, chinput=FILE_OUT)
+    def bam2chicago(self, bamFile, rmapFile, baitmapFile, chinput):
         """
         Main function that preprocess the bam files into Chinput files. Part of
         the input files of CHiCAGO.
@@ -117,7 +122,7 @@ class bam2chicagoTool(Tool):
 
         Parameters
         ----------
-        bamFiles : str,
+        bamFile : str,
             path to paired-end file produced by a HiC aligner; Chicago has
             only been tested with data produced by HiCUP
             (http://www.bioinformatics.babraham.ac.uk/projects/hicup/).
@@ -139,41 +144,69 @@ class bam2chicagoTool(Tool):
             in rmapfile for the corresponding fragments) and their annotations
             (such as, for example, the names of baited promoters). The numeric
             IDs are referred to as "baitID" in Chicago.
-        sample_name: str
+        chinput: str
             name of the output file. Bbam2chicago creates a folder with the
             name of this sample, and inside the folder there is a file with
-            sample_name.chinput, that is the final output.
+            chinput.chinput, that is the final output.
 
 
 
         Returns
         -------
         bool
-        sample_name : str,
+        chinput : str,
          name of the sample
         """
-
-        args = ["./scripts/bam2chicago.sh",
-                bamFiles,
-                baitmapFile,
-                rmapFile,
-                sample_name]
-
-        logger.info("bam2chicago CMD: " + " ".join(args))
+        no_tar_out = "".join(chinput.split(".")[0])
 
         try:
-            with open(sample_name + ".chinput", "w") as f_out:
-                process = subprocess.Popen(
-                    ' '.join(args),
-                    shell=True,
-                    stdout=f_out, stderr=f_out
-                    )
+            bam2chicago_script = os.path.join(os.path.dirname(__file__), "scripts/bam2chicago.sh")
+
+            args = [bam2chicago_script,
+                    bamFile,
+                    baitmapFile,
+                    rmapFile,
+                    no_tar_out]
+
+            logger.info("bam2chicago CMD: " + " ".join(args))
+
+            process = subprocess.Popen(
+                ' '.join(args),
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+
             process.wait()
+            proc_out, proc_err = process.communicate()
+
+            chinput_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+".chinput"
+            b2b_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+"_bait2bait.bedpe"
+
+
+            try:
+                tar = tarfile.open(os.path.split(chinput)[1], "w")
+                tar.add(chinput_file,
+                        arcname=os.path.split(no_tar_out)[1]+"/"+
+                                os.path.split(chinput_file)[1])
+
+                tar.add(b2b_file,
+                        arcname=os.path.split(no_tar_out)[1]+"/"+
+                                os.path.split(b2b_file)[1])
+                tar.close()
+
+                print("tarfile",os.path.split(chinput)[1])
+                move(os.path.split(chinput)[1], os.path.split(chinput)[0])
+
+                logger.info("Tar folder with chinput output file")
+
+            except IOError:
+                logger.fatal("Tar file failed =(")
+                return False
+
             return True
 
-        except (IOError, OSError) as msg:
-            logger.fatal("I/O error({0}): {1}\n{2}".format(
-                msg.errno, msg.strerror, args))
+        except IOError:
+            logger.fatal("bam2chicago failed to generate chicago output files =(")
             return False
 
 
@@ -184,7 +217,7 @@ class bam2chicagoTool(Tool):
         Parameters
         ----------
         input_files : dict
-        bamfiles : str
+        bamFile : str
         rmapFile : str
         baitmapFile : str
 
@@ -198,37 +231,60 @@ class bam2chicagoTool(Tool):
         List of matching metadata dict objects
         """
 
-        rfmat_rmap, rfmat_baitmap = self.check_chr_format(
-            input_files["RMAP"],
-            input_files["BAITMAP"],
-            output_files["chrRMAP"],
-            output_files["chrBAITMAP"])
+        if self.configuration["aligner"] == "tadbit":
+            logger.info("cheking chr format from rmap and baitmap")
+            rfmat_rmap, rfmat_baitmap = self.check_chr_format(
+                input_files["RMAP"],
+                input_files["BAITMAP"],
+                output_files["chrRMAP"],
+                output_files["chrBAITMAP"])
+
+        else:
+            rfmat_rmap = input_files["RMAP"]
+            rfmat_baitmap = input_files["BAITMAP"]
 
         results = self.bam2chicago(
             input_files["BAM"],
             rfmat_rmap,
             rfmat_baitmap,
-            output_files["sample_name"]
+            output_files["chinput"]
             )
 
         results = compss_wait_on(results)
 
         output_metadata = {
-            "chinput": Metadata(
-                data_type=metadata['BAM'].data_type,
-                file_type="chinput",
-                file_path=output_files["sample_name"],
+            "chinput" : Metadata(
+                data_type=metadata["BAM"].data_type,
+                file_type="tar",
+                file_path=output_files["chinput"],
                 sources=[
-                    metadata["BAM"].file_path,
                     metadata["RMAP"].file_path,
-                    metadata["BAITMAP"].file_path
-                ],
+                    metadata["BAITMAP"].file_path,
+                    metadata["BAM"].file_path
+                    ],
                 taxon_id=metadata["BAM"].taxon_id,
-                meta_data={
-                    "assembly": metadata["BAM"].meta_data,
-                    "tool": "bam2chicago"
-                }
+                meta_data={"tool": "bam2chicago_tool"}
+            ),
+            "chrRMAP" : Metadata(
+                data_type=metadata['RMAP'].data_type,
+                file_type=".rmap",
+                file_path=rfmat_rmap,
+                sources=[
+                    metadata["RMAP"].file_path,
+                    ],
+                taxon_id=metadata["RMAP"].taxon_id,
+                meta_data={"tool": "bam2chicago_tool"}
+            ),
+            "chrBAITMAP" : Metadata(
+                data_type=metadata['BAITMAP'].data_type,
+                file_type=".baitmap",
+                file_path=rfmat_baitmap,
+                sources=[
+                    metadata["BAITMAP"].file_path
+                    ],
+                taxon_id=metadata["BAITMAP"].taxon_id,
+                meta_data={"tool": "bam2chicago_tool"}
             )
         }
 
-        return(results, output_metadata)
+        return output_files, output_metadata

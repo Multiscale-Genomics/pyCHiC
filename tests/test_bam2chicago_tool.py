@@ -33,17 +33,17 @@ def test_bam2chicago():
     }
 
     output_files = {
-        "sample_name" :  path + "test_bam2chicago_tool/sampleout",
+        "chinput" :  path + "test_bam2chicago_tool/sampleout",
         "chrRMAP" : path + "test_bam2chicago_tool/chrtest.rmap",
         "chrBAITMAP" : path + "test_bam2chicago_tool/chrtest.baitmap"
     }
 
     metadata = {
         "RMAP" : Metadata(
-            "data_chicago_input", ".rmap",
+            "TXT", ".rmap",
             path+"/h19_chr20and21_chr.rmap", None, {}, 9606),
         "BAITMAP" : Metadata(
-            "data_chicago_input", ".baitmap",
+            "TXT", ".baitmap",
             path+"/h19_chr20and21.baitmap_4col_chr.txt", None, {}, 9606),
         "BAM" : Metadata(
             "txt", "bamfile", path + "/SRR3535023_1_2.hicup.bam",
@@ -52,10 +52,14 @@ def test_bam2chicago():
             9606)
     }
 
-    bam2chicago_handle = bam2chicagoTool()
+    configuration = {
+        "aligner" : "tadbit"
+    }
+
+    bam2chicago_handle = bam2chicagoTool(configuration)
     bam2chicago_handle.run(input_files, metadata, output_files)
 
-    out_path = output_files["sample_name"] + "/sampleout.chinput"
+    out_path = output_files["chinput"] + "/sampleout.chinput"
 
     assert os.path.isfile(out_path) is True
     assert os.path.getsize(out_path) > 0
