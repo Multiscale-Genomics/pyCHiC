@@ -22,6 +22,7 @@ from tool.common import common
 from utils import logger
 import shlex
 from shutil import move
+from shutil import rmtree
 import tarfile
 
 
@@ -113,7 +114,7 @@ class bam2chicagoTool(Tool):
         return chrRMAP, chrBAITMAP
 
     @task(returns=bool, bamFile=FILE_IN, rmapFile=FILE_IN,
-        baitmapFile=FILE_IN, chinput=FILE_OUT)
+          baitmapFile=FILE_IN, chinput=FILE_OUT)
     def bam2chicago(self, bamFile, rmapFile, baitmapFile, chinput):
         """
         Main function that preprocess the bam files into Chinput files. Part of
@@ -182,7 +183,6 @@ class bam2chicagoTool(Tool):
             chinput_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+".chinput"
             b2b_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+"_bait2bait.bedpe"
 
-
             try:
                 tar = tarfile.open(os.path.split(chinput)[1], "w")
                 tar.add(chinput_file,
@@ -194,7 +194,8 @@ class bam2chicagoTool(Tool):
                                 os.path.split(b2b_file)[1])
                 tar.close()
 
-                move(os.path.split(chinput)[1], os.path.split(chinput)[0])
+                rmtree(no_tar_out)
+                move(os.path.split(chinput)[1], chinput)
 
                 logger.info("Tar folder with chinput output file")
 
