@@ -194,7 +194,6 @@ class bam2chicagoTool(Tool):
                                 os.path.split(b2b_file)[1])
                 tar.close()
 
-                print("tarfile",os.path.split(chinput)[1])
                 move(os.path.split(chinput)[1], os.path.split(chinput)[0])
 
                 logger.info("Tar folder with chinput output file")
@@ -230,6 +229,9 @@ class bam2chicagoTool(Tool):
         output_metadata : list
         List of matching metadata dict objects
         """
+        if os.path.isdir(os.path.split(output_files["chinput"])[0]) is False:
+            logger.info("creating output directory")
+            os.mkdir(os.path.split(output_files["chinput"])[0])
 
         if self.configuration["aligner"] == "tadbit":
             logger.info("cheking chr format from rmap and baitmap")
