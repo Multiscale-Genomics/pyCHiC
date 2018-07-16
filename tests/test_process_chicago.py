@@ -21,7 +21,7 @@ import os.path
 import pytest  # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
-from CHiC.process_run_chicago import process_run_chicago
+from process_run_chicago import process_run_chicago
 
 def test_process_chicago():
     """
@@ -29,26 +29,31 @@ def test_process_chicago():
 
     Running the chicago pipeline with the test data from the command line
     """
+
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "chinput_file": path + "test_run_chicago/data_chicago/GM_rep1.chinput"
+        "chinput": path + "test_run_chicago/data_chicago/GM_rep1.chinput",
+        "RMAP" : path + "test_run_chicago/data_chicago/h19_chr20and21.rmap",
+        "BAITMAP" : path + "test_run_chicago/data_chicago/h19_chr20and21.baitmap",
+        "nbpb" : path + "test_run_chicago/data_chicago/h19_chr20and21.nbpb",
+        "npb" : path + "test_run_chicago/data_chicago/h19_chr20and21.npb",
+        "poe" : path + "test_run_chicago/data_chicago/h19_chr20and21.poe",
+        "setting_file" : path + "test_run_chicago/data_chicago/sGM12878.settingsFile"
         }
 
     output_files = {
-        "output_dir": path + "test_run_chicago",
-        "output_prefix" : "output_test"
+        "output": path + "test_run_chicago/data_chicago/out_run_chicago.tar",
         }
 
     metadata = {
-        "chinput_1" : Metadata(
+        "chinput" : Metadata(
             "data_chicago", "chinput", [], None, None, 9606)
         }
 
     config = {
-        "chicago_setting_file": path + "test_run_chicago/data_chicago/sGM12878.settingsFile",
-        "chicago_desing_dir": path + "test_run_chicago/data_chicago",
-        #"chicago_print_memory": None,
+        #"chicago_print_memory": "None",
+        "chicago_out_prefix" : "output_test",
         "chicago_cutoff": "5",
         "chicago_export_format": "washU_text",
         #"chicago_export_order": None,
@@ -68,8 +73,7 @@ def test_process_chicago():
     chicago_handle = process_run_chicago(config)
     chicago_handle.run(input_files, metadata, output_files)
 
-    assert os.path.isfile(output_files["output_dir"] +
-                          "/data/" + output_files["output_prefix"] + ".Rds") is True
+    assert os.path.isfile(output_files["output"]) is True
 
-    assert os.path.getsize(output_files["output_dir"] +
-                           "/data/" + output_files["output_prefix"] + ".Rds") > 0
+    assert os.path.getsize(output_files["output"]) > 0
+

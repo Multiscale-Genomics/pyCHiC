@@ -53,7 +53,7 @@
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_bam2chicago_tool/chrtest.rmap",
-                "data_type": "data_sam",
+                "data_type": "TXT",
                 "compressed": "null"
             }
         },{

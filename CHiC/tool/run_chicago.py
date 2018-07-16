@@ -20,6 +20,9 @@ import os
 import subprocess
 import sys
 from utils import logger
+import tarfile
+from shutil import rmtree
+from shutil import move
 
 
 try:
@@ -56,6 +59,9 @@ class ChicagoTool(Tool):
             dictionary containing parameters that define how the operation
             should be carried out, which are specific to the tool.
 
+        Are you developing 3D/4D genomic analysis tools?
+        join us in Septemeber and learn how to integrate it into a Virtual research
+        enviroment.
         """
 
         print("Running Chicago")
@@ -66,8 +72,43 @@ class ChicagoTool(Tool):
 
         self.configuration.update(configuration)
 
-    #@task(some decorators)
-    def chicago(self, input_files, output_prefix, output_dir, params):
+    @staticmethod
+    def untar_chinput(chinput_tar):
+        """
+        This function take as input the tar chinput
+
+        Parameters
+        ----------
+        chinput_tar: str
+            path to the tar file, the tar files should have the same prefix name as the
+            tar file
+
+        Returns
+        -------
+        list of untar files
+        """
+        if chinput_tar.split(".")[-1] == "tar":
+            tar = tarfile.open("chinput_tar")
+            tar.extractall()
+            tar.close()
+
+            directory_path = os.path.split(chinput_tar)
+
+            if directory_path[0] == "":
+                files_dir = os.listdir(".")
+            else:
+                files_dir = os.listdir(directory_path[0])
+
+            files_dir = [fl for fl in files_dir if fl.split(".")[-1] == ".chinput"]
+
+            return files_dir
+
+        else:
+            return chinput_tar
+
+
+    def chicago(self, input_files, output_prefix, output, params, RMAP,
+               BAITMAP, nbpb, npb, poe, setting_file):
         """
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
         folder:
@@ -84,30 +125,40 @@ class ChicagoTool(Tool):
                 output_index_proxExamples.pdf: random chosen peaks showing interactions regions
         see http://regulatorygenomicsgroup.org/chicago for more information
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         input_files: str ot comma separated list if there is more than one replicate
         output_prefix: str
         output_dir: str (whole path for the output)
         params: dict
 
-        Returns:
-        --------
+        Returns
+        -------
         bool
             writes the output files in the defined location
         """
+        output_dir = os.path.split(output)[0]
+
+        script = os.path.join(os.path.dirname(__file__), "./scripts/runChicago.R")
+
+        input_files = self.untar_chinput(input_files)
 
         #check if there are more than one .chinput files
         if isinstance(input_files, list):
-            args = ["../scripts/runChicago.R", ", ".join(input_files),
-                    output_prefix, "--output-dir", output_dir]
+            args = [script, ", ".join(input_files),
+                    output_prefix,
+                    "--output-dir", output_dir,
+                    "--settings-file", setting_file]
+
             args += params
 
         #I have runChicago.R added to PATH in bin so no need to call Rscript
         else:
-            args = ["../scripts/runChicago.R",
-                    input_files, output_prefix,
-                    "--output-dir", output_dir]
+            args = [script,
+                    input_files,
+                    output_prefix,
+                    "--output-dir", output_dir,
+                    "--settings-file", setting_file]
 
             args += params
 
@@ -118,7 +169,30 @@ class ChicagoTool(Tool):
         proc_out, proc_err = process.communicate()
 
         try:
-            os.path.isfile(output_dir+"/data"+output_prefix+".Rds")
+            tar = tarfile.open(os.path.split(output)[1], "w")
+            tar.add(output_dir+"/data",
+                    arcname="data")
+
+            tar.add(output_dir+"/diag_plots",
+                    arcname="diag_plots")
+
+            tar.add(output_dir+"/examples",
+                    arcname="examples")
+
+            tar.add(output_dir+"/enrichment_data",
+                    arcname="enrichment_data")
+            tar.close()
+
+            rmtree(output_dir+"/data")
+            rmtree(output_dir+"/diag_plots")
+            rmtree(output_dir+"/examples")
+            rmtree(output_dir+"/enrichment_data")
+
+            move(os.path.split(output)[1], output)
+
+            logger.info("Tar folder with chinput output file")
+
+
         except IOError:
             logger.fatal("chicago failed to generate peak file")
             logger.fatal("chicago stdout" + proc_out)
@@ -144,8 +218,7 @@ class ChicagoTool(Tool):
         command_params = []
 
         command_parameters = {
-            "chicago_setting_file": ["--settings-file", True],
-            "chicago_desing_dir": ["--design-dir", True],
+            "chicago_design_dir": ["--design-dir", True],
             "chicago_print_memory": ["--print-memory", False],
             "chicago_cutoff": ["--cutoff", True],
             "chicago_export_format":["--export-format", True],
@@ -167,7 +240,7 @@ class ChicagoTool(Tool):
 
 
         for param in params:
-            if param in command_parameters:
+            if param in command_parameters and params[param] != "None":
                 if command_parameters[param][1]:
                     command_params += [command_parameters[param][0], params[param]]
                 else:
@@ -199,37 +272,52 @@ class ChicagoTool(Tool):
             List of matching metadata dict objects
         """
         #check if the output directory exists, otherwise create it
-        if not os.path.exists(output_files["output_dir"]):
-            logger.info("creating output directory: "+
-                        output_files["output_dir"])
-            os.makedirs(output_files["output_dir"])
+        output_dir = os.path.split(output_files["output"])[0]
+        print("output", output_dir)
+        if not os.path.exists(output_dir):
+            logger.info("creating output directory: "+output_dir)
+            os.makedirs(output_dir)
 
 
         command_params = self.get_chicago_params(self.configuration)
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        results = self.chicago(input_files["chinput_file"],
-                               output_files["output_prefix"],
-                               output_files["output_dir"],
-                               command_params)
+        design_dir = os.listdir(self.configuration["chicago_design_dir"])
+        print(design_dir)
+
+        RMAP = [fl for fl in design_dir if fl.split(".")[-1] == ".rmap"]
+        BAITMAP = [fl for fl in design_dir if fl.split(".")[-1] == ".baitmap"]
+        nbpb = [fl for fl in design_dir if fl.split(".")[-1] == ".nbpb"]
+        npb = [fl for fl in design_dir if fl.split(".")[-1] == ".npb"]
+        poe = [fl for fl in design_dir if fl.split(".")[-1] == ".poe"]
+
+        results = self.chicago(input_files["chinput"],
+                               self.configuration["chicago_out_prefix"],
+                               output_files["output"],
+                               command_params,
+                               RMAP,
+                               BAITMAP,
+                               nbpb,
+                               npb,
+                               poe,
+                               input_files["setting_file"])
 
         results = compss_wait_on(results)
 
-
         output_metadata = {
             "output" : Metadata(
-                data_type="peaks",
-                file_type=self.configuration["chicago_export_format"],
-                file_path=output_files["output_dir"],
+                data_type="tar",
+                file_type="tar",
+                file_path=output_files["output"],
                 sources=[
-                    metadata["chinput_1"].file_path,
+                    metadata["chinput"].file_path,
                 ],
-                taxon_id=metadata["chinput_1"].taxon_id,
+                taxon_id=metadata["chinput"].taxon_id,
                 meta_data={
-                    "tool": "Chicago, capture Capture-HiC algorithm"
+                    "tool": "run_chicago"
                 }
             )
         }
 
-        return(results, output_metadata)
+        return output_files, output_metadata

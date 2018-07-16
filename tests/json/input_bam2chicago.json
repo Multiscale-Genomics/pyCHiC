@@ -1,8 +1,8 @@
 [
     {
         "_id": "59b7e020d9422a5969bccb",
-        "data_type": "sequence data",
-        "file_type": "rmap",
+        "data_type": "TXT",
+        "file_type": ".rmap",
         "file_path": "tests/data/test_run_chicago/test.rmap",
         "compressed": 0,
         "sources": ["user"],
@@ -14,8 +14,8 @@
     },
     {
         "_id": "59b7e020d9422asssdsd",
-        "data_type": "RE sites with baits",
-        "file_type": "baitmap",
+        "data_type": "TXT",
+        "file_type": ".baitmap",
         "file_path": "tests/data/test_run_chicago/test.baitmap",
         "compressed": 0,
         "sources": ["user"],

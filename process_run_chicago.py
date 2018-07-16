@@ -24,7 +24,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.run_chicago import ChicagoTool
+from CHiC.tool.run_chicago import ChicagoTool
 
 #################################################
 
@@ -79,29 +79,16 @@ class process_run_chicago(Workflow):
         output_metadata: dict
             Output metadata for the associated files in output_files
         """
+        try:
+            chicago_caller = ChicagoTool(self.configuration)
 
-        output_files_generated = {}
-        output_metadata = {}
+            output_files_generated, output_metadata = chicago_caller.run(
+                input_files, metadata, output_files)
 
-        logger.info("Process chicago - defined output:" +
-                    output_files["output_dir"]+
-                    output_files["output_prefix"])
+            return output_files_generated, output_metadata
 
-        #chicago
-        chicago_caller = ChicagoTool(self.configuration)
-        output_files_generated, output_metadata = chicago_caller.run(
-            {
-                "chinput_file" : input_files["chinput_file"],
-            }, {
-                "chinput_1" : metadata["chinput_1"],
-            }, {
-                "output_prefix" : output_files["output_prefix"],
-                "output_dir" : output_files["output_dir"]
-            }
-        )
-
-        print("chicago results: ", output_metadata)
-        return output_files_generated, output_metadata
+        except IOError:
+            logger.info("chicago failed to generate output files =(")
 
 
 ################################################################
@@ -143,7 +130,7 @@ if __name__ == "__main__":
     PARSER.add_argument(
         "--out_metadata", help="Location of output metadata file")
     PARSER.add_argument(
-        "--local", action="store_const", cont=True, default=False)
+        "--local", action="store_const", const=True, default=False)
 
     #Get matching parameters from the command line
     ARGS = PARSER.parse_args()
