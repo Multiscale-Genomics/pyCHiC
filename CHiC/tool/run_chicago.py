@@ -139,7 +139,7 @@ class ChicagoTool(Tool):
         bool
             writes the output files in the defined location
         """
-        output_dir = os.path.split(output)[0]
+        output_dir = "."
 
         script = os.path.join(os.path.dirname(__file__), "scripts/runChicago.R")
 
@@ -156,7 +156,7 @@ class ChicagoTool(Tool):
 
         #I have runChicago.R added to PATH in bin so no need to call Rscript
         else:
-            args = ["/usr/local/bin/Rscript", script,
+            args = ["Rscript", script,
                     input_files,
                     output_prefix,
                     "--output-dir", output_dir,
@@ -169,6 +169,8 @@ class ChicagoTool(Tool):
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         process.wait()
         proc_out, proc_err = process.communicate()
+
+
 
         try:
             tar = tarfile.open(os.path.split(output)[1], "w")
@@ -275,11 +277,10 @@ class ChicagoTool(Tool):
         """
         #check if the output directory exists, otherwise create it
         output_dir = os.path.split(output_files["output"])[0]
-        print("output", output_dir)
+
         if not os.path.exists(output_dir):
             logger.info("creating output directory: "+output_dir)
             os.makedirs(output_dir)
-
 
         command_params = self.get_chicago_params(self.configuration)
 
