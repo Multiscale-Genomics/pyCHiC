@@ -147,7 +147,7 @@ class ChicagoTool(Tool):
 
         #check if there are more than one .chinput files
         if isinstance(input_files, list):
-            args = [script, ", ".join(input_files),
+            args = ["Rscript", script, ", ".join(input_files),
                     output_prefix,
                     "--output-dir", output_dir,
                     "--settings-file", setting_file]
@@ -156,7 +156,7 @@ class ChicagoTool(Tool):
 
         #I have runChicago.R added to PATH in bin so no need to call Rscript
         else:
-            args = ["Rscript", script,
+            args = ["/usr/local/bin/Rscript", script,
                     input_files,
                     output_prefix,
                     "--output-dir", output_dir,
