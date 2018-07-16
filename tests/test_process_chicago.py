@@ -73,4 +73,3 @@ def test_process_chicago():
     assert os.path.isfile(output_files["output"]) is True
 
     assert os.path.getsize(output_files["output"]) > 0
-
