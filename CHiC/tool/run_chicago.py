@@ -141,7 +141,7 @@ class ChicagoTool(Tool):
         """
         output_dir = os.path.split(output)[0]
 
-        script = os.path.join(os.path.dirname(__file__), "./scripts/runChicago.R")
+        script = os.path.join(os.path.dirname(__file__), "scripts/runChicago.R")
 
         input_files = self.untar_chinput(input_files)
 
@@ -156,7 +156,7 @@ class ChicagoTool(Tool):
 
         #I have runChicago.R added to PATH in bin so no need to call Rscript
         else:
-            args = [script,
+            args = ["Rscript", script,
                     input_files,
                     output_prefix,
                     "--output-dir", output_dir,
