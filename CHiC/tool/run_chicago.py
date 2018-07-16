@@ -105,11 +105,14 @@ class ChicagoTool(Tool):
 
         else:
             return chinput_tar
-
+    """
     @task(returns=bool, input_files=FILE_IN, output_prefix=IN, output=FILE_OUT,
           params=IN, RMAP=FILE_IN, BAITMAP=FILE_IN, nbpb=FILE_IN, npb=FILE_IN,
           poe=FILE_IN, setting_file=FILE_IN)
-    def chicago(self, input_files, output_prefix, output, params, RMAP,
+    """
+
+    @staticmethod
+    def chicago(input_files, output_prefix, output, params, RMAP,
                BAITMAP, nbpb, npb, poe, setting_file):
         """
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
@@ -143,8 +146,6 @@ class ChicagoTool(Tool):
 
         script = os.path.join(os.path.dirname(__file__), "scripts/runChicago.R")
 
-        input_files = self.untar_chinput(input_files)
-
         #check if there are more than one .chinput files
         if isinstance(input_files, list):
             args = ["Rscript", script, ", ".join(input_files),
@@ -169,8 +170,6 @@ class ChicagoTool(Tool):
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         process.wait()
         proc_out, proc_err = process.communicate()
-
-
 
         try:
             tar = tarfile.open(os.path.split(output)[1], "w")
@@ -287,7 +286,8 @@ class ChicagoTool(Tool):
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
         design_dir = os.listdir(self.configuration["chicago_design_dir"])
-        print(design_dir)
+
+        input_chinput = self.untar_chinput(input_files["chinput"])
 
         RMAP = "".join([fl for fl in design_dir if fl.split(".")[-1] == "rmap"])
         BAITMAP = "".join([fl for fl in design_dir if fl.split(".")[-1] == "baitmap"])
@@ -295,7 +295,7 @@ class ChicagoTool(Tool):
         npb = "".join([fl for fl in design_dir if fl.split(".")[-1] == "npb"])
         poe = "".join([fl for fl in design_dir if fl.split(".")[-1] == "poe"])
 
-        results = self.chicago(input_files["chinput"],
+        results = self.chicago(input_chinput,
                                self.configuration["chicago_out_prefix"],
                                output_files["output"],
                                command_params,
