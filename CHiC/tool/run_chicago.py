@@ -141,7 +141,7 @@ class ChicagoTool(Tool):
         """
         output_dir = os.path.split(output)[0]
 
-        script = os.path.join(os.path.dirname(__file__), "./scripts/runChicago.R")
+        script = os.path.join(os.path.dirname(__file__), "/scripts/runChicago.R")
 
         input_files = self.untar_chinput(input_files)
 
@@ -288,21 +288,21 @@ class ChicagoTool(Tool):
         design_dir = os.listdir(self.configuration["chicago_design_dir"])
         print(design_dir)
 
-        RMAP = [fl for fl in design_dir if fl.split(".")[-1] == ".rmap"]
-        BAITMAP = [fl for fl in design_dir if fl.split(".")[-1] == ".baitmap"]
-        nbpb = [fl for fl in design_dir if fl.split(".")[-1] == ".nbpb"]
-        npb = [fl for fl in design_dir if fl.split(".")[-1] == ".npb"]
-        poe = [fl for fl in design_dir if fl.split(".")[-1] == ".poe"]
+        RMAP = "".join([fl for fl in design_dir if fl.split(".")[-1] == "rmap"])
+        BAITMAP = "".join([fl for fl in design_dir if fl.split(".")[-1] == "baitmap"])
+        nbpb = "".join([fl for fl in design_dir if fl.split(".")[-1] == "nbpb"])
+        npb = "".join([fl for fl in design_dir if fl.split(".")[-1] == "npb"])
+        poe = "".join([fl for fl in design_dir if fl.split(".")[-1] == "poe"])
 
         results = self.chicago(input_files["chinput"],
                                self.configuration["chicago_out_prefix"],
                                output_files["output"],
                                command_params,
-                               RMAP,
-                               BAITMAP,
-                               nbpb,
-                               npb,
-                               poe,
+                               self.configuration["chicago_design_dir"]+"/"+RMAP,
+                               self.configuration["chicago_design_dir"]+"/"+BAITMAP,
+                               self.configuration["chicago_design_dir"]+"/"+nbpb,
+                               self.configuration["chicago_design_dir"]+"/"+npb,
+                               self.configuration["chicago_design_dir"]+"/"+poe,
                                input_files["setting_file"])
 
         results = compss_wait_on(results)
