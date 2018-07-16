@@ -106,7 +106,9 @@ class ChicagoTool(Tool):
         else:
             return chinput_tar
 
-
+    @task(returns=bool, input_files=FILE_IN, output_prefix=IN, output=FILE_OUT,
+          params=IN, RMAP=FILE_IN, BAITMAP=FILE_IN, nbpb=FILE_IN, npb=FILE_IN,
+          poe=FILE_IN, setting_file=FILE_IN)
     def chicago(self, input_files, output_prefix, output, params, RMAP,
                BAITMAP, nbpb, npb, poe, setting_file):
         """
