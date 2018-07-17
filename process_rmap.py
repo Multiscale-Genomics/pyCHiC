@@ -80,24 +80,27 @@ class process_rmap(Workflow):
             metadata for both rmap and baitmap
             files
         """
+        try:
+            rmap_caller = makeRmapFile(self.configuration)
+            output_files_rmap, output_metadata_rmap = rmap_caller.run(
+                {
+                    "genome_fa" : input_files["genome_fa"]
+                },
+                {
+                    "genome_fa" : metadata["genome_fa"]
+                },
+                {
+                    "RMAP" : output_files["RMAP"],
+                    "Rtree_file_dat" : output_files["Rtree_file_dat"],
+                    "Rtree_file_idx" : output_files["Rtree_file_idx"]
+                }
+            )
 
-        rmap_caller = makeRmapFile(self.configuration)
-        output_files_rmap, output_metadata_rmap = rmap_caller.run(
-            {
-                "genome_fa" : input_files["genome_fa"]
-            },
-            {
-                "genome_fa" : metadata["genome_fa"]
-            },
-            {
-                "RMAP" : output_files["RMAP"],
-                "Rtree_file_dat" : output_files["Rtree_file_dat"],
-                "Rtree_file_idx" : output_files["Rtree_file_idx"]
-            }
-        )
 
+            return output_files_rmap, output_metadata_rmap
 
-        return output_files_rmap, output_metadata_rmap
+        except IOError:
+            return False
 
 #############################################################
 

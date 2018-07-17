@@ -105,15 +105,9 @@ class ChicagoTool(Tool):
 
         else:
             return chinput_tar
-    """
-    @task(returns=bool, input_files=FILE_IN, output_prefix=IN, output=FILE_OUT,
-          params=IN, RMAP=FILE_IN, BAITMAP=FILE_IN, nbpb=FILE_IN, npb=FILE_IN,
-          poe=FILE_IN, setting_file=FILE_IN)
-    """
 
     @staticmethod
-    def chicago(input_files, output_prefix, output, params, RMAP,
-               BAITMAP, nbpb, npb, poe, setting_file):
+    def chicago(input_files, output_prefix, output, params, setting_file):
         """
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
         folder:
@@ -155,7 +149,6 @@ class ChicagoTool(Tool):
 
             args += params
 
-        #I have runChicago.R added to PATH in bin so no need to call Rscript
         else:
             args = ["Rscript", script,
                     input_files,
@@ -285,25 +278,12 @@ class ChicagoTool(Tool):
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        design_dir = os.listdir(self.configuration["chicago_design_dir"])
-
         input_chinput = self.untar_chinput(input_files["chinput"])
-
-        RMAP = "".join([fl for fl in design_dir if fl.split(".")[-1] == "rmap"])
-        BAITMAP = "".join([fl for fl in design_dir if fl.split(".")[-1] == "baitmap"])
-        nbpb = "".join([fl for fl in design_dir if fl.split(".")[-1] == "nbpb"])
-        npb = "".join([fl for fl in design_dir if fl.split(".")[-1] == "npb"])
-        poe = "".join([fl for fl in design_dir if fl.split(".")[-1] == "poe"])
 
         results = self.chicago(input_chinput,
                                self.configuration["chicago_out_prefix"],
                                output_files["output"],
                                command_params,
-                               self.configuration["chicago_design_dir"]+"/"+RMAP,
-                               self.configuration["chicago_design_dir"]+"/"+BAITMAP,
-                               self.configuration["chicago_design_dir"]+"/"+nbpb,
-                               self.configuration["chicago_design_dir"]+"/"+npb,
-                               self.configuration["chicago_design_dir"]+"/"+poe,
                                input_files["setting_file"])
 
         results = compss_wait_on(results)

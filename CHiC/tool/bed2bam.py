@@ -146,7 +146,6 @@ class bed2bam(Tool):
            - S1 and S2 tags are the strand orientation of the left and right read-end
         Each pair of contacts produces two lines in the output BAM
         """
-        frmt = 'chicago'
         samtools = 'samtools'
 
         copy(infile, infile+".tmp")

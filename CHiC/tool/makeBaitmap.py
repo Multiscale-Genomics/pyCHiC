@@ -156,7 +156,7 @@ class makeBaitmapTool(Tool):
 
 
     @task(returns = bool, baitmap_list=IN,
-        out_baitmap=FILE_OUT)
+          out_baitmap=FILE_OUT)
     def create_baitmap(self, baitmap_list, out_baitmap):
         """
         This function takes a list with RE fragments that
@@ -257,6 +257,8 @@ class makeBaitmapTool(Tool):
         results = self.create_baitmap(
             baitmap_list,
             output_files["out_baitmap"])
+
+        results = compss_wait_on(results)
 
         output_metadata = {
             "out_baitmap": Metadata(

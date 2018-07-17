@@ -95,7 +95,7 @@ class process_truncater(Workflow):
                 #if os.path.getsize(output_files["fastq1_trunc"]) > 0:
             return output_files_truncater, output_metadata_truncater
 
-        except:
+        except IOError:
             return False
 
 #############################################################
