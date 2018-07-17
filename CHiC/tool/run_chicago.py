@@ -184,8 +184,6 @@ class ChicagoTool(Tool):
             rmtree(output_dir+"/examples")
             rmtree(output_dir+"/enrichment_data")
 
-            #move(os.path.split(output)[1], output)
-
             logger.info("Tar folder with chinput output file")
 
 

@@ -105,7 +105,7 @@ class process_baitmap(Workflow):
         )
 
         if os.path.getsize(output_files["out_baitmap"]) > 0:
-            pass
+            logger.info(".baitmao file generated succesfully")
         else:
             logger.fatal("generate_CHiCAGO_baitmap failed to generate .baitmap file")
             return False
