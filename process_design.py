@@ -111,7 +111,7 @@ class process_design(Workflow):
                          "generate design files")
             return False
 
-        return design_out, design_meta
+        return True
 
 
 #############################################################
