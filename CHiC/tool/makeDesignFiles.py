@@ -219,7 +219,7 @@ class makeDesignFilesTool(Tool):
             ".nbpb" : Metadata(
                 data_type=".nbpb",
                 file_type=".nbpb",
-                file_path=out_design_dir+".nbpb",
+                file_path=output_files[".nbpb"],
                 sources=[
                     metadata["RMAP"].file_path,
                     metadata["BAITMAP"].file_path
@@ -232,7 +232,7 @@ class makeDesignFilesTool(Tool):
             ".npb" : Metadata(
                 data_type=".npb",
                 file_type=".npb",
-                file_path=out_design_dir+".npb",
+                file_path=output_files[".npb"],
                 sources=[
                     metadata["RMAP"].file_path,
                     metadata["BAITMAP"].file_path
@@ -245,7 +245,7 @@ class makeDesignFilesTool(Tool):
             ".poe" : Metadata(
                 data_type=".poe",
                 file_type=".poe",
-                file_path=out_design_dir+".poe",
+                file_path=output_files[".poe"],
                 sources=[
                     metadata["RMAP"].file_path,
                     metadata["BAITMAP"].file_path
