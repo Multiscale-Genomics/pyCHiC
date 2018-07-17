@@ -136,7 +136,7 @@ class ChicagoTool(Tool):
         bool
             writes the output files in the defined location
         """
-        output_dir = "."
+        output_dir = os.path.split(output)[0]
 
         script = os.path.join(os.path.dirname(__file__), "scripts/runChicago.R")
 
@@ -165,7 +165,7 @@ class ChicagoTool(Tool):
         proc_out, proc_err = process.communicate()
 
         try:
-            tar = tarfile.open(os.path.split(output)[1], "w")
+            tar = tarfile.open(output, "w")
             tar.add(output_dir+"/data",
                     arcname="data")
 
@@ -184,7 +184,7 @@ class ChicagoTool(Tool):
             rmtree(output_dir+"/examples")
             rmtree(output_dir+"/enrichment_data")
 
-            move(os.path.split(output)[1], output)
+            #move(os.path.split(output)[1], output)
 
             logger.info("Tar folder with chinput output file")
 
