@@ -211,7 +211,7 @@ class makeDesignFilesTool(Tool):
                                        commands_params,
                                        tmp_names)
 
-        compss_wait_on(results)
+        results = compss_wait_on(results)
 
         out_design_dir = self.configuration["makeDesignFiles_outfilePrefix"]
 

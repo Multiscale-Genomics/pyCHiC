@@ -96,16 +96,21 @@ class process_design(Workflow):
             }
         )
 
-        """
-        out_prefix = self.configuration["makeDesignFiles_outfilePrefix"]
+        if os.path.isfile(output_files[".nbpb"]) is True and \
+           os.path.isfile(output_files[".npb"]) is True and \
+           os.path.isfile(output_files[".poe"]) is True:
 
-        if os.path.isfile(out_prefix + ".nbpb") is True:
-            pass
+            if os.path.getsize(output_files[".nbpb"]) > 0 and \
+               os.path.getsize(output_files[".npb"]) > 0 and \
+               os.path.getsize(output_files[".poe"]) > 0:
+
+                logger.info("Design files succesfully generated")
+
         else:
             logger.fatal("process_makeDesign failed to" +
                          "generate design files")
             return False
-        """
+
         return design_out, design_meta
 
 
