@@ -90,7 +90,8 @@ class makeDesignFilesTool(Tool):
 
         script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
 
-        args = ["python", script]
+        args = ["python", script,
+                "--outfilePrefix", tmp_names]
 
         args += parameters
 
@@ -151,12 +152,7 @@ class makeDesignFilesTool(Tool):
         for parameter in params:
             if parameter in command_parameters:
                 if command_parameters[parameter][1]:
-                    if command_parameters[parameter][0] == "--outfilePrefix":
-                        name = "".join(params[parameter].split("/")[-1])+"_tmp"
-
-                        command_params += [command_parameters[parameter][0],
-                                           name]
-                    elif command_parameters[parameter][0] == "--rmapfile":
+                    if command_parameters[parameter][0] == "--rmapfile":
                         name = "".join(params[parameter].split("/")[-1])
 
                         command_params += [command_parameters[parameter][0],

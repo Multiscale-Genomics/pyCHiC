@@ -96,7 +96,7 @@ class process_rmap(Workflow):
             }
         )
 
-        if os.path.getsize(output_files["RMAP"]) > 0:
+        if os.path.isfile(output_files["RMAP"]) is True:
             logger.info(".rmap file generated succesfully")
 
         else:
