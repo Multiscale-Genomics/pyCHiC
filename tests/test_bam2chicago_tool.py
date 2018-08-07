@@ -29,7 +29,7 @@ def test_bam2chicago():
     input_files = {
         "RMAP" : path + "test_run_chicago/test.rmap",
         "BAITMAP" : path +  "test_run_chicago/test.baitmap",
-        "BAM" : path + "test_bed2bam/outbam_sorted.bam",
+        "BAM" : path + "/test_hicup/output/SRR3535023_1_2.hicup.bam",
     }
 
     output_files = {

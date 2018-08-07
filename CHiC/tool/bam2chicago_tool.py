@@ -182,7 +182,7 @@ class bam2chicagoTool(Tool):
 
             chinput_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+".chinput"
             b2b_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+"_bait2bait.bedpe"
-
+            """
             try:
                 tar = tarfile.open(os.path.split(chinput)[1], "w")
                 tar.add(chinput_file,
@@ -204,7 +204,7 @@ class bam2chicagoTool(Tool):
                 return False
 
             return True
-
+            """
         except IOError:
             logger.fatal("bam2chicago failed to generate chicago output files =(")
             return False
