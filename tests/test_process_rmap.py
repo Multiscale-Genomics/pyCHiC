@@ -18,10 +18,10 @@
 from __future__ import print_function
 
 import os
-import pytest
+import pytest # pylint: disable=unused-import
 
-from process_rmap import generate_CHiCAGO_rmap
 from basic_modules.metadata import Metadata
+from process_rmap import process_rmap
 
 def test_process_rmap():
     """
@@ -30,35 +30,32 @@ def test_process_rmap():
     input files for CHiCAGO pipeline
     """
 
-    path = os.path.join(os.path.dirname(__file__) + "/data")
+    path = os.path.join(os.path.dirname(__file__), "data/")
 
-    configuration = {"RE" : {"HindIII" : 'A|AGCTT'},
+
+    configuration = {"RE" : {"HindIII" : 'A|AGCTT'}
                     }
 
     input_files = {
-        "genome_fa":  path + "/test_makeRmap/toy_hg19.fa",
+        "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
         }
 
-    input_metadata = {
 
-        "Rtree_files" : Metadata(
-            "Rtree files", [".dat", ".idx"], path + "/test_makeRmap/rtree_file",
-            {"genome_fa" : path + "/test_makeRmap/toy_hg19.fa",
-             "RE" : {"HindIII" : 'A|AGCTT'}},
-            None, 9606),
-
+    metadata = {
         "genome_fa" : Metadata(
-            "hg19", "fasta", path + "/test_makeRmap/toy_hg19.fa", None, "HindIII", 9606),
-        }
-
-    output_files = {
-        "out_dir_makeRmap" : path + "/test_process_rmap/",
-        "out_prefix_makeRmap" : "restriction_enzyme_test2",
-        "Rtree_files" : path + "/test_process_rmap/rtree_file",
+            "txt", "fasta", path+ "test_baitmap/chr21_hg19.fa",
+            None, 9606, ""),
     }
 
-    generate_CHiCAGO_rmap_hand = generate_CHiCAGO_rmap(configuration)
-    generate_CHiCAGO_rmap_hand.run(input_files, input_metadata, output_files)
+    output_files = {
+        "RMAP" : path + "test_run_chicago/test.rmap",
+        "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
+        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx"
+        }
 
-    assert os.path.getsize(output_files["out_dir_makeRmap"] +
-                           output_files["out_prefix_makeRmap"] + ".rmap") > 0
+
+    rmap_handle = process_rmap(configuration)
+    rmap_handle.run(input_files, metadata, output_files)
+
+    assert os.path.getsize(output_files["Rtree_file_dat"])
+    assert os.path.getsize(output_files["Rtree_file_idx"])

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 .. See the NOTICE file distributed with this work for additional information
    regarding copyright ownership.
@@ -18,3 +17,4 @@
 from pycompssapp import PyCOMPSsApp
 from localapp import LocalApp
 from workflowapp import WorkflowApp
+

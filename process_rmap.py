@@ -20,19 +20,16 @@
 from __future__ import print_function
 import os
 
-#Required for ReadTheDocs
-from functools import wraps
-
 import argparse
 
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.makeRmap_tool import makeRmapFile
+from CHiC.tool.rmap_tool import makeRmapFile
 
 ################################################
 
-class generate_CHiCAGO_rmap(Workflow):
+class process_rmap(Workflow):
     """
     This class generate all input files that are needed for
     CHiCAGO to run
@@ -54,7 +51,7 @@ class generate_CHiCAGO_rmap(Workflow):
 
         self.configuration.update(configuration)
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         This is the main function that run the tools to create .rmap and
         .baitmap.
@@ -65,13 +62,13 @@ class generate_CHiCAGO_rmap(Workflow):
             genome_fa: str
                     Ref genome used in the experiment.
 
-        input_metadata: dict
+        metadata: dict
             input metadata
 
         output_files: dict
-            out_dir_makeRmap: str
+            out_dir_rmap: str
                     path to the output diretory
-            out_prefix_makeRmap: str
+            out_prefix_rmap: str
                     prefix for the output file .rmap
             Rtree_files: str
                     Name of the Rtree files
@@ -84,29 +81,30 @@ class generate_CHiCAGO_rmap(Workflow):
             files
         """
 
-        makeRmap_caller = makeRmapFile(self.configuration)
-        output_files_makeRmap, output_metadata_makeRmap = makeRmap_caller.run(
+        rmap_caller = makeRmapFile(self.configuration)
+        output_files_rmap, output_metadata_rmap = rmap_caller.run(
             {
                 "genome_fa" : input_files["genome_fa"]
             },
             {
-                "genome_fa" : input_metadata["genome_fa"]
+                "genome_fa" : metadata["genome_fa"]
             },
             {
-                "out_dir_makeRmap" : output_files["out_dir_makeRmap"],
-                "out_prefix_makeRmap" : output_files["out_prefix_makeRmap"],
-                "Rtree_files" : output_files["Rtree_files"]
+                "RMAP" : output_files["RMAP"],
+                "Rtree_file_dat" : output_files["Rtree_file_dat"],
+                "Rtree_file_idx" : output_files["Rtree_file_idx"]
             }
         )
 
-        if os.path.getsize(output_files["out_dir_makeRmap"] +
-            output_files["out_prefix_makeRmap"] + ".rmap") > 0:
-            pass
+        if os.path.isfile(output_files["RMAP"]) is True:
+            logger.info(".rmap file generated succesfully")
+
         else:
-            logger.fatal("generate_CHiCAGO_rmap failed to generate .rmap file")
+            logger.fatal("rmap_tool failed to generate .rmap file")
             return False
 
-        return output_files_makeRmap, output_metadata_makeRmap
+        return output_files_rmap, output_metadata_rmap
+
 
 #############################################################
 
@@ -123,7 +121,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(generate_CHiCAGO_rmap,
+    results = app.launch(process_rmap,
                          config,
                          in_metadata,
                          out_metadata)
@@ -136,7 +134,7 @@ def main_json(config, in_metadata, out_metadata):
 #########################################################################
 
 
-if __name__ == "__name__":
+if __name__ == "__main__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
@@ -148,9 +146,9 @@ if __name__ == "__name__":
     PARSER.add_argument(
         "--out_metadata", help="Location of output metadata file")
     PARSER.add_argument(
-        "--local", action="store_const", cont=True, default=False)
+        "--local", action="store_const", const=True, default=False)
 
-    #Get matching parameters from the command line
+    #Get matching Parametersmeters from the command line
     ARGS = PARSER.parse_args()
 
     CONFIG = ARGS.config
@@ -160,7 +158,8 @@ if __name__ == "__name__":
 
     if LOCAL:
         import sys
-        sys._run_from_cmdl = True
+        sys._run_from_cmdl = True # pylint: disable=protected-access
+
 
     RESULTS = main_json(CONFIG, IN_METADATA, OUT_METADATA)
 

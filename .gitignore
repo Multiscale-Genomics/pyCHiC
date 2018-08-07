@@ -19,3 +19,6 @@ pytest.ini
 pytest.ini
 build/
 dist/
+tool/chr_format_rmapBaitmap.py
+travis_for_R_chicago
+CHiC/tool/bed2bam.pyc

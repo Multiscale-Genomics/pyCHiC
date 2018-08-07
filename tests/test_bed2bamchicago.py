@@ -16,10 +16,11 @@
 """
 
 from __future__ import print_function
-from basic_modules.metadata import Metadata
 import os
 
-from tool.bed2bam import bed2bam
+from basic_modules.metadata import Metadata
+
+from CHiC.tool.bed2bam import bed2bam
 
 def test_bed2bam():
     """
@@ -29,28 +30,32 @@ def test_bed2bam():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "bed" : path + "test_fastq2bed/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv",
-		    "ncpus" : "2"
+        "bed" : path + "test_fastq2bed/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv"
     }
 
-    input_metadata = {
-            "bed": Metadata(
-                data_type="text",
-                file_type="tsv",
-                file_path=input_files["bed"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
-            )
-        }
+    metadata = {
+        "bed": Metadata(
+            data_type="TXT",
+            file_type="tsv",
+            file_path=input_files["bed"],
+            sources="",
+            taxon_id=9606,
+            meta_data={
+                "visible": True,
+                "validated": 1
+            }
+        )
+    }
 
     output_files = {
-        "bam_out" : "outbami"
+        "bam_out" : path + "test_bed2bam/outbam.bam",
+        "bam_out_sorted": path + "test_bed2bam/outbam_sorted.bam"
     }
 
+    config_file = {"ncpus" : "2"}
 
-    bed2bam_hdl = bed2bam()
-    bed2bam_hdl.run(input_files, input_metadata, output_files)
+    bed2bam_hdl = bed2bam(config_file)
+    bed2bam_hdl.run(input_files, metadata, output_files)
 
-    assert os.path.isfile(output_files["bam_out"]+"_sorted.bam") is True
-    assert os.path.isfile(output_files["bam_out"]+"_sorted.bam") is True
+    assert os.path.isfile(output_files["bam_out_sorted"]) is True
+    assert os.path.getsize(output_files["bam_out_sorted"]) > 0

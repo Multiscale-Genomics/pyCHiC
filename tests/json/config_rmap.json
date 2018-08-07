@@ -1,0 +1,64 @@
+{
+    "input_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "genome_fa",
+            "value": "59b7e020d9422a5969b65378"
+        }
+    ],
+    "arguments": [
+        {
+            "name": "RE",
+            "value": {"HindIII" : "A|AGCTT"}
+        }
+    ],
+    "output_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "Rtree_file_dat",
+            "file": {
+                "file_type": "Rtree_file_dat",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "rmap_tool",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_rmap/rtree_file.dat",
+                "data_type": "data_rtree",
+                "compressed": "null"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": "Rtree_file_idx",
+            "file": {
+                "file_type": "Rtree_file_idx",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "rmap_tool",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_rmap/rtree_file.idx",
+                "data_type": "data_rtree",
+                "compressed": "null"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": "RMAP",
+            "file": {
+                "file_type": "RMAP",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "rmap_tool",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_run_chicago/test.rmap",
+                "data_type": "data_rmap",
+                "compressed": "null"
+            }
+        }
+    ]
+}

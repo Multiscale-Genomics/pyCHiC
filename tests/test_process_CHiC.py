@@ -19,9 +19,13 @@ from __future__ import print_function
 from basic_modules.metadata import Metadata
 import os
 
-from process_chicago_CHiC import process_chicago_CHiC
+from CHiC.process_chicago_CHiC import process_chicago_CHiC
 
 def test_process_CHiC():
+
+    import sys
+    sys._run_from_cmdl = True # pylint: disable=protected-access
+
     """
     Test for the process_chicago_CHiC
     """

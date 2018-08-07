@@ -21,8 +21,11 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR
 cd tests/data
 
+branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+
+
 # Known test data files to keep
-a=$(git ls-tree -r master --name-only | sort)
+a=$(git ls-tree -r $branch --name-only | sort)
 
 # All files in test/data
 b=$(tree -aifF --noreport | grep -v /$ | sed 's/^\.\///' | sed 's/^\.$//' | sort)

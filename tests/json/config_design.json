@@ -1,0 +1,102 @@
+{
+    "input_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "RMAP",
+            "value": "59b7e020d9422a5969b00"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "BAITMAP",
+            "value": "59b7e020d9422a59688"
+        }
+    ],
+    "arguments": [
+        {
+            "name": "makeDesignFiles_minFragLen",
+            "value": "150"
+        },
+        {
+            "name": "makeDesignFiles_maxFragLen",
+            "value": "40000"
+        },
+        {
+            "name": "makeDesignFiles_maxLBrownEst",
+            "value": "1500000"
+        },
+        {
+            "name": "makeDesignFiles_binSize",
+            "value": "20000"
+        },
+        {
+            "name" : "makeDesignFiles_removeb2b",
+            "value": "True"
+        },
+        {
+            "name" : "makeDesignFiles_removeAdjacent",
+            "value": "True"
+        },
+        {
+            "name" : "makeDesignFiles_outfilePrefix",
+            "value" : "tests/data/test_run_chicago/test"
+        },
+        {
+            "name" : "makeDesignFiles_rmap",
+            "value" : "tests/data/test_run_chicago/test.rmap"
+        },
+        {
+            "name" : "makeDesignFiles_baitmap",
+            "value" : "tests/data/test_run_chicago/test.baitmap"
+        }
+    ],
+    "output_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": ".nbpb",
+            "file": {
+                "file_type": ".nbpb",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeDesignFiles.py",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_run_chicago/test.nbpb",
+                "data_type": ".nbpb",
+                "compressed": "null"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": ".npb",
+            "file": {
+                "file_type": ".npb",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeDesignFiles.py",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_run_chicago/test.npb",
+                "data_type": ".npb",
+                "compressed": "null"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": ".poe",
+            "file": {
+                "file_type": ".poe",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeDesignFiles.py",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_run_chicago/test.poe",
+                "data_type": ".poe",
+                "compressed": "null"
+            }
+        }
+    ]
+}

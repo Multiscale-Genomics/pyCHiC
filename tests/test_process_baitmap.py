@@ -18,50 +18,72 @@
 from __future__ import print_function
 
 import os
-import pytest
+import pytest # pylint: disable=unused-import
 
-from process_baitmap import generate_CHiCAGO_baitmap
 from basic_modules.metadata import Metadata
+from process_baitmap import process_baitmap
 
-def test_process_rmapBaitmap():
+def test_process_baitmap():
     """
     Test for process_rmapBaitmap pipeline.
     This pipeline generate .baitmap files,
     input files for CHiCAGO pipeline
     """
+    import sys
+    sys._run_from_cmdl = True # pylint: disable=protected-access
 
-    path = os.path.join(os.path.dirname(__file__) + "/data")
+    path = os.path.join(os.path.dirname(__file__), "data/")
 
-    configuration = {"RE" : {"HindIII" : 'A|AGCTT'},
-                    }
-
-    input_files = {
-        "genome" :  path + "/test_makeBaitmap/toy_hg19.fa",
-        "probes_fa": path + "/test_makeBaitmap/baits.fa",
-        "Rtree_files" : path + "/test_process_rmap/rtree_file",
-        }
-
-    input_metadata = {
-        "probes" : Metadata(
-            "C-HiC probes", "fasta", path + "/test_makeBaitmap/baits.fa",
-            None, None, 9606),
-
-        "Rtree_files" : Metadata(
-            "Rtree files", [".dat", ".idx"], path + "/test_makeRmap/rtree_file",
-            {"genome" : path + "/test_makeRmap/toy_hg19.fa",
-             "RE" : {"HindIII" : 'A|AGCTT'}},
-            None, 9606),
-
-        "genome_digest" : Metadata(
-            "hg38", "fasta", path + "/test_makeRmap/toy_hg19.fa", None, "HindIII", 9606),
-        }
-
-    output_files = {
-        "out_sam" :  path + "/test_process_baitmap/baits.sam",
-        "out_baitmap" : path + "/test_process_baitmap/test.baitmap"
+    configuration = {
     }
 
-    generate_CHiCAGO_baitmap_hand = generate_CHiCAGO_baitmap(configuration)
-    generate_CHiCAGO_baitmap_hand.run(input_files, input_metadata, output_files)
+    input_files = {
+        "genome_idx" : path + "test_baitmap/bwa.tar.gz",
+        "probes_fa" : path + "test_baitmap/baits.fa",
+        "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
+        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
+        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
+    }
+
+    output_files = {
+        "bait_sam" :  path + "test_baitmap/baits.sam",
+        "out_bam" : path +  "test_baitmap/baits.bam",
+        "out_baitmap" : path + "test_run_chicago/test.baitmap"
+    }
+
+    metadata = {
+        "genome_idx" : Metadata(
+            "index_bwa", "", input_files["genome_fa"],
+            {
+                    "assembly": "test",
+                    "tool": "bwa_indexer"
+            }
+            ),
+        "genome_fa" : Metadata(
+            "hg38", "fasta", path + "test_rmap/chr21_hg19.fa",
+            None, "HindIII", 9606),
+
+        "probes_fa" : Metadata(
+            "C-HiC probes", "fasta", path + "test_baitmap/baits.fa",
+            None, None, 9606),
+
+        "Rtree_file_dat" : Metadata(
+            "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
+            {"genome" : path + "test_rmap/chr21_hg19.fa",
+             "RE" : {"HindIII" : 'A|AGCTT'}},
+            None, 9606
+            ),
+
+        "Rtree_file_idx" : Metadata(
+
+            "Rtree files", [".dat", ".idx"], path + "test_rmap/rtree_file",
+            {"genome" : path + "test_rmap/chr21_hg19.fa",
+             "RE" : {"HindIII" : 'A|AGCTT'}},
+            None, 9606
+            )
+      }
+
+    process_baitmap_handl = process_baitmap(configuration)
+    process_baitmap_handl.run(input_files, metadata, output_files)
 
     assert os.path.getsize(output_files["out_baitmap"]) > 0

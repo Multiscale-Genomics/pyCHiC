@@ -29,7 +29,7 @@ from tool.fastq2bed import Fastq2bed
 
 #################################################
 
-class process_Fastq2bed(Workflow):
+class process_fastq2bed(Workflow):
     """
     This class convert pair fastq reads to bed files
     that will feed process_bed2chicagobamWrap.py
@@ -52,7 +52,7 @@ class process_Fastq2bed(Workflow):
 
         self.configuration.update(configuration)
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         this function runs all functions from fastq2bed.py tool
 
@@ -74,7 +74,7 @@ class process_Fastq2bed(Workflow):
             genome_fasta: str
                 path to the genome in fasta format
 
-        input_metadata: dic
+        metadata: dic
             metadata from input
 
         output_files: dict
@@ -95,12 +95,12 @@ class process_Fastq2bed(Workflow):
                 "fastq2" : input_files["fastq2"],
                 "RE" : input_files["RE"],
                 "chromosome": input_files["chromosome"],
-                "genindex": input_files["genindex"],
-                "genome_fasta" : input_files["genome_fasta"]
+                "gem_idx": input_files["gem_idx"],
+                "genome_fa" : input_files["genome_fa"]
             }, {
-                "fastq1": input_metadata["fastq1"],
-                "fastq2": input_metadata["fastq2"],
-                "genome_fasta": input_metadata["genome_fasta"]
+                "fastq1": metadata["fastq1"],
+                "fastq2": metadata["fastq2"],
+                "genome_fa": metadata["genome_fa"]
             }, {
                 "wd": output_files["wd"]
             }
@@ -130,7 +130,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1.Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(process_Fastq2bed,
+    results = app.launch(process_fastq2bed,
                          config, in_metadata,
                          out_metadata)
     #2. Th2 App has finished
@@ -166,7 +166,7 @@ if __name__ == "__name__":
 
     if LOCAL:
         import sys
-        sys._run_from_cmdl = True
+        sys._run_from_cmdl = True # pylint: disable=protected-access
 
     RESULTS = main_json(CONFIG, IN_METADATA, OUT_METADATA)
 

@@ -1,0 +1,69 @@
+[
+    {
+        "_id": "59b7e020d9422a5969b34",
+        "data_type": "DNA sequence probes",
+        "file_type": "FASTA",
+        "file_path": "tests/data/test_baitmap/baits.fa",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5969b",
+        "data_type": "rtree",
+        "file_type": "Rtree_file_dat",
+        "file_path": "tests/data/test_rmap/rtree_file.dat",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+     {
+        "_id": "59b7e020d9422a5969b653",
+        "data_type": "rtree",
+        "file_type": "Rtree_file_idx",
+        "file_path": "tests/data/test_rmap/rtree_file.idx",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5969b65370",
+        "data_type": "DNA reference genome",
+        "file_type": "FASTA",
+        "file_path": "tests/data/test_baitmap/chr21_hg19.fa",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5969b65373",
+        "data_type": "sequence_mapping_index_bwa",
+        "file_type": "TAR",
+        "file_path": "tests/data/test_baitmap/bwa.tar.gz",
+        "sources": ["tests/data/test_baitmap/bwa"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1,
+            "tool": "bwa_indexer",
+            "assembly": "hg19"
+        }
+    }
+
+]

@@ -14,12 +14,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-
 from __future__ import print_function
-from basic_modules.metadata import Metadata
 import os
 
-from process_fastq2bed import process_Fastq2bed
+import pytest # pylint: disable=unused-import
+
+from basic_modules.metadata import Metadata
+
+from CHiC.process_fastq2bed import process_fastq2bed
 
 def test_process_fastq2bed():
     """
@@ -28,47 +30,47 @@ def test_process_fastq2bed():
     path = os.path.join(os.path.dirname(__file__), "data")
 
     input_files = {
-        "fastq1" : path + "/test_process_fastq2bed/SRR3535023_1.fastq",
-        "fastq2" : path + "/test_process_fastq2bed/SRR3535023_2.fastq",
-        "genindex" : path + "/test_gem_indexer/tb.Human.GCA_000001405.21.fasta.gem",
-        "genome_fasta" : path + "/test_gem_indexer/chr21.fa",
+        "fastq1" : path + "/test_truncater/SRR3535023_1.trunc.fastq",
+        "fastq2" : path + "/test_truncater/SRR3535023_2.trunc.fastq",
+        "gem_idx" : path + "/test_baitmap/chr21_hg19.fa.gem.gz",
+        "genome_fa" : path + "/test_baitmap/chr21_hg19.fa",
         "RE" : "HindIII",
         "chromosome" : ""
     }
 
-    input_metadata = {
-            "fastq1": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq1"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+    metadata = {
+        "fastq1": Metadata(
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq1"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             ),
-            "fastq2": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq2"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+        "fastq2": Metadata(
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq2"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             ),
-            "genome_fasta": Metadata(
-                data_type="text",
-                file_type="fasta",
-                file_path=input_files["genome_fasta"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+        "genome_fa": Metadata(
+            data_type="text",
+            file_type="fasta",
+            file_path=input_files["genome_fa"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             )
         }
 
     output_files = {
-        "wd" : path + "/test_process_fastq2bed"
+        "wd" : path + "/test_fastq2bed"
     }
 
-    fastq2bed_hdl = process_Fastq2bed()
-    fastq2bed_hdl.run(input_files, input_metadata, output_files)
+    fastq2bed_hdl = process_fastq2bed()
+    fastq2bed_hdl.run(input_files, metadata, output_files)
 
     try:
         file_list = os.listdir(output_files["wd"]+"/01_mapped_r1/")

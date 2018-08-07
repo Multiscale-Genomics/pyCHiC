@@ -18,23 +18,23 @@ import pytest
 import os
 
 from basic_modules.metadata import Metadata
-from tool.bam2chicago import bam2chicago
+from CHiC.tool.bam2chicago import bam2chicago
 
 def test_bam2chicago():
     """
     Function to test bam2chicago.py
     """
-    path = os.path.join(os.path.dirname(__file__),"data/test_bam2chicago")
+    path = os.path.join(os.path.dirname(__file__),"data/")
 
     input_files = {
-        "RMAP" : path + "/h19_chr20and21_chr.rmap",
-        "BAITMAP" : path +  "/h19_chr20and21.baitmap_4col_chr.txt",
-        "BAM" : path + "/outbam_sorted.bam"
+        "RMAP" : path + "test_bam2chicago/chrtest.rmap",
+        "BAITMAP" : path +  "test_bam2chicago/chrtest4.baitmap",
+        "BAM" : path + "test_bed2bam/outbam_sorted.bam"
     }
 
     output_files = {
         "out_dir" : path,
-        "output_file" :  "/sample"
+        "output_file" :  "../scripts/out_py"
     }
 
     input_metadata = {

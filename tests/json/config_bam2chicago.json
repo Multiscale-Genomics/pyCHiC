@@ -1,0 +1,76 @@
+{
+    "input_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "RMAP",
+            "value": "59b7e020d9422a5969bccb"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "BAITMAP",
+            "value": "59b7e020d9422asssdsd"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "BAM",
+            "value": "59b7e020d9422a5969b653dasda"
+        }
+    ],
+    "arguments": [
+	   {
+            "name": "aligner",
+            "value": "tadbit"
+        }
+    ],
+    "output_files": [
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "chinput",
+            "file": {
+                "file_type": "chinput",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "bam2chicago",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_bam2chicago_tool/sampleout.tar",
+                "data_type": "tar",
+                "compressed": "tar"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": "chrRMAP",
+            "file": {
+                "file_type": ".rmap",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "bam2chicago",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_bam2chicago_tool/chrtest.rmap",
+                "data_type": "TXT",
+                "compressed": "null"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": "chrBAITMAP",
+            "file": {
+                "file_type": ".baitmap",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeBaitmap",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_bam2chicago_tool/chrtest.baitmap",
+                "data_type": "TXT",
+                "compressed": "null"
+            }
+        }
+    ]
+}

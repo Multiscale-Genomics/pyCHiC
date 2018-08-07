@@ -20,19 +20,16 @@
 from __future__ import print_function
 import os
 
-#Required for ReadTheDocs
-from functools import wraps
-
 import argparse
 
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.makeBaitmap import makeBaitmapTool
+from CHiC.tool.makeBaitmap import makeBaitmapTool
 
 ################################################
 
-class generate_CHiCAGO_baitmap(Workflow):
+class process_baitmap(Workflow):
     """
     This class generate all input files that are needed for
     CHiCAGO to run
@@ -54,7 +51,7 @@ class generate_CHiCAGO_baitmap(Workflow):
 
         self.configuration.update(configuration)
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, metadata, output_files):
         """
         This is the main function that run the tools to create
         .baitmap.
@@ -65,13 +62,13 @@ class generate_CHiCAGO_baitmap(Workflow):
             genome: str
                 Indexed Ref genome used used in the experiment.
 
-        input_metadata: dict
+        metadata: dict
             input metadata
 
         output_files: dict
             Rtree_files: str
                     Name of the Rtree files
-            out_sam: str
+            bait_sam: str
                 whole path of SAM file, generated to locate baits
             out_baitmap: str
                 whole path for the .baitmap file
@@ -84,31 +81,36 @@ class generate_CHiCAGO_baitmap(Workflow):
             files
         """
 
-        makeBaitmapTool_caller = makeBaitmapTool(self.configuration)
-        output_files_Baitmap, output_metadata_Baitmap = makeBaitmapTool_caller.run(
+        baitmap_caller = makeBaitmapTool(self.configuration)
+        output_files_baitmap, output_metadata_baitmap = baitmap_caller.run(
             {
-                "genome" : input_files["genome"],
+                "genome_idx" : input_files["genome_idx"],
                 "probes_fa": input_files["probes_fa"],
-                "Rtree_files": input_files["Rtree_files"]
+                "Rtree_file_dat": input_files["Rtree_file_dat"],
+                "Rtree_file_idx": input_files["Rtree_file_idx"],
+                "genome_fa" : input_files["genome_fa"]
             },
             {
-                "genome_digest" : input_metadata["genome_digest"],
-                "probes" : input_metadata["probes"],
-                "Rtree_files" : input_metadata["Rtree_files"]
+                "genome_fa" : metadata["genome_fa"],
+                "probes_fa" : metadata["probes_fa"],
+                "Rtree_file_dat": metadata["Rtree_file_dat"],
+                "Rtree_file_idx": metadata["Rtree_file_idx"],
+                "genome_idx": metadata["genome_idx"]
             },
             {
-                "out_sam" : output_files["out_sam"],
-                "out_baitmap" : output_files["out_baitmap"]
+                "bait_sam" : output_files["bait_sam"],
+                "out_baitmap" : output_files["out_baitmap"],
+                "out_bam" : output_files["out_bam"]
             }
         )
 
         if os.path.getsize(output_files["out_baitmap"]) > 0:
-            pass
+            logger.info(".baitmap file generated succesfully")
         else:
             logger.fatal("generate_CHiCAGO_baitmap failed to generate .baitmap file")
             return False
 
-        return output_files_Baitmap, output_metadata_Baitmap
+        return output_files_baitmap, output_metadata_baitmap
 
 #############################################################
 
@@ -124,7 +126,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(generate_CHiCAGO_baitmap,
+    results = app.launch(process_baitmap,
                          config,
                          in_metadata,
                          out_metadata)
@@ -136,8 +138,7 @@ def main_json(config, in_metadata, out_metadata):
 
 #########################################################################
 
-
-if __name__ == "__name__":
+if __name__ == "__main__":
 
     #set up the command line parameters
     PARSER = argparse.ArgumentParser(
@@ -149,7 +150,7 @@ if __name__ == "__name__":
     PARSER.add_argument(
         "--out_metadata", help="Location of output metadata file")
     PARSER.add_argument(
-        "--local", action="store_const", cont=True, default=False)
+        "--local", action="store_const", const=True, default=False)
 
     #Get matching parameters from the command line
     ARGS = PARSER.parse_args()
@@ -161,7 +162,7 @@ if __name__ == "__name__":
 
     if LOCAL:
         import sys
-        sys._run_from_cmdl = True
+        sys._run_from_cmdl = True # pylint: disable=protected-access
 
     RESULTS = main_json(CONFIG, IN_METADATA, OUT_METADATA)
 

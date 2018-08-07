@@ -17,8 +17,10 @@
 
 from __future__ import print_function
 
+import os
 import argparse
-import subprocess
+import sys
+
 import pytest  # pylint: disable=unused-import
 
 
@@ -29,6 +31,15 @@ def all_toolchain(verbose=False):
     This set is only required for determining code coverage.
     run from home of the repo
     """
+    directories = ["./data/test_bam2chicago_tool",
+                   "./data/test_bed2bam",
+                   "./data/test_design",
+                   "./data/test_fastq2bed",
+                   "./data/test_rmap"]
+
+    for directory in directories:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
     params = []
 
@@ -37,18 +48,19 @@ def all_toolchain(verbose=False):
 
    #params.append('test_gem_indexer.py')
     params.append('test_truncater.py')
-    params.append('test_makeRmap_Tool.py')
-    params.append('test_makeBaitmap.py')
-    params.append('test_makeDesignFiles_Tool.py')
+    params.append('test_rmap_tool.py')
+    params.append('test_baitmap.py')
+    params.append('test_design.py')
     params.append('test_fastq2bed.py')
     params.append('test_bed2bamchicago.py')
-    params.append('test_bam2chicago_Tool.py')
-    params.append('test_runChicago.py')
+    params.append('test_bam2chicago_tool.py')
+    params.append('test_run_chicago.py')
 
     return pytest.main(params)
 
+
 if __name__ == "__main__":
-    import sys
+
     sys._run_from_cmdl = True # pylint: disable=protected-access
 
     PARSER = argparse.ArgumentParser(description="Test for running all tools in a chain")
