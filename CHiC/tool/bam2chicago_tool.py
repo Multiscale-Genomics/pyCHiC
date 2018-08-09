@@ -17,14 +17,10 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
-import pandas as pd
-from tool.common import common
-from utils import logger
-import shlex
 from shutil import move
 from shutil import rmtree
-import tarfile
-
+import pandas as pd
+from utils import logger
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
