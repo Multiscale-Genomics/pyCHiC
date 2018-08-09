@@ -25,7 +25,7 @@ import os
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.fastq2bed import Fastq2bed
+from CHiC.tool.fastq2bed import Fastq2bed
 
 #################################################
 

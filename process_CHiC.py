@@ -18,10 +18,8 @@
 """
 
 from __future__ import print_function
-import os
 
 #Required for ReadTheDocs
-from functools import wraps
 
 import argparse
 
@@ -187,11 +185,23 @@ class process_CHiC(Workflow):
                 }
             )
 
-            return output_files_truncater, output_metadata_truncater
-
         except IOError:
             return False
 
+        output_files = {}
+        output_metadata = {}
+
+        output_files.update(output_files_rmap)
+        output_files.update(output_files_baitmap)
+        output_files.update(design_out)
+        output_files.update(output_files_truncater)
+
+        output_metadata.update(output_metadata_rmap)
+        output_metadata.update(output_metadata_baitmap)
+        output_metadata.update(design_meta)
+        output_metadata.update(output_files_truncater)
+
+        return output_files, output_metadata
 
 #############################################################
 
