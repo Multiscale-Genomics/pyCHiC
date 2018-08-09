@@ -17,7 +17,6 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
-from shutil import move
 from shutil import rmtree
 import pandas as pd
 from utils import logger
