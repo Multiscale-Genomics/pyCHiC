@@ -18,7 +18,6 @@ import os
 import subprocess
 import sys
 from utils import logger
-import tarfile
 
 
 try:
@@ -39,7 +38,6 @@ from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
 
 from tool.aligner_utils import alignerUtils
-from tool import bowtie_indexer
 from tool.common import common
 
 ##############################################################
@@ -310,7 +308,7 @@ class hicup(Tool):
             common.tar_folder(self.configuration["hicup_outdir"],
                               self.configuration["hicup_outdir"]+".tar",
                               os.path.split(self.configuration["hicup_outdir"])[1]
-                              )
+                             )
 
             return True
 
