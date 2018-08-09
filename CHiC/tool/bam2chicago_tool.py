@@ -175,31 +175,8 @@ class bam2chicagoTool(Tool):
             process.wait()
             #proc_out, proc_err = process.communicate()
 
-            chinput_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+".chinput"
-            b2b_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+"_bait2bait.bedpe"
-            """
-            try:
-                tar = tarfile.open(os.path.split(chinput)[1], "w")
-                tar.add(chinput_file,
-                        arcname=os.path.split(no_tar_out)[1]+"/"+
-                                os.path.split(chinput_file)[1])
-
-                tar.add(b2b_file,
-                        arcname=os.path.split(no_tar_out)[1]+"/"+
-                                os.path.split(b2b_file)[1])
-                tar.close()
-
-                rmtree(no_tar_out)
-                move(os.path.split(chinput)[1], chinput)
-
-                logger.info("Tar folder with chinput output file")
-
-            except IOError:
-                logger.fatal("Tar file failed =(")
-                return False
 
             return True
-            """
         except IOError:
             logger.fatal("bam2chicago failed to generate chicago output files =(")
             return False

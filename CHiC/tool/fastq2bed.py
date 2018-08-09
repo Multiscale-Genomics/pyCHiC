@@ -68,7 +68,8 @@ class Fastq2bed(Tool):
 
         self.configuration.update(configuration)
 
-    def gunzip_gem(self, gem_idx_gz):
+    @staticmethod
+    def gunzip_gem(gem_idx_gz):
         """
         This function uncompress the gem indexed genome in is compressed
         """
@@ -92,7 +93,7 @@ class Fastq2bed(Tool):
 
         return gem_idx_gz
 
-    def tadbit_map(self, fastq1, fastq2, gem_idx, RE, wd, chromosome):
+    def tadbit_map(self, fastq1, fastq2, gem_idx, renzime, wd, chromosome):
         """
         This function map the Capture fastq reads to the reference genome using gem
 
@@ -104,9 +105,9 @@ class Fastq2bed(Tool):
             path to fastq
         gem_idx: str
             path to the ref. genome indexed with gem.
-        RE: str
+        renzime: str
             restriction enzyme used to digest the genome.
-            the form of the RE is the name with case
+            the form of the renzime is the name with case
             sensitive. exam. HindIII
         wd: str
             working diretory for the output
@@ -124,17 +125,17 @@ class Fastq2bed(Tool):
                  "--fastq", fastq1,
                  "--index", gem_idx,
                  "--read", "1",
-                 "--renz", RE,
+                 "--renz", renzime,
                  "-w", wd]
 
         args2 = ["tadbit", "map",
                  "--fastq", fastq2,
                  "--index", gem_idx,
                  "--read", "2",
-                 "--renz", RE,
+                 "--renz", renzime,
                  "-w", wd]
 
-        if chromosome is not "":
+        if chromosome:
             args1.append("--chr_name")
             args1.append(chromosome)
 
@@ -156,8 +157,8 @@ class Fastq2bed(Tool):
                     if os.path.getsize(wd+"/01_mapped_r1/"+indv_file) > 0:
                         pass
         except IOError:
-            logger.fatal("tadbit map1 failed to generate" \
-                          "mapped files")
+            logger.fatal("tadbit map1 failed to generate "+
+                         "mapped files")
             return False
 
         logger.info("tadbit map2 arguments:"+ " ".join(args2))
@@ -173,8 +174,8 @@ class Fastq2bed(Tool):
                 if os.path.getsize(wd+"/01_mapped_r2/"+indv_file) > 0:
                     pass
         except IOError:
-            logger.fatal("tadbit map2 failed to generate" \
-                          "mapped files")
+            logger.fatal("tadbit map2 failed to generate "+
+                         "mapped files")
             return False
 
         return True
@@ -212,8 +213,8 @@ class Fastq2bed(Tool):
                 if os.path.getsize(wd+"/02_parsed_reads/"+indv_file) > 0:
                     pass
         except IOError:
-            logger.fatal("tadbit parse failed to generate" \
-                          "mapped files")
+            logger.fatal("tadbit parse failed to generate "
+                         "mapped files")
             return False
 
         return True
@@ -248,8 +249,8 @@ class Fastq2bed(Tool):
                 if os.path.getsize(wd+"/03_filtered_reads/"+indv_file) > 0:
                     pass
         except IOError:
-            logger.fatal("tadbit parse failed to generate" \
-                          "mapped files")
+            logger.fatal("tadbit parse failed to generate "
+                         "mapped files")
             return False
 
         return True
@@ -263,7 +264,7 @@ class Fastq2bed(Tool):
         input_files: dict
             fastq1,
             fastq2,
-            RE,
+            re,
             chromosome,
             gem_idx
             genome_fa
@@ -292,7 +293,7 @@ class Fastq2bed(Tool):
         results_map = self.tadbit_map(input_files["fastq1"],
                                       input_files["fastq2"],
                                       uncompres_gem,
-                                      input_files["RE"],
+                                      input_files["renzime"],
                                       output_files["wd"],
                                       input_files["chromosome"])
 

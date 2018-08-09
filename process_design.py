@@ -90,19 +90,19 @@ class process_design(Workflow):
                 "BAITMAP" : metadata["BAITMAP"]
             },
             {
-                ".nbpb" : output_files[".nbpb"],
-                ".npb"  : output_files[".npb"],
-                ".poe" : output_files[".poe"]
+                "nbpb" : output_files["nbpb"],
+                "npb"  : output_files["npb"],
+                "poe" : output_files["poe"]
             }
         )
 
-        if os.path.isfile(output_files[".nbpb"]) is True and \
-           os.path.isfile(output_files[".npb"]) is True and \
-           os.path.isfile(output_files[".poe"]) is True:
+        if os.path.isfile(output_files["nbpb"]) is True and \
+           os.path.isfile(output_files["npb"]) is True and \
+           os.path.isfile(output_files["poe"]) is True:
 
-            if os.path.getsize(output_files[".nbpb"]) > 0 and \
-               os.path.getsize(output_files[".npb"]) > 0 and \
-               os.path.getsize(output_files[".poe"]) > 0:
+            if os.path.getsize(output_files["nbpb"]) > 0 and \
+               os.path.getsize(output_files["npb"]) > 0 and \
+               os.path.getsize(output_files["poe"]) > 0:
 
                 logger.info("Design files succesfully generated")
 

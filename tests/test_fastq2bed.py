@@ -34,7 +34,7 @@ def test_fastq2bed():
         "fastq2" : path + "/test_truncater/SRR3535023_2.trunc.fastq",
         "gem_idx" : path + "/test_baitmap/chr21_hg19.fa.gem.gz",
         "genome_fa" : path + "/test_baitmap/chr21_hg19.fa",
-        "RE" : "HindIII",
+        "renzime" : "HindIII",
         "chromosome" : "22"
     }
 

@@ -17,10 +17,9 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
-from rtree import index
 from shutil import copy
-import tarfile
 import shutil
+from rtree import index
 
 from utils import logger
 
@@ -42,7 +41,6 @@ except ImportError:
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
 from tool.bwa_mem_aligner import bwaAlignerMEMTool
-from tool.aligner_utils import alignerUtils
 
 ##################################################
 
@@ -73,7 +71,7 @@ class makeBaitmapTool(Tool):
 
     @task(returns=list, sam_file=FILE_OUT, out_bam=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
           rtree_prefix=IN)
-    def sam_to_baitmap(self, sam_file, out_bam, rtree_dat, rtree_idx, rtree_prefix):
+    def sam_to_baitmap(self, sam_file, out_bam, rtree_dat, rtree_idx, rtree_prefix): # pylint: disable=no-self-use
         """
         This function take the sam file, output of bwa
         and the Rtree_files, and output a baitmap file
@@ -155,9 +153,9 @@ class makeBaitmapTool(Tool):
         return baitmap
 
 
-    @task(returns = bool, baitmap_list=IN,
+    @task(returns=bool, baitmap_list=IN,
           out_baitmap=FILE_OUT)
-    def create_baitmap(self, baitmap_list, out_baitmap):
+    def create_baitmap(self, baitmap_list, out_baitmap): # pylint: disable=no-self-use
         """
         This function takes a list with RE fragments that
         correspond to baits and print it to a file
@@ -186,19 +184,22 @@ class makeBaitmapTool(Tool):
         logger.fatal("baitmap file not generated")
         return False
 
-    def run(self, input_files, metadata, output_files):
+    def run(self, input_files, input_metadata, output_files):
         """
         The main function to produce a .baitmap file, starting from rtree files,
         indexed genome and probes.
 
         Parameters
         ----------
-        input_files : Dict
-            genome_fa
-            probes_fa
-            Rtree_files
-
-        metadata : dict
+        input_file : dict
+            a dict of absolute path names of the input data elements,
+            associated with their role;
+        input_metadata : dict
+            a dict of metadatas for each of the input data elements,
+            associated with their role;
+        output_files : dict
+            a dict of absolute path names of the output data elements,
+            associated with their role.
 
         Returns
         -------
@@ -266,14 +267,14 @@ class makeBaitmapTool(Tool):
                 file_type=".baitmap",
                 file_path=output_files["out_baitmap"],
                 sources=[
-                    metadata["genome_fa"].file_path,
-                    metadata["probes_fa"].file_path,
-                    metadata["Rtree_file_dat"].file_path,
-                    metadata["Rtree_file_dat"].file_path,
+                    input_metadata["genome_fa"].file_path,
+                    input_metadata["probes_fa"].file_path,
+                    input_metadata["Rtree_file_dat"].file_path,
+                    input_metadata["Rtree_file_dat"].file_path,
                 ],
-                taxon_id=metadata["genome_fa"].taxon_id,
+                taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : metadata["Rtree_file_idx"].meta_data,
+                    "RE" : input_metadata["Rtree_file_idx"].meta_data,
                     "tool": "makeBaitmap",
                 }
             ),
@@ -282,13 +283,13 @@ class makeBaitmapTool(Tool):
                 file_type=".sam",
                 file_path=output_files["bait_sam"],
                 sources=[
-                    metadata["genome_fa"].file_path,
-                    metadata["probes_fa"].file_path,
-                    metadata["Rtree_file_idx"].file_path,
+                    input_metadata["genome_fa"].file_path,
+                    input_metadata["probes_fa"].file_path,
+                    input_metadata["Rtree_file_idx"].file_path,
                 ],
-                taxon_id=metadata["genome_fa"].taxon_id,
+                taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : metadata["Rtree_file_idx"].meta_data,
+                    "RE" : input_metadata["Rtree_file_idx"].meta_data,
                     "tool": "makeBaitmap",
                 }
             ),
@@ -297,13 +298,13 @@ class makeBaitmapTool(Tool):
                 file_type=".bam",
                 file_path=output_files["out_bam"],
                 sources=[
-                    metadata["genome_fa"].file_path,
-                    metadata["probes_fa"].file_path,
-                    metadata["Rtree_file_idx"].file_path,
+                    input_metadata["genome_fa"].file_path,
+                    input_metadata["probes_fa"].file_path,
+                    input_metadata["Rtree_file_idx"].file_path,
                 ],
-                taxon_id=metadata["genome_fa"].taxon_id,
+                taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : metadata["Rtree_file_idx"].meta_data,
+                    "RE" : input_metadata["Rtree_file_idx"].meta_data,
                     "tool": "makeBaitmap",
                 }
             ),
