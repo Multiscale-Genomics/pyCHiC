@@ -178,8 +178,15 @@ class bam2chicagoTool(Tool):
                 stderr=subprocess.PIPE)
 
             process.wait()
-            #proc_out, proc_err = process.communicate()
 
+            common.tar_folder(
+                no_tar_out,
+                chinput+".tar",
+                os.path.split(no_tar_out)[1]
+                )
+
+            #proc_out, proc_err = process.communicate()
+            """
             chinput_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+".chinput"
             b2b_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+"_bait2bait.bedpe"
 
@@ -202,7 +209,7 @@ class bam2chicagoTool(Tool):
             except IOError:
                 logger.fatal("Tar file failed =(")
                 return False
-
+            """
             return True
 
         except IOError:
