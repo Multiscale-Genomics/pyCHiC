@@ -265,6 +265,7 @@ class hicup(Tool):
         fastq2: str
             location of fastq2
         """
+
         index_files = {
             "1.bt2": genome_loc + ".1.bt2",
             "2.bt2": genome_loc + ".2.bt2",
@@ -274,7 +275,7 @@ class hicup(Tool):
             "rev.2.bt2": genome_loc + ".rev.2.bt2"
         }
 
-        logger.progress("Untar Index")
+        logger.progress("Untar Index: "+genome_loc+", "+genome_index)
         self.untar_index(
             genome_loc,
             genome_index,
@@ -348,28 +349,6 @@ class hicup(Tool):
                 input_files["genome_loc"],
             )
 
-        input_files_bowtie = {
-            "genome": input_files["genome_loc"]
-        }
-
-        output_files_bowtie = {
-            "index": input_files["genome_loc"] + ".bt2.tar.gz"
-        }
-
-        metadata_bowtie = {
-            "genome": Metadata(
-                "Assembly", "fasta", input_files["genome_loc"], None,
-                {'assembly': 'test'}),
-        }
-
-        bti = bowtie_indexer.bowtieIndexerTool()
-        bti.run(input_files_bowtie, metadata_bowtie, output_files_bowtie)
-
-        #assert os.path.isfile(output_files_bowtie["index"]) is True
-        #assert os.path.getsize(output_files_bowtie["index"]) > 0
-
-        bowtie_gen_idx = input_files["genome_loc"] + ".bt2.tar.gz"
-
         parameters_hicup = self.get_hicup_params(self.configuration)
 
         if os.path.isdir(self.configuration["hicup_outdir"]) is False:
@@ -378,7 +357,7 @@ class hicup(Tool):
         self.hicup_alig_filt(# pylint: disable=too-many-locals,too-many-arguments
             parameters_hicup,
             genome_d,
-            bowtie_gen_idx,
+            input_files["bowtie_gen_idx"],
             input_files["genome_loc"],
             input_files["fastq1"],
             input_files["fastq2"])
