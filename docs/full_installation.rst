@@ -77,20 +77,20 @@ bedtools
 ^^^^^^^^
 .. code-block:: none
    :linenos:
-   
+
    sudo apt-get install bedtools
 
 HiCUP
 ^^^^^
 .. code-block:: none
    :linenos:
-	
+
     wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
     tar -xzf hicup_v0.6.1.tar.gz
     cd hicup_v0.6.1
     chmod a+x *
     #modify hicup_truncater for delete the time of the summary file
-    
+
 
 
 BWA Sequence Aligner
@@ -103,17 +103,6 @@ BWA Sequence Aligner
    git clone https://github.com/lh3/bwa.git
    cd bwa
    make
-
-
-GEM Sequence Aligner
-^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: none
-   :linenos:
-
-   cd ${HOME}/lib
-   wget http://barnaserver.com/gemtools/releases/GEMTools-static-core2-1.7.1.tar.gz
-   tar -xzf GEMTools-static-core2-1.7.1.tar.gz
 
 SAMtools
 ^^^^^^^^
@@ -139,30 +128,12 @@ SAMtools
    make
    make install
 
-Install TADbit
-^^^^^^^^^^^^^^
-
-.. code-block:: none
-   :linenos:
-   
-   pip install scipy
-   pip install matplotlib	
-   cd ${HOME}/lib
-   wget https://github.com/3DGenomes/tadbit/archive/master.zip -O tadbit.zip
-   unzip tadbit.zip
-   cd TADbit-master
-
-   # If the pyenv env is not called C-HiC then change this to match,
-   # the sme is true for teh version of python
-   python setup.py install --install-lib=${HOME}/.pyenv/versions/C-HiC/lib/python2.7/site-packages/ --install-scripts=${HOME}/bin
-
-
 Install CHiCAGO
 ^^^^^^^^^^^^^^^
 
 .. code-block:: none
    :linenos:
-	
+
    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
    sudo add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/'
    sudo apt-get update -qq
@@ -187,19 +158,7 @@ Setup the symlinks
 .. code-block:: none
    :linenos:
 
-   cd ${HOME}/bin   
-   
-   ln -s ${HOME}/lib/gemtools-1.7.1-core2/bin/gem-2-bed gem-2-bed
-   ln -s ${HOME}/lib/gemtools-1.7.1-core2/bin/gem-2-gem gem-2-gem
-   ln -s ${HOME}/lib/gemtools-1.7.1-core2/bin/gem-2-sam gem-2-sam
-   ln -s ${HOME}/lib/gemtools-1.7.1-core2/bin/gem-2-wig gem-2-wig
-   ln -s ${HOME}/lib/gemtools-1.7.1-core2/bin/gem-indexer gem-indexer
-   ln -s ${HOME}/lib/gemtools-1.7.1-core2/bin/gem-indexer_bwt-dna gem-indexer_bwt-dna
-   ln -s ${HOME}/lib/gemtools-1.7.1-core2/bin/gem-indexer_fasta2meta+cont gem-indexer_fasta2meta+cont
-   ln -s ${HOME}/lib/gemtools-1.7.1-core2/bin/gem-indexer_generate gem-indexer_generate
-   ln -s ${HOME}/lib/gemtools-1.7.1-core2/bin/gem-info gem-info
-   ln -s ${HOME}/lib/gemtools-1.7.1-core2/bin/gem-mapper gem-mapper
-   ln -s ${HOME}/lib/gemtools-1.7.1-core2/bin/gemtools gemtools
+   cd ${HOME}/bin
 
    ln -s ${HOME}/lib/hicup_v0.6.1/* ${HOME}/bin/
 

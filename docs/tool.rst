@@ -19,20 +19,12 @@ Tools for processing fastq C-HiC files
 
 .. automodule:: tool
 
-   Read truncation
-   ===============
-
-   HiCUP truncater
-   ---------------
-   .. autoclass:: tool.truncater.Truncater
-      :members:
-
    Map and parser reads
    ======================
 
-   fastq2bed
+   hicup_tool
    ---------
-   .. autoclass:: tool.fastq2bed.Fastq2bed
+   .. autoclass:: CHiC.tool.hicup_tool.hicup
       :members:
 
    Create CHiCAGO input files
@@ -40,25 +32,17 @@ Tools for processing fastq C-HiC files
 
    makeRmap
    ---------
-   .. autoclass:: tool.makeRmap_Tool.makeRmapFile
+   .. autoclass:: CHiC.tool.makeRmap_Tool.makeRmapFile
       :members:
 
    makeBaitmap
    -----------
-   .. autoclass:: tool.makeRmap_Tool.makeRmapFile
+   .. autoclass:: CHiC.tool.makeRmap_Tool.makeRmapFile
       :members:
 
    makeDesignFiles
    ---------------
-   .. autoclass:: tool.makeDesignFiles_Tool.makeDesignFilesTool
-      :members:
-
-   Convert bed files in bam files
-   ================================
-
-   bed2bamchicago
-   ---------------
-   .. autoclass:: tool.bed2bam.bed2bam
+   .. autoclass:: CHiC.tool.makeDesignFiles_Tool.makeDesignFilesTool
       :members:
 
    Convert bam files into chicago input
@@ -66,7 +50,7 @@ Tools for processing fastq C-HiC files
 
    bam2chicago
    -----------
-   .. autoclass:: tool.bam2chicago_Tool.bam2chicagoTool
+   .. autoclass:: CHiC.tool.bam2chicago_Tool.bam2chicagoTool
       :members:
 
    Normalize data and call C-HiC peaks
@@ -74,5 +58,5 @@ Tools for processing fastq C-HiC files
 
    CHiCAGO
    -------
-   .. autoclass:: tool.runChicago.ChicagoTool
+   .. autoclass:: CHiC.tool.runChicago.ChicagoTool
       :members:

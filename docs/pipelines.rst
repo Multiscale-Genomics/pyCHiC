@@ -16,57 +16,9 @@
 Pipelines
 =========
 
-Truncate reads
---------------
-.. automodule:: process_truncater
-
-   This tool check single end Capture-HiC fastq reads and eliminates bases pairs that are
-   beyond the RE site.
-
-   Running from the command line
-   =============================
-
-   Parameters
-   ----------
-   config : file
-      Location of the config file for the workflow
-   in_metadata : file
-      Location of the input list of files required by the process
-   out_metadata : file
-      Location of the output results.json file for returned files
-
-   Returns
-   -------
-   output : files
-     Truncated fastq files.
-
-   Example
-   -------
-   When using a local verion of the [COMPS virtual machine](http://www.bsc.es/computer-sciences/grid-computing/comp-superscalar/downloads-and-documentation):
-
-   .. code-block:: none
-      :linenos:
-
-      runcompss                     \
-         --lang=python              \
-         --library_path=${HOME}/bin \
-         --pythonpath=/<pyenv_virtenv_dir>/lib/python2.7/site-packages/ \
-         --log_level=debug          \
-         process_truncater.py         \
-            --config tests/json/config_truncater.json \
-            --in_metadata tests/json/input_truncater.json \
-            --out_metadata tests/json/output_truncater.json
-
-   Methods
-   =======
-   .. autoclass:: process_truncater.process_truncater
-      :members:
-
-
-
 Map and parse C-HiC reads
 -------------------------
-.. automodule:: process_fastq2bed
+.. automodule:: process_hicup
 
    This pipeline will take as input two fastq files, RE sites, the genome indexed with GEM and the same genome
    in FASTA file. This pipeline uses TADbit to map, filter and produce a bed file that will be used later on to
@@ -92,17 +44,17 @@ Map and parse C-HiC reads
 
    Example
    -------
-   REQUIREMENT - Needs two fastq files single end, FASTA genome and GEM indexed genome.
+   REQUIREMENT - Needs two fastq files single end, FASTA genome and bowtie2 indexed genome.
 
    When running the pipeline on a local machine without COMPSs:
 
    .. code-block:: none
       :linenos:
 
-      python process_fastq2bed.py \
-         --config tests/json/config_fastq2bed.json \
-         --in_metadata tests/json/input_fastq2bed.json \
-         --out_metadata tests/json/output_fastq2bed.json \
+      python process_hicup.py \
+         --config tests/json/config_hicup.json \
+         --in_metadata tests/json/input_hicup.json \
+         --out_metadata tests/json/output_hicup.json \
          --local
 
    When using a local version of the [COMPS virtual machine](https://www.bsc.es/research-and-development/software-and-apps/software-list/comp-superscalar/):
@@ -116,13 +68,13 @@ Map and parse C-HiC reads
          --pythonpath=/<pyenv_virtenv_dir>/lib/python2.7/site-packages/ \
          --log_level=debug          \
          process_fastq2bed.py         \
-            --config tests/json/config_fastq2bed.json \
-            --in_metadata tests/json/input_fastq2bed.json \
-            --out_metadata tests/json/output_fastq2bed.json
+            --config tests/json/config_hicup.json \
+            --in_metadata tests/json/input_hicup.json \
+            --out_metadata tests/json/output_hicup.json
 
    Methods
    =======
-   .. autoclass:: process_fastq2bed.process_Fastq2bed
+   .. autoclass:: process_hicup.process_hicup
       :members:
 
 
@@ -326,69 +278,6 @@ Create CHiCAGO input Design files
    =======
    .. autoclass:: process_Design.process_makeDesign
       :members:
-
-
-
-Convert bed files into BAM chicago-friendly files
--------------------------------------------------
-.. automodule:: process_bed2bam
-
-   This pipeline convert the output of process_fastq2bed.py file called
-   valid_r1-r2_intersection_b51cdf1282.tsv to a bam file compatible with
-   bam2chicago.py
-
-   Running from the command line
-   =============================
-
-   Parameters
-   ----------
-   config : str
-      Configuration JSON file
-   in_metadata : str
-      Location of input JSON metadata for files
-   out_metadata : str
-      Location of output JSON metadata for files
-
-   Returns
-   -------
-   bam_out: bam output file
-
-   Example
-   -------
-   REQUIREMENT - Needs bed file produced by process_fastq2bed
-
-   When running the pipeline on a local machine without COMPSs:
-
-   .. code-block:: none
-      :linenos:
-
-      python process_bed2bam.py \
-         --config tests/json/config_bed2bam.json \
-         --in_metadata tests/json/input_bed2bam.json \
-         --out_metadata tests/json/output_bed2bam.json \
-         --local
-
-   When using a local version of the [COMPS virtual machine](https://www.bsc.es/research-and-development/
-   software-and-apps/software-list/comp-superscalar/):
-
-   .. code-block:: none
-      :linenos:
-
-      runcompss                     \
-         --lang=python              \
-         --library_path=${HOME}/bin \
-         --pythonpath=/<pyenv_virtenv_dir>/lib/python2.7/site-packages/ \
-         --log_level=debug          \
-         process_Design.py         \
-            --config tests/json/config_bed2bam.json \
-            --in_metadata tests/json/input_bed2bam.json \
-            --out_metadata tests/json/output_bed2bam.json
-
-   Methods
-   =======
-   .. autoclass:: process_bed2bam.process_bed2bam
-      :members:
-
 
 
 Convert BAM file into chicago input files .chinput
