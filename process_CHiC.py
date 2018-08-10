@@ -102,7 +102,6 @@ class process_CHiC(Workflow):
 
         except IOError:
             logger.fatal("rmap_tool failed to generate .rmap file")
-            return False
 
         #produce Baitmap file
         try:
@@ -134,7 +133,6 @@ class process_CHiC(Workflow):
 
         except IOError:
             logger.fatal("generate_CHiCAGO_baitmap failed to generate .baitmap file")
-            return False
 
         try:
             design_caller = makeDesignFilesTool(self.configuration)
@@ -159,19 +157,18 @@ class process_CHiC(Workflow):
         except IOError:
             logger.fatal("process_makeDesign failed to" +
                          "generate design files")
-            return False
 
         try:
             hicup_caller = hicup(self.configuration)
             output_files_hicup, output_metadata_hicup = hicup_caller.run(
                 {
-                    "genome_loc": input_files["genome_loc"],
+                    "genome_fa": input_files["genome_fa"],
                     "fastq1": input_files["fastq1"],
                     "fastq2" : input_files["fastq2"],
                     "bowtie_gen_idx": input_files["bowtie_gen_idx"]
                 },
                 {
-                    "genome_loc": metadata["genome_loc"],
+                    "genome_fa": metadata["genome_fa"],
                     "fastq1": metadata["fastq1"],
                     "fastq2": metadata["fastq2"]
                 },

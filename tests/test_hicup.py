@@ -27,7 +27,7 @@ def test_hicup():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "genome_loc" : path + "test_baitmap/chr21_hg19.fa",
+        "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
 
         "fastq1" : path + "test_truncater/SRR3535023_1.fastq",
         "fastq2" : path + "test_truncater/SRR3535023_2.fastq",
@@ -49,9 +49,9 @@ def test_hicup():
     }
 
     metadata = {
-        "genome_loc" : Metadata(
+        "genome_fa" : Metadata(
             "TXT", "FASTA",
-            input_files["genome_loc"], None, {}, 9606),
+            input_files["genome_fa"], None, {}, 9606),
 
         "fastq1" : Metadata(
             "TXT", "FASTQ",

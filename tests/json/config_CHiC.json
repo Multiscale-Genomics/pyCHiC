@@ -53,6 +53,12 @@
             "allow_multiple": false,
             "name": "fastq2",
             "value": "59b7e020d9422a5cccccc345"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "bowtie_gen_idx",
+            "value": "59b7e020d9422a596976we"
         }
     ],
     "arguments": [
@@ -111,6 +117,34 @@
         {
             "name": "outdir",
             "value": "tests/data/test_truncater"
+        },
+        {
+            "name": "hicup_renzyme",
+            "value": "A^AGCTT,HindIII"
+        },
+        {
+            "name": "genome_name",
+            "value": "test_hg19"
+        },
+        {
+            "name": "hicup_bowtie2_loc",
+            "value": "/usr/bin/bowtie2"
+        },
+        {
+            "name": "hicup_longest",
+            "value": "800"
+        },
+        {
+            "name": "hicup_shortest",
+            "value": "150"
+        },
+        {
+            "name": "hicup_outdir",
+            "value": "/home/pacera/MuG/C-HiC/tests/data/test_hicup/output"
+        },
+        {
+            "name": "hicup_zip",
+            "value": "True"
         }
     ],
     "output_files": [
@@ -331,6 +365,22 @@
                 },
                 "file_path": "tests/data/test_truncater/SRR3535023_2.fastq.truncation_barchart.svg",
                 "data_type": "TXT",
+                "compressed": "null"
+            }
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "hicup_outdir_tar",
+            "file": {
+                "file_type": ".baitmap",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeBaitmap",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_run_chicago/test.baitmap",
+                "data_type": "data_baitmap",
                 "compressed": "null"
             }
         }

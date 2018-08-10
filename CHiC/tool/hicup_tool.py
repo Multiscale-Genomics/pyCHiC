@@ -337,14 +337,14 @@ class hicup(Tool):
             genome_d = self.digest_genome(
                 self.configuration["genome_name"],
                 re_enzyme,
-                input_files["genome_loc"],
+                input_files["genome_fa"],
                 self.configuration["renzyme_name2"]
                 )
         else:
             genome_d = self.digest_genome(
                 self.configuration["genome_name"],
                 re_enzyme,
-                input_files["genome_loc"],
+                input_files["genome_fa"],
             )
 
         parameters_hicup = self.get_hicup_params(self.configuration)
@@ -356,7 +356,7 @@ class hicup(Tool):
             parameters_hicup,
             genome_d,
             input_files["bowtie_gen_idx"],
-            input_files["genome_loc"],
+            input_files["genome_fa"],
             input_files["fastq1"],
             input_files["fastq2"])
 
@@ -368,11 +368,11 @@ class hicup(Tool):
                 file_type="TAR",
                 file_path=output_files["hicup_outdir_tar"],
                 sources=[
-                    metadata["genome_loc"].file_path,
+                    metadata["genome_fa"].file_path,
                     metadata["fastq1"].file_path,
                     metadata["fastq1"].file_path
                     ],
-                taxon_id=metadata["genome_loc"].taxon_id,
+                taxon_id=metadata["genome_fa"].taxon_id,
                 meta_data={"tool": "hicup_tool"}
                 )
         }

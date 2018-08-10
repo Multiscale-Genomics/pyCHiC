@@ -122,6 +122,19 @@
             "visible": true,
             "validated": 1
         }
+    },
+    {
+        "_id": "59b7e020d9422a596976we",
+        "data_type": "data_C-HiC",
+        "file_type": "index",
+        "file_path": "tests/data/test_baitmap/chr21_hg19.fa.bt2.tar.gz",
+        "compressed": 1,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
     }
 ]
 

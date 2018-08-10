@@ -3,7 +3,7 @@
         {
             "required": true,
             "allow_multiple": false,
-            "name": "genome_loc",
+            "name": "genome_fa",
             "value": "19b7e020d9422a5969"
         },
         {
@@ -24,7 +24,6 @@
             "name": "bowtie_gen_idx",
             "value": "59b7e020d9422a596976we"
         }
-
     ],
     "arguments": [
     {
