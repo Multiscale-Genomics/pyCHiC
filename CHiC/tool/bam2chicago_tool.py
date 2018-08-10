@@ -224,7 +224,9 @@ class bam2chicagoTool(Tool):
 
         bam_file = "".join([file_hdl for file_hdl in os.listdir(folder_name)
                             if file_hdl.endswith(".bam")])
-        print(bam_file)
+
+        path_bam =  folder_name + "/" + bam_file
+
         if self.configuration["aligner"] == "tadbit":
             logger.info("cheking chr format from rmap and baitmap")
             rfmat_rmap, rfmat_baitmap = self.check_chr_format(
@@ -238,7 +240,7 @@ class bam2chicagoTool(Tool):
             rfmat_baitmap = input_files["BAITMAP"]
 
         results = self.bam2chicago(
-            bam_file,
+            path_bam,
             rfmat_rmap,
             rfmat_baitmap,
             output_files["chinput"]

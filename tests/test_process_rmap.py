@@ -33,7 +33,7 @@ def test_process_rmap():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
 
-    configuration = {"RE" : {"HindIII" : 'A|AGCTT'}
+    configuration = {"renzime" : {"HindIII" : 'A|AGCTT'}
                     }
 
     input_files = {
