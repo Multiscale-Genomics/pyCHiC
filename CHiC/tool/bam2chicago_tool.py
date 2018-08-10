@@ -17,9 +17,13 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
+from shutil import move
 from shutil import rmtree
+import tarfile
 import pandas as pd
+from tool.common import common
 from utils import logger
+
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -173,8 +177,12 @@ class bam2chicagoTool(Tool):
                 stderr=subprocess.PIPE)
 
             process.wait()
-            #proc_out, proc_err = process.communicate()
 
+            common.tar_folder(
+                no_tar_out,
+                chinput+".tar",
+                os.path.split(no_tar_out)[1]
+                )
 
             return True
         except IOError:
@@ -189,7 +197,7 @@ class bam2chicagoTool(Tool):
         Parameters
         ----------
         input_files : dict
-        bamFile : str
+        hicup_outdir_tar : str
         rmapFile : str
         baitmapFile : str
 
@@ -206,6 +214,17 @@ class bam2chicagoTool(Tool):
             logger.info("creating output directory")
             os.mkdir(os.path.split(output_files["chinput"])[0])
 
+        folder_name = os.path.split(input_files["hicup_outdir_tar"])[0] + "/"+\
+                    "".join(os.path.split(input_files["hicup_outdir_tar"])[1].split(".")[:-1])
+
+        print(folder_name)
+        tar = tarfile.open(input_files["hicup_outdir_tar"])
+        tar.extractall(path="".join(os.path.split(input_files["hicup_outdir_tar"])[0]))
+        tar.close()
+
+        bam_file = "".join([file_hdl for file_hdl in os.listdir(folder_name)
+                            if file_hdl.endswith(".bam")])
+        print(bam_file)
         if self.configuration["aligner"] == "tadbit":
             logger.info("cheking chr format from rmap and baitmap")
             rfmat_rmap, rfmat_baitmap = self.check_chr_format(
@@ -219,7 +238,7 @@ class bam2chicagoTool(Tool):
             rfmat_baitmap = input_files["BAITMAP"]
 
         results = self.bam2chicago(
-            input_files["BAM"],
+            bam_file,
             rfmat_rmap,
             rfmat_baitmap,
             output_files["chinput"]

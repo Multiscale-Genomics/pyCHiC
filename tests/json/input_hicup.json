@@ -1,0 +1,54 @@
+[
+    {
+        "_id": "19b7e020d9422a5969",
+        "data_type": "data_C-HiC",
+        "file_type": "FASTA",
+        "file_path": "tests/data/test_baitmap/chr21_hg19.fa",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5969ca3",
+        "data_type": "data_C-HiC",
+        "file_type": "FASTQ",
+        "file_path": "tests/data/test_truncater/SRR3535023_1.fastq",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5969778",
+        "data_type": "rtree",
+        "file_type": "Rtree_file_idx",
+        "file_path": "tests/data/test_truncater/SRR3535023_2.fastq",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a596976we",
+        "data_type": "data_C-HiC",
+        "file_type": "index",
+        "file_path": "tests/data/test_baitmap/chr21_hg19.fa.bt2.tar.gz",
+        "compressed": 1,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    }
+]
