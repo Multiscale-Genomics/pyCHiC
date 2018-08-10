@@ -17,13 +17,13 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
-import pandas as pd
-from tool.common import common
-from utils import logger
-import shlex
 from shutil import move
 from shutil import rmtree
 import tarfile
+import pandas as pd
+from tool.common import common
+from utils import logger
+
 
 
 try:
@@ -185,31 +185,6 @@ class bam2chicagoTool(Tool):
                 os.path.split(no_tar_out)[1]
                 )
 
-            #proc_out, proc_err = process.communicate()
-            """
-            chinput_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+".chinput"
-            b2b_file = no_tar_out+"/"+os.path.split(no_tar_out)[1]+"_bait2bait.bedpe"
-
-            try:
-                tar = tarfile.open(os.path.split(chinput)[1], "w")
-                tar.add(chinput_file,
-                        arcname=os.path.split(no_tar_out)[1]+"/"+
-                                os.path.split(chinput_file)[1])
-
-                tar.add(b2b_file,
-                        arcname=os.path.split(no_tar_out)[1]+"/"+
-                                os.path.split(b2b_file)[1])
-                tar.close()
-
-                rmtree(no_tar_out)
-                move(os.path.split(chinput)[1], chinput)
-
-                logger.info("Tar folder with chinput output file")
-
-            except IOError:
-                logger.fatal("Tar file failed =(")
-                return False
-            """
             return True
 
         except IOError:
@@ -224,7 +199,7 @@ class bam2chicagoTool(Tool):
         Parameters
         ----------
         input_files : dict
-        bamFile : str
+        hicup_outdir_tar : str
         rmapFile : str
         baitmapFile : str
 
@@ -241,6 +216,17 @@ class bam2chicagoTool(Tool):
             logger.info("creating output directory")
             os.mkdir(os.path.split(output_files["chinput"])[0])
 
+        folder_name = os.path.split(input_files["hicup_outdir_tar"])[0] + "/"+\
+                    "".join(os.path.split(input_files["hicup_outdir_tar"])[1].split(".")[:-1])
+
+        print(folder_name)
+        tar = tarfile.open(input_files["hicup_outdir_tar"])
+        tar.extractall(path="".join(os.path.split(input_files["hicup_outdir_tar"])[0]))
+        tar.close()
+
+        bam_file = "".join([file_hdl for file_hdl in os.listdir(folder_name)
+                            if file_hdl.endswith(".bam")])
+        print(bam_file)
         if self.configuration["aligner"] == "tadbit":
             logger.info("cheking chr format from rmap and baitmap")
             rfmat_rmap, rfmat_baitmap = self.check_chr_format(
@@ -254,7 +240,7 @@ class bam2chicagoTool(Tool):
             rfmat_baitmap = input_files["BAITMAP"]
 
         results = self.bam2chicago(
-            input_files["BAM"],
+            bam_file,
             rfmat_rmap,
             rfmat_baitmap,
             output_files["chinput"]

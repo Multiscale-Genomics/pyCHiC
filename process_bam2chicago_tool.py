@@ -79,7 +79,7 @@ class process_bam2chicago(Workflow):
             bam2chicago_caller = bam2chicagoTool(self.configuration)
             output_files_bam2chicago, output_metadata_bam2chicago = bam2chicago_caller.run(
                 {
-                    "BAM" : input_files["BAM"],
+                    "hicup_outdir_tar" : input_files["hicup_outdir_tar"],
                     "RMAP" : input_files["RMAP"],
                     "BAITMAP" : input_files["BAITMAP"]
                 },
