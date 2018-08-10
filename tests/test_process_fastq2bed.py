@@ -21,7 +21,7 @@ import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
 
-from CHiC.process_fastq2bed import process_fastq2bed
+from process_fastq2bed import process_fastq2bed
 
 def test_process_fastq2bed():
     """
@@ -34,7 +34,7 @@ def test_process_fastq2bed():
         "fastq2" : path + "/test_truncater/SRR3535023_2.trunc.fastq",
         "gem_idx" : path + "/test_baitmap/chr21_hg19.fa.gem.gz",
         "genome_fa" : path + "/test_baitmap/chr21_hg19.fa",
-        "RE" : "HindIII",
+        "renzime" : "HindIII",
         "chromosome" : ""
     }
 

@@ -19,24 +19,20 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
-from utils import logger
 import tarfile
 from shutil import rmtree
-from shutil import move
+from utils import logger
 
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
         raise ImportError
-    from pycompss.api.parameter import FILE_IN, FILE_OUT, IN
-    from pycompss.api.task import task
     from pycompss.api.api import compss_wait_on
+
 except ImportError:
     logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
     logger.warn("          Using mock decorators.")
 
-    from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import compss_wait_on # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
@@ -243,7 +239,7 @@ class ChicagoTool(Tool):
 
         return command_params
 
-    def run(self, input_files, metadata, output_files):
+    def run(self, input_files, input_metadata, output_files):
         """
         The main function to run chicago for peak calling. The input files
         are .chinput and are transformed from BAM files using bam2chicago.sh
@@ -255,7 +251,7 @@ class ChicagoTool(Tool):
         ----------
         input_files : dict
             list of .chinput files, or str with a single .chinput file
-        metadata : dict
+        input_metadata : dict
         output_files: dict with the output path
 
         Returns
@@ -292,9 +288,9 @@ class ChicagoTool(Tool):
                 file_type="tar",
                 file_path=output_files["output"],
                 sources=[
-                    metadata["chinput"].file_path,
+                    input_metadata["chinput"].file_path,
                 ],
-                taxon_id=metadata["chinput"].taxon_id,
+                taxon_id=input_metadata["chinput"].taxon_id,
                 meta_data={
                     "tool": "run_chicago"
                 }

@@ -20,18 +20,15 @@ from __future__ import print_function
 
 import sys
 import os
-import subprocess
-from utils import logger
 from shutil import copy
 import shlex
-from tool.bam_utils import bamUtils
 
-from pytadbit.parsers.hic_parser import load_hic_data_from_reads
-from pytadbit.parsers.map_parser import parse_map
-import pickle
-from pytadbit.utils.file_handling import mkdir, which
 from collections                  import OrderedDict
+import subprocess
 from subprocess                   import Popen, PIPE
+from pytadbit.utils.file_handling import which
+
+from utils import logger
 
 
 try:

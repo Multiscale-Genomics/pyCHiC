@@ -30,6 +30,7 @@ def test_bam2chicago():
         "RMAP" : path + "test_run_chicago/test.rmap",
         "BAITMAP" : path +  "test_run_chicago/test.baitmap",
         "hicup_outdir_tar" : path + "test_hicup/output.tar",
+        "BAM" : path + "/test_hicup/output/SRR3535023_1_2.hicup.bam",
     }
 
     output_files = {

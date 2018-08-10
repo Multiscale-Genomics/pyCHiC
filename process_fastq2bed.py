@@ -25,7 +25,7 @@ import os
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from tool.fastq2bed import Fastq2bed
+from CHiC.tool.fastq2bed import Fastq2bed
 
 #################################################
 
@@ -63,7 +63,7 @@ class process_fastq2bed(Workflow):
                 path to fastq reads 1
             fastq2: str
                 path to fastq reads 2
-            RE: str
+            renzime: str
                 restriction enzyme, used to digest the genome.
                 format is the name of the eznyme case sensitive
                 example HindIII
@@ -93,7 +93,7 @@ class process_fastq2bed(Workflow):
             {
                 "fastq1" : input_files["fastq1"],
                 "fastq2" : input_files["fastq2"],
-                "RE" : input_files["RE"],
+                "renzime" : input_files["renzime"],
                 "chromosome": input_files["chromosome"],
                 "gem_idx": input_files["gem_idx"],
                 "genome_fa" : input_files["genome_fa"]

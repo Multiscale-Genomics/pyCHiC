@@ -17,8 +17,8 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
-from utils import logger
 from shutil import copy
+from utils import logger
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -63,9 +63,9 @@ class makeDesignFilesTool(Tool):
 
         self.configuration.update(configuration)
 
-    @task(returns=bool, RMAP=FILE_IN, BAITMAP=FILE_IN, nbpb=FILE_OUT,
+    @task(returns=bool, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_OUT,
           npb=FILE_OUT, poe=FILE_OUT, parameters=IN, tmp_names=IN)
-    def makeDesignFiles(self, RMAP, BAITMAP, nbpb, npb, poe, parameters, tmp_names):
+    def makeDesignFiles(self, rmap, baitmap, nbpb, npb, poe, parameters, tmp_names):
         """
         make the design files and store it in the specify design folder. It is a
         wrapper of makeDesignFiles.py
@@ -85,8 +85,8 @@ class makeDesignFilesTool(Tool):
             writes the output files in the defined location
 
         """
-        copy(RMAP, "".join(RMAP).split("/")[-1])
-        copy(BAITMAP, "".join(BAITMAP).split("/")[-1])
+        copy(rmap, "".join(rmap).split("/")[-1])
+        copy(baitmap, "".join(baitmap).split("/")[-1])
 
         script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
 
@@ -99,26 +99,25 @@ class makeDesignFilesTool(Tool):
 
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         process.wait()
-        proc_out, proc_err = process.communicate()
 
         try:
-            with open(tmp_names+".nbpb", "r") as f_in:
+            with open(tmp_names+"nbpb", "r") as f_in:
                 with open(nbpb, "w") as f_out:
                     f_out.write(f_in.read())
 
-            with open(tmp_names+".npb", "r") as f_in:
+            with open(tmp_names+"npb", "r") as f_in:
                 with open(npb, "w") as f_out:
                     f_out.write(f_in.read())
 
-            with open(tmp_names+".poe", "r") as f_in:
+            with open(tmp_names+"poe", "r") as f_in:
                 with open(poe, "w") as f_out:
                     f_out.write(f_in.read())
 
-            os.remove(tmp_names+".nbpb")
-            os.remove(tmp_names+".npb")
-            os.remove(tmp_names+".poe")
-            os.remove("".join(RMAP).split("/")[-1])
-            os.remove("".join(BAITMAP).split("/")[-1])
+            os.remove(tmp_names+"nbpb")
+            os.remove(tmp_names+"npb")
+            os.remove(tmp_names+"poe")
+            os.remove("".join(rmap).split("/")[-1])
+            os.remove("".join(baitmap).split("/")[-1])
             return True
 
         except IOError:
@@ -170,7 +169,7 @@ class makeDesignFilesTool(Tool):
 
         return command_params
 
-    def run(self, input_files, metadata, output_files):
+    def run(self, input_files, input_metadata, output_files):
         """
         The main function to run makeDesignFiles.
 
@@ -179,7 +178,7 @@ class makeDesignFilesTool(Tool):
 
         input_files: dict
             designDir : path to the designDir containin .rmap and .baitmap files
-        metadata: dict
+        input_metadata: dict
         output_files: dict
             outFilePrefix : path to the output folder and prefix name of files
                 example: "/folder1/folder2/prefixname". Recommended to use the
@@ -197,56 +196,56 @@ class makeDesignFilesTool(Tool):
 
         logger.info("makeDesignFiles command parameters " + " ".join(commands_params))
 
-        tmp_names = "".join(self.configuration["makeDesignFiles_outfilePrefix"].split("/")[-1])+"_tmp"
+        tmp_names = "".join(
+            self.configuration["makeDesignFiles_outfilePrefix"].split("/")[-1]
+            )+"_tmp"
 
         results = self.makeDesignFiles(input_files["RMAP"],
                                        input_files["BAITMAP"],
-                                       output_files[".nbpb"],
-                                       output_files[".npb"],
-                                       output_files[".poe"],
+                                       output_files["nbpb"],
+                                       output_files["npb"],
+                                       output_files["poe"],
                                        commands_params,
                                        tmp_names)
 
         results = compss_wait_on(results)
 
-        out_design_dir = self.configuration["makeDesignFiles_outfilePrefix"]
-
         output_metadata = {
-            ".nbpb" : Metadata(
-                data_type=".nbpb",
-                file_type=".nbpb",
-                file_path=output_files[".nbpb"],
+            "nbpb" : Metadata(
+                data_type="nbpb",
+                file_type="nbpb",
+                file_path=output_files["nbpb"],
                 sources=[
-                    metadata["RMAP"].file_path,
-                    metadata["BAITMAP"].file_path
+                    input_metadata["RMAP"].file_path,
+                    input_metadata["BAITMAP"].file_path
                     ],
-                taxon_id=metadata["RMAP"].taxon_id,
+                taxon_id=input_metadata["RMAP"].taxon_id,
                 meta_data={
                     "tool" : "makeDesignFiles"
                 }
             ),
-            ".npb" : Metadata(
-                data_type=".npb",
-                file_type=".npb",
-                file_path=output_files[".npb"],
+            "npb" : Metadata(
+                data_type="npb",
+                file_type="npb",
+                file_path=output_files["npb"],
                 sources=[
-                    metadata["RMAP"].file_path,
-                    metadata["BAITMAP"].file_path
+                    input_metadata["RMAP"].file_path,
+                    input_metadata["BAITMAP"].file_path
                     ],
-                taxon_id=metadata["RMAP"].taxon_id,
+                taxon_id=input_metadata["RMAP"].taxon_id,
                 meta_data={
                     "tool" : "makeDesignFiles"
                 }
             ),
-            ".poe" : Metadata(
-                data_type=".poe",
-                file_type=".poe",
-                file_path=output_files[".poe"],
+            "poe" : Metadata(
+                data_type="poe",
+                file_type="poe",
+                file_path=output_files["poe"],
                 sources=[
-                    metadata["RMAP"].file_path,
-                    metadata["BAITMAP"].file_path
+                    input_metadata["RMAP"].file_path,
+                    input_metadata["BAITMAP"].file_path
                     ],
-                taxon_id=metadata["BAITMAP"].taxon_id,
+                taxon_id=input_metadata["BAITMAP"].taxon_id,
                 meta_data={
                     "tool" : "makeDesignFiles"
                 }

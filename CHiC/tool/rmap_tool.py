@@ -50,7 +50,7 @@ except ImportError:
 class makeRmapFile(Tool):
 
     """
-    Tool for digest the genome with one RE. Wrapper of hicup_digester
+    Tool for digest the genome with one renzime. Wrapper of hicup_digester
     """
 
 
@@ -73,8 +73,8 @@ class makeRmapFile(Tool):
 
         self.configuration.update(configuration)
 
-
-    def iupac2regex(self, restring):
+    @staticmethod
+    def iupac2regex(restring):
         """
         Convert target sites with IUPAC nomenclature to regex pattern
         """
@@ -91,8 +91,8 @@ class makeRmapFile(Tool):
         restring = restring.replace('N', '[ATGC]')
         return restring
 
-
-    def genome_to_dict(self, genome_fa):
+    @staticmethod
+    def genome_to_dict(genome_fa):
         """
         This function takes a genome file in fasta format
         and converts it into a dictionary
@@ -133,10 +133,10 @@ class makeRmapFile(Tool):
         return genome_dict
 
 
-    def map_re_sites2(self, enzyme_name, genome_fa, verbose=False):
+    def map_re_sites2(self, enzyme_name, genome_fa):
         """
-        map all restriction enzyme (RE) sites of a given enzyme in a genome.
-        Position of a RE site is defined as the genomic coordinate of the first
+        map all restriction enzyme (renzime) sites of a given enzyme in a genome.
+        Position of a renzime site is defined as the genomic coordinate of the first
         nucleotide before the first cut (genomic coordinate starts at 1).
         In the case of HindIII the genomic coordinate is this one:
         123456 789...
@@ -144,7 +144,7 @@ class makeRmapFile(Tool):
              v
         -----A|AGCT T--------------
         -----T TCGA|A--------------
-        In this example the coordinate of the RE site would be 6.
+        In this example the coordinate of the renzime site would be 6.
 
 
         Parameters:
@@ -187,7 +187,7 @@ class makeRmapFile(Tool):
             frags = {}
             count = 0
 
-            logger.info("searching RE sites")
+            logger.info("searching renzime sites")
 
             for crm in genome_seq:
                 seq = genome_seq[crm]
@@ -203,7 +203,6 @@ class makeRmapFile(Tool):
 
         except IOError:
             logger.fatal("map_re_sites2 function from rmap_tool failed =(")
-            return False
 
     @task(returns=bool, enzyme_name=IN, genome_fa=FILE_IN,
           rtree=IN, rtree_dat=FILE_OUT, rtree_idx=FILE_OUT,
@@ -214,7 +213,7 @@ class makeRmapFile(Tool):
         This function takes the fragment output from digestion and
         convert them into rmap files.
 
-        It also save the RE sites positions and ID into a file using Rtree
+        It also save the renzime sites positions and ID into a file using Rtree
         python module. This file will be used by makeBatmap.py to generate
         .batmap file using spatial indexing
 
@@ -226,16 +225,16 @@ class makeRmapFile(Tool):
             full path to genome FASTA format
         frags : dict
             dict containing chromosomes as keys and
-            RE sites as values
+            renzime sites as values
         out_dir_rmap: str
             path to the output directory
         out_prefix_rmap: str
             name of the output file.
         """
         #include creation folders
-        frags = self.map_re_sites2(enzyme_name, genome_fa, verbose=False)
+        frags = self.map_re_sites2(enzyme_name, genome_fa)
 
-        logger.info("coverting RE fragments into rmap file")
+        logger.info("coverting renzime fragments into rmap file")
 
         idx = index.Rtree(rtree)
 
@@ -243,25 +242,25 @@ class makeRmapFile(Tool):
             counter_id = 0
             for crm in frags:
                 counter = 0
-                for RE_site in frags[crm]:
+                for re_site in frags[crm]:
                     counter_id += 1
                     counter += 1
                     if counter == 1:
                         out.write("{}\t{}\t{}\t{}\n".format(str(crm),
                                                             1,
-                                                            RE_site,
+                                                            re_site,
                                                             counter_id),
                                  )
-                        idx.insert(counter_id, (1, crm, RE_site, crm))
+                        idx.insert(counter_id, (1, crm, re_site, crm))
                     else:
                         out.write("{}\t{}\t{}\t{}\n".format(str(crm),
-                                                            prev_RE_site+1, # pylint: disable=used-before-assignment
-                                                            RE_site,
+                                                            prev_re_site+1, # pylint: disable=used-before-assignment
+                                                            re_site,
                                                             counter_id),
                                  )
-                        idx.insert(counter_id, (prev_RE_site+1, crm, RE_site, crm))
+                        idx.insert(counter_id, (prev_re_site+1, crm, re_site, crm))
 
-                    prev_RE_site = RE_site
+                    prev_re_site = re_site
 
         idx.close()
 
@@ -315,7 +314,7 @@ class makeRmapFile(Tool):
         print(rtree)
 
         results = self.from_frag_to_rmap(
-            self.configuration["RE"],
+            self.configuration["renzime"],
             input_files["genome_fa"],
             rtree,
             output_files["Rtree_file_dat"],
@@ -335,7 +334,7 @@ class makeRmapFile(Tool):
                 ],
                 taxon_id=metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : self.configuration["RE"],
+                    "renzime" : self.configuration["renzime"],
                     "tool": "rmap_tool"
                 }
             ),
@@ -348,7 +347,7 @@ class makeRmapFile(Tool):
                 ],
                 taxon_id=metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : self.configuration["RE"],
+                    "renzime" : self.configuration["renzime"],
                     "tool": "rmap_tool"
                 }
             ),
@@ -361,11 +360,11 @@ class makeRmapFile(Tool):
                 ],
                 taxon_id=metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : self.configuration["RE"],
+                    "renzime" : self.configuration["renzime"],
                     "tool": "rmap_tool"
                 }
             )
 
         }
 
-        return(output_files , output_metadata)
+        return(output_files, output_metadata)

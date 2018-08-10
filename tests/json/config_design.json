@@ -55,46 +55,46 @@
         {
             "required": true,
             "allow_multiple": false,
-            "name": ".nbpb",
+            "name": "nbpb",
             "file": {
-                "file_type": ".nbpb",
+                "file_type": "nbpb",
                 "meta_data": {
                     "visible": true,
                     "tool": "makeDesignFiles.py",
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_run_chicago/test.nbpb",
-                "data_type": ".nbpb",
+                "data_type": "nbpb",
                 "compressed": "null"
             }
         },{
             "required": true,
             "allow_multiple": false,
-            "name": ".npb",
+            "name": "npb",
             "file": {
-                "file_type": ".npb",
+                "file_type": "npb",
                 "meta_data": {
                     "visible": true,
                     "tool": "makeDesignFiles.py",
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_run_chicago/test.npb",
-                "data_type": ".npb",
+                "data_type": "npb",
                 "compressed": "null"
             }
         },{
             "required": true,
             "allow_multiple": false,
-            "name": ".poe",
+            "name": "poe",
             "file": {
-                "file_type": ".poe",
+                "file_type": "poe",
                 "meta_data": {
                     "visible": true,
                     "tool": "makeDesignFiles.py",
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_run_chicago/test.poe",
-                "data_type": ".poe",
+                "data_type": "poe",
                 "compressed": "null"
             }
         }

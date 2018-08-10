@@ -20,8 +20,8 @@ from __future__ import print_function
 import sys
 import os
 import subprocess
-from utils import logger
 from shutil import copy
+from utils import logger
 
 
 try:
@@ -71,7 +71,7 @@ class Truncater(Tool):
           fastq1_trunc=FILE_OUT, fastq2_trunc=FILE_OUT,
           hicup_summary=FILE_OUT, barchat_fastq1=FILE_OUT, barchat_fastq2=FILE_OUT,
           parameters=IN)
-    def truncate_reads(self, fastq1, fastq2, fastq1_trunc, fastq2_trunc,
+    def truncate_reads(self, fastq1, fastq2, fastq1_trunc, fastq2_trunc, # pylint: disable=no-self-use
                        hicup_summary, barchat_fastq1, barchat_fastq2,
                        parameters):
         """
@@ -225,7 +225,7 @@ class Truncater(Tool):
 
         return params
 
-    def run(self, input_files, metadata, output_files):
+    def run(self, input_files, input_metadata, output_files):
         """
         This is the function that runs all the functions
 
@@ -234,7 +234,7 @@ class Truncater(Tool):
         input_files: dict
             fastq1
             fastq2
-        metadata: dict
+        input_metadata: dict
         output_files: dict
             out_dir: str
                 directory to write the output
@@ -290,7 +290,7 @@ class Truncater(Tool):
                 data_type="FASTQ",
                 file_type="FASTQ",
                 file_path=output_files["fastq1_trunc"],
-                sources=metadata["fastq1"].file_path,
+                sources=input_metadata["fastq1"].file_path,
                 taxon_id=9606,
                 meta_data=""
             ),
@@ -298,7 +298,7 @@ class Truncater(Tool):
                 data_type="FASTQ",
                 file_type="FASTQ",
                 file_path=output_files["fastq2_trunc"],
-                sources=metadata["fastq2"].file_path,
+                sources=input_metadata["fastq2"].file_path,
                 taxon_id=9606,
                 meta_data=""
             ),
@@ -306,7 +306,7 @@ class Truncater(Tool):
                 data_type="TXT",
                 file_type="TXT",
                 file_path=output_files["hicup_summary"],
-                sources=[metadata["fastq1"].file_path, metadata["fastq2"].file_path],
+                sources=[input_metadata["fastq1"].file_path, input_metadata["fastq2"].file_path],
                 taxon_id=9606,
                 meta_data=""
             ),
@@ -314,7 +314,7 @@ class Truncater(Tool):
                 data_type="svg",
                 file_type="svg",
                 file_path=output_files["barchat_fastq1"],
-                sources=metadata["fastq1"].file_path,
+                sources=input_metadata["fastq1"].file_path,
                 taxon_id=9606,
                 meta_data=""
             ),
@@ -322,7 +322,7 @@ class Truncater(Tool):
                 data_type="svg",
                 file_type="svg",
                 file_path=output_files["barchat_fastq2"],
-                sources=metadata["fastq2"].file_path,
+                sources=input_metadata["fastq2"].file_path,
                 taxon_id=9606,
                 meta_data=""
             )

@@ -25,7 +25,6 @@ from tool.common import common
 from utils import logger
 
 
-
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
         raise ImportError
@@ -186,7 +185,6 @@ class bam2chicagoTool(Tool):
                 )
 
             return True
-
         except IOError:
             logger.fatal("bam2chicago failed to generate chicago output files =(")
             return False
