@@ -26,12 +26,10 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from CHiC.tool.truncater import Truncater
 from CHiC.tool.rmap_tool import makeRmapFile
 from CHiC.tool.makeBaitmap import makeBaitmapTool
 from CHiC.tool.makeDesignFiles import makeDesignFilesTool
-from CHiC.tool.fastq2bed import Fastq2bed
-from CHiC.tool.bed2bam import bed2bam
+from CHiC.tool.hicup_tool import hicup
 from CHiC.tool.bam2chicago_tool import bam2chicagoTool
 from CHiC.tool.run_chicago import ChicagoTool
 
@@ -138,8 +136,6 @@ class process_CHiC(Workflow):
             logger.fatal("generate_CHiCAGO_baitmap failed to generate .baitmap file")
             return False
 
-
-        #produce makeDesignFiles
         try:
             design_caller = makeDesignFilesTool(self.configuration)
             design_out, design_meta = design_caller.run(
@@ -152,41 +148,20 @@ class process_CHiC(Workflow):
                     "BAITMAP" : metadata["BAITMAP"]
                 },
                 {
-                    ".nbpb" : output_files[".nbpb"],
-                    ".npb"  : output_files[".npb"],
-                    ".poe" : output_files[".poe"]
+                    "nbpb" : output_files["nbpb"],
+                    "npb"  : output_files["npb"],
+                    "poe" : output_files["poe"]
                 }
             )
 
-            logger.info("Design files succesfully generated")
+            logger.info("design files succesfully generated =)")
 
         except IOError:
             logger.fatal("process_makeDesign failed to" +
                          "generate design files")
             return False
 
-        try:
-            truncater_caller = Truncater(self.configuration)
-            output_files_truncater, output_metadata_truncater = truncater_caller.run(
-                {
-                    "fastq1": input_files["fastq1"],
-                    "fastq2": input_files["fastq2"]
-                },
-                {
-                    "fastq1": metadata["fastq1"],
-                    "fastq2": metadata["fastq2"]
-                },
-                {
-                    "fastq1_trunc": output_files["fastq1_trunc"],
-                    "fastq2_trunc" : output_files["fastq2_trunc"],
-                    "hicup_summary" : output_files["hicup_summary"],
-                    "barchat_fastq1" : output_files["barchat_fastq1"],
-                    "barchat_fastq2" : output_files["barchat_fastq2"]
-                }
-            )
 
-        except IOError:
-            return False
 
         output_files = {}
         output_metadata = {}
@@ -194,12 +169,10 @@ class process_CHiC(Workflow):
         output_files.update(output_files_rmap)
         output_files.update(output_files_baitmap)
         output_files.update(design_out)
-        output_files.update(output_files_truncater)
 
         output_metadata.update(output_metadata_rmap)
         output_metadata.update(output_metadata_baitmap)
         output_metadata.update(design_meta)
-        output_metadata.update(output_files_truncater)
 
         return output_files, output_metadata
 
