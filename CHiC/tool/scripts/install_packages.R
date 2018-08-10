@@ -18,8 +18,8 @@
 source("http://bioconductor.org/biocLite.R")
 biocLite("argparser")
 if(!require("rhdf5")) biocLite("rhdf5")
-install.packages("survival", lib="../tmp_R_lib", repos="http://cloud.r-project.org/")
-install.packages("Hmisc",lib="../tmp_R_lib", repos="http://cloud.r-project.org/" )
-install.packages("devtools", lib="../tmp_R_lib", repos="http://cloud.r-project.org/")
+install.packages("survival", lib="./tmp_R_lib", repos="http://cloud.r-project.org/")
+install.packages("Hmisc",lib="./tmp_R_lib", repos="http://cloud.r-project.org/" )
+install.packages("devtools", lib="./tmp_R_lib", repos="http://cloud.r-project.org/")
 devtools::install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
 

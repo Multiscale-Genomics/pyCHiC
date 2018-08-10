@@ -57,9 +57,9 @@ def test_design():
     }
 
     output_files = {
-        ".nbpb" : path + "test_run_chicago/test.nbpb",
-        ".npb" : path + "test_run_chicago/test.npb",
-        ".poe" : path + "test_run_chicago/test.poe"
+        "nbpb" : path + "test_run_chicago/test.nbpb",
+        "npb" : path + "test_run_chicago/test.npb",
+        "poe" : path + "test_run_chicago/test.poe"
     }
 
     design_handle = makeDesignFilesTool(config_file)

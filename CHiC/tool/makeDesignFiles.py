@@ -101,26 +101,27 @@ class makeDesignFilesTool(Tool):
         process.wait()
 
         try:
-            with open(tmp_names+"nbpb", "r") as f_in:
+            with open(tmp_names+".nbpb", "r") as f_in:
                 with open(nbpb, "w") as f_out:
                     f_out.write(f_in.read())
 
-            with open(tmp_names+"npb", "r") as f_in:
+            with open(tmp_names+".npb", "r") as f_in:
                 with open(npb, "w") as f_out:
                     f_out.write(f_in.read())
 
-            with open(tmp_names+"poe", "r") as f_in:
+            with open(tmp_names+".poe", "r") as f_in:
                 with open(poe, "w") as f_out:
                     f_out.write(f_in.read())
 
-            os.remove(tmp_names+"nbpb")
-            os.remove(tmp_names+"npb")
-            os.remove(tmp_names+"poe")
+            os.remove(tmp_names+".nbpb")
+            os.remove(tmp_names+".npb")
+            os.remove(tmp_names+".poe")
             os.remove("".join(rmap).split("/")[-1])
             os.remove("".join(baitmap).split("/")[-1])
             return True
 
         except IOError:
+            logger.fatal("The temporary files failed to copy to the right folder")
             return False
 
     @staticmethod
