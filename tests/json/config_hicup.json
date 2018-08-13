@@ -52,7 +52,7 @@
         },
         {
             "name": "hicup_outdir",
-            "value": "/home/pacera/MuG/C-HiC/tests/data/test_hicup/output"
+            "value": "tests/data/test_hicup/output"
         },
         {
             "name": "hicup_zip",
