@@ -81,24 +81,32 @@ class bam2chicagoTool(Tool):
         rformat_baitmap = True
 
         logger.info("checking .rmap chr format")
-
-        rmapfile_new = pd.read_csv(rmap_file, header=None, sep="\t")
-        chr_rmap = str(rmapfile_new.iloc[0, 0])
-        if str(chr_rmap[0:3]) == "chr":
-            logger.info("rmap file chromosome on the right format")
-            rformat_rmap = False
-        else:
-            rmapfile_new.iloc[:, 0] = rmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
+        try:
+            rmapfile_new = pd.read_csv(rmap_file, header=None, sep="\t")
+            chr_rmap = str(rmapfile_new.iloc[0, 0])
+            if str(chr_rmap[0:3]) == "chr":
+                logger.info("rmap file chromosome on the right format")
+                rformat_rmap = False
+            else:
+                rmapfile_new.iloc[:, 0] = rmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
+        except IOError:
+            logger.fata("bam2chicago_tool failed on checking the rmap format =(")
 
         logger.info("checking .baitmap chr format")
-        baitmapfile_new = pd.read_table(baitmap_file, header=None, sep="\t")
-        chr_baitmap = str(baitmapfile_new.iloc[0, 0])
-        if chr_baitmap[0:3] == "chr":
-            logger.info("baitmap file chromosome on the right format")
-            rformat_baitmap = False
 
-        else:
-            baitmapfile_new.iloc[:, 0] = baitmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
+        try:
+            baitmapfile_new = pd.read_table(baitmap_file, header=None, sep="\t")
+            chr_baitmap = str(baitmapfile_new.iloc[0, 0])
+            if chr_baitmap[0:3] == "chr":
+                logger.info("baitmap file chromosome on the right format")
+                rformat_baitmap = False
+
+            else:
+                baitmapfile_new.iloc[:, 0] = baitmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
+
+        except IOError:
+            logger.fatal("bam2chicago_tool failed on checking the baitmap format")
+
 
         if rformat_rmap:
             rmapfile_new.to_csv(chrRMAP, sep="\t", header=None, index=False)
