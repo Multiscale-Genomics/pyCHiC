@@ -112,8 +112,6 @@ class bam2chicagoTool(Tool):
 
         return chrRMAP, chrBAITMAP
 
-    #@task(returns=bool, bamFile=FILE_IN, rmapFile=FILE_IN,
-    #      baitmapFile=FILE_IN, chinput=FILE_OUT)
     @staticmethod
     def bam2chicago(bamFile, rmapFile, baitmapFile, chinput):
         """

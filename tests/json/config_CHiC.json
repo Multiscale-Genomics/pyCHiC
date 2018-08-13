@@ -146,7 +146,7 @@
         },
         {
             "name": "hicup_outdir",
-            "value": "/home/pacera/MuG/C-HiC/tests/data/test_hicup/output"
+            "value": "tests/data/test_hicup/output"
         },
         {
             "name": "hicup_zip",
@@ -384,14 +384,14 @@
             "allow_multiple": false,
             "name": "hicup_outdir_tar",
             "file": {
-                "file_type": ".baitmap",
+                "file_type": "TAR",
                 "meta_data": {
                     "visible": true,
                     "tool": "makeBaitmap",
                     "description": "Output"
                 },
-                "file_path": "tests/data/test_run_chicago/test.baitmap",
-                "data_type": "data_baitmap",
+                "file_path": "tests/data/test_hicup/output.tar",
+                "data_type": "data_CHiC",
                 "compressed": "null"
             }
         },
