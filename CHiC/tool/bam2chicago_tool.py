@@ -245,13 +245,6 @@ class bam2chicagoTool(Tool):
 
         path_bam =  folder_name + "/" + bam_file
 
-        #logger.info("cheking chr format from rmap and baitmap")
-        #rfmat_rmap, rfmat_baitmap = self.check_chr_format(
-        #    input_files["RMAP"],
-        #    input_files["BAITMAP"],
-        #    output_files["chrRMAP"],
-        #    output_files["chrBAITMAP"])
-
         results = self.bam2chicago(
             path_bam,
             input_files["RMAP"],
