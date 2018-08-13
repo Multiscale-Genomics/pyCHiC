@@ -112,9 +112,8 @@ class bam2chicagoTool(Tool):
 
         return chrRMAP, chrBAITMAP
 
-    @task(returns=bool, bamFile=FILE_IN, rmapFile=FILE_IN,
-          baitmapFile=FILE_IN, chinput=FILE_OUT)
-    def bam2chicago(self, bamFile, rmapFile, baitmapFile, chinput):
+    @staticmethod
+    def bam2chicago(bamFile, rmapFile, baitmapFile, chinput):
         """
         Main function that preprocess the bam files into Chinput files. Part of
         the input files of CHiCAGO.
