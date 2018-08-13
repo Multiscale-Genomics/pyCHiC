@@ -40,7 +40,7 @@
         },
         {
             "name": "hicup_bowtie2_loc",
-            "value": "/usr/bin/bowtie2"
+            "value": "{HOME}/bin/bowtie2"
         },
         {
             "name": "hicup_longest",

@@ -80,11 +80,22 @@ bedtools
 
    sudo apt-get install bedtools
 
+Bowtie2 Aligner
+^^^^^^^^^^^^^^^
+
+.. code-block:: none
+   :linenos:
+
+   cd ${HOME}/lib
+   wget --max-redirect 1 https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.3.4/bowtie2-2.3.4-linux-x86_64.zip
+   unzip bowtie2-2.3.4-linux-x86_64.zip
+
 HiCUP
 ^^^^^
 .. code-block:: none
    :linenos:
-
+    
+    cd ${HOME}/lib
     wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
     tar -xzf hicup_v0.6.1.tar.gz
     cd hicup_v0.6.1
@@ -159,6 +170,8 @@ Setup the symlinks
    :linenos:
 
    cd ${HOME}/bin
+    
+      
 
    ln -s ${HOME}/lib/hicup_v0.6.1/* ${HOME}/bin/
 
