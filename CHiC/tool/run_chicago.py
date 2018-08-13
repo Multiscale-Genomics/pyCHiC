@@ -284,8 +284,8 @@ class ChicagoTool(Tool):
 
         output_metadata = {
             "output" : Metadata(
-                data_type="tar",
-                file_type="tar",
+                data_type="chicago_CHIC",
+                file_type="TAR",
                 file_path=output_files["output"],
                 sources=[
                     input_metadata["chinput"].file_path,
