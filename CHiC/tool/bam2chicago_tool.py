@@ -178,11 +178,16 @@ class bam2chicagoTool(Tool):
 
             process.wait()
 
-            common.tar_folder(
-                no_tar_out,
-                chinput,
-                os.path.split(no_tar_out)[1]
-                )
+            try:
+                common.tar_folder(
+                    no_tar_out,
+                    chinput,
+                    os.path.split(no_tar_out)[1]
+                    )
+
+            except IOError:
+                logger.fatal("could not tar folder")
+                print(no_tar_out, chinput,os.path.split(no_tar_out)[1])
 
             return True
         except IOError:
