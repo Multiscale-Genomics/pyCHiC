@@ -83,14 +83,21 @@ class bam2chicagoTool(Tool):
         logger.info("checking .rmap chr format")
         try:
             rmapfile_new = pd.read_csv(rmap_file, header=None, sep="\t")
+        except IOError:
+            logger.fatal("bam2chicago_tool failed on checking the rmap format 1")
+	    print(rmap_file)
+        try:
             chr_rmap = str(rmapfile_new.iloc[0, 0])
+        except:
+            logger.fatal("bam2chicago_tool failed on checking the rmap format 2")
+        try:
             if str(chr_rmap[0:3]) == "chr":
                 logger.info("rmap file chromosome on the right format")
                 rformat_rmap = False
             else:
                 rmapfile_new.iloc[:, 0] = rmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
-        except IOError:
-            logger.fatal("bam2chicago_tool failed on checking the rmap format =(")
+        except:
+            logger.fatal("bam2chicago_tool failed on checking the rmap format 3")
 
         logger.info("checking .baitmap chr format")
 
@@ -229,7 +236,6 @@ class bam2chicagoTool(Tool):
         folder_name = os.path.split(input_files["hicup_outdir_tar"])[0] + "/"+\
                     "".join(os.path.split(input_files["hicup_outdir_tar"])[1].split(".")[:-1])
 
-        print(folder_name)
         tar = tarfile.open(input_files["hicup_outdir_tar"])
         tar.extractall(path="".join(os.path.split(input_files["hicup_outdir_tar"])[0]))
         tar.close()
