@@ -30,7 +30,6 @@ def test_bam2chicago():
         "RMAP" : path + "test_run_chicago/test.rmap",
         "BAITMAP" : path +  "test_run_chicago/test.baitmap",
         "hicup_outdir_tar" : path + "test_hicup/output.tar",
-        "BAM" : path + "/test_hicup/output/SRR3535023_1_2.hicup.bam",
     }
 
     output_files = {
@@ -46,8 +45,8 @@ def test_bam2chicago():
         "BAITMAP" : Metadata(
             "TXT", ".baitmap",
             path+"/h19_chr20and21.baitmap_4col_chr.txt", None, {}, 9606),
-        "BAM" : Metadata(
-            "txt", "bamfile", path + "/SRR3535023_1_2.hicup.bam",
+        "hicup_outdir_tar" : Metadata(
+            "TAR", "CHiC_data", input_files["hicup_outdir_tar"],
             {"fastq1" : "SRR3535023_1.fastq",
              "fastq2" : "SRR3535023_2.fastq", "genome" : "human_hg19"},
             9606)

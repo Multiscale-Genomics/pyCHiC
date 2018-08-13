@@ -33,7 +33,7 @@ def test_process_bam2chicago():
     }
 
     output_files = {
-        "chinput" :  path + "test_bam2chicago_tool/sampleout",
+        "chinput" :  path + "test_bam2chicago_tool/sampleout.tar",
         "chrRMAP" : path + "test_bam2chicago_tool/chrtest.rmap",
         "chrBAITMAP" : path + "test_bam2chicago_tool/chrtest.baitmap"
     }
@@ -45,8 +45,8 @@ def test_process_bam2chicago():
         "BAITMAP" : Metadata(
             "data_chicago_input", ".baitmap",
             path+"/h19_chr20and21.baitmap_4col_chr.txt", None, {}, 9606),
-        "BAM" : Metadata(
-            "txt", "bamfile", path + "/SRR3535023_1_2.hicup.bam",
+        "hicup_outdir_tar" : Metadata(
+            "TAR", "CHiC_data", path + "/SRR3535023_1_2.hicup.bam",
             {"fastq1" : "SRR3535023_1.fastq",
              "fastq2" : "SRR3535023_2.fastq", "genome" : "human_hg19"},
             9606)
@@ -59,7 +59,6 @@ def test_process_bam2chicago():
     bam2chicago_handle = process_bam2chicago(configuration)
     bam2chicago_handle.run(input_files, metadata, output_files)
 
-    out_path = output_files["chinput"] + "/sampleout.chinput"
 
-    assert os.path.isfile(out_path) is True
-    assert os.path.getsize(out_path) > 0
+    assert os.path.isfile(output_files["chinput"]+".tar") is True
+    assert os.path.getsize(output_files["chinput"]+".tar") > 0

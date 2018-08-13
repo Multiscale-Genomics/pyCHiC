@@ -25,11 +25,11 @@
             "validated": 1
         }
     },
-     {
+    {
         "_id": "59b7e020d9422a5969b653dasda",
-        "data_type": "TXT",
-        "file_type": "bam",
-        "file_path": "tests/data/test_bed2bam/outbam_sorted.bam",
+        "data_type": "TAR",
+        "file_type": "C-HiC_data",
+        "file_path": "tests/data/test_hicup/output.tar",
         "compressed": 0,
         "sources": ["user"],
         "taxon_id": 9606,

@@ -180,7 +180,7 @@ class bam2chicagoTool(Tool):
 
             common.tar_folder(
                 no_tar_out,
-                chinput+".tar",
+                chinput,
                 os.path.split(no_tar_out)[1]
                 )
 
@@ -250,15 +250,15 @@ class bam2chicagoTool(Tool):
 
         output_metadata = {
             "chinput" : Metadata(
-                data_type=metadata["BAM"].data_type,
+                data_type="CHiC_data",
                 file_type="tar",
                 file_path=output_files["chinput"],
                 sources=[
                     metadata["RMAP"].file_path,
                     metadata["BAITMAP"].file_path,
-                    metadata["BAM"].file_path
+                    metadata["hicup_outdir_tar"].file_path
                     ],
-                taxon_id=metadata["BAM"].taxon_id,
+                taxon_id=metadata["hicup_outdir_tar"].taxon_id,
                 meta_data={"tool": "bam2chicago_tool"}
             ),
             "chrRMAP" : Metadata(

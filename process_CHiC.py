@@ -182,6 +182,31 @@ class process_CHiC(Workflow):
         except IOError:
             logger.fatal("hicup failed to run succesfully =(")
 
+        try:
+            bam2chicago_caller = bam2chicagoTool(self.configuration)
+            output_files_bam2chicago, output_metadata_bam2chicago = bam2chicago_caller.run(
+                {
+                    "hicup_outdir_tar" : input_files["hicup_outdir_tar"],
+                    "RMAP" : input_files["RMAP"],
+                    "BAITMAP" : input_files["BAITMAP"]
+                },
+                {
+                    "hicup_outdir_tar" : metadata["hicup_outdir_tar"],
+                    "RMAP" : metadata["RMAP"],
+                    "BAITMAP" : metadata["BAITMAP"]
+                },
+                {
+                    "chrRMAP": output_files["chrRMAP"],
+                    "chrBAITMAP": output_files["chrBAITMAP"],
+                    "chinput": output_files["chinput"]
+                }
+            )
+
+            logger.info("bam2chicago_tool succesfully generate chinput files =)")
+
+        except IOError:
+            logger.fatal("process_bam2chicago failed to generate .chinput files")
+
 
         output_files = {}
         output_metadata = {}

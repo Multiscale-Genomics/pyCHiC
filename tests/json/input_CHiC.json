@@ -135,6 +135,19 @@
             "visible": true,
             "validated": 1
         }
+    },
+    {
+        "_id": "59b7e020d9422a5969b653dasda",
+        "data_type": "TAR",
+        "file_type": "C-HiC_data",
+        "file_path": "tests/data/test_hicup/output.tar",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
     }
 ]
 

@@ -59,6 +59,12 @@
             "allow_multiple": false,
             "name": "bowtie_gen_idx",
             "value": "59b7e020d9422a596976we"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "hicup_outdir_tar",
+            "value": "59b7e020d9422a5969b653dasda"
         }
     ],
     "arguments": [
@@ -145,7 +151,12 @@
         {
             "name": "hicup_zip",
             "value": "True"
+        },
+        {
+            "name": "aligner",
+            "value": "tadbit"
         }
+
     ],
     "output_files": [
         {
@@ -381,6 +392,52 @@
                 },
                 "file_path": "tests/data/test_run_chicago/test.baitmap",
                 "data_type": "data_baitmap",
+                "compressed": "null"
+            }
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "chinput",
+            "file": {
+                "file_type": "chinput",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "bam2chicago",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_bam2chicago_tool/sampleout.tar",
+                "data_type": "TAR",
+                "compressed": "TAR"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": "chrRMAP",
+            "file": {
+                "file_type": ".rmap",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "bam2chicago",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_bam2chicago_tool/chrtest.rmap",
+                "data_type": "TXT",
+                "compressed": "null"
+            }
+        },{
+            "required": true,
+            "allow_multiple": false,
+            "name": "chrBAITMAP",
+            "file": {
+                "file_type": ".baitmap",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "makeBaitmap",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_bam2chicago_tool/chrtest.baitmap",
+                "data_type": "TXT",
                 "compressed": "null"
             }
         }
