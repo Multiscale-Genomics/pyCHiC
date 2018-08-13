@@ -207,11 +207,14 @@ class process_CHiC(Workflow):
         except IOError:
             logger.fatal("process_bam2chicago failed to generate .chinput files")
 
+        try:
+            chicago_caller = ChicagoTool(self.configuration)
 
-        #try:
+            output_files_chicago, output_metadata_chicago = chicago_caller.run(
+                input_files, metadata, output_files)
 
-
-
+        except IOError:
+            logger.info("chicago failed to generate output files =(")
 
         output_files = {}
         output_metadata = {}
@@ -219,10 +222,16 @@ class process_CHiC(Workflow):
         output_files.update(output_files_rmap)
         output_files.update(output_files_baitmap)
         output_files.update(design_out)
+        output_files.update(output_files_hicup)
+        output_files.update(output_files_bam2chicago)
+        output_files.update(output_files_chicago)
 
         output_metadata.update(output_metadata_rmap)
         output_metadata.update(output_metadata_baitmap)
         output_metadata.update(design_meta)
+        output_metadata.update(output_metadata_hicup)
+        output_metadata.update(output_metadata_bam2chicago)
+        output_metadata.update(output_metadata_chicago)
 
         return output_files, output_metadata
 

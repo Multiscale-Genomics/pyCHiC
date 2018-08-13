@@ -65,6 +65,18 @@
             "allow_multiple": false,
             "name": "hicup_outdir_tar",
             "value": "59b7e020d9422a5969b653dasda"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "chinput",
+            "value": "59b7e020d9422a5900e1"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "setting_file",
+            "value": "59b7e020d9422a5900e2"
         }
     ],
     "arguments": [
@@ -153,8 +165,36 @@
             "value": "True"
         },
         {
-            "name": "aligner",
-            "value": "tadbit"
+            "name": "chicago_out_prefix",
+            "value": "output_test"
+        },
+        {
+            "name": "chicago_cutoff",
+            "value": "5"
+        },
+        {
+            "name": "chicago_export_format",
+            "value": "washU_text"
+        },
+        {
+            "name": "chicago_examples_prox_dist",
+            "value": "1000000"
+        },
+        {
+            "name": "chicago_en_min_dist",
+            "value": "0"
+        },
+        {
+            "name": "chicago_en_max_dist",
+            "value": "1000000"
+        },
+        {
+            "name": "chicago_en_sample_no",
+            "value": "100"
+        },
+        {
+            "name": "chicago_design_dir",
+            "value": "tests/data/test_run_chicago/data_chicago"
         }
 
     ],
@@ -302,86 +342,6 @@
         {
             "required": true,
             "allow_multiple": false,
-            "name": "fastq1_trunc",
-            "file": {
-                "file_type": "FASTQ",
-                "meta_data": {
-                    "visible": true,
-                    "tool": "truncater",
-                    "description": "Output"
-                },
-                "file_path": "tests/data/test_truncater/SRR3535023_1.trunc.fastq",
-                "data_type": "FASTQ",
-                "compressed": "null"
-            }
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
-            "name": "fastq2_trunc",
-            "file": {
-                "file_type": "FASTQ",
-                "meta_data": {
-                    "visible": true,
-                    "tool": "truncater",
-                    "description": "Output"
-                },
-                "file_path": "tests/data/test_truncater/SRR3535023_2.trunc.fastq",
-                "data_type": "FASTQ",
-                "compressed": "null"
-            }
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
-            "name": "hicup_summary",
-            "file": {
-                "file_type": "TXT",
-                "meta_data": {
-                    "visible": true,
-                    "tool": "truncater",
-                    "description": "Output"
-                },
-                "file_path": "tests/data/test_truncater/hicup_truncater_summary_.txt",
-                "data_type": "TXT",
-                "compressed": "null"
-            }
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
-            "name": "barchat_fastq1",
-            "file": {
-                "file_type": "svg",
-                "meta_data": {
-                    "visible": true,
-                    "tool": "truncater",
-                    "description": "Output"
-                },
-                "file_path": "tests/data/test_truncater/SRR3535023_1.fastq.truncation_barchart.svg",
-                "data_type": "svg",
-                "compressed": "null"
-            }
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
-            "name": "barchat_fastq2",
-            "file": {
-                "file_type": "svg",
-                "meta_data": {
-                    "visible": true,
-                    "tool": "truncater",
-                    "description": "Output"
-                },
-                "file_path": "tests/data/test_truncater/SRR3535023_2.fastq.truncation_barchart.svg",
-                "data_type": "TXT",
-                "compressed": "null"
-            }
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
             "name": "hicup_outdir_tar",
             "file": {
                 "file_type": "TAR",
@@ -438,6 +398,22 @@
                 },
                 "file_path": "tests/data/test_bam2chicago_tool/chrtest.baitmap",
                 "data_type": "TXT",
+                "compressed": "null"
+            }
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "output",
+            "file": {
+                "file_type": "tar",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "bam2chicago",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_run_chicago/data_chicago/out_run_chicago.tar",
+                "data_type": "tar",
                 "compressed": "null"
             }
         }
