@@ -112,9 +112,10 @@ class bam2chicagoTool(Tool):
 
         return chrRMAP, chrBAITMAP
 
-    @task(returns=bool, bamFile=FILE_IN, rmapFile=FILE_IN,
-          baitmapFile=FILE_IN, chinput=FILE_OUT)
-    def bam2chicago(self, bamFile, rmapFile, baitmapFile, chinput):
+    #@task(returns=bool, bamFile=FILE_IN, rmapFile=FILE_IN,
+    #      baitmapFile=FILE_IN, chinput=FILE_OUT)
+    @staticmethod
+    def bam2chicago(bamFile, rmapFile, baitmapFile, chinput):
         """
         Main function that preprocess the bam files into Chinput files. Part of
         the input files of CHiCAGO.
@@ -178,11 +179,16 @@ class bam2chicagoTool(Tool):
 
             process.wait()
 
-            common.tar_folder(
-                no_tar_out,
-                chinput,
-                os.path.split(no_tar_out)[1]
-                )
+            try:
+                common.tar_folder(
+                    no_tar_out,
+                    chinput,
+                    os.path.split(no_tar_out)[1]
+                    )
+
+            except IOError:
+                logger.fatal("could not tar folder")
+                print(no_tar_out, chinput,os.path.split(no_tar_out)[1])
 
             return True
         except IOError:
