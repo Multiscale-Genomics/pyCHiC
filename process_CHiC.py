@@ -208,6 +208,11 @@ class process_CHiC(Workflow):
             logger.fatal("process_bam2chicago failed to generate .chinput files")
 
 
+        #try:
+
+
+
+
         output_files = {}
         output_metadata = {}
 

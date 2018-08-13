@@ -22,8 +22,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'pytest', "pandas", "numpy",
-	"rtree"
+        'pytest', "pandas", "numpy", 'rtree'
     ],
     setup_requires=[
         'pytest-runner',
@@ -31,4 +30,9 @@ setup(
     tests_require=[
         'pytest',
     ],
+    classifiers=[
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.6",
+        "License :: OSI Approved :: Apache 2.0",
+    ]
 )
