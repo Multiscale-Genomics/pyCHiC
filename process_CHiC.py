@@ -196,8 +196,6 @@ class process_CHiC(Workflow):
                     "BAITMAP" : metadata["BAITMAP"]
                 },
                 {
-                    "chrRMAP": output_files["chrRMAP"],
-                    "chrBAITMAP": output_files["chrBAITMAP"],
                     "chinput": output_files["chinput"]
                 }
             )

@@ -33,7 +33,7 @@ def test_bam2chicago():
     }
 
     output_files = {
-        "chinput" :  path + "test_bam2chicago_tool/sampleout",
+        "chinput" :  path + "test_bam2chicago_tool/sampleout.tar",
         "chrRMAP" : path + "test_bam2chicago_tool/chrtest.rmap",
         "chrBAITMAP" : path + "test_bam2chicago_tool/chrtest.baitmap"
     }
@@ -59,5 +59,5 @@ def test_bam2chicago():
     bam2chicago_handle = bam2chicagoTool(configuration)
     bam2chicago_handle.run(input_files, metadata, output_files)
 
-    assert os.path.isfile(output_files["chinput"]+".tar") is True
-    assert os.path.getsize(output_files["chinput"]+".tar") > 0
+    assert os.path.isfile(output_files["chinput"]) is True
+    assert os.path.getsize(output_files["chinput"]) > 0

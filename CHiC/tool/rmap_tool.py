@@ -246,17 +246,17 @@ class makeRmapFile(Tool):
                     counter_id += 1
                     counter += 1
                     if counter == 1:
-                        out.write("{}\t{}\t{}\t{}\n".format(str(crm),
-                                                            1,
-                                                            re_site,
-                                                            counter_id),
+                        out.write("chr{}\t{}\t{}\t{}\n".format(str(crm),
+                                                               1,
+                                                               re_site,
+                                                               counter_id),
                                  )
                         idx.insert(counter_id, (1, crm, re_site, crm))
                     else:
-                        out.write("{}\t{}\t{}\t{}\n".format(str(crm),
-                                                            prev_re_site+1, # pylint: disable=used-before-assignment
-                                                            re_site,
-                                                            counter_id),
+                        out.write("chr{}\t{}\t{}\t{}\n".format(str(crm),
+                                                               prev_re_site+1, # pylint: disable=used-before-assignment
+                                                               re_site,
+                                                               counter_id),
                                  )
                         idx.insert(counter_id, (prev_re_site+1, crm, re_site, crm))
 
@@ -311,7 +311,6 @@ class makeRmapFile(Tool):
         rtree = "".join(output_files["Rtree_file_dat"].split(".")[:-1])
 
         rtree = "".join(rtree.split("/")[-1])
-        print(rtree)
 
         results = self.from_frag_to_rmap(
             self.configuration["renzime"],

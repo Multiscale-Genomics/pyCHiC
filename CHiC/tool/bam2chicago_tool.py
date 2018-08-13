@@ -87,7 +87,7 @@ class bam2chicagoTool(Tool):
             logger.fatal("bam2chicago_tool failed on checking the rmap format 1")
         try:
             chr_rmap = str(rmapfile_new.iloc[0, 0])
-        except:
+        except IOError:
             logger.fatal("bam2chicago_tool failed on checking the rmap format 2")
         try:
             if str(chr_rmap[0:3]) == "chr":
@@ -95,7 +95,7 @@ class bam2chicagoTool(Tool):
                 rformat_rmap = False
             else:
                 rmapfile_new.iloc[:, 0] = rmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
-        except:
+        except IOError:
             logger.fatal("bam2chicago_tool failed on checking the rmap format 3")
 
         logger.info("checking .baitmap chr format")
@@ -244,18 +244,17 @@ class bam2chicagoTool(Tool):
 
         path_bam =  folder_name + "/" + bam_file
 
-
-        logger.info("cheking chr format from rmap and baitmap")
-        rfmat_rmap, rfmat_baitmap = self.check_chr_format(
-            input_files["RMAP"],
-            input_files["BAITMAP"],
-            output_files["chrRMAP"],
-            output_files["chrBAITMAP"])
+        #logger.info("cheking chr format from rmap and baitmap")
+        #rfmat_rmap, rfmat_baitmap = self.check_chr_format(
+        #    input_files["RMAP"],
+        #    input_files["BAITMAP"],
+        #    output_files["chrRMAP"],
+        #    output_files["chrBAITMAP"])
 
         results = self.bam2chicago(
             path_bam,
-            rfmat_rmap,
-            rfmat_baitmap,
+            input_files["RMAP"],
+            input_files["BAITMAP"],
             output_files["chinput"]
             )
 
@@ -272,26 +271,6 @@ class bam2chicagoTool(Tool):
                     metadata["hicup_outdir_tar"].file_path
                     ],
                 taxon_id=metadata["hicup_outdir_tar"].taxon_id,
-                meta_data={"tool": "bam2chicago_tool"}
-            ),
-            "chrRMAP" : Metadata(
-                data_type=metadata['RMAP'].data_type,
-                file_type=".rmap",
-                file_path=rfmat_rmap,
-                sources=[
-                    metadata["RMAP"].file_path,
-                    ],
-                taxon_id=metadata["RMAP"].taxon_id,
-                meta_data={"tool": "bam2chicago_tool"}
-            ),
-            "chrBAITMAP" : Metadata(
-                data_type=metadata['BAITMAP'].data_type,
-                file_type=".baitmap",
-                file_path=rfmat_baitmap,
-                sources=[
-                    metadata["BAITMAP"].file_path
-                    ],
-                taxon_id=metadata["BAITMAP"].taxon_id,
                 meta_data={"tool": "bam2chicago_tool"}
             )
         }

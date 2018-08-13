@@ -99,5 +99,3 @@ def test_process_CHiC():
     assert os.path.getsize(output_files["Rtree_files"] + ".dat")
     assert os.path.getsize(output_files["Rtree_files"] + ".idx")
 
-    #assert makeBaitmap.py
-
