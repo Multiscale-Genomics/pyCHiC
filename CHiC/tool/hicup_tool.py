@@ -327,6 +327,11 @@ class hicup(Tool):
         metadata: dict
         output_files: dict
         """
+        output_dir = "".join(os.path.split(output_files["hicup_outdir_tar"])[0])
+        if os.path.isdir(output_dir) is False:
+            os.mkdir(output_dir)
+
+
         if isinstance(self.configuration["hicup_renzyme"], list) is True:
             re_enzyme = ":".join(self.configuration["hicup_renzyme"])
         else:
