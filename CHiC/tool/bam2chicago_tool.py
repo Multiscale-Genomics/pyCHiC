@@ -90,7 +90,7 @@ class bam2chicagoTool(Tool):
             else:
                 rmapfile_new.iloc[:, 0] = rmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
         except IOError:
-            logger.fata("bam2chicago_tool failed on checking the rmap format =(")
+            logger.fatal("bam2chicago_tool failed on checking the rmap format =(")
 
         logger.info("checking .baitmap chr format")
 
