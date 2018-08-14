@@ -291,11 +291,11 @@ class ChicagoTool(Tool):
                                output_files["output"],
                                command_params,
                                input_files["setting_file"],
-                               input_files["RMAP"],
-                               input_files["BAITMAP"],
-                               input_files["nbpb"],
-                               input_files["npb"],
-                               input_files["poe"],
+                               input_files["rmap_chicago"],
+                               input_files["baitmap_chicago"],
+                               input_files["nbpb_chicago"],
+                               input_files["npb_chicago"],
+                               input_files["poe_chicago"],
                                )
 
         results = compss_wait_on(results)
