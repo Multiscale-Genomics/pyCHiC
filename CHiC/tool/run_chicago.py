@@ -139,6 +139,7 @@ class ChicagoTool(Tool):
 
         script = os.path.join(os.path.dirname(__file__), "scripts/runChicago.R")
 
+        """
         #check if there are more than one .chinput files
         if isinstance(input_files, list):
             args = ["Rscript", script, ", ".join(input_files),
@@ -149,13 +150,14 @@ class ChicagoTool(Tool):
             args += params
 
         else:
-            args = ["Rscript", script,
-                    input_files,
-                    output_prefix,
-                    "--output-dir", output_dir,
-                    "--settings-file", setting_file]
+        """
+        args = ["Rscript", script,
+                input_files,
+                output_prefix,
+                "--output-dir", output_dir,
+                "--settings-file", setting_file]
 
-            args += params
+        args += params
 
         logger.info("chicago CMD: " + " ".join(args))
 
