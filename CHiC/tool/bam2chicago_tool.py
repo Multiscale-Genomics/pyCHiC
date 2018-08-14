@@ -139,7 +139,7 @@ class bam2chicagoTool(Tool):
                 common.tar_folder(
                     no_tar_out,
                     chinput,
-                    os.path.split(no_tar_out)[1]
+                    "."
                     )
 
             except IOError:
