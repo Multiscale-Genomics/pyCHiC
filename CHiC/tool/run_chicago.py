@@ -139,6 +139,10 @@ class ChicagoTool(Tool):
 
         script = os.path.join(os.path.dirname(__file__), "scripts/runChicago.R")
 
+        rlib = os.path.join(os.getcwd(), "tmp_R_lib")
+        if not os.path.exists(rlib):
+            os.makedirs(rlib)
+
         """
         #check if there are more than one .chinput files
         if isinstance(input_files, list):
