@@ -164,7 +164,7 @@ class ChicagoTool(Tool):
                 "--settings-file", setting_file]
 
         args += params
-
+        print(" ".join(args))
         logger.info("chicago CMD: " + " ".join(args))
 
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
