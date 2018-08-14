@@ -138,7 +138,7 @@ class bam2chicagoTool(Tool):
             try:
                 common.tar_folder(
                     no_tar_out,
-                    chinput,
+                    no_tar_out+".tar",
                     os.path.split(no_tar_out)[1]
                     )
 
