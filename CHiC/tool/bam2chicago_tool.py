@@ -69,7 +69,7 @@ class bam2chicagoTool(Tool):
 
         self.configuration.update(configuration)
 
-    @task(returns=bool, bamFile=FILE_IN, rmapfile=FILE_IN, baitmapFile=FILE_IN,
+    @task(returns=bool, bamFile=FILE_IN, rmapFile=FILE_IN, baitmapFile=FILE_IN,
           chinput=FILE_OUT)
     def bam2chicago(self, bamFile, rmapFile, baitmapFile, chinput):
         """
