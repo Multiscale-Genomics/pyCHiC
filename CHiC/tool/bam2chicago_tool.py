@@ -69,8 +69,9 @@ class bam2chicagoTool(Tool):
 
         self.configuration.update(configuration)
 
-    @staticmethod
-    def bam2chicago(bamFile, rmapFile, baitmapFile, chinput):
+    @task(returns=bool, bamFile=FILE_IN, rmapfile=FILE_IN, baitmapFile=FILE_IN,
+          chinput=FILE_OUT)
+    def bam2chicago(self, bamFile, rmapFile, baitmapFile, chinput):
         """
         Main function that preprocess the bam files into Chinput files. Part of
         the input files of CHiCAGO.
@@ -143,7 +144,6 @@ class bam2chicagoTool(Tool):
 
             except IOError:
                 logger.fatal("could not tar folder")
-                print(no_tar_out, chinput,os.path.split(no_tar_out)[1])
 
             return True
         except IOError:
