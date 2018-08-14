@@ -272,9 +272,9 @@ class ChicagoTool(Tool):
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        input_chinput = self.untar_chinput(input_files["chinput"])
+        #input_chinput = self.untar_chinput(input_files["chinput"])
 
-        results = self.chicago(input_chinput,
+        results = self.chicago(input_files["chinput"],
                                self.configuration["chicago_out_prefix"],
                                output_files["output"],
                                command_params,
