@@ -114,7 +114,7 @@ class bam2chicagoTool(Tool):
         chinput : str,
          name of the sample
         """
-        no_tar_out = "".join(chinput.split(".")[0])
+        out_folder = "".join(chinput.split(".")[0])
 
         try:
             bam2chicago_script = os.path.join(os.path.dirname(__file__), "scripts/bam2chicago.sh")
@@ -123,7 +123,7 @@ class bam2chicagoTool(Tool):
                     bamFile,
                     baitmapFile,
                     rmapFile,
-                    no_tar_out]
+                    out_folder]
 
             logger.info("bam2chicago CMD: " + " ".join(args))
 
@@ -136,14 +136,12 @@ class bam2chicagoTool(Tool):
             process.wait()
 
             try:
-                common.tar_folder(
-                    no_tar_out,
-                    no_tar_out+".tar",
-                    os.path.split(no_tar_out)[1]
-                    )
+                path_out = out_folder+"/"+os.path.split(out_folder)[1]+".chinput"
+                move (path_out, chinput)
 
             except IOError:
                 logger.fatal("could not tar folder")
+                print(path_out, chinput)
 
             return True
         except IOError:
