@@ -123,7 +123,7 @@ class bam2chicagoTool(Tool):
                     bamFile,
                     baitmapFile,
                     rmapFile,
-                    no_tar_out]
+                    os.path.split(no_tar_out)[1]]
 
             logger.info("bam2chicago CMD: " + " ".join(args))
 
