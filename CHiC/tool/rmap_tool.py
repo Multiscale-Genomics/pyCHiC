@@ -112,6 +112,8 @@ class makeRmapFile(Tool):
         genome_dict = {}
         sequence = ""
 
+        chr_handler = {}
+        chr_assigned = 1
         with open(genome_fa, "r") as file_handle:
             for line in file_handle:
                 line = line.rstrip()
@@ -119,12 +121,14 @@ class makeRmapFile(Tool):
                     if not sequence:
                         genome_dict[int(line[4:])] = []
                         chromo = int(line[4:])
-                        continue
+
                     else:
-                        genome_dict[chromo] = sequence
+                        genome_dict[int(line[4:])] = sequence
                         chromo = int(line[4:])
                         sequence = ""
-                        continue
+
+                    #chr_handler[chr_assigned] = chromo
+                    #chr_assigned += 1
 
                 sequence += line.upper()
             #Ad last chromosome
