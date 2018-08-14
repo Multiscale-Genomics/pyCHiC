@@ -161,7 +161,8 @@ class ChicagoTool(Tool):
                 input_files,
                 output_prefix,
                 "--output-dir", output_dir,
-                "--settings-file", setting_file]
+                "--settings-file", setting_file,
+                "--design-dir", os.path.split(rmap)[0]]
 
         args += params
         print(" ".join(args))
@@ -219,7 +220,7 @@ class ChicagoTool(Tool):
         command_params = []
 
         command_parameters = {
-            "chicago_design_dir": ["--design-dir", True],
+            #"chicago_design_dir": ["--design-dir", True],
             "chicago_print_memory": ["--print-memory", False],
             "chicago_cutoff": ["--cutoff", True],
             "chicago_export_format":["--export-format", True],
