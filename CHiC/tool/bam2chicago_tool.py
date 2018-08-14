@@ -123,7 +123,7 @@ class bam2chicagoTool(Tool):
                     bamFile,
                     baitmapFile,
                     rmapFile,
-                    no_tar_out]
+                    os.path.split(no_tar_out)[1]]
 
             logger.info("bam2chicago CMD: " + " ".join(args))
 
@@ -137,10 +137,12 @@ class bam2chicagoTool(Tool):
 
             try:
                 common.tar_folder(
-                    no_tar_out,
-                    chinput,
-                    "."
+                    os.path.split(no_tar_out)[1],
+                    os.path.split(chinput)[1],
+                    os.path.split(no_tar_out)[1]
                     )
+
+                move(os.path.split(chinput)[1], chinput)
 
             except IOError:
                 logger.fatal("could not tar folder")
