@@ -12,8 +12,68 @@
         }
     },
     {
+        "_id": "59b7e020d9422a5901ree",
+        "data_type": "data_CHiC",
+        "file_type": "RMAP",
+        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.rmap",
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5900e3",
+        "data_type": "data_CHiC",
+        "file_type": "BAITMAP",
+        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.baitmap",
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5900e4",
+        "data_type": "data_CHiC",
+        "file_type": "nbpb",
+        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.nbpb",
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5900e5",
+        "data_type": "data_CHiC",
+        "file_type": "npb",
+        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.npb",
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5900e6",
+        "data_type": "data_CHiC",
+        "file_type": "poe",
+        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.poe",
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
         "_id": "59b7e020d9422a5900e2",
-        "data_type": "TXT",
+        "data_type": "data_CHiC",
         "file_type": "setting_file",
         "file_path": "tests/data/test_run_chicago/data_chicago/sGM12878.settingsFile",
         "sources": ["user"],
@@ -23,4 +83,5 @@
             "validated": 1
         }
     }
+
 ]
