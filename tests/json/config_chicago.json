@@ -15,31 +15,31 @@
         {
             "required": true,
             "allow_multiple": false,
-            "name": "RMAP",
+            "name": "rmap_chicago",
             "value": "59b7e020d9422a5901ree"
         },
         {
             "required": true,
             "allow_multiple": false,
-            "name": "BAITMAP",
+            "name": "baitmap_chicago",
             "value": "59b7e020d9422a5900e3"
         },
         {
             "required": true,
             "allow_multiple": false,
-            "name": "nbpb",
+            "name": "nbpb_chicago",
             "value": "59b7e020d9422a5900e4"
         },
         {
             "required": true,
             "allow_multiple": false,
-            "name": "npb",
+            "name": "npb_chicago",
             "value": "59b7e020d9422a5900e5"
         },
         {
             "required": true,
             "allow_multiple": false,
-            "name": "poe",
+            "name": "poe_chicago",
             "value": "59b7e020d9422a5900e6"
         }
     ],
