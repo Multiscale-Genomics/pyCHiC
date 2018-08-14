@@ -137,7 +137,7 @@ class bam2chicagoTool(Tool):
 
             try:
                 path_out = out_folder+"/"+os.path.split(out_folder)[1]+".chinput"
-                move (path_out, chinput)
+                move(path_out, chinput)
 
             except IOError:
                 logger.fatal("could not tar folder")
