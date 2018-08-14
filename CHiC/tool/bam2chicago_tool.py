@@ -70,63 +70,6 @@ class bam2chicagoTool(Tool):
         self.configuration.update(configuration)
 
     @staticmethod
-    def check_chr_format(rmap_file, baitmap_file, chrRMAP, chrBAITMAP):
-        """
-        This function check that the chromosome format is right for
-        bam2chicago.sh
-        """
-        rmapfile_new = rmap_file.split(".")[0]+"rfmt.rmap"
-        baitmapfile_new = baitmap_file.split(".")[0]+"rfmt.baitmap"
-        rformat_rmap = True
-        rformat_baitmap = True
-
-        logger.info("checking .rmap chr format")
-        try:
-            rmapfile_new = pd.read_csv(rmap_file, header=None, sep="\t")
-        except IOError:
-            logger.fatal("bam2chicago_tool failed on checking the rmap format 1")
-        try:
-            chr_rmap = str(rmapfile_new.iloc[0, 0])
-        except IOError:
-            logger.fatal("bam2chicago_tool failed on checking the rmap format 2")
-        try:
-            if str(chr_rmap[0:3]) == "chr":
-                logger.info("rmap file chromosome on the right format")
-                rformat_rmap = False
-            else:
-                rmapfile_new.iloc[:, 0] = rmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
-        except IOError:
-            logger.fatal("bam2chicago_tool failed on checking the rmap format 3")
-
-        logger.info("checking .baitmap chr format")
-
-        try:
-            baitmapfile_new = pd.read_table(baitmap_file, header=None, sep="\t")
-            chr_baitmap = str(baitmapfile_new.iloc[0, 0])
-            if chr_baitmap[0:3] == "chr":
-                logger.info("baitmap file chromosome on the right format")
-                rformat_baitmap = False
-
-            else:
-                baitmapfile_new.iloc[:, 0] = baitmapfile_new.iloc[:, 0].apply(lambda x: "chr"+str(x))
-
-        except IOError:
-            logger.fatal("bam2chicago_tool failed on checking the baitmap format")
-
-
-        if rformat_rmap:
-            rmapfile_new.to_csv(chrRMAP, sep="\t", header=None, index=False)
-        else:
-            chrRMAP = rmap_file
-
-        if rformat_baitmap:
-            baitmapfile_new.to_csv(chrBAITMAP, sep="\t", header=None, index=False)
-        else:
-            chrBAITMAP = baitmap_file
-
-        return chrRMAP, chrBAITMAP
-
-    @staticmethod
     def bam2chicago(bamFile, rmapFile, baitmapFile, chinput):
         """
         Main function that preprocess the bam files into Chinput files. Part of
