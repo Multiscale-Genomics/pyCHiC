@@ -366,7 +366,7 @@
                     "tool": "bam2chicago",
                     "description": "Output"
                 },
-                "file_path": "tests/data/test_bam2chicago_tool/sampleout.tar",
+                "file_path": "tests/data/test_bam2chicago_tool/output_chinput.chinput",
                 "data_type": "TAR",
                 "compressed": "TAR"
             }
