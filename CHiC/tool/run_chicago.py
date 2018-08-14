@@ -106,7 +106,7 @@ class ChicagoTool(Tool):
 
     @task(returns=bool, input_files=FILE_IN, output=FILE_OUT, params=IN,
           setting_file=FILE_IN)
-    def chicago(input_files, output_prefix, output, params, setting_file):
+    def chicago(self, input_files, output_prefix, output, params, setting_file):
         """
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
         folder:
