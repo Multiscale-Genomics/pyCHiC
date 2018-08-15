@@ -147,6 +147,6 @@ before_script:
 
 
 # command to run tests
-#script:
+script:
     - cd ${HOME}/build/Multiscale-Genomics/C-HiC/tests
     - python test_toolchains.py
