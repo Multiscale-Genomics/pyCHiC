@@ -35,6 +35,7 @@ def test_chicago():
         "baitmap_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.baitmap",
         "nbpb_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.nbpb",
         "poe_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.poe",
+        "npb_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.npb",
         }
 
     output_files = {
