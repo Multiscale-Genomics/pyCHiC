@@ -19,6 +19,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='C-HiC',
+    url='https://github.com/Multiscale-Genomics/C-HiC',
     packages=find_packages(),
     include_package_data=True,
     install_requires=[

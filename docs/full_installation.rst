@@ -94,14 +94,13 @@ HiCUP
 ^^^^^
 .. code-block:: none
    :linenos:
-    
+
     cd ${HOME}/lib
     wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
     tar -xzf hicup_v0.6.1.tar.gz
     cd hicup_v0.6.1
     chmod a+x *
     #modify hicup_truncater for delete the time of the summary file
-
 
 
 BWA Sequence Aligner
@@ -170,16 +169,27 @@ Setup the symlinks
    :linenos:
 
    cd ${HOME}/bin
-    
-      
+
+
 
    ln -s ${HOME}/lib/hicup_v0.6.1/* ${HOME}/bin/
 
    ln -s ${HOME}/lib/bwa/bwa bwa
 
+   ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2 bowtie2
+   ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-align-s bowtie2-align-s
+   ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-align-l bowtie2-align-l
+   ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-build bowtie2-build
+   ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-build-s bowtie2-build-s
+   ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-build-l bowtie2-build-l
+   ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-inspect bowtie2-inspect
+   ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-inspect-s bowtie2-inspect-s
+   ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-inspect-l bowtie2-inspect-l
+
    ln -s ${HOME}/lib/htslib/bin/bgzip bgzip
    ln -s ${HOME}/lib/htslib/bin/htsfile htsfile
    ln -s ${HOME}/lib/htslib/bin/tabix tabix
+
 
    ln -s ${HOME}/lib/samtools/bin/ace2sam ace2sam
    ln -s ${HOME}/lib/samtools/bin/blast2sam.pl blast2sam.pl
