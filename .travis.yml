@@ -150,3 +150,5 @@ before_script:
 script:
     - cd ${HOME}/build/Multiscale-Genomics/C-HiC/tests
     - python test_toolchains.py
+    - cd ${HOME}/build/Multiscale-Genomics/C-HiC/tests/test_run_chicago/
+    - ls -l
