@@ -1,6 +1,6 @@
 # C-HiC
 
-[![Documentation Status](https://readthedocs.org/projects/mg-process-test/badge/?version=latest)](http://mg-process-test.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/Multiscale-Genomics/CHi-C.svg?branch=master)](https://travis-ci.org/Multiscale-Genomics/CHi-C) [![Code Health](https://landscape.io/github/Multiscale-Genomics/CHi-C/master/landscape.svg?style=flat)](https://landscape.io/github/Multiscale-Genomics/CHi-C/master)
+[![Documentation Status](https://readthedocs.org/projects/CHi-C/badge/?version=latest)](http://CHi-C.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/Multiscale-Genomics/CHi-C.svg?branch=master)](https://travis-ci.org/Multiscale-Genomics/CHi-C) [![Code Health](https://landscape.io/github/Multiscale-Genomics/CHi-C/master/landscape.svg?style=flat)](https://landscape.io/github/Multiscale-Genomics/CHi-C/master)
 
 
 This repository contains pipelines for analyzing capture Hi-C data. CHiCAGO algorithm is used for the normalization of chromatin contacts
