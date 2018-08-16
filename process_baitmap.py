@@ -80,36 +80,35 @@ class process_baitmap(Workflow):
             metadata for baitmap
             files
         """
+        try:
+            baitmap_caller = makeBaitmapTool(self.configuration)
+            output_files_baitmap, output_metadata_baitmap = baitmap_caller.run(
+                {
+                    "genome_idx" : input_files["genome_idx"],
+                    "probes_fa": input_files["probes_fa"],
+                    "Rtree_file_dat": input_files["Rtree_file_dat"],
+                    "Rtree_file_idx": input_files["Rtree_file_idx"],
+                    "genome_fa" : input_files["genome_fa"],
+                    "chr_handler" : input_files["chr_handler"]
+                },
+                {
+                    "genome_fa" : metadata["genome_fa"],
+                    "probes_fa" : metadata["probes_fa"],
+                    "Rtree_file_dat": metadata["Rtree_file_dat"],
+                    "Rtree_file_idx": metadata["Rtree_file_idx"],
+                    "genome_idx": metadata["genome_idx"]
+                },
+                {
+                    "bait_sam" : output_files["bait_sam"],
+                    "out_baitmap" : output_files["out_baitmap"],
+                    "out_bam" : output_files["out_bam"]
+                }
+            )
 
-        baitmap_caller = makeBaitmapTool(self.configuration)
-        output_files_baitmap, output_metadata_baitmap = baitmap_caller.run(
-            {
-                "genome_idx" : input_files["genome_idx"],
-                "probes_fa": input_files["probes_fa"],
-                "Rtree_file_dat": input_files["Rtree_file_dat"],
-                "Rtree_file_idx": input_files["Rtree_file_idx"],
-                "genome_fa" : input_files["genome_fa"],
-                "chr_handler" : input_files["chr_handler"]
-            },
-            {
-                "genome_fa" : metadata["genome_fa"],
-                "probes_fa" : metadata["probes_fa"],
-                "Rtree_file_dat": metadata["Rtree_file_dat"],
-                "Rtree_file_idx": metadata["Rtree_file_idx"],
-                "genome_idx": metadata["genome_idx"]
-            },
-            {
-                "bait_sam" : output_files["bait_sam"],
-                "out_baitmap" : output_files["out_baitmap"],
-                "out_bam" : output_files["out_bam"]
-            }
-        )
-
-        if os.path.getsize(output_files["out_baitmap"]) > 0:
             logger.info(".baitmap file generated succesfully")
-        else:
+
+        except IOError:
             logger.fatal("generate_CHiCAGO_baitmap failed to generate .baitmap file")
-            return False
 
         return output_files_baitmap, output_metadata_baitmap
 
