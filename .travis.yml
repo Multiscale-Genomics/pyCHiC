@@ -86,7 +86,7 @@ before_install:
      #-  echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
      -  sudo Rscript CHiC/tool/scripts/install_packages.R
 
-     - cd ${HOME}/build/Multiscale-Genomics/C-HiC/
+     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/
 
 # command to install dependencies
 install:

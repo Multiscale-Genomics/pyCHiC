@@ -120,18 +120,20 @@ class makeRmapFile(Tool):
                 line = line.rstrip()
                 if line[0] == ">":
                     if not sequence:
-                        genome_dict[int(line[4:])] = []
-                        chromo = int(line[4:])
+                        chromo_dict[chromo_fake] = line[1:]
                         continue
                     else:
-                        genome_dict[chromo] = sequence
-                        chromo = int(line[4:])
+                        genome_dict[chromo_fake] = sequence
+                        chromo_fake += 1
+                        chromo_dict[chromo_fake] = line[1:]
                         sequence = ""
                         continue
 
                 sequence += line.upper()
             #Ad last chromosome
-            genome_dict[chromo] = sequence
+            genome_dict[chromo_fake] = sequence
+
+
 
         return genome_dict
 
