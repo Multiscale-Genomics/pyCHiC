@@ -13,7 +13,10 @@ This repository contains pipelines for analyzing capture Hi-C data. CHiCAGO algo
   - pytest
   - mg-tool-api
   - rpy2
-  - spatialindex
+  - matplotlib
+  - pandas
+  - rtree
+
 
 - R >=3.1.2
 -R Modules:
@@ -22,45 +25,32 @@ This repository contains pipelines for analyzing capture Hi-C data. CHiCAGO algo
   -Chicago
 - bedtools
 - perl
+- spatialindex
+- bowtie2
+- hicup
+- BWA
+
 
 Installation
 ------------
 
+For a guide to the full installation procedure the see [ReadTheDocs](http://CHi-C.readthedocs.io).
+
 Directly from GitHub:
 
-```
-cd ${HOME}/code
+.. code-block:: none
+   :linenos:
 
-git clone https://github.com/Multiscale-Genomics/mg-process-test.git
+   cd ${HOME}/code
 
-cd mg-process-test
-```
+   git clone https://github.com/Multiscale-Genomics/CHi-C.git
+
+   cd CHi-C
 
 Create the Python environment
 
-```
-pyenv-virtualenv 2.7.12 mg-process-test
-pyenv activate mg-process-test
-pip install -e .
-pip install -r requirements.txt
-```
+.. code-block:: none
+   :linenos:
 
-install spatialindex and rtree
-
-```
--curl -L https://github.com/libspatialindex/libspatialindex/archive/1.8.5.tar.gz | tar xz
-cd spatialindex-src-1.8.5
-./configure
-make
-sudo make install
-sudo ldconfig
-pip install rtree
-```
-Run the R code:
-
-```
-install.packages("argparser")
-install.packages("devtools")
-library(devtools)
-install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
-```
+   pyenv-virtualenv 2.7.10 CHi-C
+   pip install --editable .
