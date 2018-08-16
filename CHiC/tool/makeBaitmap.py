@@ -18,7 +18,6 @@ import os
 import subprocess
 import sys
 from shutil import copy
-import shutil
 from rtree import index
 
 from utils import logger

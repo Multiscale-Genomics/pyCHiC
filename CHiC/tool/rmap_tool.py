@@ -112,6 +112,9 @@ class makeRmapFile(Tool):
         genome_dict = {}
         sequence = ""
 
+        chromo_fake = 1
+        chromo_dict = {}
+
         with open(genome_fa, "r") as file_handle:
             for line in file_handle:
                 line = line.rstrip()
