@@ -52,14 +52,11 @@ class ChicagoTool(Tool):
         Initialise the tool with its configuration.
 
         Parameters
-        -----------
+        ----------
         configuration : dict
             dictionary containing parameters that define how the operation
             should be carried out, which are specific to the tool.
 
-        Are you developing 3D/4D genomic analysis tools?
-        join us in Septemeber and learn how to integrate it into a Virtual research
-        enviroment.
         """
 
         print("Running Chicago")
@@ -111,18 +108,17 @@ class ChicagoTool(Tool):
                 rmap, baitmap, nbpb, npb, poe):
         """
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
-        folder:
-            data :
-                output_index.Rds : chicago data saved on Rds format
-                output_index_params.txt : parameters used to run Chicago
-                output_index.export_format : chicago output in the chosen format
-            diag_plots :
-                3 plots to assest the quality of the output
-                (see CHicago Capture-HiC documentation for details)
-            enrichment_data:
-                files for the feature enrichment output (in case is used)
-            examples:
-                output_index_proxExamples.pdf: random chosen peaks showing interactions regions
+        data :
+        output_index.Rds --> chicago data saved on Rds format
+        output_index_params.txt --> parameters used to run Chicago
+        output_index.export_format --> chicago output in the chosen format
+        diag_plots :
+        3 plots to assest the quality of the output
+        (see CHicago Capture-HiC documentation for details)
+        enrichment_data:
+        files for the feature enrichment output (in case is used)
+        examples:
+        output_index_proxExamples.pdf: random chosen peaks showing interactions regions
         see http://regulatorygenomicsgroup.org/chicago for more information
 
         Parameters
@@ -296,7 +292,7 @@ class ChicagoTool(Tool):
                                input_files["nbpb_chicago"],
                                input_files["npb_chicago"],
                                input_files["poe_chicago"],
-                               )
+                              )
 
         results = compss_wait_on(results)
 

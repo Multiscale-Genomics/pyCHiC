@@ -41,12 +41,11 @@ class process_design(Workflow):
         Initiate the class
 
         Parameters
-        -----------
+        ----------
         Configuration: dict
-         dictionary with parameters for different tools from the class
-         indicating how to run each of them.
+        dictionary with parameters for different tools from the class
+        indicating how to run each of them.
         """
-
         logger.info("Generating CHiCAGO input Design files")
         if configuration is None:
             configuration = {}
@@ -71,7 +70,7 @@ class process_design(Workflow):
 
         output_files: dict
             outPrefixDesign : Path and name of the output prefix,
-                recommend to be the same as rmap and baitmap files.
+            recommend to be the same as rmap and baitmap files.
             sample_name: Path and name of the .chinput file
 
         Returns

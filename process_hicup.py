@@ -54,7 +54,7 @@ class process_hicup(Workflow):
         """
         This is the main function that runs
 
-        Parameters:
+        Parameters
         ----------
         input_files: dict
             fastq1
@@ -66,8 +66,8 @@ class process_hicup(Workflow):
             out_dir: str
                 directory to write the output
 
-        Returns:
-        --------
+        Returns
+        -------
         results: bool
         output_metadata: dict
         """
