@@ -47,7 +47,8 @@ def test_rmap_tool():
     output_files = {
         "RMAP" : path + "test_run_chicago/test.rmap",
         "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
-        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx"
+        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
+        "chr_handler" : path + "test_rmap/chr_handler.txt"
         }
 
 
