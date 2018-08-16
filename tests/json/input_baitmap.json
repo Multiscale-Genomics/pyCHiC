@@ -64,6 +64,20 @@
             "tool": "bwa_indexer",
             "assembly": "hg19"
         }
+    },
+    {
+        "_id": "59b7e020d9422a5969b65886",
+        "data_type": "data_CHi-C",
+        "file_type": "TXT",
+        "file_path": "tests/data/test_rmap/chr_handler.txt",
+        "sources": ["tests/data/test_baitmap/chr21_hg19.fa"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1,
+            "tool": "rmap_tool",
+            "assembly": "hg19"
+        }
     }
 
 ]
