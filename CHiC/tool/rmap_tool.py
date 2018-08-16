@@ -380,7 +380,7 @@ class makeRmapFile(Tool):
                 meta_data={
                     "renzime" : self.configuration["renzime"]
                 }
-            ),
+            )
 
 
         }
