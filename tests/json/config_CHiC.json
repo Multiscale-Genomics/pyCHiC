@@ -176,6 +176,15 @@
         },
         {
             "name": "hicup_bowtie2_loc",
+            "description": "Location of the bowtie2 executables",
+            "help": "Location of the bowtie2 executables",
+            "type": "string",
+            "required": true,
+            "default": "/home/compss/bin/bowtie2",
+            "value": "/home/compss/bin/bowtie2"
+        },
+        {
+            "name": "",
             "value": "/usr/bin/bowtie2"
         },
         {

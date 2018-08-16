@@ -58,8 +58,8 @@ class makeRmapFile(Tool):
         """
         initialising the function
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         configuration: dict
             dictionary containing all the arguments and parameters
             to run the tool
@@ -97,13 +97,13 @@ class makeRmapFile(Tool):
         This function takes a genome file in fasta format
         and converts it into a dictionary
 
-        Parameters:
+        Parameters
         ----------
         genome_fa : str
             entire path to the genome in fasta file
 
-        Returns:
-        --------
+        Returns
+        -------
             dict
             genome in a dict form, key as chromosomes and
             values str with sequences
@@ -112,8 +112,6 @@ class makeRmapFile(Tool):
         genome_dict = {}
         sequence = ""
 
-        chr_handler = {}
-        chr_assigned = 1
         with open(genome_fa, "r") as file_handle:
             for line in file_handle:
                 line = line.rstrip()
@@ -121,19 +119,18 @@ class makeRmapFile(Tool):
                     if not sequence:
                         genome_dict[int(line[4:])] = []
                         chromo = int(line[4:])
-
+                        continue
                     else:
-                        genome_dict[int(line[4:])] = sequence
+                        genome_dict[chromo] = sequence
                         chromo = int(line[4:])
                         sequence = ""
-
-                    #chr_handler[chr_assigned] = chromo
-                    #chr_assigned += 1
+                        continue
 
                 sequence += line.upper()
             #Ad last chromosome
             genome_dict[chromo] = sequence
 
+        print(genome_dict)
         return genome_dict
 
 
@@ -143,6 +140,9 @@ class makeRmapFile(Tool):
         Position of a renzime site is defined as the genomic coordinate of the first
         nucleotide before the first cut (genomic coordinate starts at 1).
         In the case of HindIII the genomic coordinate is this one:
+
+.. code-block:: none
+
         123456 789...
              |
              v
@@ -150,9 +150,8 @@ class makeRmapFile(Tool):
         -----T TCGA|A--------------
         In this example the coordinate of the renzime site would be 6.
 
-
-        Parameters:
-        -----------
+        Parameters
+        ----------
         enzyme_name: dict
             name of the enzyme to map (upper/lower case are
             important) as key and value the target sequence
@@ -161,11 +160,9 @@ class makeRmapFile(Tool):
         genome_fa: str
             genome in fasta format
 
-
-        Return
-        ------
-            bool
-            Fragments
+        Returns
+        -------
+            list
         """
         try:
             enzymes = enzyme_name
@@ -221,8 +218,8 @@ class makeRmapFile(Tool):
         python module. This file will be used by makeBatmap.py to generate
         .batmap file using spatial indexing
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         enzyme_name: str
             described in map_re_sites2
         genome_fa: str

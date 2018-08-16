@@ -54,8 +54,8 @@ class makeBaitmapTool(Tool):
         """
         Initialise the tool with its configuration
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         configuration: dict
             parameters to run the tool
         """
@@ -75,8 +75,9 @@ class makeBaitmapTool(Tool):
         """
         This function take the sam file, output of bwa
         and the Rtree_files, and output a baitmap file
-        Parameters:
-        -----------
+
+        Parameters
+        ----------
         sam_file : str
             path to output file from bwa_for_probes
             complete path to .rmap file
@@ -160,8 +161,8 @@ class makeBaitmapTool(Tool):
         This function takes a list with RE fragments that
         correspond to baits and print it to a file
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         baitmap_list: list
             lsit with all the RE fragments corresponding
             to baits

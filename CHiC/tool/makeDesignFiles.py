@@ -49,8 +49,8 @@ class makeDesignFilesTool(Tool):
         """
         Initialise the tool with the configuration file
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         configuration: dict
             Dictionary containing parameters defining how the tool
             should work
@@ -70,15 +70,15 @@ class makeDesignFilesTool(Tool):
         make the design files and store it in the specify design folder. It is a
         wrapper of makeDesignFiles.py
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         designDir: str,
                    Path to the folder with the output files(recommended the same
                    folder as .map and .baitmap files).
         parameters: dict,
                     list of parameter already selected by
                     get_makeDesignFiles_params().
-        Returns:
+        Returns
         -------
         bool
         outFilePrefix: str
@@ -174,7 +174,7 @@ class makeDesignFilesTool(Tool):
         """
         The main function to run makeDesignFiles.
 
-        Parameters:
+        Parameters
         ----------
 
         input_files: dict
@@ -185,8 +185,8 @@ class makeDesignFilesTool(Tool):
                 example: "/folder1/folder2/prefixname". Recommended to use the
                 path to designDir and the same prefix as .rmap and .baitmap
 
-        Returns:
-        --------
+        Returns
+        -------
         output_files : dict
             List of location for the output files.
         output_metadata : dict
