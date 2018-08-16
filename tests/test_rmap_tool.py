@@ -35,7 +35,7 @@ def test_rmap_tool():
                     }
 
     input_files = {
-        "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
+        "genome_fa" : "/tmp/mozilla_pacera0/chr20_21.txt",
         }
 
     metadata = {

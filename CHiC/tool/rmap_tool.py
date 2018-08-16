@@ -29,8 +29,6 @@ from basic_modules.metadata import Metadata
 
 re.compile("pattern")
 
-
-
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
         raise ImportError
@@ -133,10 +131,7 @@ class makeRmapFile(Tool):
             #Ad last chromosome
             genome_dict[chromo_fake] = sequence
 
-
-
         return genome_dict, chromo_dict
-
 
     def map_re_sites2(self, enzyme_name, genome_fa):
         """
@@ -252,16 +247,16 @@ class makeRmapFile(Tool):
                     counter += 1
                     if counter == 1:
                         out.write("{}\t{}\t{}\t{}\n".format(chromo_dict[crm],
-                                                               1,
-                                                               re_site,
-                                                               counter_id),
+                                                            1,
+                                                            re_site,
+                                                            counter_id),
                                  )
                         idx.insert(counter_id, (1, crm, re_site, crm))
                     else:
                         out.write("{}\t{}\t{}\t{}\n".format(chromo_dict[crm],
-                                                               prev_re_site+1, # pylint: disable=used-before-assignment
-                                                               re_site,
-                                                               counter_id),
+                                                            prev_re_site+1, # pylint: disable=used-before-assignment
+                                                            re_site,
+                                                            counter_id),
                                  )
                         idx.insert(counter_id, (prev_re_site+1, crm, re_site, crm))
 
@@ -271,7 +266,7 @@ class makeRmapFile(Tool):
 
         with open(chr_handler, "w") as chr_file:
             for chr_fake, chr_real in chromo_dict.items():
-                chr_file.write("{}\t{}".format(chr_real, chr_fake))
+                chr_file.write("{}\t{}\n".format(chr_fake, chr_real))
 
         try:
             move(rtree+".dat", rtree_dat)

@@ -39,8 +39,8 @@ cd mg-process-test
 Create the Python environment
 
 ```
-pyenv-virtualenv 2.7.12 mg-process-test
-pyenv activate mg-process-test
+pyenv-virtualenv 2.7.12 CHi-C
+pyenv activate CHi-C
 pip install -e .
 pip install -r requirements.txt
 ```

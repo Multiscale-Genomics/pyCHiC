@@ -69,8 +69,9 @@ class makeBaitmapTool(Tool):
 
 
     @task(returns=list, sam_file=FILE_OUT, out_bam=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
-          rtree_prefix=IN)
-    def sam_to_baitmap(self, sam_file, out_bam, rtree_dat, rtree_idx, rtree_prefix): # pylint: disable=no-self-use
+          rtree_prefix=IN, chr_handler=FILE_IN)
+    def sam_to_baitmap(self, sam_file, out_bam, rtree_dat, rtree_idx, rtree_prefix,
+                       chr_handler): # pylint: disable=no-self-use
         """
         This function take the sam file, output of bwa
         and the Rtree_files, and output a baitmap file
@@ -98,6 +99,13 @@ class makeBaitmapTool(Tool):
             logger.fatal("I/O error({0}): {1}\n{2}".format(
                 msg.errno, msg.strerror, args))
             return False
+
+        chr_dict = {}
+        with open(chr_handler, "r") as chr_file:
+            for line in chr_file:
+                line_hdl = line.rstrip().split("\t")
+                chr_dict[line_hdl[1]] = int(line_hdl[0])
+
         copy(rtree_idx, rtree_prefix+".idx")
         copy(rtree_dat, rtree_prefix+".dat")
 
@@ -111,7 +119,7 @@ class makeBaitmapTool(Tool):
                     line = line.rstrip().split("\t")
 
                     try:
-                        crm = int(line[2][3:])
+                        crm = chr_dict[line[2]]
                     except IOError:
                         continue
 
@@ -151,10 +159,9 @@ class makeBaitmapTool(Tool):
 
         return baitmap
 
-
     @task(returns=bool, baitmap_list=IN,
-          out_baitmap=FILE_OUT)
-    def create_baitmap(self, baitmap_list, out_baitmap): # pylint: disable=no-self-use
+          out_baitmap=FILE_OUT, chr_handler=FILE_IN)
+    def create_baitmap(self, baitmap_list, out_baitmap, chr_handler): # pylint: disable=no-self-use
         """
         This function takes a list with RE fragments that
         correspond to baits and print it to a file
@@ -168,10 +175,17 @@ class makeBaitmapTool(Tool):
             entire pat and name of the .baitmap file
         """
         #print(out_baitmap)
+
+        chr_dict = {}
+        with open(chr_handler, "r") as chr_file:
+            for line in chr_file:
+                line_hdl = line.rstrip().split("\t")
+                chr_dict[int(line_hdl[0])] = line_hdl[1]
+
         with open(out_baitmap, "a") as file_out:
             for frag_coord in baitmap_list:
-                print("chr{}\t{}\t{}\t{}\t{}".format(
-                    frag_coord[0],
+                print("{}\t{}\t{}\t{}\t{}".format(
+                    chr_dict[frag_coord[0]],
                     frag_coord[1],
                     frag_coord[2],
                     frag_coord[3],
@@ -247,16 +261,18 @@ class makeBaitmapTool(Tool):
 
         prefix_rtree = "".join(input_files["Rtree_file_idx"].split(".")[-1])
 
-        baitmap_list = self.sam_to_baitmap(
+        baitmap_list= self.sam_to_baitmap(
             output_files["bait_sam"],
             output_files["out_bam"],
             input_files["Rtree_file_dat"],
             input_files["Rtree_file_idx"],
-            prefix_rtree)
+            prefix_rtree,
+            input_files["chr_handler"])
 
         results = self.create_baitmap(
             baitmap_list,
-            output_files["out_baitmap"])
+            output_files["out_baitmap"],
+            input_files["chr_handler"])
 
         results = compss_wait_on(results)
 
