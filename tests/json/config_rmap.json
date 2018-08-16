@@ -9,7 +9,7 @@
     ],
     "arguments": [
         {
-            "name": "RE",
+            "name": "renzime",
             "value": {"HindIII" : "A|AGCTT"}
         }
     ],

@@ -368,7 +368,20 @@ class makeRmapFile(Tool):
                     "renzime" : self.configuration["renzime"],
                     "tool": "rmap_tool"
                 }
-            )
+            ),
+            "chr_handler": Metadata(
+                data_type="data_CHi-C",
+                file_type="TXT",
+                file_path=output_files["chr_handler"],
+                sources=[
+                    metadata["genome_fa"].file_path
+                ],
+                taxon_id=metadata["genome_fa"].taxon_id,
+                meta_data={
+                    "renzime" : self.configuration["renzime"]
+                }
+            ),
+
 
         }
 

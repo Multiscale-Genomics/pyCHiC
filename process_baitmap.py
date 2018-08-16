@@ -88,7 +88,8 @@ class process_baitmap(Workflow):
                 "probes_fa": input_files["probes_fa"],
                 "Rtree_file_dat": input_files["Rtree_file_dat"],
                 "Rtree_file_idx": input_files["Rtree_file_idx"],
-                "genome_fa" : input_files["genome_fa"]
+                "genome_fa" : input_files["genome_fa"],
+                "chr_handler" : input_files["chr_handler"]
             },
             {
                 "genome_fa" : metadata["genome_fa"],
