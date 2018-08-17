@@ -113,7 +113,7 @@ class makeBaitmapTool(Tool):
                     line = line.rstrip().split("\t")
 
                     try:
-                        crm = int(line[2][3:])
+                        crm = int(line[2][1:])
                     except IOError:
                         continue
 
@@ -172,7 +172,7 @@ class makeBaitmapTool(Tool):
         #print(out_baitmap)
         with open(out_baitmap, "a") as file_out:
             for frag_coord in baitmap_list:
-                print("chr{}\t{}\t{}\t{}\t{}".format(
+                print("{}\t{}\t{}\t{}\t{}".format(
                     frag_coord[0],
                     frag_coord[1],
                     frag_coord[2],

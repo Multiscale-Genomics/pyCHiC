@@ -35,7 +35,7 @@ def test_rmap_tool():
                     }
 
     input_files = {
-        "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
+        "genome_fa" : path + "test_baitmap/no_chr/chr21_hg19.fa",
         }
 
     metadata = {
