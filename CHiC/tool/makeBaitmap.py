@@ -261,7 +261,7 @@ class makeBaitmapTool(Tool):
 
         prefix_rtree = "".join(input_files["Rtree_file_idx"].split(".")[-1])
 
-        baitmap_list= self.sam_to_baitmap(
+        baitmap_list = self.sam_to_baitmap(
             output_files["bait_sam"],
             output_files["out_bam"],
             input_files["Rtree_file_dat"],
