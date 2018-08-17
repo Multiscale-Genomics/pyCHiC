@@ -238,9 +238,9 @@ class makeRmapFile(Tool):
 
         try:
             idx = index.Rtree(rtree)
-        except IOError:
+        except AttributeError:
             logger.info("index failed =(")
-        print("CASCCAS")
+
         with open(RMAP, "w") as out:
             counter_id = 0
             for crm in frags:
