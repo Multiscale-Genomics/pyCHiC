@@ -130,7 +130,6 @@ class makeRmapFile(Tool):
             #Ad last chromosome
             genome_dict[chromo] = sequence
 
-        print(genome_dict)
         return genome_dict
 
 
