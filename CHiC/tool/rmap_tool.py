@@ -236,9 +236,11 @@ class makeRmapFile(Tool):
 
         logger.info("coverting renzime fragments into rmap file")
 
-        print(rtree)
-        idx = index.Rtree(rtree)
-
+        try:
+            idx = index.Rtree(rtree)
+        except IOError:
+            logger.info("index failed =(")
+        print("CASCCAS")
         with open(RMAP, "w") as out:
             counter_id = 0
             for crm in frags:
