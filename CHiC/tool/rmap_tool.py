@@ -236,6 +236,7 @@ class makeRmapFile(Tool):
 
         logger.info("coverting renzime fragments into rmap file")
 
+        print(rtree)
         idx = index.Rtree(rtree)
 
         with open(RMAP, "w") as out:
@@ -367,3 +368,35 @@ class makeRmapFile(Tool):
         }
 
         return(output_files, output_metadata)
+
+
+if __name__ == "__main__":
+
+    path = "../../tests/data/"
+
+
+    configuration = {"renzime" : {"HindIII" : 'A|AGCTT'}
+                    }
+
+    input_files = {
+        "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
+        }
+
+    metadata = {
+        "genome_fa" : Metadata(
+            "txt", "fasta", path + "test_baitmap/chr21_hg19.fa",
+            None, 9606, ""),
+    }
+
+    output_files = {
+        "RMAP" : path + "test_run_chicago/test.rmap",
+        "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
+        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx"
+        }
+
+
+    rmap_handle = makeRmapFile(configuration)
+    rmap_handle.run(input_files, metadata, output_files)
+
+    assert os.path.getsize(output_files["Rtree_file_dat"]) > 0
+    assert os.path.getsize(output_files["Rtree_file_idx"]) > 0
