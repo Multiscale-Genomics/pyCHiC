@@ -32,8 +32,6 @@ addons:
   apt:
     packages:
       - libspatialindex-dev
-#      - samtools
-      - bedtools
 
 env:
     matrix:
@@ -110,6 +108,7 @@ before_install:
 
 # command to install dependencies
 install:
+    - pip install rtree
     - pip install --upgrade setuptools pip
     - pip install --upgrade -e .
     - pip install -r requirements.txt
