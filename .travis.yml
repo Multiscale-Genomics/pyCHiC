@@ -90,7 +90,7 @@ before_install:
 #installing chicago
      -  sudo apt-get install libtbb-dev
      -  sudo apt-get install libssl-dev
-     -  cd ${HOME}/build/Multiscale-Genomics/C-HiC/
+     -  cd ${HOME}/build/Multiscale-Genomics/CHi-C/
      #-  echo "R_LIB=${HOME}/R" > ${HOME}/.Renviron
      #-  echo "options(repos = c(CRAN = 'http://mirrors.ebi.ac.uk/CRAN/'))" > ${HOME}/.Rprofile
      #-  echo ".libPaths('~/R')" >> ${HOME}/.Rprofile
