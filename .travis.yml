@@ -108,8 +108,10 @@ before_install:
 
 # command to install dependencies
 install:
+    - ls -l
     - pip install rtree
     - pip install --upgrade setuptools pip
+    - cat setup.py
     - pip install --upgrade -e .
     - pip install -r requirements.txt
     - if [[ "$TESTENV" == "docs" ]]; then pip install sphinx;fi
