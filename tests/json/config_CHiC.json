@@ -77,6 +77,36 @@
             "allow_multiple": false,
             "name": "setting_file",
             "value": "59b7e020d9422a5900e2"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "rmap_chicago",
+            "value": "59b7e020d9422a5901ree"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "baitmap_chicago",
+            "value": "59b7e020d9422a5900e3"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "nbpb_chicago",
+            "value": "59b7e020d9422a5900e4"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "npb_chicago",
+            "value": "59b7e020d9422a5900e5"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "poe_chicago",
+            "value": "59b7e020d9422a5900e6"
         }
     ],
     "arguments": [
@@ -146,6 +176,15 @@
         },
         {
             "name": "hicup_bowtie2_loc",
+            "description": "Location of the bowtie2 executables",
+            "help": "Location of the bowtie2 executables",
+            "type": "string",
+            "required": true,
+            "default": "/home/compss/bin/bowtie2",
+            "value": "/home/compss/bin/bowtie2"
+        },
+        {
+            "name": "",
             "value": "/usr/bin/bowtie2"
         },
         {
@@ -366,7 +405,7 @@
                     "tool": "bam2chicago",
                     "description": "Output"
                 },
-                "file_path": "tests/data/test_bam2chicago_tool/sampleout.tar",
+                "file_path": "tests/data/test_bam2chicago_tool/output_chinput.chinput",
                 "data_type": "TAR",
                 "compressed": "TAR"
             }

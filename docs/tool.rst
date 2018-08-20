@@ -15,7 +15,7 @@
 
 
 Tools for processing fastq C-HiC files
-================================
+======================================
 
 .. automodule:: tool
 
@@ -23,7 +23,7 @@ Tools for processing fastq C-HiC files
    ======================
 
    hicup_tool
-   ---------
+   ----------
    .. autoclass:: CHiC.tool.hicup_tool.hicup
       :members:
 
@@ -31,18 +31,18 @@ Tools for processing fastq C-HiC files
    ==========================
 
    makeRmap
-   ---------
-   .. autoclass:: CHiC.tool.makeRmap_Tool.makeRmapFile
+   --------
+   .. autoclass:: CHiC.tool.rmap_tool.makeRmapFile
       :members:
 
    makeBaitmap
    -----------
-   .. autoclass:: CHiC.tool.makeRmap_Tool.makeRmapFile
+   .. autoclass:: CHiC.tool.makeBaitmap.makeBaitmapTool
       :members:
 
    makeDesignFiles
    ---------------
-   .. autoclass:: CHiC.tool.makeDesignFiles_Tool.makeDesignFilesTool
+   .. autoclass:: CHiC.tool.makeDesignFiles.makeDesignFilesTool
       :members:
 
    Convert bam files into chicago input
@@ -50,13 +50,13 @@ Tools for processing fastq C-HiC files
 
    bam2chicago
    -----------
-   .. autoclass:: CHiC.tool.bam2chicago_Tool.bam2chicagoTool
+   .. autoclass:: CHiC.tool.bam2chicago_tool.bam2chicagoTool
       :members:
 
    Normalize data and call C-HiC peaks
    ===================================
 
-   CHiCAGO
-   -------
-   .. autoclass:: CHiC.tool.runChicago.ChicagoTool
+   run_chicago
+   -----------
+   .. autoclass:: CHiC.tool.run_chicago.ChicagoTool
       :members:

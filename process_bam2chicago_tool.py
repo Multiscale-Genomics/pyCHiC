@@ -56,7 +56,7 @@ class process_bam2chicago(Workflow):
         This is the main function that run the tools to create
         .chinput files
 
-        Parameters:
+        Parameters
         ----------
         input_files: dict
             BAM: str
@@ -69,8 +69,8 @@ class process_bam2chicago(Workflow):
         metadata: dict
             input metadata
 
-        Returns:
-        --------
+        Returns
+        -------
         bool
         output_metadata: dict
             metadata for .chinput file

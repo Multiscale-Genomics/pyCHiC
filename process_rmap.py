@@ -55,7 +55,7 @@ class process_rmap(Workflow):
         This is the main function that run the tools to create .rmap and
         .baitmap.
 
-        Parameters:
+        Parameters
         ----------
         input_files: dict
             genome_fa: str
@@ -72,8 +72,8 @@ class process_rmap(Workflow):
             Rtree_files: str
                     Name of the Rtree files
 
-        Returns:
-        --------
+        Returns
+        -------
         bool
         output_metadata_Baitmap : dict
             metadata for both rmap and baitmap

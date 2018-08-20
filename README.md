@@ -1,6 +1,6 @@
-# C-HiC
+# CHi-C
 
-[![Documentation Status](https://readthedocs.org/projects/mg-process-test/badge/?version=latest)](http://mg-process-test.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/Multiscale-Genomics/CHiC.svg?branch=master)](https://travis-ci.org/Multiscale-Genomics/CHiC) [![Code Health](https://landscape.io/github/Multiscale-Genomics/CHiC/master/landscape.svg?style=flat)](https://landscape.io/github/Multiscale-Genomics/CHiC/master)
+[![Documentation Status](https://readthedocs.org/projects/CHi-C/badge/?version=latest)](http://CHi-C.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/Multiscale-Genomics/CHi-C.svg?branch=master)](https://travis-ci.org/Multiscale-Genomics/CHi-C) [![Code Health](https://landscape.io/github/Multiscale-Genomics/CHi-C/master/landscape.svg?style=flat)](https://landscape.io/github/Multiscale-Genomics/CHi-C/master)
 
 
 This repository contains pipelines for analyzing capture Hi-C data. CHiCAGO algorithm is used for the normalization of chromatin contacts
@@ -13,7 +13,10 @@ This repository contains pipelines for analyzing capture Hi-C data. CHiCAGO algo
   - pytest
   - mg-tool-api
   - rpy2
-  - spatialindex
+  - matplotlib
+  - pandas
+  - rtree
+
 
 - R >=3.1.2
 -R Modules:
@@ -22,45 +25,32 @@ This repository contains pipelines for analyzing capture Hi-C data. CHiCAGO algo
   -Chicago
 - bedtools
 - perl
+- spatialindex
+- bowtie2
+- hicup
+- BWA
+
 
 Installation
 ------------
 
+For a guide to the full installation procedure the see [ReadTheDocs](http://CHi-C.readthedocs.io).
+
 Directly from GitHub:
 
-```
-cd ${HOME}/code
+.. code-block:: none
+   :linenos:
 
-git clone https://github.com/Multiscale-Genomics/mg-process-test.git
+   cd ${HOME}/code
 
-cd mg-process-test
-```
+   git clone https://github.com/Multiscale-Genomics/CHi-C.git
+
+   cd CHi-C
 
 Create the Python environment
 
-```
-pyenv-virtualenv 2.7.12 CHi-C
-pyenv activate CHi-C
-pip install -e .
-pip install -r requirements.txt
-```
+.. code-block:: none
+   :linenos:
 
-install spatialindex and rtree
-
-```
--curl -L https://github.com/libspatialindex/libspatialindex/archive/1.8.5.tar.gz | tar xz
-cd spatialindex-src-1.8.5
-./configure
-make
-sudo make install
-sudo ldconfig
-pip install rtree
-```
-Run the R code:
-
-```
-install.packages("argparser")
-install.packages("devtools")
-library(devtools)
-install_bitbucket("chicagoTeam/Chicago", subdir="Chicago")
-```
+   pyenv-virtualenv 2.7.10 CHi-C
+   pip install --editable .

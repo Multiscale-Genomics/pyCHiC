@@ -33,9 +33,7 @@ def test_bam2chicago():
     }
 
     output_files = {
-        "chinput" :  path + "test_bam2chicago_tool/sampleout.tar",
-        "chrRMAP" : path + "test_bam2chicago_tool/chrtest.rmap",
-        "chrBAITMAP" : path + "test_bam2chicago_tool/chrtest.baitmap"
+        "chinput" :  path + "test_bam2chicago_tool/output_chinput.chinput",
     }
 
     metadata = {

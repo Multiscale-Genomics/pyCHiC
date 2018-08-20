@@ -16,7 +16,7 @@
 Pipelines
 =========
 
-Map and parse C-HiC reads
+Map and parse CHi-C reads
 -------------------------
 .. automodule:: process_hicup
 
@@ -101,8 +101,8 @@ Create CHiCAGO input RMAP
    -------
    output_files : .rmap file
    Rtree_files: rtree file with information
-      about the RE fragments in the genome. It is
-      used for the process_baitmap.py
+   about the RE fragments in the genome. It is
+   used for the process_baitmap.py
 
    Example
    -------
@@ -130,19 +130,19 @@ Create CHiCAGO input RMAP
          --pythonpath=/<pyenv_virtenv_dir>/lib/python2.7/site-packages/ \
          --log_level=debug          \
          process_rmap.py         \
-            --config tests/json/config_fastq2bed.json \
-            --in_metadata tests/json/input_fastq2bed.json \
-            --out_metadata tests/json/output_fastq2bed.json
+            --config tests/json/config_rmap.json \
+            --in_metadata tests/json/input_rmap.json \
+            --out_metadata tests/json/output_rmap.json
 
    Methods
    =======
-   .. autoclass:: process_fastq2bed.process_Fastq2bed
+   .. autoclass:: process_rmap.process_rmap
       :members:
 
 
 
 Create CHiCAGO input BAITMAP
--------------------------
+----------------------------
 .. automodule:: process_baitmap
 
    This pipeline creates the .baitmap file, one of the inputs of CHiCAGO. The file Consisting on
@@ -164,8 +164,7 @@ Create CHiCAGO input BAITMAP
    Returns
    -------
    out_baitmap : .baitmap file
-   out_sam : .sam file
-      used to generate .baitmap
+   out_sam : .sam file used to generate .baitmap
 
    Example
    -------
@@ -201,17 +200,15 @@ Create CHiCAGO input BAITMAP
 
    Methods
    =======
-   .. autoclass:: process_baitmap.generate_CHiCAGO_baitmap
+   .. autoclass:: process_baitmap.process_baitmap
       :members:
-
 
 
 Create CHiCAGO input Design files
 ---------------------------------
-.. automodule:: process_Desgin
+.. automodule:: process_design
 
    This script use as input .rmap and .baitmap files and generate the Design files.
-
    NPerBin file (.npb): <baitID> <Total no. valid restriction fragments in distance bin 1> ... <Total no. valid
    restriction fragments in distance bin N>,
    where the bins map within the "proximal" distance range from each bait (0; maxLBrownEst] and bin size is defined by
@@ -224,7 +221,6 @@ Create CHiCAGO input Design files
    for all combinations of baits and other ends that map within the "proximal" distance range from each other (0;
    maxLBrownEst].
    Data in each file is preceded by a comment line listing the input parameters used to generate them.
-
 
    Running from the command line
    =============================
@@ -240,23 +236,24 @@ Create CHiCAGO input Design files
 
    Returns
    -------
-   designDir : dir with the design output files
-   out_sam : .sam file
-      used to generate .baitmap
+
+   "nbpb" : .nbpb file
+   "npb" : .npb file
+   "poe" : .poe file
 
    Example
    -------
-   REQUIREMENT - Needs .rmap and .baitmap files.
+   REQUIREMENT - Needs RMAP and BAITMAP files
 
    When running the pipeline on a local machine without COMPSs:
 
    .. code-block:: none
       :linenos:
 
-      python process_Design.py \
-         --config tests/json/config_Design.json \
-         --in_metadata tests/json/input_Design.json \
-         --out_metadata tests/json/output_Design.json \
+      python process_design.py \
+         --config tests/json/config_design.json \
+         --in_metadata tests/json/input_design.json \
+         --out_metadata tests/json/output_design.json \
          --local
 
    When using a local version of the [COMPS virtual machine](https://www.bsc.es/research-and-development/software-and-apps/software-list/comp-superscalar/):
@@ -269,20 +266,20 @@ Create CHiCAGO input Design files
          --library_path=${HOME}/bin \
          --pythonpath=/<pyenv_virtenv_dir>/lib/python2.7/site-packages/ \
          --log_level=debug          \
-         process_Design.py         \
-            --config tests/json/config_Design.json \
-            --in_metadata tests/json/input_Design.json \
-            --out_metadata tests/json/output_Design.json
+         process_design.py         \
+            --config tests/json/config_design.json \
+            --in_metadata tests/json/input_design.json \
+            --out_metadata tests/json/output_design.json
 
    Methods
    =======
-   .. autoclass:: process_Design.process_makeDesign
+   .. autoclass:: process_design.process_design
       :members:
 
 
 Convert BAM file into chicago input files .chinput
 ---------------------------------------------------
-.. automodule:: process_bam2chicago_Tool
+.. automodule:: process_bam2chicago_tool
 
    This pipeline convert the output of process_bed2bam.py BAM file to
    a .chinput file, input for process_runChicago.py
@@ -307,7 +304,7 @@ Convert BAM file into chicago input files .chinput
 
    Example
    -------
-   REQUIREMENT - Needs BAM file produced by process_bed2bam.py
+   REQUIREMENT - Needs BAM file produced by hicup.py
                  Needs a .rmap file
                  Needs a .baitmap file
 
@@ -316,10 +313,10 @@ Convert BAM file into chicago input files .chinput
    .. code-block:: none
       :linenos:
 
-      python process_bam2chicago_Tool.py \
-         --config tests/json/config_bam2chicago_Tool.json \
-         --in_metadata tests/json/input_bam2chicago_Tool.json \
-         --out_metadata tests/json/output_bam2chicago_Tool.json \
+      python process_bam2chicago_tool.py \
+         --config tests/json/config_bam2chicago.json \
+         --in_metadata tests/json/input_bam2chicago.json \
+         --out_metadata tests/json/output_bam2chicago.json \
          --local
 
    When using a local version of the [COMPS virtual machine](https://www.bsc.es/research-and-development/
@@ -333,21 +330,21 @@ Convert BAM file into chicago input files .chinput
          --library_path=${HOME}/bin \
          --pythonpath=/<pyenv_virtenv_dir>/lib/python2.7/site-packages/ \
          --log_level=debug          \
-         process_bam2chicago_Tool.py         \
-            --config tests/json/config_bam2chicago_Tool.json \
-            --in_metadata tests/json/input_bam2chicago_Tool.json \
-            --out_metadata tests/json/output_bam2chicago_Tool.json
+         process_bam2chicago_tool.py         \
+            --config tests/json/config_bam2chicago.json \
+            --in_metadata tests/json/input_bam2chicago.json \
+            --out_metadata tests/json/output_bam2chicago.json
 
    Methods
    =======
-   .. autoclass:: process_bam2chicago_Tool.process_bam2chicago
+   .. autoclass:: process_bam2chicago_tool.process_bam2chicago
       :members:
 
 
 
 Data normalization and peak calling
 -----------------------------------
-.. automodule:: process_runChicago
+.. automodule:: process_run_chicago
 
    This pipeline runs the normalization of the data and call the real
    chomatine interactions
@@ -385,10 +382,10 @@ Data normalization and peak calling
    .. code-block:: none
       :linenos:
 
-      python process_runChicago.py \
-         --config tests/json/config_runChicago.json \
-         --in_metadata tests/json/input_runChicago.json \
-         --out_metadata tests/json/output_runChicago.json \
+      python process_run_chicago.py \
+         --config tests/json/config_chicago.json \
+         --in_metadata tests/json/input_chicago.json \
+         --out_metadata tests/json/output_chicago.json \
          --local
 
    When using a local version of the [COMPS virtual machine](https://www.bsc.es/research-and-development/
@@ -403,11 +400,11 @@ Data normalization and peak calling
          --pythonpath=/<pyenv_virtenv_dir>/lib/python2.7/site-packages/ \
          --log_level=debug          \
          process_runChicago.py         \
-            --config tests/json/config_runChicago.json \
-            --in_metadata tests/json/input_runChicago.json \
-            --out_metadata tests/json/output_runChicago.json
+            --config tests/json/config_chicago.json \
+            --in_metadata tests/json/input_chicago.json \
+            --out_metadata tests/json/output_chicago.json
 
    Methods
    =======
-   .. autoclass:: process_runChicago.process_runChicago
+   .. autoclass:: process_run_chicago.process_run_chicago
       :members:

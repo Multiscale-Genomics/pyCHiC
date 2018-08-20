@@ -55,7 +55,7 @@ class process_baitmap(Workflow):
         This is the main function that run the tools to create
         .baitmap.
 
-        Parameters:
+        Parameters
         ----------
         input_files: dict
             genome: str
@@ -72,8 +72,8 @@ class process_baitmap(Workflow):
             out_baitmap: str
                 whole path for the .baitmap file
 
-        Returns:
-        --------
+        Returns
+        -------
         output_files_Baitmap : bool
         output_metadata_Baitmap : dict
             metadata for baitmap

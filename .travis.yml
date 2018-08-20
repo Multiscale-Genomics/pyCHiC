@@ -5,7 +5,7 @@ dist: trusty
 group: edge
 
 python:
-  - "2.7.12"
+  - "2.7"
   - "3.6"
 
 perl:
@@ -13,13 +13,18 @@ perl:
   - "5.22"
   - "5.20"
 
-
 addons:
   apt:
     packages:
       - libspatialindex-dev
 #      - samtools
 #      - bedtools
+
+env:
+    matrix:
+        - TESTENV=docs
+        - TESTENV=code
+        - TESTENV=pylint
 
 #create folders for installation
 before_install:
@@ -31,7 +36,7 @@ before_install:
      - cd ${HOME}/lib
 
 #install bedtools 2.25
-     -  wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
+     - wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
      - tar -zxvf bedtools-2.25.0.tar.gz
      - cd bedtools2
      - make
@@ -96,8 +101,11 @@ before_install:
 
 # command to install dependencies
 install:
+    - pip install --upgrade setuptools pip
     - pip install -e .
     - pip install -r requirements.txt
+    - if [[ "$TESTENV" == "docs" ]]; then pip install sphinx;fi
+    - if [[ "$TESTENV" == "pylint" ]]; then pip install pylint;fi
 
 
 before_script:
@@ -153,8 +161,11 @@ before_script:
 
 
 # command to run tests
-#script:
-#     - python from_bed_to_bam.py ./tests/data/test_fastq2bed/03_filtered_reads/valid_r1-r2_intersection_b51cdf1282.tsv 1 outbam
-#      - ./bam2chicago.sh ../tests/data/test_bed2bam/outbam_sorted.bam ../tests/data/test_bam2chicago/chrtest.baitmap ../tests/data/test_bam2chicago/chrtest.rmap sampleout
-#      - cd tests/
-#      - python test_toolchains.py
+script:
+    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
+    - python test_toolchains.py
+    - ls -l
+    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests/test_run_chicago/
+    - ls -l
+    - if [[ "$TESTENV" == "docs" ]]; then ./scripts/travis/docs_harness.sh; fi
+    - if [[ "$TESTENV" == "pylint" ]]; then ./scripts/travis/pylint_harness.sh; fi

@@ -30,7 +30,12 @@ def test_chicago():
 
     input_files = {
         "chinput": path + "test_run_chicago/data_chicago/GM_rep1.chinput",
-        "setting_file" : path + "test_run_chicago/data_chicago/sGM12878.settingsFile"
+        "setting_file" : path + "test_run_chicago/data_chicago/sGM12878.settingsFile",
+        "rmap_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.rmap",
+        "baitmap_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.baitmap",
+        "nbpb_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.nbpb",
+        "poe_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.poe",
+        "npb_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.npb",
         }
 
     output_files = {

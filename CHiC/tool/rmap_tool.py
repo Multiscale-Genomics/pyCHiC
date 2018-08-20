@@ -56,8 +56,8 @@ class makeRmapFile(Tool):
         """
         initialising the function
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         configuration: dict
             dictionary containing all the arguments and parameters
             to run the tool
@@ -95,13 +95,13 @@ class makeRmapFile(Tool):
         This function takes a genome file in fasta format
         and converts it into a dictionary
 
-        Parameters:
+        Parameters
         ----------
         genome_fa : str
             entire path to the genome in fasta file
 
-        Returns:
-        --------
+        Returns
+        -------
             dict
             genome in a dict form, key as chromosomes and
             values str with sequences
@@ -129,7 +129,15 @@ class makeRmapFile(Tool):
 
                 sequence += line.upper()
             #Ad last chromosome
+<<<<<<< HEAD
             genome_dict[chromo_fake] = sequence
+=======
+            genome_dict[chromo] = sequence
+
+        print(len(genome_dict))
+        print("asdas")
+        return genome_dict
+>>>>>>> master
 
         return genome_dict, chromo_dict
 
@@ -139,6 +147,9 @@ class makeRmapFile(Tool):
         Position of a renzime site is defined as the genomic coordinate of the first
         nucleotide before the first cut (genomic coordinate starts at 1).
         In the case of HindIII the genomic coordinate is this one:
+
+.. code-block:: none
+
         123456 789...
              |
              v
@@ -146,9 +157,8 @@ class makeRmapFile(Tool):
         -----T TCGA|A--------------
         In this example the coordinate of the renzime site would be 6.
 
-
-        Parameters:
-        -----------
+        Parameters
+        ----------
         enzyme_name: dict
             name of the enzyme to map (upper/lower case are
             important) as key and value the target sequence
@@ -157,11 +167,9 @@ class makeRmapFile(Tool):
         genome_fa: str
             genome in fasta format
 
-
-        Return
-        ------
-            bool
-            Fragments
+        Returns
+        -------
+            list
         """
         try:
             enzymes = enzyme_name
@@ -217,8 +225,8 @@ class makeRmapFile(Tool):
         python module. This file will be used by makeBatmap.py to generate
         .batmap file using spatial indexing
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         enzyme_name: str
             described in map_re_sites2
         genome_fa: str
@@ -236,7 +244,10 @@ class makeRmapFile(Tool):
 
         logger.info("coverting renzime fragments into rmap file")
 
-        idx = index.Rtree(rtree)
+        try:
+            idx = index.Rtree(rtree)
+        except AttributeError:
+            logger.info("index failed =(")
 
         with open(RMAP, "w") as out:
             counter_id = 0

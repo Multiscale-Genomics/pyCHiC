@@ -69,8 +69,9 @@ class bam2chicagoTool(Tool):
 
         self.configuration.update(configuration)
 
-    @staticmethod
-    def bam2chicago(bamFile, rmapFile, baitmapFile, chinput):
+    @task(returns=bool, bamFile=FILE_IN, rmapFile=FILE_IN, baitmapFile=FILE_IN,
+          chinput=FILE_OUT)
+    def bam2chicago(self, bamFile, rmapFile, baitmapFile, chinput):
         """
         Main function that preprocess the bam files into Chinput files. Part of
         the input files of CHiCAGO.
@@ -113,7 +114,7 @@ class bam2chicagoTool(Tool):
         chinput : str,
          name of the sample
         """
-        no_tar_out = "".join(chinput.split(".")[0])
+        out_folder = "".join(chinput.split(".")[0])
 
         try:
             bam2chicago_script = os.path.join(os.path.dirname(__file__), "scripts/bam2chicago.sh")
@@ -122,7 +123,7 @@ class bam2chicagoTool(Tool):
                     bamFile,
                     baitmapFile,
                     rmapFile,
-                    no_tar_out]
+                    out_folder]
 
             logger.info("bam2chicago CMD: " + " ".join(args))
 
@@ -134,16 +135,9 @@ class bam2chicagoTool(Tool):
 
             process.wait()
 
-            try:
-                common.tar_folder(
-                    no_tar_out,
-                    chinput,
-                    os.path.split(no_tar_out)[1]
-                    )
-
-            except IOError:
-                logger.fatal("could not tar folder")
-                print(no_tar_out, chinput,os.path.split(no_tar_out)[1])
+            path_out = out_folder+"/"+os.path.split(out_folder)[1]+".chinput"
+            move(path_out, chinput)
+            print("path_out "+path_out, "chinput "+chinput)
 
             return True
         except IOError:
@@ -185,7 +179,7 @@ class bam2chicagoTool(Tool):
         bam_file = "".join([file_hdl for file_hdl in os.listdir(folder_name)
                             if file_hdl.endswith(".bam")])
 
-        path_bam =  folder_name + "/" + bam_file
+        path_bam = folder_name + "/" + bam_file
 
         results = self.bam2chicago(
             path_bam,

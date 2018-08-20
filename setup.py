@@ -18,7 +18,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='C-HiC',
+    name='CHi-C',
+    url='https://github.com/Multiscale-Genomics/CHi-C',
     packages=find_packages(),
     include_package_data=True,
     install_requires=[

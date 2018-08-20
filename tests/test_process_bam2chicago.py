@@ -33,7 +33,7 @@ def test_process_bam2chicago():
     }
 
     output_files = {
-        "chinput" :  path + "test_bam2chicago_tool/sampleout.tar",
+        "chinput" :  path + "test_bam2chicago_tool/output_chinput.chinput",
     }
 
     metadata = {

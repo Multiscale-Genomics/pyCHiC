@@ -55,24 +55,22 @@ class process_run_chicago(Workflow):
         """
         This main function that run the chicago pipeline with runChicago.R wrapper
 
-        Parameters:
-        -----------
-
+        Parameters
+        ----------
         input_files: dict
             location with the .chinput files.
-                chinput_file: str in case there is one input file
-                chinput_file: comma separated list in case there
-                    is more than one input file.
+            chinput_file: str in case there is one input file
+            chinput_file: comma separated list in case there
+                is more than one input file.
 
         metadata: dict
-                Input metadata, str
+            Input metadata, str
 
         output: dict
             output file locations
 
         Returns
-        --------
-
+        -------
         output_files : dict
             Folder location with the output files
 

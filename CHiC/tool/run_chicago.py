@@ -23,16 +23,18 @@ import tarfile
 from shutil import rmtree
 from utils import logger
 
-
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
         raise ImportError
+    from pycompss.api.parameter import FILE_IN, FILE_OUT, IN
+    from pycompss.api.task import task
     from pycompss.api.api import compss_wait_on
-
 except ImportError:
     logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
     logger.warn("          Using mock decorators.")
 
+    from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import compss_wait_on # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
@@ -50,14 +52,11 @@ class ChicagoTool(Tool):
         Initialise the tool with its configuration.
 
         Parameters
-        -----------
+        ----------
         configuration : dict
             dictionary containing parameters that define how the operation
             should be carried out, which are specific to the tool.
 
-        Are you developing 3D/4D genomic analysis tools?
-        join us in Septemeber and learn how to integrate it into a Virtual research
-        enviroment.
         """
 
         print("Running Chicago")
@@ -102,22 +101,24 @@ class ChicagoTool(Tool):
         else:
             return chinput_tar
 
-    @staticmethod
-    def chicago(input_files, output_prefix, output, params, setting_file):
+    @task(returns=bool, input_files=FILE_IN, output=FILE_OUT, params=IN,
+          setting_file=FILE_IN, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_IN,
+          npb=FILE_IN, poe=FILE_IN)
+    def chicago(self, input_files, output_prefix, output, params, setting_file,
+                rmap, baitmap, nbpb, npb, poe):
         """
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
-        folder:
-            data :
-                output_index.Rds : chicago data saved on Rds format
-                output_index_params.txt : parameters used to run Chicago
-                output_index.export_format : chicago output in the chosen format
-            diag_plots :
-                3 plots to assest the quality of the output
-                (see CHicago Capture-HiC documentation for details)
-            enrichment_data:
-                files for the feature enrichment output (in case is used)
-            examples:
-                output_index_proxExamples.pdf: random chosen peaks showing interactions regions
+        data :
+        output_index.Rds --> chicago data saved on Rds format
+        output_index_params.txt --> parameters used to run Chicago
+        output_index.export_format --> chicago output in the chosen format
+        diag_plots :
+        3 plots to assest the quality of the output
+        (see CHicago Capture-HiC documentation for details)
+        enrichment_data:
+        files for the feature enrichment output (in case is used)
+        examples:
+        output_index_proxExamples.pdf: random chosen peaks showing interactions regions
         see http://regulatorygenomicsgroup.org/chicago for more information
 
         Parameters
@@ -136,6 +137,11 @@ class ChicagoTool(Tool):
 
         script = os.path.join(os.path.dirname(__file__), "scripts/runChicago.R")
 
+        rlib = os.path.join(os.getcwd(), "tmp_R_lib")
+        if not os.path.exists(rlib):
+            os.makedirs(rlib)
+
+        """
         #check if there are more than one .chinput files
         if isinstance(input_files, list):
             args = ["Rscript", script, ", ".join(input_files),
@@ -146,14 +152,16 @@ class ChicagoTool(Tool):
             args += params
 
         else:
-            args = ["Rscript", script,
-                    input_files,
-                    output_prefix,
-                    "--output-dir", output_dir,
-                    "--settings-file", setting_file]
+        """
+        args = ["Rscript", script,
+                input_files,
+                output_prefix,
+                "--output-dir", output_dir,
+                "--settings-file", setting_file,
+                "--design-dir", os.path.split(rmap)[0]]
 
-            args += params
-
+        args += params
+        print(" ".join(args))
         logger.info("chicago CMD: " + " ".join(args))
 
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -208,7 +216,7 @@ class ChicagoTool(Tool):
         command_params = []
 
         command_parameters = {
-            "chicago_design_dir": ["--design-dir", True],
+            #"chicago_design_dir": ["--design-dir", True],
             "chicago_print_memory": ["--print-memory", False],
             "chicago_cutoff": ["--cutoff", True],
             "chicago_export_format":["--export-format", True],
@@ -272,13 +280,19 @@ class ChicagoTool(Tool):
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        input_chinput = self.untar_chinput(input_files["chinput"])
+        #input_chinput = self.untar_chinput(input_files["chinput"])
 
-        results = self.chicago(input_chinput,
+        results = self.chicago(input_files["chinput"],
                                self.configuration["chicago_out_prefix"],
                                output_files["output"],
                                command_params,
-                               input_files["setting_file"])
+                               input_files["setting_file"],
+                               input_files["rmap_chicago"],
+                               input_files["baitmap_chicago"],
+                               input_files["nbpb_chicago"],
+                               input_files["npb_chicago"],
+                               input_files["poe_chicago"],
+                              )
 
         results = compss_wait_on(results)
 
