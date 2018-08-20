@@ -95,14 +95,16 @@ before_install:
     - sudo apt-get install python-rpy2
 
     #installing chicago
-    -  sudo apt-get install libtbb-dev
-    -  sudo apt-get install libssl-dev
-    -  cd ${HOME}/build/Multiscale-Genomics/CHi-C/
+    - sudo apt-get install libtbb-dev
+    - sudo apt-get install libssl-dev
+    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/
     #-  echo "R_LIB=${HOME}/R" > ${HOME}/.Renviron
     #-  echo "options(repos = c(CRAN = 'http://mirrors.ebi.ac.uk/CRAN/'))" > ${HOME}/.Rprofile
     #-  echo ".libPaths('~/R')" >> ${HOME}/.Rprofile
     #-  echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
-    -  sudo Rscript CHiC/tool/scripts/install_packages.R
+    - sudo Rscript CHiC/tool/scripts/install_packages.R
+
+    - sudo chmod +x ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/*
 
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/
 
@@ -174,7 +176,7 @@ script:
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
     - python test_toolchains.py
     - ls -l
-    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests/test_run_chicago/
+    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests/data/test_bam2chicago_tool/
     - ls -l
     - if [[ "$TESTENV" == "docs" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/scripts/travis/docs_harness.sh; fi
     - if [[ "$TESTENV" == "pylint" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/scripts/travis/pylint_harness.sh; fi
