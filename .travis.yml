@@ -111,7 +111,7 @@ before_install:
 # command to install dependencies
 install:
     - pip install --upgrade setuptools pip
-    - pip install -e .
+    - pip install --upgrade -e .
     - pip install -r requirements.txt
     - if [[ "$TESTENV" == "docs" ]]; then pip install sphinx;fi
     - if [[ "$TESTENV" == "pylint" ]]; then pip install pylint;fi
