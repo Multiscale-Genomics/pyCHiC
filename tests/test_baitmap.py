@@ -39,8 +39,7 @@ def test_baitmap():
         "probes_fa" : path + "test_baitmap/baits.fa",
         "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
         "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
-        "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
-        "chr_handler" : path + "test_rmap/chr_handler.txt"
+        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
     }
 
     output_files = {
@@ -52,9 +51,9 @@ def test_baitmap():
     metadata = {
         "genome_idx" : Metadata(
             "index_bwa", "", input_files["genome_fa"],
-            {
-                "assembly": "test",
-                "tool": "bwa_indexer"
+               {
+                    "assembly": "test",
+                    "tool": "bwa_indexer"
                 }
             ),
         "genome_fa" : Metadata(
