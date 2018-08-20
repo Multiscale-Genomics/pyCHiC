@@ -129,15 +129,8 @@ class makeRmapFile(Tool):
 
                 sequence += line.upper()
             #Ad last chromosome
-<<<<<<< HEAD
             genome_dict[chromo_fake] = sequence
-=======
-            genome_dict[chromo] = sequence
 
-        print(len(genome_dict))
-        print("asdas")
-        return genome_dict
->>>>>>> master
 
         return genome_dict, chromo_dict
 
