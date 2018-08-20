@@ -110,6 +110,7 @@ before_install:
 install:
     - ls -l
     - pip install rtree
+    - pip install pandas
     - pip install --upgrade setuptools pip
     - cat setup.py
     - pip install --upgrade -e .
@@ -175,5 +176,5 @@ script:
     - ls -l
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests/test_run_chicago/
     - ls -l
-    - if [[ "$TESTENV" == "docs" ]]; then ./scripts/travis/docs_harness.sh; fi
-    - if [[ "$TESTENV" == "pylint" ]]; then ./scripts/travis/pylint_harness.sh; fi
+    - if [[ "$TESTENV" == "docs" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/scripts/travis/docs_harness.sh; fi
+    - if [[ "$TESTENV" == "pylint" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/scripts/travis/pylint_harness.sh; fi
