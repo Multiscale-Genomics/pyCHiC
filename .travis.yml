@@ -104,7 +104,8 @@ before_install:
     #-  echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
     - sudo Rscript CHiC/tool/scripts/install_packages.R
 
-    - sudo chmod +x ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/*
+    - sudo chmod +x CHiC/tool/scripts/travis/docs_harness.sh
+    - sudo chmod +x CHiC/tool/scripts/travis/pylint_harness.sh
 
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/
 
