@@ -117,12 +117,12 @@ class makeRmapFile(Tool):
                 line = line.rstrip()
                 if line[0] == ">":
                     if not sequence:
-                        genome_dict[int(line[1:])] = []
-                        chromo = int(line[1:])
+                        genome_dict[int(line[4:])] = []
+                        chromo = int(line[4:])
                         continue
                     else:
                         genome_dict[chromo] = sequence
-                        chromo = int(line[1:])
+                        chromo = int(line[4:])
                         sequence = ""
                         continue
 
@@ -251,14 +251,14 @@ class makeRmapFile(Tool):
                     counter_id += 1
                     counter += 1
                     if counter == 1:
-                        out.write("{}\t{}\t{}\t{}\n".format(str(crm),
+                        out.write("chr{}\t{}\t{}\t{}\n".format(str(crm),
                                                                1,
                                                                re_site,
                                                                counter_id),
                                  )
                         idx.insert(counter_id, (1, crm, re_site, crm))
                     else:
-                        out.write("{}\t{}\t{}\t{}\n".format(str(crm),
+                        out.write("chr{}\t{}\t{}\t{}\n".format(str(crm),
                                                                prev_re_site+1, # pylint: disable=used-before-assignment
                                                                re_site,
                                                                counter_id),

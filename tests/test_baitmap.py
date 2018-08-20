@@ -35,11 +35,11 @@ def test_baitmap():
     }
 
     input_files = {
-        "genome_idx" : path + "test_baitmap/no_chr/bwa.tar.gz",
+        "genome_idx" : path + "test_baitmap/bwa.tar.gz",
         "probes_fa" : path + "test_baitmap/baits.fa",
         "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
         "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
-        "genome_fa" : path+ "test_baitmap/no_chr/chr21_hg19.fa"
+        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
     }
 
     output_files = {
