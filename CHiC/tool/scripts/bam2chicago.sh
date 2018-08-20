@@ -25,7 +25,7 @@ samplename1=`basename ${samplename}`
 nodelete=$5
 
 awk 'BEGIN{
-   print "Checking rmap and baitmap files..." 
+   print "Checking rmap and baitmap files..."
    ok=1
 }{
  gsub(/[[:space:]]$/, "", $4);
@@ -33,7 +33,7 @@ awk 'BEGIN{
    if(!id[$4]){
      id[$4]=1;
    }else{
-     print "Error! Duplicated fragment IDs found in rmap file at line "FNR"."; 
+     print "Error! Duplicated fragment IDs found in rmap file at line "FNR".";
      ok=0;
    }
    if(NF != 4){
@@ -49,9 +49,9 @@ awk 'BEGIN{
    }
    if(NF < 4){
      print "Error! Wrong number of columns in baitmap file at line "FNR", should be at least 4.";
-   } 
+   }
    if(!rmap[$1"_"$2"_"$3"_"$4]){
-     print "Error! Baitmap entry at line "FNR" not found in rmap. (Check that <baitmapfile> and <rmapfile> are given as the 2nd and 3rd arguments respectively, and not the other way round).";  
+     print "Error! Baitmap entry at line "FNR" not found in rmap. (Check that <baitmapfile> and <rmapfile> are given as the 2nd and 3rd arguments respectively, and not the other way round).";
      ok=0;
    }
  }
@@ -86,8 +86,8 @@ bedtools pairtobed -abam $bam -bedpe -b $baitfendsid -f 0.6 > ${samplename}/${ba
 echo "Flipping all reads that overlap with the bait on to the right-hand side..."
 awk 'BEGIN{ OFS="\t" }
      {
-     minRight=$13<$3?$13:$3; 
-     maxLeft=$12>$2?$12:$2; 
+     minRight=$13<$3?$13:$3;
+     maxLeft=$12>$2?$12:$2;
      if($1==$11 && (minRight-maxLeft)/($3-$2)>=0.6){
               print $4,$5,$6,$1,$2,$3,$7,$8,$10,$9,$11,$12,$13,$14,$15
      }
@@ -119,15 +119,15 @@ awk -v fless=$lessfilename -v fmore=${samplename}/${bamname}_mappedToBaitsBoRAnd
     if ($0~/\-1\t\-1/){
          print $0 > fless;
          i++
-    } 
+    }
     else{
          print $0 > fmore;
          k++;
     }
     }
 END{
-    if(i>0){ 
-	printf ("Filtered out %f reads with <60%% overlap with a single digestion fragment\n", i/(i+k)) 
+    if(i>0){
+	printf ("Filtered out %f reads with <60%% overlap with a single digestion fragment\n", i/(i+k))
     }
 }' ${samplename}/${bamname}_mappedToBaitsBoRAndRFrag.bedpe
 
@@ -136,18 +136,18 @@ if [ "$nodelete" != "nodelete" ]; then
 fi
 
 echo "Adding frag length and signed distance from bait; removing self-ligation fragments (if any; not expected with HiCUP input)..."
-perl -ne '{ 
-    chomp $_; 
-    my @a = split /\t/, $_; 
-    my $l = $a[16]-$a[15]; 
-    my $d = "NA"; 
-    if ($a[10] eq $a[14]){ 
-           my $midB = int(($a[12]+$a[11])/2+0.5); 
-           my $midR = int(($a[15]+$a[16])/2+0.5); 
-           $d = $midR - $midB; 
-    } 
-    if ($d ne "0"){ 
-           print "$_\t$l\t$d\n" 
+perl -ne '{
+    chomp $_;
+    my @a = split /\t/, $_;
+    my $l = $a[16]-$a[15];
+    my $d = "NA";
+    if ($a[10] eq $a[14]){
+           my $midB = int(($a[12]+$a[11])/2+0.5);
+           my $midR = int(($a[15]+$a[16])/2+0.5);
+           $d = $midR - $midB;
+    }
+    if ($d ne "0"){
+           print "$_\t$l\t$d\n"
     }
 }' ${samplename}/${bamname}_mappedToBaitsBoRAndRFrag_fmore06.bedpe > ${samplename}/${bamname}_mappedToBaitsBoRAndRFrag_fmore06_withDistSignLen.bedpe
 
@@ -159,15 +159,15 @@ fi
 echo "Pooling read pairs..."
 echo "##        samplename=${samplename}        bamname=${bamname}      baitmapfile=${baitfendsid}      digestfile=${digestbed}" > ${samplename}/${samplename1}.chinput
 echo "baitID	otherEndID	N	otherEndLen	distSign" >> ${samplename}/${samplename1}.chinput
-awk '{ 
-    if (!baitOtherEndN[$14"\t"$18]){ 
-         baitOtherEndN[$14"\t"$18] = 1; 
-         baitOtherEndInfo[$14"\t"$18] = $20"\t"$21 
+awk '{
+    if (!baitOtherEndN[$14"\t"$18]){
+         baitOtherEndN[$14"\t"$18] = 1;
+         baitOtherEndInfo[$14"\t"$18] = $20"\t"$21
     }
-    else{ 
-         baitOtherEndN[$14"\t"$18]++; 
-    }  
-}END{ 
+    else{
+         baitOtherEndN[$14"\t"$18]++;
+    }
+}END{
     for (key in baitOtherEndN){
          print key"\t"baitOtherEndN[key]"\t"baitOtherEndInfo[key];
     }

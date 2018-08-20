@@ -19,7 +19,7 @@ addons:
     packages:
       - libspatialindex-dev
 #      - samtools
-      - bedtools
+#      - bedtools
 
 #create folders for installation
 before_install:
@@ -29,6 +29,12 @@ before_install:
      - mkdir -p ${HOME}/lib
      - export PATH="${HOME}/bin:$PATH"
      - cd ${HOME}/lib
+
+#install bedtools 2.25
+     -  wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
+     - tar -zxvf bedtools-2.25.0.tar.gz
+     - cd bedtools2
+     - make
 
 # install hicup
      - wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
@@ -96,6 +102,8 @@ install:
 
 before_script:
     - cd ${HOME}/bin
+
+    - ln -s ${HOME}/lib/bedtools2/bin/* .
 
     - ln -s ${HOME}/lib/hicup_v0.6.1/* ${HOME}/bin/
 
