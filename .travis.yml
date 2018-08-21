@@ -175,7 +175,7 @@ before_script:
 script:
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
     - python test_toolchains.py
-    - ll
-    - ls -l data/test_hicup
+    - ls -l
+    - tar -xvf data/test_hicup
     - if [[ "$TESTENV" == "docs" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/docs_harness.sh; fi
     - if [[ "$TESTENV" == "pylint" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/pylint_harness.sh; fi
