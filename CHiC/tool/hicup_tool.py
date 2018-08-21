@@ -205,15 +205,14 @@ class hicup(Tool):
             sonication protocol is not followed. Typically the sonication
             protocol is followed.
         """
-        home = expanduser("~")
         if re_enzyme2 is True:
-            args = [home+"/bin/hicup_digester",
+            args = ["hicup_digester",
                     "--genome", genome_name,
                     "--re1", re_enzyme,
                     "--re2", re_enzyme2,
                     genome_loc]
         else:
-            args = [home+"/bin/hicup_digester",
+            args = ["hicup_digester",
                     "--genome", genome_name,
                     "--re1", re_enzyme,
                     genome_loc]

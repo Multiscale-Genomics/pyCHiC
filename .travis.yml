@@ -118,13 +118,11 @@ install:
     - if [[ "$TESTENV" == "docs" ]]; then pip install sphinx;fi
     - if [[ "$TESTENV" == "pylint" ]]; then pip install pylint;fi
 
-
 before_script:
     - cd ${HOME}/bin
 
-    - ln -s ${HOME}/lib/hicup_v0.6.1/hicup hicup
-    - ln -s ${HOME}/lib/hicup_v0.6.1/hicup_digester hicup_digester
-
+    - ln -s ${HOME}/lib/hicup_v0.6.1/* ${HOME}/bin/
+    - ./hicup_digester
     - ln -s ${HOME}/lib/bwa-0.7.17/bwa
 
     - ln -s ${HOME}/lib/bedtools2/bin/bedtools
