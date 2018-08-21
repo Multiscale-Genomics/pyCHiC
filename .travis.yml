@@ -48,6 +48,12 @@ before_install:
     - export PATH="${HOME}/bin:$PATH"
     - cd ${HOME}/lib
 
+    #install bedtools 2.25
+    - wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
+    - tar -zxvf bedtools-2.25.0.tar.gz
+    - cd bedtools2
+    - make
+
     # install hicup
     - wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
     - tar -xzf hicup_v0.6.1.tar.gz
@@ -120,7 +126,7 @@ before_script:
 
     - ln -s ${HOME}/lib/bwa-0.7.17/bwa ${HOME}/bin/
 
-    - ln -s ${HOME}/lib/bedtools2/bin/*
+    - ln -s ${HOME}/lib/bedtools2/bin/* .
 
     - ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2
     - ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-align-l
