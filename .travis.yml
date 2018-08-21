@@ -122,8 +122,8 @@ install:
 before_script:
     - cd ${HOME}/bin
 
-    - ln -s ${HOME}/lib/hicup_v0.6.1/hicup
-    - ln -s ${HOME}/lib/hicup_v0.6.1/hicup_digester
+    - ln -s ${HOME}/lib/hicup_v0.6.1/hicup hicup
+    - ln -s ${HOME}/lib/hicup_v0.6.1/hicup_digester hicup_digester
 
     - ln -s ${HOME}/lib/bwa-0.7.17/bwa
 
@@ -171,6 +171,7 @@ before_script:
     - ln -s ${HOME}/lib/samtools/bin/wgsim_eval.pl wgsim_eval.pl
     - ln -s ${HOME}/lib/samtools/bin/zoom2sam.pl zoom2sam.pl
 
+    - ls -l ${HOME}/bin
 
 # command to run tests
 script:
