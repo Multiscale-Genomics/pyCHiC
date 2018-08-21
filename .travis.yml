@@ -175,6 +175,10 @@ before_script:
 
 # command to run tests
 script:
+    - ${HOME}/bin/hicup_digester --genome test_hg19 --re1 A^AGCTT,HindIII /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_baitmap/chr21_hg19.fa
+    - ${HOME}/bin/hicup_digester
+    - ${HOME}/bin/hicup
+    - hicup --index /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_baitmap/chr21_hg19.fa --digest  /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_truncater/SRR3535023_1.fastq /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_truncater/SRR3535023_2.fastq --bowtie2 /usr/bin/bowtie2 --outdir /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_hicup/output --zip --longest 800 --shortest 150
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
     - python test_toolchains.py
     - ls -l
