@@ -122,11 +122,12 @@ install:
 before_script:
     - cd ${HOME}/bin
 
-    - ln -s ${HOME}/lib/hicup_v0.6.1/* ${HOME}/bin/
+    - ln -s ${HOME}/lib/hicup_v0.6.1/hicup
+    - ln -s ${HOME}/lib/hicup_v0.6.1/hicup_digester
 
-    - ln -s ${HOME}/lib/bwa-0.7.17/bwa ${HOME}/bin/
+    - ln -s ${HOME}/lib/bwa-0.7.17/bwa
 
-    - ln -s ${HOME}/lib/bedtools2/bin/* .
+    - ln -s ${HOME}/lib/bedtools2/bin/*
 
     - ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2
     - ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-align-l
