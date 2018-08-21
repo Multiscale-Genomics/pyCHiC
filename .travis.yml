@@ -79,14 +79,14 @@ before_install:
     #installing chicago
     -  sudo apt-get install libtbb-dev
     -  sudo apt-get install libssl-dev
-    -  cd ${HOME}/build/Multiscale-Genomics/C-HiC/
+    -  cd ${HOME}/build/Multiscale-Genomics/CHi-C/
     #-  echo "R_LIB=${HOME}/R" > ${HOME}/.Renviron
     #-  echo "options(repos = c(CRAN = 'http://mirrors.ebi.ac.uk/CRAN/'))" > ${HOME}/.Rprofile
     #-  echo ".libPaths('~/R')" >> ${HOME}/.Rprofile
     #-  echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
     -  sudo Rscript CHiC/tool/scripts/install_packages.R
 
-    - cd ${HOME}/build/Multiscale-Genomics/C-HiC/
+    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/
 
 # command to install dependencies
 install:
@@ -148,5 +148,5 @@ before_script:
 
 # command to run tests
 script:
-    - cd ${HOME}/build/Multiscale-Genomics/C-HiC/tests
+    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
     - python test_toolchains.py
