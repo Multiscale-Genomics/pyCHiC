@@ -176,6 +176,7 @@ script:
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
     - python test_toolchains.py
     - ls -l
-    - tar -xvf data/test_hicup
+    - hicup_digester --genome test_hg19 --re1 A^AGCTT,HindIII /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_baitmap/chr21_hg19.fa
+    - tar -xvf data/test_hicup/output.tar
     - if [[ "$TESTENV" == "docs" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/docs_harness.sh; fi
     - if [[ "$TESTENV" == "pylint" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/pylint_harness.sh; fi
