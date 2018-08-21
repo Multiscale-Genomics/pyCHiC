@@ -18,8 +18,8 @@ addons:
   apt:
     packages:
       - libspatialindex-dev
-#      - samtools
-      - bedtools
+      #- samtools
+      #- bedtools
 
 env:
     matrix:
@@ -75,12 +75,19 @@ before_install:
     - make
     - make install
 
+    #install bedtools 2.25
+    - wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
+    - tar -zxvf bedtools-2.25.0.tar.gz
+    - cd bedtools2
+    - make
+
     #latest version of R
     - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
     - echo "deb http://cran.r-project.org/bin/linux/ubuntu trusty/" | sudo tee -a /etc/apt/sources.list
     - sudo apt-get update -qq
     - sudo apt-get install r-base-core
     - sudo apt-get install python-rpy2
+
 
     #installing chicago
     -  sudo apt-get install libtbb-dev
@@ -155,11 +162,13 @@ before_script:
     - ln -s ${HOME}/lib/samtools/bin/wgsim_eval.pl wgsim_eval.pl
     - ln -s ${HOME}/lib/samtools/bin/zoom2sam.pl zoom2sam.pl
 
+    - ln -s ${HOME}/lib/bedtools2/bin/bedtools
+
 
 # command to run tests
 script:
-    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
-    - python test_toolchains.py
+    - cd ${HOME}/build/Multiscale-Genomics/CHi-C
+    - python /tests/test_toolchains.py
     - if [[ "$TESTENV" == "docs" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/docs_harness.sh; fi
     - if [[ "$TESTENV" == "pylint" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/pylint_harness.sh; fi
 
