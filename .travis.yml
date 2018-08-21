@@ -1,18 +1,3 @@
-# See the NOTICE file distributed with this work for additional information
-# regarding copyright ownership.
-
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-
-#     http://www.apache.org/licenses/LICENSE-2.0
-
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 language: python
 
 os: linux
@@ -20,7 +5,7 @@ dist: trusty
 group: edge
 
 python:
-  - "2.7"
+  - "2.7.12"
   - "3.6"
 
 perl:
@@ -28,16 +13,13 @@ perl:
   - "5.22"
   - "5.20"
 
+
 addons:
   apt:
     packages:
       - libspatialindex-dev
-
-env:
-    matrix:
-        - TESTENV=docs
-        - TESTENV=code
-        - TESTENV=pylint
+#      - samtools
+      - bedtools
 
 #create folders for installation
 before_install:
@@ -47,12 +29,6 @@ before_install:
     - mkdir -p ${HOME}/lib
     - export PATH="${HOME}/bin:$PATH"
     - cd ${HOME}/lib
-
-    #install bedtools 2.25
-    - wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
-    - tar -zxvf bedtools-2.25.0.tar.gz
-    - cd bedtools2
-    - make
 
     # install hicup
     - wget https://www.bioinformatics.babraham.ac.uk/projects/hicup/hicup_v0.6.1.tar.gz
@@ -101,31 +77,31 @@ before_install:
     - sudo apt-get install python-rpy2
 
     #installing chicago
-    - sudo apt-get install libtbb-dev
-    - sudo apt-get install libssl-dev
-    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/
-    - sudo Rscript CHiC/tool/scripts/install_packages.R
-    - sudo chmod +x CHiC/tool/scripts/travis/docs_harness.sh
-    - sudo chmod +x CHiC/tool/scripts/travis/pylint_harness.sh
+    -  sudo apt-get install libtbb-dev
+    -  sudo apt-get install libssl-dev
+    -  cd ${HOME}/build/Multiscale-Genomics/C-HiC/
+    #-  echo "R_LIB=${HOME}/R" > ${HOME}/.Renviron
+    #-  echo "options(repos = c(CRAN = 'http://mirrors.ebi.ac.uk/CRAN/'))" > ${HOME}/.Rprofile
+    #-  echo ".libPaths('~/R')" >> ${HOME}/.Rprofile
+    #-  echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
+    -  sudo Rscript CHiC/tool/scripts/install_packages.R
 
-    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/
+    - cd ${HOME}/build/Multiscale-Genomics/C-HiC/
 
 # command to install dependencies
 install:
     - pip install --upgrade setuptools pip
     - pip install --upgrade -e .
+    #- pip install -e .
     - pip install -r requirements.txt
-    - if [[ "$TESTENV" == "docs" ]]; then pip install sphinx;fi
-    - if [[ "$TESTENV" == "pylint" ]]; then pip install pylint;fi
+
 
 before_script:
     - cd ${HOME}/bin
 
     - ln -s ${HOME}/lib/hicup_v0.6.1/* ${HOME}/bin/
-    - ./hicup_digester
-    - ln -s ${HOME}/lib/bwa-0.7.17/bwa
 
-    - ln -s ${HOME}/lib/bedtools2/bin/bedtools
+    - ln -s ${HOME}/lib/bwa-0.7.17/bwa ${HOME}/bin/
 
     - ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2
     - ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-align-l
@@ -169,18 +145,8 @@ before_script:
     - ln -s ${HOME}/lib/samtools/bin/wgsim_eval.pl wgsim_eval.pl
     - ln -s ${HOME}/lib/samtools/bin/zoom2sam.pl zoom2sam.pl
 
-    - ls -l ${HOME}/bin
 
 # command to run tests
 script:
-    - ${HOME}/bin/hicup_digester --genome test_hg19 --re1 A^AGCTT,HindIII /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_baitmap/chr21_hg19.fa
-    - ${HOME}/bin/hicup_digester
-    - ${HOME}/bin/hicup
-    - hicup --index /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_baitmap/chr21_hg19.fa --digest  /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_truncater/SRR3535023_1.fastq /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_truncater/SRR3535023_2.fastq --bowtie2 /usr/bin/bowtie2 --outdir /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_hicup/output --zip --longest 800 --shortest 150
-    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
+    - cd ${HOME}/build/Multiscale-Genomics/C-HiC/tests
     - python test_toolchains.py
-    - ls -l
-    - hicup_digester --genome test_hg19 --re1 A^AGCTT,HindIII /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_baitmap/chr21_hg19.fa
-    - tar -xvf data/test_hicup/output.tar
-    - if [[ "$TESTENV" == "docs" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/docs_harness.sh; fi
-    - if [[ "$TESTENV" == "pylint" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/pylint_harness.sh; fi
