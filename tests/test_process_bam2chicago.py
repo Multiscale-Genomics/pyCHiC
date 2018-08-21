@@ -14,8 +14,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-import pytest # pylint: disable=unused-import
 import os
+import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
 from process_bam2chicago_tool import process_bam2chicago

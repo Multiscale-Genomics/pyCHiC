@@ -55,8 +55,8 @@ def test_process_baitmap():
         "genome_idx" : Metadata(
             "index_bwa", "", input_files["genome_fa"],
             {
-                    "assembly": "test",
-                    "tool": "bwa_indexer"
+                "assembly": "test",
+                "tool": "bwa_indexer"
             }
             ),
         "genome_fa" : Metadata(
@@ -81,7 +81,7 @@ def test_process_baitmap():
              "RE" : {"HindIII" : 'A|AGCTT'}},
             None, 9606
             )
-      }
+    }
 
     process_baitmap_handl = process_baitmap(configuration)
     process_baitmap_handl.run(input_files, metadata, output_files)

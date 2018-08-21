@@ -175,8 +175,7 @@ before_script:
 script:
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
     - python test_toolchains.py
-    - cd ${HOME}/build/Multiscale-Genomics/CHi-C
-    - /home/travis/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/bam2chicago.sh /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_hicup/output/SRR3535023_1_2.hicup.bam /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_run_chicago/test.baitmap /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_run_chicago/test.rmap /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_bam2chicago_tool/output_chinput
-    - python /home/travis/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/makeDesignFiles.py --outfilePrefix test_tmp --minFragLen 150 --maxFragLen 40000 --maxLBrownEst 1500000 --binsize 20000 --removeb2b --removeAdjacent --outfilePrefix /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_run_chicago/test --rmapfile test.rmap --baitmapfile test.baitmap
+    - ll
+    - ls -l data/test_hicup
     - if [[ "$TESTENV" == "docs" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/docs_harness.sh; fi
     - if [[ "$TESTENV" == "pylint" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/pylint_harness.sh; fi
