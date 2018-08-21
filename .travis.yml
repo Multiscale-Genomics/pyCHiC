@@ -127,7 +127,7 @@ before_script:
 
     - ln -s ${HOME}/lib/bwa-0.7.17/bwa
 
-    - ln -s ${HOME}/lib/bedtools2/bin/*
+    - ln -s ${HOME}/lib/bedtools2/bin/bedtools
 
     - ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2
     - ln -s ${HOME}/lib/bowtie2-2.3.4-linux-x86_64/bowtie2-align-l
