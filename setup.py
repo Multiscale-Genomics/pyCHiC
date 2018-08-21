@@ -25,7 +25,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'numpy', 'pytest', 'scipy', 'matplotlib', 'pysam', 'mock',
-        'bz2file', 'ConfigParser', 'rtree', 'pylint'
+        'bz2file', 'ConfigParser', 'rtree', 'pylint', 'pandas'
     ],
     setup_requires=[
         'pytest-runner',
