@@ -6,13 +6,9 @@ group: edge
 
 python:
   - "2.7.12"
-  - "3.6"
 
 perl:
   - "5.24"
-  - "5.22"
-  - "5.20"
-
 
 addons:
   apt:
@@ -160,7 +156,6 @@ script:
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
     - python test_toolchains.py
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C
-    - /home/travis/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/bam2chicago.sh /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_hicup/output/SRR3535023_1_2.hicup.bam /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_run_chicago/test.baitmap /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_run_chicago/test.rmap /home/travis/build/Multiscale-Genomics/CHi-C/tests/data/test_bam2chicago_tool/output_chinput
-    - if [[ "$TESTENV" == "docs" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/docs_harness.sh; fi
-    - if [[ "$TESTENV" == "pylint" ]]; then ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/travis/pylint_harness.sh; fi
+    - if [[ "$TESTENV" == "docs" ]]; then CHiC/tool/scripts/travis/docs_harness.sh; fi
+    - if [[ "$TESTENV" == "pylint" ]]; then CHiC/tool/scripts/travis/pylint_harness.sh; fi
 
