@@ -18,14 +18,13 @@ addons:
   apt:
     packages:
       - libspatialindex-dev
-      #- samtools
-      #- bedtools
+      - bedtools
 
-#env:
-#    matrix:
-#        - TESTENV=docs
-#        - TESTENV=code
-#        - TESTENV=pylint
+env:
+    matrix:
+        - TESTENV=docs
+        - TESTENV=code
+        - TESTENV=pylint
 
 #create folders for installation
 before_install:
@@ -74,12 +73,6 @@ before_install:
     - ./configure --prefix=${HOME}/lib/samtools
     - make
     - make install
-
-    #install bedtools 2.25
-    - wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
-    - tar -zxvf bedtools-2.25.0.tar.gz
-    - cd bedtools2
-    - make
 
     #latest version of R
     - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
@@ -161,9 +154,6 @@ before_script:
     - ln -s ${HOME}/lib/samtools/bin/wgsim wgsim
     - ln -s ${HOME}/lib/samtools/bin/wgsim_eval.pl wgsim_eval.pl
     - ln -s ${HOME}/lib/samtools/bin/zoom2sam.pl zoom2sam.pl
-
-    - ln -s ${HOME}/lib/bedtools2/bin/bedtools
-
 
 # command to run tests
 script:
