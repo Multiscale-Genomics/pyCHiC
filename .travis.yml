@@ -77,6 +77,12 @@ before_install:
     - sudo apt-get install r-base-core
     - sudo apt-get install python-rpy2
 
+    #Get chicago preprocessing scripts
+    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/
+    - wget https://bitbucket.org/chicagoTeam/chicago/src/master/chicagoTools/runChicago.R
+    - wget https://bitbucket.org/chicagoTeam/chicago/src/master/chicagoTools/bam2chicago.sh
+    - wget https://bitbucket.org/chicagoTeam/chicago/src/master/chicagoTools/makeDesignFiles.py
+    - chmod +x bam2chicago.sh
 
     #installing chicago
     -  sudo apt-get install libtbb-dev
@@ -84,11 +90,7 @@ before_install:
     -  cd ${HOME}/build/Multiscale-Genomics/CHi-C/
     - sudo chmod +x CHiC/tool/scripts/travis/docs_harness.sh
     - sudo chmod +x CHiC/tool/scripts/travis/pylint_harness.sh
-    #-  echo "R_LIB=${HOME}/R" > ${HOME}/.Renviron
-    #-  echo "options(repos = c(CRAN = 'http://mirrors.ebi.ac.uk/CRAN/'))" > ${HOME}/.Rprofile
-    #-  echo ".libPaths('~/R')" >> ${HOME}/.Rprofile
-    #-  echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
-    -  sudo Rscript CHiC/tool/scripts/install_packages.R
+    - sudo Rscript CHiC/tool/scripts/install_packages.R
 
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/
 
