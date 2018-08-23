@@ -130,10 +130,7 @@ class makeRmapFile(Tool):
             #Ad last chromosome
             genome_dict[chromo] = sequence
 
-        print(len(genome_dict))
-        print("asdas")
         return genome_dict
-
 
     def map_re_sites2(self, enzyme_name, genome_fa):
         """
