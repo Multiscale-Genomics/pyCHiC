@@ -1,7 +1,7 @@
 [
     {
         "_id": "59b7e020d9422a5969b34",
-        "data_type": "DNA sequence probes",
+        "data_type": "data_CHiC",
         "file_type": "FASTA",
         "file_path": "tests/data/test_baitmap/baits.fa",
         "compressed": 0,
@@ -14,7 +14,7 @@
     },
     {
         "_id": "59b7e020d9422a5969b",
-        "data_type": "rtree",
+        "data_type": "data_CHiC",
         "file_type": "Rtree_file_dat",
         "file_path": "tests/data/test_rmap/rtree_file.dat",
         "compressed": 0,
@@ -27,7 +27,7 @@
     },
      {
         "_id": "59b7e020d9422a5969b653",
-        "data_type": "rtree",
+        "data_type": "data_CHiC",
         "file_type": "Rtree_file_idx",
         "file_path": "tests/data/test_rmap/rtree_file.idx",
         "compressed": 0,
@@ -40,7 +40,7 @@
     },
     {
         "_id": "59b7e020d9422a5969b65370",
-        "data_type": "DNA reference genome",
+        "data_type": "data_CHiC",
         "file_type": "FASTA",
         "file_path": "tests/data/test_baitmap/chr21_hg19.fa",
         "compressed": 0,
@@ -53,7 +53,7 @@
     },
     {
         "_id": "59b7e020d9422a5969b65373",
-        "data_type": "sequence_mapping_index_bwa",
+        "data_type": "data_CHiC",
         "file_type": "TAR",
         "file_path": "tests/data/test_baitmap/bwa.tar.gz",
         "sources": ["tests/data/test_baitmap/bwa"],

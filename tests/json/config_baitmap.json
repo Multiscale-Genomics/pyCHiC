@@ -54,7 +54,7 @@
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_run_chicago/test.baitmap",
-                "data_type": "data_baitmap",
+                "data_type": "data_CHiC",
                 "compressed": "null"
             }
         },{
@@ -69,7 +69,7 @@
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_baitmap/baits.sam",
-                "data_type": "data_sam",
+                "data_type": "data_CHiC",
                 "compressed": "null"
             }
         },{
@@ -84,7 +84,7 @@
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_baitmap/baits.bam",
-                "data_type": "data_rmap",
+                "data_type": "data_CHiC",
                 "compressed": "null"
             }
         }

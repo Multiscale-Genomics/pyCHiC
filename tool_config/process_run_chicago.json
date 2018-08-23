@@ -1,0 +1,173 @@
+{
+    "_id": "process_run_chicago",
+    "name": "CHiCAGO wrapper",
+    "title": "CHiCAGO wrapper",
+    "short_description": "Run CHiCAGO algorithm to call chromatin loops",
+    "owner": {
+        "institution": "EMBL-EBI",
+        "author": "Pablo Acera",
+        "contact": "pacera@ebi.ac.uk",
+        "user": "",
+        "url": "https://github.com/Multiscale-Genomics/CHiC"
+    },
+    "status": 0,
+    "external": true,
+    "has_custom_viewer": false,
+    "keywords": [
+        "dna",
+        "CHi-C",
+        "Hi-C"
+    ],
+    "infrastructure": {
+        "memory": 12,
+        "cpus": 4,
+        "executable": "/home/pmes/code/CHiC/process_run_chicago.py",
+        "clouds": {
+            "mug-bsc": {
+                "launcher": "PMES",
+                "workflowType": "COMPSs",
+                "default_cloud": true
+            }
+        }
+    },
+    "input_files": [
+        {
+            "name": "chinput",
+            "description": "path to chinput file",
+            "help": "path to chinput file",
+            "file_type": [".chinput"],
+            "data_type": [
+                "data_CHiC"
+            ],
+            "required": true,
+            "allow_multiple": false # change this
+        },
+        {
+            "name": "setting_file",
+            "description": "Path to the setting file containing parameters to run CHiCAGO",
+            "help": "Setting file containing parameters to run CHiCAGO",
+            "file_type": ["setting_file"],
+            "data_type": [
+                "data_CHiC"
+            ],
+            "required": false,
+            "allow_multiple": false
+        },
+        {
+            "name": "RMAP",
+            "description": ".rmap rtree file",
+            "help": "path to the .rmap file",
+            "file_type": [".rmap"],
+            "data_type": ["data_CHiC"],
+            "required": true,
+            "allow_multiple": false
+        },
+        {
+            "name": "BAITMAP",
+            "description": "Path to the .baitmap file",
+            "help": "path to the .baitmap file",
+            "file_type": [".baitmap"],
+            "data_type": ["data_CHiC"],
+            "required": true,
+            "allow_multiple": false
+        },
+        {
+            "name": "nbpb",
+            "description": "Path to the .nbpb file",
+            "help": "path matching to the nbpb desidn file",
+            "file_type": [".nbpb"],
+            "data_type": ["data_CHiC"],
+            "required": true,
+            "allow_multiple": false
+        },
+        {
+            "name": "npb_chicago",
+            "description": "PAth to the npb file",
+            "help": "path matching to the npb design file",
+            "file_type": [".nbp"],
+            "data_type": ["data_CHiC"],
+            "required": true,
+            "allow_multiple": false
+        },
+        {
+            "name": "poe_chicago",
+            "description": "Path to the poe file",
+            "help": "Path matching to the poe design file",
+            "file_type": [".poe"],
+            "data_type": ["data_CHiC"],
+            "required": true,
+            "allow_multiple": false
+        }
+    ],
+    "input_files_combinations": [
+        [
+            "chinput",
+            "setting_file",
+            "RMAP",
+            "BAITMAP",
+            "nbpb",
+            "npb",
+            "poe"
+        ]
+    ],
+    "arguments": [
+        {
+            "name": "chicago_out_prefix",
+            "description": "prefix of output files",
+            "help": "prefix of output files",
+            "type": "string",
+            "required": true,
+            "default": "output_chic"
+        },
+        {
+            "name": "chicago_cutoff",
+            "description": "A signal cutoff to use for significant interactions",
+            "help": "A signal cutoff to use for significant interactions",
+            "type": "string",
+            "required": true,
+            "default": "5"
+        },
+        {
+            "name": "chicago_export_format",
+            "description": "File format for writing out peaks: one or more of the following: seqMonk,interBed,washU_text,washU_track (comma-separated)",
+            "help": "File format for writing out peaks: one or more of the following: seqMonk,interBed,washU_text,washU_track (comma-separated)",
+            "type": "string",
+            "required": true,
+            "default": "washU_text"
+        },
+        {
+            "name": "chicago_examples_prox_dist",
+            "description": "the distance limit for plotting 'proximal' examples",
+            "help": "the distance limit for plotting proximal examples in Mb",
+            "type": "string",
+            "required": true,
+            "default": "1"
+        },
+        {
+            "name": "chicago_design_dir",
+            "description": "Path of the design folder containing exactly one of the following file types: .baitmap, .rmap, .npb, .nbpb and .poe with the corresponding extensions",
+            "help": "Path the design folder containing exactly one of the following file types: .baitmap, .rmap, .npb, .nbpb and .poe with the corresponding extensions",
+            "type": "string",
+            "required": true,
+            "default": "tests/data/test_run_chicago/data_chicago"
+        }
+    ],
+    "output_files": [
+         {
+            "required": true,
+            "allow_multiple": false,
+            "name": "output",
+            "file": {
+                "file_type": "TAR",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "runChicago",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_run_chicago/data_chicago/out_run_chicago.tar",
+                "data_type": "data_CHiC",
+                "compressed": "null"
+            }
+        }
+    ]
+}
