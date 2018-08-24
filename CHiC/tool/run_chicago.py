@@ -22,6 +22,8 @@ import sys
 import tarfile
 from shutil import rmtree
 from utils import logger
+from tool.common import common
+from shutil import copyfile
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -83,7 +85,7 @@ class ChicagoTool(Tool):
         list of untar files
         """
         if chinput_tar.split(".")[-1] == "tar":
-            tar = tarfile.open("chinput_tar")
+            tar = tarfile.open(chinput_tar)
             tar.extractall()
             tar.close()
 
@@ -96,7 +98,9 @@ class ChicagoTool(Tool):
 
             files_dir = [fl for fl in files_dir if fl.split(".")[-1] == ".chinput"]
 
-            return files_dir
+            files_comman_sp = ",".join("files_dir")
+
+            return files_comman_sp
 
         else:
             return chinput_tar
@@ -141,23 +145,14 @@ class ChicagoTool(Tool):
         if not os.path.exists(rlib):
             os.makedirs(rlib)
 
+        input_untared = self.untar_chinput(input_files)
 
-        #check if there are more than one .chinput files
-        if isinstance(input_files, list):
-            args = ["Rscript", script, ", ".join(input_files),
-                    output_prefix,
-                    "--output-dir", output_dir,
-                    "--settings-file", setting_file]
-
-            args += params
-
-        else:
-            args = ["Rscript", script,
-                    input_files,
-                    output_prefix,
-                    "--output-dir", output_dir,
-                    "--settings-file", setting_file,
-                    "--design-dir", os.path.split(rmap)[0]]
+        args = ["Rscript", script,
+                input_untared,
+                output_prefix,
+                "--output-dir", output_dir,
+                "--settings-file", setting_file,
+                "--design-dir", os.path.split(rmap)[0]]
 
         args += params
         print(" ".join(args))
@@ -278,9 +273,25 @@ class ChicagoTool(Tool):
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        #input_chinput = self.untar_chinput(input_files["chinput"])
+        if isinstance(input_files["chinput"], list):
 
-        results = self.chicago(input_files["chinput"],
+            chinput_folder = os.path.split(input_files["chinput"][0])[0]+"/chinput"
+
+            if os.path.isdir(chinput_folder) is False:
+                os.mkdir(chinput_folder)
+
+            for chinput_fl in input_files["chinput"]:
+                copyfile(chinput_fl, chinput_folder+"/"+os.path.split(chinput_fl)[1])
+
+            common.tar_folder(chinput_folder,
+                              chinput_folder+".tar",
+                              os.path.split(chinput_folder)[1])
+            final_chinput = chinput_folder+".tar"
+
+        else:
+            final_chinput = input_files["chinput"]
+
+        results = self.chicago(final_chinput,
                                self.configuration["chicago_out_prefix"],
                                output_files["output"],
                                command_params,
