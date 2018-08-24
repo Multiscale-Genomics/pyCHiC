@@ -295,6 +295,8 @@ class hicup(Tool):
 
         logger.info("arguments for hicup:" + " ".join(hicup_args))
 
+
+
         try:
             process = subprocess.Popen(" ".join(hicup_args), shell=True,
                                        stdout=subprocess.PIPE,
@@ -307,6 +309,9 @@ class hicup(Tool):
                               self.configuration["hicup_outdir"]+".tar",
                               os.path.split(self.configuration["hicup_outdir"])[1]
                              )
+
+            for indexed_file in index_files:
+                os.remove(index_files[indexed_file])
 
             return True
 

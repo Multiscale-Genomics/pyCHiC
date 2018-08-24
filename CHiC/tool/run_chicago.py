@@ -22,6 +22,8 @@ import sys
 import tarfile
 from shutil import rmtree
 from utils import logger
+from tool.common import common
+from shutil import copyfile
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -83,20 +85,21 @@ class ChicagoTool(Tool):
         list of untar files
         """
         if chinput_tar.split(".")[-1] == "tar":
-            tar = tarfile.open("chinput_tar")
-            tar.extractall()
+            tar = tarfile.open(chinput_tar)
+            tar.extractall(path=os.path.split(chinput_tar)[0])
             tar.close()
 
-            directory_path = os.path.split(chinput_tar)
+            directory_path = os.path.split(chinput_tar)[0]+"/chinput"
 
-            if directory_path[0] == "":
-                files_dir = os.listdir(".")
-            else:
-                files_dir = os.listdir(directory_path[0])
+            files_dir = os.listdir(directory_path)
 
-            files_dir = [fl for fl in files_dir if fl.split(".")[-1] == ".chinput"]
+            chinput_paths = []
+            for chinput_name in files_dir:
+                chinput_paths.append(directory_path+"/"+chinput_name)
 
-            return files_dir
+            files_comman_sp = str(",".join(chinput_paths))
+
+            return files_comman_sp
 
         else:
             return chinput_tar
@@ -141,23 +144,14 @@ class ChicagoTool(Tool):
         if not os.path.exists(rlib):
             os.makedirs(rlib)
 
+        input_untared = self.untar_chinput(input_files)
 
-        #check if there are more than one .chinput files
-        if isinstance(input_files, list):
-            args = ["Rscript", script, ", ".join(input_files),
-                    output_prefix,
-                    "--output-dir", output_dir,
-                    "--settings-file", setting_file]
-
-            args += params
-
-        else:
-            args = ["Rscript", script,
-                    input_files,
-                    output_prefix,
-                    "--output-dir", output_dir,
-                    "--settings-file", setting_file,
-                    "--design-dir", os.path.split(rmap)[0]]
+        args = ["Rscript", script,
+                input_untared,
+                output_prefix,
+                "--output-dir", output_dir,
+                "--settings-file", setting_file,
+                "--design-dir", os.path.split(rmap)[0]]
 
         args += params
         print(" ".join(args))
@@ -278,9 +272,25 @@ class ChicagoTool(Tool):
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        #input_chinput = self.untar_chinput(input_files["chinput"])
+        if isinstance(input_files["chinput"], list):
 
-        results = self.chicago(input_files["chinput"],
+            chinput_folder = os.path.split(input_files["chinput"][0])[0]+"/chinput"
+
+            if os.path.isdir(chinput_folder) is False:
+                os.mkdir(chinput_folder)
+
+            for chinput_fl in input_files["chinput"]:
+                copyfile(chinput_fl, chinput_folder+"/"+os.path.split(chinput_fl)[1])
+
+            common.tar_folder(chinput_folder,
+                              chinput_folder+".tar",
+                              os.path.split(chinput_folder)[1])
+            final_chinput = chinput_folder+".tar"
+
+        else:
+            final_chinput = input_files["chinput"]
+
+        results = self.chicago(final_chinput,
                                self.configuration["chicago_out_prefix"],
                                output_files["output"],
                                command_params,
@@ -310,3 +320,52 @@ class ChicagoTool(Tool):
         }
 
         return output_files, output_metadata
+
+
+if __name__ == "__main__":
+
+    path = "../../tests/data/"
+
+    input_files = {
+        "chinput": [
+            path + "test_run_chicago/data_chicago/GM_rep1.chinput",
+            path + "test_run_chicago/data_chicago/GM_rep2.chinput"
+            ],
+        "setting_file" : path + "test_run_chicago/data_chicago/sGM12878.settingsFile",
+        "rmap_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.rmap",
+        "baitmap_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.baitmap",
+        "nbpb_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.nbpb",
+        "poe_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.poe",
+        "npb_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.npb",
+        }
+
+    output_files = {
+        "output": path + "test_run_chicago/data_chicago/out_run_chicago.tar",
+        }
+
+    metadata = {
+        "chinput" : Metadata(
+            "data_chicago", "chinput", [], None, None, 9606)
+        }
+
+    config = {
+        "chicago_design_dir": path + "/test_run_chicago/data_chicago",
+        "chicago_print_memory": "None",
+        "chicago_out_prefix" : "output_test",
+        "chicago_cutoff": "5",
+        "chicago_export_format": "washU_text",
+        "chicago_export_order": "None",
+        "chicago_rda": "None",
+        "chicago_save_df_only": "None",
+        "chicago_examples_prox_dist": "1e6",
+        "chicago_examples_full_range": "None",
+        "chicago_en_feat_files": "None",
+        "chicago_en_min_dist": "0",
+        "chicago_en_max_dist": "1e6",
+        "chicago_en_full_cis_range": "None",
+        "chicago_en_sample_no": "100",
+        "chicago_en_trans": "None",
+        "chicago_features_only": "None"}
+
+    chicago_handle = ChicagoTool(config)
+    chicago_handle.run(input_files, metadata, output_files)
