@@ -141,7 +141,7 @@ class ChicagoTool(Tool):
         if not os.path.exists(rlib):
             os.makedirs(rlib)
 
-        """
+
         #check if there are more than one .chinput files
         if isinstance(input_files, list):
             args = ["Rscript", script, ", ".join(input_files),
@@ -152,13 +152,12 @@ class ChicagoTool(Tool):
             args += params
 
         else:
-        """
-        args = ["Rscript", script,
-                input_files,
-                output_prefix,
-                "--output-dir", output_dir,
-                "--settings-file", setting_file,
-                "--design-dir", os.path.split(rmap)[0]]
+            args = ["Rscript", script,
+                    input_files,
+                    output_prefix,
+                    "--output-dir", output_dir,
+                    "--settings-file", setting_file,
+                    "--design-dir", os.path.split(rmap)[0]]
 
         args += params
         print(" ".join(args))
@@ -189,7 +188,6 @@ class ChicagoTool(Tool):
             rmtree(output_dir+"/enrichment_data")
 
             logger.info("Tar folder with chinput output file")
-
 
         except IOError:
             logger.fatal("chicago failed to generate peak file")

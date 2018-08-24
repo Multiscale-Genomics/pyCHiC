@@ -61,18 +61,6 @@
             "value": "1000000"
         },
         {
-            "name": "chicago_en_min_dist",
-            "value": "0"
-        },
-        {
-            "name": "chicago_en_max_dist",
-            "value": "1000000"
-        },
-        {
-            "name": "chicago_en_sample_no",
-            "value": "100"
-        },
-        {
             "name": "chicago_design_dir",
             "value": "tests/data/test_run_chicago/data_chicago"
         }
@@ -83,10 +71,10 @@
             "allow_multiple": false,
             "name": "output",
             "file": {
-                "file_type": "tar",
+                "file_type": "TAR",
                 "meta_data": {
                     "visible": true,
-                    "tool": "bam2chicago",
+                    "tool": "runChicago",
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_run_chicago/data_chicago/out_run_chicago.tar",

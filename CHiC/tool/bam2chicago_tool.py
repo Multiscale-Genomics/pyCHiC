@@ -135,13 +135,9 @@ class bam2chicagoTool(Tool):
 
             process.wait()
 
-            try:
-                path_out = out_folder+"/"+os.path.split(out_folder)[1]+".chinput"
-                move(path_out, chinput)
-
-            except IOError:
-                logger.fatal("could not tar folder")
-                print(path_out, chinput)
+            path_out = out_folder+"/"+os.path.split(out_folder)[1]+".chinput"
+            move(path_out, chinput)
+            print("path_out "+path_out, "chinput "+chinput)
 
             return True
         except IOError:
@@ -183,7 +179,7 @@ class bam2chicagoTool(Tool):
         bam_file = "".join([file_hdl for file_hdl in os.listdir(folder_name)
                             if file_hdl.endswith(".bam")])
 
-        path_bam =  folder_name + "/" + bam_file
+        path_bam = folder_name + "/" + bam_file
 
         results = self.bam2chicago(
             path_bam,

@@ -61,7 +61,7 @@ class process_run_chicago(Workflow):
             location with the .chinput files.
             chinput_file: str in case there is one input file
             chinput_file: comma separated list in case there
-                is more than one input file.
+            is more than one input file.
 
         metadata: dict
             Input metadata, str
@@ -145,23 +145,3 @@ if __name__ == "__main__":
     RESULTS = main_json(CONFIG, IN_METADATA, OUT_METADATA)
 
     print(RESULTS)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

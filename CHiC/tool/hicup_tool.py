@@ -18,7 +18,7 @@ import os
 import subprocess
 import sys
 from utils import logger
-
+from os.path import expanduser
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -205,8 +205,6 @@ class hicup(Tool):
             sonication protocol is not followed. Typically the sonication
             protocol is followed.
         """
-
-
         if re_enzyme2 is True:
             args = ["hicup_digester",
                     "--genome", genome_name,

@@ -341,7 +341,6 @@ Convert BAM file into chicago input files .chinput
       :members:
 
 
-
 Data normalization and peak calling
 -----------------------------------
 .. automodule:: process_run_chicago
@@ -367,8 +366,8 @@ Data normalization and peak calling
 
    Example
    -------
-   REQUIREMENT - Needs at least one .chinput file
-                 Needs a config file with:
+   REQUIREMENT - Needs a reference genome
+               - Needs file with the capture sequences with FASTA format
                      - settings file
                      - design dir:
                            .rmap
@@ -407,4 +406,67 @@ Data normalization and peak calling
    Methods
    =======
    .. autoclass:: process_run_chicago.process_run_chicago
+      :members:
+
+
+Run the entire CHi-C pipeline
+-----------------------------
+.. automodule:: process_CHiC
+
+   This pipeline runs the whole Capture Hi-C pipeline.
+
+   Running from the command line
+   =============================
+
+   Parameters
+   ----------
+   config : str
+      Configuration JSON file
+   in_metadata : str
+      Location of input JSON metadata for files
+   out_metadata : str
+      Location of output JSON metadata for files
+
+   Returns
+   -------
+   output_dir: directory with all output folders and files
+
+   Example
+   -------
+   REQUIREMENT - Needs a referance genome
+               - Folder with indexed reference genome using bowtie2
+               - Folder with a indexed reference genome using bwa
+               - Two FASTQ files
+               - Settings chicago file
+
+   When running the pipeline on a local machine without COMPSs:
+
+   .. code-block:: none
+      :linenos:
+
+      python process_CHiC.py \
+         --config tests/json/config_CHiC.json \
+         --in_metadata tests/json/input_CHiC.json \
+         --out_metadata tests/json/output_CHiC.json \
+         --local
+
+   When using a local version of the [COMPS virtual machine](https://www.bsc.es/research-and-development/
+   software-and-apps/software-list/comp-superscalar/):
+
+   .. code-block:: none
+      :linenos:
+
+      runcompss                     \
+         --lang=python              \
+         --library_path=${HOME}/bin \
+         --pythonpath=/<pyenv_virtenv_dir>/lib/python2.7/site-packages/ \
+         --log_level=debug          \
+         process_CHiC.py         \
+            --config tests/json/config_CHiC.json \
+            --in_metadata tests/json/input_CHiC.json \
+            --out_metadata tests/json/output_CHiC.json
+
+   Methods
+   =======
+   .. autoclass:: process_CHiC.process_CHiC
       :members:

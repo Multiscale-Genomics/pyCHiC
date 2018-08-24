@@ -62,21 +62,21 @@ class process_CHiC(Workflow):
         This is the main function that run the tools to create
         .baitmap.
 
-        Parameters:
+        Parameters
         ----------
         input_files: dict
             fastq1: str
             fastq2: str
             genome_fa: str
-                genome in fasta format
+            genome in fasta format
 
         input_metadata: dict
             input metadata
 
         output_files: dict
 
-        Returns:
-        --------
+        Returns
+        -------
 
 
         #produce rmap file

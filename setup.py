@@ -15,7 +15,8 @@
    limitations under the License.
 """
 
-from setuptools import setup, find_packages
+from setuptools import setup
+from setuptools import find_packages
 
 setup(
     name='CHi-C',
@@ -23,8 +24,8 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'pytest', "pandas", "numpy", 'rtree', 'mock', 'pysam',
-        'rtree', 'pylint', 'ConfigParser'
+        'numpy', 'pytest', 'scipy', 'matplotlib', 'pysam', 'mock',
+        'bz2file', 'ConfigParser', 'rtree', 'pylint', 'pandas'
     ],
     setup_requires=[
         'pytest-runner',

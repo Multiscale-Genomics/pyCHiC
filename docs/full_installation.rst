@@ -161,6 +161,11 @@ Install CHiCAGO
    echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
    sudo Rscript scripts/install_packages.R
 
+   cd ${HOME}/C-HiC/CHiC/tool/scripts/
+   wget https://bitbucket.org/chicagoTeam/chicago/raw/e288015f75d36c5367d1595e0ac8099f2ce82aa1/chicagoTools/runChicago.R
+   wget https://bitbucket.org/chicagoTeam/chicago/raw/e288015f75d36c5367d1595e0ac8099f2ce82aa1/chicagoTools/bam2chicago.sh
+   wget https://bitbucket.org/chicagoTeam/chicago/raw/e288015f75d36c5367d1595e0ac8099f2ce82aa1/chicagoTools/makeDesignFiles.py
+   chmod +x bam2chicago.sh
 
 Setup the symlinks
 ------------------

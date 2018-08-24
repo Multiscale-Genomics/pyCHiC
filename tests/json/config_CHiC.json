@@ -160,7 +160,7 @@
         },
         {
             "name": "threads",
-            "value": "1"
+            "value": "2"
         },
         {
             "name": "outdir",

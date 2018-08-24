@@ -64,7 +64,7 @@
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_run_chicago/test.nbpb",
-                "data_type": "nbpb",
+                "data_type": "data_CHiC",
                 "compressed": "null"
             }
         },{
@@ -79,7 +79,7 @@
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_run_chicago/test.npb",
-                "data_type": "npb",
+                "data_type": "data_CHiC",
                 "compressed": "null"
             }
         },{
@@ -94,7 +94,7 @@
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_run_chicago/test.poe",
-                "data_type": "poe",
+                "data_type": "data_CHiC",
                 "compressed": "null"
             }
         }

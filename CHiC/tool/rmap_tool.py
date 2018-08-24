@@ -130,9 +130,7 @@ class makeRmapFile(Tool):
             #Ad last chromosome
             genome_dict[chromo] = sequence
 
-        print(genome_dict)
         return genome_dict
-
 
     def map_re_sites2(self, enzyme_name, genome_fa):
         """
@@ -237,7 +235,10 @@ class makeRmapFile(Tool):
 
         logger.info("coverting renzime fragments into rmap file")
 
-        idx = index.Rtree(rtree)
+        try:
+            idx = index.Rtree(rtree)
+        except AttributeError:
+            logger.info("index failed =(")
 
         with open(RMAP, "w") as out:
             counter_id = 0

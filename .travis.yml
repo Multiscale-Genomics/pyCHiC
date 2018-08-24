@@ -5,19 +5,15 @@ dist: trusty
 group: edge
 
 python:
-  - "2.7"
-  - "3.6"
+  - "2.7.12"
 
 perl:
   - "5.24"
-  - "5.22"
-  - "5.20"
 
 addons:
   apt:
     packages:
       - libspatialindex-dev
-#      - samtools
       - bedtools
 
 env:
@@ -81,15 +77,20 @@ before_install:
     - sudo apt-get install r-base-core
     - sudo apt-get install python-rpy2
 
+    #Get chicago preprocessing scripts
+    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/CHiC/tool/scripts/
+    - wget https://bitbucket.org/chicagoTeam/chicago/raw/e288015f75d36c5367d1595e0ac8099f2ce82aa1/chicagoTools/runChicago.R
+    - wget https://bitbucket.org/chicagoTeam/chicago/raw/e288015f75d36c5367d1595e0ac8099f2ce82aa1/chicagoTools/bam2chicago.sh
+    - wget https://bitbucket.org/chicagoTeam/chicago/raw/e288015f75d36c5367d1595e0ac8099f2ce82aa1/chicagoTools/makeDesignFiles.py
+    - chmod +x bam2chicago.sh
+
     #installing chicago
     -  sudo apt-get install libtbb-dev
     -  sudo apt-get install libssl-dev
     -  cd ${HOME}/build/Multiscale-Genomics/CHi-C/
-    #-  echo "R_LIB=${HOME}/R" > ${HOME}/.Renviron
-    #-  echo "options(repos = c(CRAN = 'http://mirrors.ebi.ac.uk/CRAN/'))" > ${HOME}/.Rprofile
-    #-  echo ".libPaths('~/R')" >> ${HOME}/.Rprofile
-    #-  echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
-    -  sudo Rscript CHiC/tool/scripts/install_packages.R
+    - sudo chmod +x CHiC/tool/scripts/travis/docs_harness.sh
+    - sudo chmod +x CHiC/tool/scripts/travis/pylint_harness.sh
+    - sudo Rscript CHiC/tool/scripts/install_packages.R
 
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/
 
@@ -97,6 +98,7 @@ before_install:
 install:
     - pip install --upgrade setuptools pip
     - pip install --upgrade -e .
+    #- pip install -e .
     - pip install -r requirements.txt
     - if [[ "$TESTENV" == "docs" ]]; then pip install sphinx;fi
     - if [[ "$TESTENV" == "pylint" ]]; then pip install pylint;fi
@@ -151,13 +153,11 @@ before_script:
     - ln -s ${HOME}/lib/samtools/bin/wgsim_eval.pl wgsim_eval.pl
     - ln -s ${HOME}/lib/samtools/bin/zoom2sam.pl zoom2sam.pl
 
-
 # command to run tests
 script:
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
     - python test_toolchains.py
-    - ls -l
-    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests/test_run_chicago/
-    - ls -l
-    - if [[ "$TESTENV" == "docs" ]]; then ./scripts/travis/docs_harness.sh; fi
-    - if [[ "$TESTENV" == "pylint" ]]; then ./scripts/travis/pylint_harness.sh; fi
+    - cd ${HOME}/build/Multiscale-Genomics/CHi-C
+    - if [[ "$TESTENV" == "docs" ]]; then CHiC/tool/scripts/travis/docs_harness.sh; fi
+    - if [[ "$TESTENV" == "pylint" ]]; then CHiC/tool/scripts/travis/pylint_harness.sh; fi
+

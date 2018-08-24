@@ -16,20 +16,17 @@
 """
 
 from __future__ import print_function
-from basic_modules.metadata import Metadata
 import os
+from basic_modules.metadata import Metadata
 
-from CHiC.process_chicago_CHiC import process_chicago_CHiC
+from process_chicago_CHiC import process_chicago_CHiC # pylint: disable=import-error
 
 def test_process_CHiC():
-
-    import sys
-    sys._run_from_cmdl = True # pylint: disable=protected-access
-
     """
     Test for the process_chicago_CHiC
     """
-    path = os.path.join(os.getcwd(),"data/test_process_CHiC/")
+
+    path = os.path.join(os.getcwd(), "data/test_process_CHiC/")
 
     input_files = {
         "fastq1" : path + "SRR3535023_1.fastq",
@@ -38,29 +35,29 @@ def test_process_CHiC():
     }
 
     input_metadata = {
-            "fastq1": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq1"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+        "fastq1": Metadata(
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq1"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             ),
-            "fastq2": Metadata(
-                data_type="text",
-                file_type="fastq",
-                file_path=input_files["fastq2"],
-                sources="",
-                taxon_id=9606,
-                meta_data=""
+        "fastq2": Metadata(
+            data_type="text",
+            file_type="fastq",
+            file_path=input_files["fastq2"],
+            sources="",
+            taxon_id=9606,
+            meta_data=""
             ),
-            "genome_fa" : Metadata(
-                data_type="text",
-                file_type="fasta",
-                file_path=input_files["genome_fa"],
-                sources="",
-                taxon_id=9606,
-                meta_data="GRCh38",
+        "genome_fa" : Metadata(
+            data_type="text",
+            file_type="fasta",
+            file_path=input_files["genome_fa"],
+            sources="",
+            taxon_id=9606,
+            meta_data="GRCh38",
             )
         }
 
@@ -75,8 +72,8 @@ def test_process_CHiC():
         "RE": {"HindIII" : 'A|AGCTT'}
         }
 
-    CHiC_hdl = process_chicago_CHiC(configuration)
-    CHiC_hdl.run(input_files, input_metadata, output_files)
+    chic_hdl = process_chicago_CHiC(configuration)
+    chic_hdl.run(input_files, input_metadata, output_files)
 
     #assert truncater.py
 
@@ -98,4 +95,3 @@ def test_process_CHiC():
     assert os.path.getsize(output_files["out_dir"] + out) > 0
     assert os.path.getsize(output_files["Rtree_files"] + ".dat")
     assert os.path.getsize(output_files["Rtree_files"] + ".idx")
-
