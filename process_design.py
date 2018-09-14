@@ -78,32 +78,25 @@ class process_design(Workflow):
         bool
         output_metadata
         """
-        design_caller = makeDesignFilesTool(self.configuration)
-        design_out, design_meta = design_caller.run(
-            {
-                "RMAP" : input_files["RMAP"],
-                "BAITMAP": input_files["BAITMAP"]
-            },
-            {
-                "RMAP" : metadata["RMAP"],
-                "BAITMAP" : metadata["BAITMAP"]
-            },
-            {
-                "nbpb" : output_files["nbpb"],
-                "npb"  : output_files["npb"],
-                "poe" : output_files["poe"]
-            }
-        )
+        try:
+            design_caller = makeDesignFilesTool(self.configuration)
+            design_out, design_meta = design_caller.run(
+                {
+                    "RMAP" : input_files["RMAP"],
+                    "BAITMAP": input_files["BAITMAP"]
+                },
+                {
+                    "RMAP" : metadata["RMAP"],
+                    "BAITMAP" : metadata["BAITMAP"]
+                },
+                {
+                    "nbpb" : output_files["nbpb"],
+                    "npb"  : output_files["npb"],
+                    "poe" : output_files["poe"]
+                }
+            )
 
-        if os.path.isfile(output_files["nbpb"]) is True and \
-           os.path.isfile(output_files["npb"]) is True and \
-           os.path.isfile(output_files["poe"]) is True:
-
-            if os.path.getsize(output_files["nbpb"]) > 0 and \
-               os.path.getsize(output_files["npb"]) > 0 and \
-               os.path.getsize(output_files["poe"]) > 0:
-
-                logger.info("Design files succesfully generated")
+            logger.info("Design files succesfully generated")
 
         else:
             logger.fatal("process_makeDesign failed to" +
