@@ -92,6 +92,8 @@ class makeRmapFile(Tool):
         return restring
 
     @staticmethod
+    @task(returns=dict,
+          genome_fa=IN)
     def genome_to_dict(genome_fa):
         """
         This function takes a genome file in fasta format
@@ -132,6 +134,9 @@ class makeRmapFile(Tool):
 
         return genome_dict
 
+     @task(returns=dict,
+           enzyme_name=IN,
+           genome_fa=FILE_IN)
     def map_re_sites2(self, enzyme_name, genome_fa):
         """
         map all restriction enzyme (renzime) sites of a given enzyme in a genome.
