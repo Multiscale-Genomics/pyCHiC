@@ -85,8 +85,8 @@ class makeDesignFilesTool(Tool):
             writes the output files in the defined location
 
         """
-        #copy(rmap, "".join(rmap).split("/")[-1])
-        #copy(baitmap, "".join(baitmap).split("/")[-1])
+        copy(rmap, "".join(rmap).split("/")[-1])
+        copy(baitmap, "".join(baitmap).split("/")[-1])
         try:
             script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
 
@@ -101,22 +101,23 @@ class makeDesignFilesTool(Tool):
             process.wait()
 
 
-            with open(tmp_names+".nbpb", "r") as f_in:
-                with open(nbpb, "w") as f_out:
-                    f_out.write(f_in.read())
-            with open(tmp_names+".npb", "r") as f_in:
-               with open(npb, "w") as f_out:
-                    f_out.write(f_in.read())
+        #    with open(tmp_names+".nbpb", "r") as f_in:
+        #        with open(nbpb, "w") as f_out:
+        #            f_out.write(f_in.read())
 
-            with open(tmp_names+".poe", "r") as f_in:
-                with open(poe, "w") as f_out:
-                    f_out.write(f_in.read())
+        #    with open(tmp_names+".npb", "r") as f_in:
+        #        with open(npb, "w") as f_out:
+        #            f_out.write(f_in.read())
 
-            #os.remove(tmp_names+".nbpb")
-            #os.remove(tmp_names+".npb")
-            #os.remove(tmp_names+".poe")
-            #os.remove("".join(rmap).split("/")[-1])
-            #os.remove("".join(baitmap).split("/")[-1])
+        #    with open(tmp_names+".poe", "r") as f_in:
+        #        with open(poe, "w") as f_out:
+        #            f_out.write(f_in.read())
+
+        #    os.remove(tmp_names+".nbpb")
+        #    os.remove(tmp_names+".npb")
+        #    os.remove(tmp_names+".poe")
+            os.remove("".join(rmap).split("/")[-1])
+            os.remove("".join(baitmap).split("/")[-1])
             return True
 
         except IOError:
@@ -150,19 +151,19 @@ class makeDesignFilesTool(Tool):
         for parameter in params:
             if parameter in command_parameters:
                 if command_parameters[parameter][1]:
-                    """if command_parameters[parameter][0] == "--rmapfile":
-                                                                                    name = "".join(params[parameter].split("/")[-1])
+                    if command_parameters[parameter][0] == "--rmapfile":
+                        name = "".join(params[parameter].split("/")[-1])
 
-                                                                                    command_params += [command_parameters[parameter][0],
-                                                                                                       name]
+                        command_params += [command_parameters[parameter][0],
+                        name]
 
-                                                                                elif command_parameters[parameter][0] == "--baitmapfile":
-                                                                                    name = "".join(params[parameter].split("/")[-1])
+                    elif command_parameters[parameter][0] == "--baitmapfile":
+                        name = "".join(params[parameter].split("/")[-1])
 
-                                                                                    command_params += [command_parameters[parameter][0],
-                                                                                                       name]
-                                                                                else:"""
-                    command_params += [command_parameters[parameter][0], params[parameter]]
+                        command_params += [command_parameters[parameter][0],
+                                           name]
+                    else:
+                        command_params += [command_parameters[parameter][0], params[parameter]]
                 else:
                     command_params += [command_parameters[parameter][0]]
 
