@@ -98,7 +98,7 @@ class process_design(Workflow):
 
             logger.info("Design files succesfully generated")
 
-        else:
+        except:
             logger.fatal("process_makeDesign failed to" +
                          "generate design files")
             return False
