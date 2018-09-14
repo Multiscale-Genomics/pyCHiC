@@ -27,7 +27,7 @@
             "value": "1500000"
         },
         {
-            "name": "makeDesignFiles_binSize",
+            "name": "makeDesignFiles_binsize",
             "value": "20000"
         },
         {
@@ -49,7 +49,7 @@
         {
             "name" : "makeDesignFiles_baitmap",
             "value" : "tests/data/test_run_chicago/test.baitmap"
-        }
+        },
     ],
     "output_files": [
         {
