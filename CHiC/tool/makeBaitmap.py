@@ -241,7 +241,7 @@ class makeBaitmapTool(Tool):
 
         bwa_files, bwa_meta = bwa_t.run(input_bwa, metadata_bwa, output_bwa)
 
-        bwa_meta = compss_wait_on(bwa_meta)
+        #bwa_meta = compss_wait_on(bwa_meta)
 
         if "".join(input_files["Rtree_file_dat"].split(".")[:-1]) != \
            "".join(input_files["Rtree_file_idx"].split(".")[:-1]):
@@ -262,7 +262,7 @@ class makeBaitmapTool(Tool):
             baitmap_list,
             output_files["out_baitmap"])
 
-        results = compss_wait_on(results)
+        #results = compss_wait_on(results)
 
         output_metadata = {
             "out_baitmap": Metadata(
