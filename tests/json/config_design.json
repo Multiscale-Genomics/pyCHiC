@@ -49,6 +49,10 @@
         {
             "name" : "makeDesignFiles_baitmap",
             "value" : "tests/data/test_run_chicago/test.baitmap"
+        },
+        {
+            "name" : "makeDesignFiles_binsize",
+            "value" : 2000
         }
     ],
     "output_files": [
