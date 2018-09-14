@@ -65,8 +65,7 @@ class makeDesignFilesTool(Tool):
 
     @task(returns=bool, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_OUT,
           npb=FILE_OUT, poe=FILE_OUT, outprefixFile=IN, parameters=IN, tmp_names=IN)
-    def makeDesignFiles(self, rmap, baitmap, nbpb, npb, poe, outprefixFile,
-                        parameters, tmp_names):
+    def makeDesignFiles(self, rmap, baitmap, nbpb, npb, poe, outprefixFile, parameters, tmp_names):
         """
         make the design files and store it in the specify design folder. It is a
         wrapper of makeDesignFiles.py
@@ -101,22 +100,21 @@ class makeDesignFilesTool(Tool):
             process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             process.wait()
 
-        #
-        #    with open(tmp_names+".nbpb", "r") as f_in:
-        #        with open(nbpb, "w") as f_out:
-        #            f_out.write(f_in.read())
 
-        #    with open(tmp_names+".npb", "r") as f_in:
-        #        with open(npb, "w") as f_out:
-        #            f_out.write(f_in.read())
+            with open(tmp_names+".nbpb", "r") as f_in:
+                with open(nbpb, "w") as f_out:
+                    f_out.write(f_in.read())
+            with open(tmp_names+".npb", "r") as f_in:
+               with open(npb, "w") as f_out:
+                    f_out.write(f_in.read())
 
-        #    with open(tmp_names+".poe", "r") as f_in:
-        #        with open(poe, "w") as f_out:
-        #            f_out.write(f_in.read())
+            with open(tmp_names+".poe", "r") as f_in:
+                with open(poe, "w") as f_out:
+                    f_out.write(f_in.read())
 
-        #    os.remove(tmp_names+".nbpb")
-        #    os.remove(tmp_names+".npb")
-        #    os.remove(tmp_names+".poe")
+            #os.remove(tmp_names+".nbpb")
+            #os.remove(tmp_names+".npb")
+            #os.remove(tmp_names+".poe")
             #os.remove("".join(rmap).split("/")[-1])
             #os.remove("".join(baitmap).split("/")[-1])
             return True
