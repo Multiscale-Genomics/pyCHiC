@@ -64,7 +64,7 @@ class makeDesignFilesTool(Tool):
         self.configuration.update(configuration)
 
     @task(returns=bool, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_OUT,
-          npb=FILE_OUT, poe=FILE_OUT, parameters=IN, tmp_names=IN)
+          npb=FILE_OUT, poe=FILE_OUT, outprefixFile=IN, parameters=IN, tmp_names=IN)
     def makeDesignFiles(self, rmap, baitmap, nbpb, npb, poe, outprefixFile,
                         parameters, tmp_names):
         """
