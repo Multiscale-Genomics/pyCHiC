@@ -49,7 +49,7 @@
         {
             "name" : "makeDesignFiles_baitmap",
             "value" : "tests/data/test_run_chicago/test.baitmap"
-        },
+        }
     ],
     "output_files": [
         {
