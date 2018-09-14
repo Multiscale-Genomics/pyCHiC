@@ -202,7 +202,7 @@ class makeDesignFilesTool(Tool):
             )+"_tmp"
 
         maxLBrownEst = int(self.configuration["makeDesignFiles_maxLBrownEst"])
-        binSize = int(self.configuration["makeDesignFiles_binsize"])
+        binSize = int(self.configuration["makeDesignFiles_binSize"])
 
         if maxLBrownEst % binSize !=0:
             logger.info("Warning: the supplied makeDesignFiles_maxLBrownEst="+
