@@ -65,7 +65,8 @@ class makeDesignFilesTool(Tool):
 
     @task(returns=bool, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_OUT,
           npb=FILE_OUT, poe=FILE_OUT, parameters=IN, tmp_names=IN)
-    def makeDesignFiles(self, rmap, baitmap, nbpb, npb, poe, parameters, tmp_names):
+    def makeDesignFiles(self, rmap, baitmap, nbpb, npb, poe, outprefixFile,
+                        parameters, tmp_names):
         """
         make the design files and store it in the specify design folder. It is a
         wrapper of makeDesignFiles.py
@@ -85,39 +86,39 @@ class makeDesignFilesTool(Tool):
             writes the output files in the defined location
 
         """
-        copy(rmap, "".join(rmap).split("/")[-1])
-        copy(baitmap, "".join(baitmap).split("/")[-1])
-
-        script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
-
-        args = ["python", script,
-                "--outfilePrefix", tmp_names]
-
-        args += parameters
-
-        logger.info("makeDesignFile : "+ " ".join(args))
-
-        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        process.wait()
-
+        #copy(rmap, "".join(rmap).split("/")[-1])
+        #copy(baitmap, "".join(baitmap).split("/")[-1])
         try:
-            with open(tmp_names+".nbpb", "r") as f_in:
-                with open(nbpb, "w") as f_out:
-                    f_out.write(f_in.read())
+            script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
 
-            with open(tmp_names+".npb", "r") as f_in:
-                with open(npb, "w") as f_out:
-                    f_out.write(f_in.read())
+            args = ["python", script,
+                    "--outfilePrefix", outprefixFile]
 
-            with open(tmp_names+".poe", "r") as f_in:
-                with open(poe, "w") as f_out:
-                    f_out.write(f_in.read())
+            args += parameters
 
-            os.remove(tmp_names+".nbpb")
-            os.remove(tmp_names+".npb")
-            os.remove(tmp_names+".poe")
-            os.remove("".join(rmap).split("/")[-1])
-            os.remove("".join(baitmap).split("/")[-1])
+            logger.info("makeDesignFile : "+ " ".join(args))
+
+            process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process.wait()
+
+        #
+        #    with open(tmp_names+".nbpb", "r") as f_in:
+        #        with open(nbpb, "w") as f_out:
+        #            f_out.write(f_in.read())
+
+        #    with open(tmp_names+".npb", "r") as f_in:
+        #        with open(npb, "w") as f_out:
+        #            f_out.write(f_in.read())
+
+        #    with open(tmp_names+".poe", "r") as f_in:
+        #        with open(poe, "w") as f_out:
+        #            f_out.write(f_in.read())
+
+        #    os.remove(tmp_names+".nbpb")
+        #    os.remove(tmp_names+".npb")
+        #    os.remove(tmp_names+".poe")
+            #os.remove("".join(rmap).split("/")[-1])
+            #os.remove("".join(baitmap).split("/")[-1])
             return True
 
         except IOError:
@@ -143,7 +144,6 @@ class makeDesignFilesTool(Tool):
             "makeDesignFiles_removeAdjacent" : ["--removeAdjacent", False],
             "makeDesignFiles_rmapfile" : ["--rmapfile", True],
             "makeDesignFiles_baitmapfail" : ["--baitmapFIle", True],
-            "makeDesignFiles_outfilePrefix" : ["--outfilePrefix", True],
             "makeDesignFiles_designDir" : ["--designDir", True],
             "makeDesignFiles_rmap" : ["--rmapfile", True],
             "makeDesignFiles_baitmap": ["--baitmapfile", True]
@@ -152,19 +152,19 @@ class makeDesignFilesTool(Tool):
         for parameter in params:
             if parameter in command_parameters:
                 if command_parameters[parameter][1]:
-                    if command_parameters[parameter][0] == "--rmapfile":
-                        name = "".join(params[parameter].split("/")[-1])
+                    """if command_parameters[parameter][0] == "--rmapfile":
+                                                                                    name = "".join(params[parameter].split("/")[-1])
 
-                        command_params += [command_parameters[parameter][0],
-                                           name]
+                                                                                    command_params += [command_parameters[parameter][0],
+                                                                                                       name]
 
-                    elif command_parameters[parameter][0] == "--baitmapfile":
-                        name = "".join(params[parameter].split("/")[-1])
+                                                                                elif command_parameters[parameter][0] == "--baitmapfile":
+                                                                                    name = "".join(params[parameter].split("/")[-1])
 
-                        command_params += [command_parameters[parameter][0],
-                                           name]
-                    else:
-                        command_params += [command_parameters[parameter][0], params[parameter]]
+                                                                                    command_params += [command_parameters[parameter][0],
+                                                                                                       name]
+                                                                                else:"""
+                    command_params += [command_parameters[parameter][0], params[parameter]]
                 else:
                     command_params += [command_parameters[parameter][0]]
 
@@ -218,6 +218,7 @@ class makeDesignFilesTool(Tool):
                                        output_files["nbpb"],
                                        output_files["npb"],
                                        output_files["poe"],
+                                       self.configuration["makeDesignFiles_outfilePrefix"],
                                        commands_params,
                                        tmp_names)
 
