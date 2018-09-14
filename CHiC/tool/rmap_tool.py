@@ -134,7 +134,7 @@ class makeRmapFile(Tool):
 
         return genome_dict
 
-     @task(returns=dict,
+    @task(returns=dict,
            enzyme_name=IN,
            genome_fa=FILE_IN)
     def map_re_sites2(self, enzyme_name, genome_fa):
