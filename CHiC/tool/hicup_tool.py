@@ -65,6 +65,7 @@ class hicup(Tool):
 
         self.configuration.update(configuration)
 
+    @staticmethod
     def untar_index(  # pylint: disable=too-many-locals,too-many-arguments
             self, genome_file_name, genome_idx,
             bt2_1_file, bt2_2_file, bt2_3_file, bt2_4_file,
@@ -181,7 +182,12 @@ class hicup(Tool):
 
         return command_params
 
-    def digest_genome(self, genome_name, re_enzyme, genome_loc, re_enzyme2=None):
+    @task(returns=str,
+          genome_name=IN,
+          re_enzyme=IN,
+          genome_loc=FILE_IN,
+          re_enzyme2=IN)
+    def digest_genome(self, genome_name, re_enzyme, genome_loc, re_enzyme2):
         """
         This function takes a genome and digest it using a restriction enzyme
         specified
@@ -205,17 +211,18 @@ class hicup(Tool):
             sonication protocol is not followed. Typically the sonication
             protocol is followed.
         """
-        if re_enzyme2 is True:
+        if re_enzyme2 == "enzyme2":
             args = ["hicup_digester",
                     "--genome", genome_name,
                     "--re1", re_enzyme,
-                    "--re2", re_enzyme2,
                     genome_loc]
         else:
             args = ["hicup_digester",
                     "--genome", genome_name,
                     "--re1", re_enzyme,
+                    "--re2", re_enzyme2,
                     genome_loc]
+
         try:
             logger.info("hicup_digester CMD: " + " ".join(args))
 
@@ -239,6 +246,13 @@ class hicup(Tool):
 
         return "".join(digest_genome)
 
+    @task(returns=bool,
+          params=IN,
+          genome_digest=IN,
+          genome_index=IN,
+          genome_loc=FILE_IN,
+          fastq1=FILE_IN,
+          fastq2=FILE_IN)
     def hicup_alig_filt(self, params, genome_digest, genome_index,
                         genome_loc, fastq1, fastq2):
         """
@@ -331,10 +345,8 @@ class hicup(Tool):
         output_files: dict
         """
         output_dir = os.path.split(output_files["hicup_outdir_tar"])[0]
-        print("this is the outdir fox sakeee", output_dir)
         if os.path.isdir(output_dir) is False:
             os.mkdir(output_dir)
-            print(output_dir)
 
         if isinstance(self.configuration["hicup_renzyme"], list) is True:
             re_enzyme = ":".join(self.configuration["hicup_renzyme"])
@@ -354,6 +366,7 @@ class hicup(Tool):
                 self.configuration["genome_name"],
                 re_enzyme,
                 input_files["genome_fa"],
+                "enzyme2"
             )
 
         parameters_hicup = self.get_hicup_params(self.configuration)
