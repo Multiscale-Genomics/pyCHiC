@@ -85,15 +85,18 @@ class makeDesignFilesTool(Tool):
             writes the output files in the defined location
 
         """
-        copy(rmap, "".join(rmap).split("/")[-1])
-        copy(baitmap, "".join(baitmap).split("/")[-1])
+        #copy(rmap, "".join(rmap).split("/")[-1])
+        #copy(baitmap, "".join(baitmap).split("/")[-1])
 
         script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
 
         args = ["python", script,
-                "--outfilePrefix", os.path.split(nbpb)[1].split(".")[0]]
+                "--outfilePrefix", "/home/pacera/MuG/CHi-C/tests/data/test_run_chicago/test",
+                "--binsize", "20000", "--removeAdjacent", "--maxLBrownEst", "1500000",
+                "--maxFragLen", "40000", "--removeb2b", "--rmapfile", rmap ,"--baitmapfile", baitmap,
+                "--minFragLen", "150"]
 
-        args += parameters
+        #args += parameters
 
         logger.info("makeDesignFile : "+ " ".join(args))
 
@@ -123,9 +126,10 @@ class makeDesignFilesTool(Tool):
         except IOError:
             logger.fatal("The temporary files failed to copy to the right folder")
             return False
+
+        #os.remove("".join(rmap).split("/")[-1])
+        #os.remove("".join(baitmap).split("/")[-1])
         """
-        os.remove("".join(rmap).split("/")[-1])
-        os.remove("".join(baitmap).split("/")[-1])
     @staticmethod
     def get_design_params(params):
         """
