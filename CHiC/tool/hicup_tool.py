@@ -175,6 +175,10 @@ class hicup(Tool):
         for param in params:
             if param in command_parameters and params[param] != "None":
                 if command_parameters[param][1]:
+                    if command_parameters[param][0] == "--outdir":
+                        command_params += [command_parameters[param][0], "output_hicup"]
+                        continue
+
                     command_params += [command_parameters[param][0], params[param]]
                 else:
                     if command_parameters[param][0]:
@@ -239,8 +243,7 @@ class hicup(Tool):
                 msg.errno, msg.strerror, args))
 
         files_dir = os.listdir(".")
-        print(files_dir)
-        print(os.path.dirname(os.path.realpath(__file__)))
+
         digest_genome = [file for file in files_dir if \
             file.startswith("Digest_"+genome_name)]
 
@@ -272,6 +275,7 @@ class hicup(Tool):
         fastq2: str
             location of fastq2
         """
+        os.mkdir("output_hicup")
 
         index_files = {
             "1.bt2": genome_loc + ".1.bt2",
@@ -322,9 +326,10 @@ class hicup(Tool):
 
             #manual taring
             #folder, tar_file, archive_name="tmp", keep_folder=False)
-            folder = "".join(outdir_tar.split(".")[0])
-            tar_file = outdir_tar
-            archive_name = os.path.split("".join(outdir_tar.split(".")[0]))[1]
+
+            folder = "output_hicup"
+            tar_file = "output_hicup.tar"
+            archive_name = os.path.split(outdir_tar)[1].split(".")[0]
 
             onlyfiles = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
 
@@ -341,6 +346,7 @@ class hicup(Tool):
 
             shutil.rmtree(folder)
 
+            shutil.move("output_hicup.tar", outdir_tar)
 
             for indexed_file in index_files:
                 os.remove(index_files[indexed_file])
@@ -389,8 +395,10 @@ class hicup(Tool):
 
         parameters_hicup = self.get_hicup_params(self.configuration)
 
-        if os.path.isdir(self.configuration["hicup_outdir"]) is False:
-            os.mkdir(self.configuration["hicup_outdir"])
+        #if os.path.isdir(self.configuration["hicup_outdir"]) is False:
+        #    os.mkdir(self.configuration["hicup_outdir"])
+
+        print(parameters_hicup)
 
         self.hicup_alig_filt(# pylint: disable=too-many-locals,too-many-arguments
             parameters_hicup,
