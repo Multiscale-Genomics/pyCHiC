@@ -18,7 +18,8 @@ import os
 import subprocess
 import sys
 from utils import logger
-from os.path import expanduser
+import shutil
+import tarfile
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -314,10 +315,32 @@ class hicup(Tool):
 
             logger.info("TARING output folder")
 
-            common.tar_folder(self.configuration["hicup_outdir"],
-                              self.configuration["hicup_outdir"]+".tar",
-                              os.path.split(self.configuration["hicup_outdir"])[1]
-                             )
+            #common.tar_folder(self.configuration["hicup_outdir"],
+            #                  self.configuration["hicup_outdir"]+".tar",
+            #                  os.path.split(self.configuration["hicup_outdir"])[1]
+            #                 )
+
+            #manual taring
+            #folder, tar_file, archive_name="tmp", keep_folder=False)
+            folder = self.configuration["hicup_outdir"]
+            tar_file = self.configuration["hicup_outdir"]+".tar"
+            archive_name = os.path.split(self.configuration["hicup_outdir"])[1]
+
+            onlyfiles = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
+
+            tar = tarfile.open(tar_file, "w")
+
+            for tmp_file in onlyfiles:
+                tar.add(
+                    os.path.join(folder, tmp_file),
+                    arcname=os.path.join(archive_name, tmp_file)
+                )
+
+                os.remove(os.path.join(folder, tmp_file))
+            tar.close()
+
+            shutil.rmtree(folder)
+
 
             for indexed_file in index_files:
                 os.remove(index_files[indexed_file])
@@ -378,7 +401,7 @@ class hicup(Tool):
             input_files["fastq2"],
             self.configuration["hicup_outdir"]+".tar")
 
-        #os.remove(genome_d)
+        os.remove(genome_d)
 
         output_metadata = {
             "hicup_outdir_tar" : Metadata(
