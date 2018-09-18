@@ -240,14 +240,14 @@ class hicup(Tool):
 
         return "".join(digest_genome)
 
-    @task(returns=bool,
-          params=IN,
-          genome_digest=IN,
-          genome_index=FILE_IN,
-          genome_loc=FILE_IN,
-          fastq1=FILE_IN,
-          fastq2=FILE_IN,
-          outdir_tar=FILE_OUT)
+    #@task(returns=bool,
+    #      params=IN,
+    #      genome_digest=IN,
+    #      genome_index=FILE_IN,
+    #      genome_loc=FILE_IN,
+    #      fastq1=FILE_IN,
+    #      fastq2=FILE_IN,
+    #      outdir_tar=FILE_OUT)
     def hicup_alig_filt(self, params, genome_digest, genome_index,
                         genome_loc, fastq1, fastq2, outdir_tar):
         """
