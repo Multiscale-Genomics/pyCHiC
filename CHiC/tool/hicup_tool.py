@@ -181,8 +181,12 @@ class hicup(Tool):
 
         return command_params
 
-    @staticmethod
-    def digest_genome(genome_name, re_enzyme, genome_loc, re_enzyme2):
+    @task(returns=str,
+          genome_name=IN,
+          re_enzyme=IN,
+          genome_loc=FILE_IN,
+          re_enzyme2=IN)
+    def digest_genome(self, genome_name, re_enzyme, genome_loc, re_enzyme2):
         """
         This function takes a genome and digest it using a restriction enzyme
         specified
@@ -232,7 +236,6 @@ class hicup(Tool):
         except (IOError, OSError) as msg:
             logger.fatal("I/O error({0}): {1}\n{2}".format(
                 msg.errno, msg.strerror, args))
-            return False
 
         files_dir = os.listdir(".")
         print(files_dir)
@@ -240,7 +243,6 @@ class hicup(Tool):
         digest_genome = [file for file in files_dir if \
             file.startswith("Digest_"+genome_name)]
 
-        print("".join(digest_genome))
         return "".join(digest_genome)
 
     @task(returns=bool,
