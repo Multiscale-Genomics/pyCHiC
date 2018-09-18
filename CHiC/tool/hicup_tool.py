@@ -401,7 +401,7 @@ class hicup(Tool):
             input_files["fastq2"],
             self.configuration["hicup_outdir"]+".tar")
 
-        os.remove(genome_d)
+        #os.remove(genome_d)
 
         output_metadata = {
             "hicup_outdir_tar" : Metadata(
