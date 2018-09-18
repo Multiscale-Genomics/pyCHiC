@@ -65,7 +65,6 @@ class hicup(Tool):
 
         self.configuration.update(configuration)
 
-    @staticmethod
     def untar_index(  # pylint: disable=too-many-locals,too-many-arguments
             self, genome_file_name, genome_idx,
             bt2_1_file, bt2_2_file, bt2_3_file, bt2_4_file,
@@ -182,12 +181,8 @@ class hicup(Tool):
 
         return command_params
 
-    @task(returns=str,
-          genome_name=IN,
-          re_enzyme=IN,
-          genome_loc=FILE_IN,
-          re_enzyme2=IN)
-    def digest_genome(self, genome_name, re_enzyme, genome_loc, re_enzyme2):
+    @staticmethod
+    def digest_genome(genome_name, re_enzyme, genome_loc, re_enzyme2):
         """
         This function takes a genome and digest it using a restriction enzyme
         specified
@@ -222,7 +217,6 @@ class hicup(Tool):
                     "--re1", re_enzyme,
                     "--re2", re_enzyme2,
                     genome_loc]
-
         try:
             logger.info("hicup_digester CMD: " + " ".join(args))
 
@@ -249,12 +243,13 @@ class hicup(Tool):
     @task(returns=bool,
           params=IN,
           genome_digest=IN,
-          genome_index=IN,
+          genome_index=FILE_IN,
           genome_loc=FILE_IN,
           fastq1=FILE_IN,
-          fastq2=FILE_IN)
+          fastq2=FILE_IN,
+          outdir_tar=FILE_OUT)
     def hicup_alig_filt(self, params, genome_digest, genome_index,
-                        genome_loc, fastq1, fastq2):
+                        genome_loc, fastq1, fastq2, outdir_tar):
         """
         This function aling the HiC read into a reference
         genome and filter them
@@ -262,14 +257,10 @@ class hicup(Tool):
         Parameters
         ----------
         bowtie2_loc:
-        bowtie_gen_idx: str
+        genome_index: str
             location of genome indexed with bowtie2
         digest_genome: str
             location of genome digested
-        longest: str
-            Maximum allowable insert size (bps)
-        shortest: str
-            Minimum allowable insert size (bps)
         fastq1: str
             location of fastq2 file
         fastq2: str
@@ -380,7 +371,8 @@ class hicup(Tool):
             input_files["bowtie_gen_idx"],
             input_files["genome_fa"],
             input_files["fastq1"],
-            input_files["fastq2"])
+            input_files["fastq2"],
+            self.configuration["hicup_outdir"]+".tar")
 
         os.remove(genome_d)
 
