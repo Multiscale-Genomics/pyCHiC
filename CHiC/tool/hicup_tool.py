@@ -322,9 +322,9 @@ class hicup(Tool):
 
             #manual taring
             #folder, tar_file, archive_name="tmp", keep_folder=False)
-            folder = self.configuration["hicup_outdir"]
-            tar_file = self.configuration["hicup_outdir"]+".tar"
-            archive_name = os.path.split(self.configuration["hicup_outdir"])[1]
+            folder = "".join(outdir_tar.split(".")[0])
+            tar_file = outdir_tar
+            archive_name = os.path.split("".join(outdir_tar.split(".")[0]))[1]
 
             onlyfiles = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
 
@@ -399,7 +399,7 @@ class hicup(Tool):
             input_files["genome_fa"],
             input_files["fastq1"],
             input_files["fastq2"],
-            self.configuration["hicup_outdir"]+".tar")
+            output_files["hicup_outdir_tar"])
 
         #os.remove(genome_d)
 
