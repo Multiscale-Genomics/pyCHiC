@@ -235,14 +235,17 @@ class hicup(Tool):
             return False
 
         files_dir = os.listdir(".")
+        print(files_dir)
+        print(os.path.dirname(os.path.realpath(__file__)))
         digest_genome = [file for file in files_dir if \
             file.startswith("Digest_"+genome_name)]
 
+        print("".join(digest_genome))
         return "".join(digest_genome)
 
     @task(returns=bool,
           params=IN,
-          genome_digest=IN,
+          genome_digest=FILE_IN,
           genome_index=FILE_IN,
           genome_loc=FILE_IN,
           fastq1=FILE_IN,
