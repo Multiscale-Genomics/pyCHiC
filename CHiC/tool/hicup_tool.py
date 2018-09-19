@@ -321,6 +321,8 @@ class hicup(Tool):
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE)
             process.wait()
+            logger.info(os.listdir(os.path.split(outdir_tar)[0]))
+
             logger.info("TARING output folder")
 
             #common.tar_folder(self.configuration["hicup_outdir"],
@@ -350,7 +352,6 @@ class hicup(Tool):
             tar.close()
 
             shutil.rmtree(folder)
-            logger.info(os.listdir(os.path.split(outdir_tar)[0]))
 
             shutil.move(tar_file, outdir_tar)
 
