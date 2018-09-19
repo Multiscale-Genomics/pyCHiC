@@ -275,7 +275,10 @@ class hicup(Tool):
         fastq2: str
             location of fastq2
         """
-        os.mkdir("output_hicup")
+        logger.info("creating output folder in : "+
+                    os.getcwd()+"/output_hicup")
+        os.mkdir(os.getcwd()+"/output_hicup")
+
 
         index_files = {
             "1.bt2": genome_loc + ".1.bt2",
@@ -346,7 +349,7 @@ class hicup(Tool):
 
             shutil.rmtree(folder)
 
-            #shutil.move("output_hicup.tar", outdir_tar)
+            shutil.move("output_hicup.tar", outdir_tar)
 
             for indexed_file in index_files:
                 os.remove(index_files[indexed_file])
