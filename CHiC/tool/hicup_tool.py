@@ -311,7 +311,7 @@ class hicup(Tool):
             fastq2
             ]
 
-        hicup_args = hicup_args + params + ["--bowtie2", "/home/compss/bin/bowtie2" ,"--outdir", folder]
+        hicup_args = hicup_args + params + ["--bowtie2", "/home/compss/bin/bowtie2"]
 
         logger.info("arguments for hicup:" + " ".join(hicup_args))
 
