@@ -177,6 +177,8 @@ class hicup(Tool):
                 if command_parameters[param][1]:
                     if command_parameters[param][0] == "--outdir":
                         continue
+                    if command_parameters[param][0] == "--bowtie2":
+                        continue
 
                     command_params += [command_parameters[param][0], params[param]]
                 else:
