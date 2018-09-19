@@ -321,6 +321,7 @@ class hicup(Tool):
                                        stderr=subprocess.PIPE)
             process.wait()
             print(os.listdir(os.getcwd()))
+            print("outdir_tar", outdir_tar)
             logger.info("TARING output folder")
 
             #common.tar_folder(self.configuration["hicup_outdir"],
