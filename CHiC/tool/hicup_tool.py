@@ -277,8 +277,8 @@ class hicup(Tool):
             location of fastq2
         """
         logger.info("creating output folder in : "+
-                    os.getcwd()+"/output_hicup")
-        os.mkdir(os.getcwd()+"/output_hicup")
+                    os.path.split(outdir_tar)[0]+"/output_hicup")
+        os.mkdir(os.path.split(outdir_tar)[0]+"/output_hicup")
 
 
         index_files = {
@@ -310,7 +310,7 @@ class hicup(Tool):
             fastq2
             ]
 
-        hicup_args = hicup_args + params + ["--outdir", os.getcwd()+"/output_hicup"]
+        hicup_args = hicup_args + params + ["--outdir", os.path.split(outdir_tar)[0]+"/output_hicup"]
 
         logger.info("arguments for hicup:" + " ".join(hicup_args))
 
@@ -320,8 +320,6 @@ class hicup(Tool):
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE)
             process.wait()
-            print(os.listdir(os.getcwd()))
-            print("outdir_tar", outdir_tar)
             logger.info("TARING output folder")
 
             #common.tar_folder(self.configuration["hicup_outdir"],
