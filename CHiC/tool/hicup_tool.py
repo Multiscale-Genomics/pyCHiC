@@ -319,17 +319,8 @@ class hicup(Tool):
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE)
             process.wait()
-            #logger.info(os.listdir(os.path.split(outdir_tar)[0]))
 
             logger.info("TARING output folder")
-
-            #common.tar_folder(self.configuration["hicup_outdir"],
-            #                  self.configuration["hicup_outdir"]+".tar",
-            #                  os.path.split(self.configuration["hicup_outdir"])[1]
-            #                 )
-
-            #manual taring
-            #folder, tar_file, archive_name="tmp", keep_folder=False)
 
             tar_file = outdir_tar
             archive_name = os.path.split(outdir_tar)[1].split(".")[0]
@@ -445,7 +436,7 @@ class hicup(Tool):
             input_files["fastq2"],
             output_files["hicup_outdir_tar"])
 
-        #os.remove(genome_d)
+        os.remove(genome_d)
 
         output_metadata = {
             "hicup_outdir_tar" : Metadata(

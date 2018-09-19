@@ -96,14 +96,13 @@ class process_design(Workflow):
                 }
             )
 
-            logger.info("Design files succesfully generated")
+            logger.info("design files succesfully generated =)")
 
-        except:
+            return design_out, design_meta
+
+        except IOError:
             logger.fatal("process_makeDesign failed to" +
                          "generate design files")
-            return False
-
-        return design_out, design_meta
 
 
 #############################################################
