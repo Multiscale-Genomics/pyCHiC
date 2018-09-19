@@ -276,9 +276,10 @@ class hicup(Tool):
         fastq2: str
             location of fastq2
         """
-        logger.info("creating output folder in : "+
-                    os.path.split(outdir_tar)[0]+"/output_hicup")
-        os.mkdir(os.path.split(outdir_tar)[0]+"/output_hicup")
+        folder = os.path.split(outdir_tar)[0]+"/output_hicup"
+        if os.path.isdir(folder) is False:
+            logger.info("creating output folder in : "+folder)
+            os.mkdir(folder)
 
 
         index_files = {
@@ -310,7 +311,7 @@ class hicup(Tool):
             fastq2
             ]
 
-        hicup_args = hicup_args + params + ["--outdir", os.path.split(outdir_tar)[0]+"/output_hicup"]
+        hicup_args = hicup_args + params + ["--bowtie2", "/usr/bowtie2" ,"--outdir", folder]
 
         logger.info("arguments for hicup:" + " ".join(hicup_args))
 
@@ -330,8 +331,9 @@ class hicup(Tool):
             #manual taring
             #folder, tar_file, archive_name="tmp", keep_folder=False)
 
-            folder = os.getcwd()+"/output_hicup"
-            tar_file = os.getcwd()+"/output_hicup.tar"
+            #folder = os.getcwd()+"/output_hicup"
+
+            tar_file = os.path.split(folder)[0]+"/output_hicup.tar"
             archive_name = os.path.split(outdir_tar)[1].split(".")[0]
 
             onlyfiles = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
@@ -349,7 +351,7 @@ class hicup(Tool):
 
             shutil.rmtree(folder)
 
-            shutil.move("output_hicup.tar", outdir_tar)
+            shutil.move(tar_file, outdir_tar)
 
             for indexed_file in index_files:
                 os.remove(index_files[indexed_file])
