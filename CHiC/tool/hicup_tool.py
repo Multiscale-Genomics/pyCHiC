@@ -348,7 +348,7 @@ class hicup(Tool):
 
             shutil.rmtree(folder)
 
-            shutil.move("output_hicup.tar", outdir_tar)
+            #shutil.move("output_hicup.tar", outdir_tar)
 
             for indexed_file in index_files:
                 os.remove(index_files[indexed_file])
