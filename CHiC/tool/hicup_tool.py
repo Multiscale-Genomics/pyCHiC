@@ -176,7 +176,6 @@ class hicup(Tool):
             if param in command_parameters and params[param] != "None":
                 if command_parameters[param][1]:
                     if command_parameters[param][0] == "--outdir":
-                        command_params += [command_parameters[param][0], "output_hicup"]
                         continue
 
                     command_params += [command_parameters[param][0], params[param]]
@@ -309,7 +308,7 @@ class hicup(Tool):
             fastq2
             ]
 
-        hicup_args = hicup_args + params
+        hicup_args = hicup_args + params + ["--outdir", os.getcwd()+"/output_hicup"]
 
         logger.info("arguments for hicup:" + " ".join(hicup_args))
 
