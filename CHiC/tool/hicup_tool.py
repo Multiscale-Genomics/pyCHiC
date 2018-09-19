@@ -329,8 +329,8 @@ class hicup(Tool):
             #manual taring
             #folder, tar_file, archive_name="tmp", keep_folder=False)
 
-            folder = "output_hicup"
-            tar_file = "output_hicup.tar"
+            folder = os.getcwd()+"/output_hicup"
+            tar_file = os.getcwd()+"/output_hicup.tar"
             archive_name = os.path.split(outdir_tar)[1].split(".")[0]
 
             onlyfiles = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
