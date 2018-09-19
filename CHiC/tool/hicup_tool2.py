@@ -250,14 +250,7 @@ class hicup(Tool):
 
         return "".join(digest_genome)
 
-    @task(returns=bool,
-          params=IN,
-          genome_digest=FILE_IN,
-          genome_index=FILE_IN,
-          genome_loc=FILE_IN,
-          fastq1=FILE_IN,
-          fastq2=FILE_IN,
-          outdir_tar=FILE_OUT)
+
     def hicup_alig_filt(self, params, genome_digest, genome_index,
                         genome_loc, fastq1, fastq2, outdir_tar):
         """
@@ -275,12 +268,13 @@ class hicup(Tool):
             location of fastq2 file
         fastq2: str
             location of fastq2
-        """
-        folder = os.path.split(outdir_tar)[0]+"/output_hicup"
-        if os.path.isdir(folder) is False:
-            logger.info("creating output folder in : "+folder)
-            os.mkdir(folder)
 
+        Returns
+        -------
+        Bool
+        """
+        folder = os.path.split(outdir_tar)[0]+"/"+
+                os.path.split(outdir_tar)[1].split(".")[0]
 
         index_files = {
             "1.bt2": genome_loc + ".1.bt2",
@@ -311,7 +305,8 @@ class hicup(Tool):
             fastq2
             ]
 
-        hicup_args = hicup_args + params + ["--bowtie2", "/home/compss/bin/bowtie2"]
+        hicup_args = hicup_args + params + ["--bowtie2", "/home/compss/bin/bowtie2",
+                                            "--outdir_tar", outdir_tar]
 
         logger.info("arguments for hicup:" + " ".join(hicup_args))
 
@@ -321,7 +316,7 @@ class hicup(Tool):
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE)
             process.wait()
-            logger.info(os.listdir(os.path.split(outdir_tar)[0]))
+            #logger.info(os.listdir(os.path.split(outdir_tar)[0]))
 
             logger.info("TARING output folder")
 
@@ -333,9 +328,7 @@ class hicup(Tool):
             #manual taring
             #folder, tar_file, archive_name="tmp", keep_folder=False)
 
-            #folder = os.getcwd()+"/output_hicup"
-
-            tar_file = os.path.split(folder)[0]+"/output_hicup.tar"
+            tar_file = outdir_tar
             archive_name = os.path.split(outdir_tar)[1].split(".")[0]
 
             onlyfiles = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
@@ -363,6 +356,39 @@ class hicup(Tool):
         except IOError:
             return False
 
+    @task(returns=bool,
+          params=IN,
+          genome_digest=FILE_IN,
+          genome_index=FILE_IN,
+          genome_loc=FILE_IN,
+          fastq1=FILE_IN,
+          fastq2=FILE_IN,
+          outdir_tar=FILE_OUT)
+    def hicup_alig_filt_runner(self, params, genome_digest, genome_index,
+                               genome_loc, fastq1, fastq2, outdir_tar):
+        """
+        This function runs the hicup_alig_filt
+
+        Parameters
+        ----------
+        bowtie2_loc:
+        genome_index: str
+            location of genome indexed with bowtie2
+        digest_genome: str
+            location of genome digested
+        fastq1: str
+            location of fastq2 file
+        fastq2: str
+            location of fastq2
+
+        Returns
+        -------
+        Bool
+        """
+        self.hicup_alig_filt(params, genome_digest, genome_index,
+                             genome_loc, fastq1, fastq2, outdir_tar)
+
+        return True
 
     def run(self, input_files, metadata, output_files):
         """
