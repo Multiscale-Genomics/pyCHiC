@@ -314,6 +314,7 @@ class hicup(Tool):
         hicup_args = hicup_args + params + ["--bowtie2", "/home/compss/bin/bowtie2" ,"--outdir", folder]
 
         logger.info("arguments for hicup:" + " ".join(hicup_args))
+        logger.info(os.listdir(os.path.split(outdir_tar)[0]))
 
 
         try:
