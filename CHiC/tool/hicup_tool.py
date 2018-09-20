@@ -245,8 +245,8 @@ class hicup(Tool):
 
         files_dir = os.listdir(".")
 
-        digest_genome = [file for file in files_dir if \
-            file.startswith("Digest_"+genome_name)]
+        digest_genome = [file_ for file_ in files_dir if \
+            file_.startswith("Digest_"+genome_name)]
 
         return "".join(digest_genome)
 
