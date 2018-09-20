@@ -323,7 +323,7 @@ class makeRmapFile(Tool):
             output_files["RMAP"]
         )
 
-        results = compss_wait_on(results)
+        #results = compss_wait_on(results)
 
         output_metadata = {
             "RMAP": Metadata(

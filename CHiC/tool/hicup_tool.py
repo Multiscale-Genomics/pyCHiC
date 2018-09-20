@@ -18,7 +18,8 @@ import os
 import subprocess
 import sys
 from utils import logger
-from os.path import expanduser
+import shutil
+import tarfile
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -174,6 +175,11 @@ class hicup(Tool):
         for param in params:
             if param in command_parameters and params[param] != "None":
                 if command_parameters[param][1]:
+                    if command_parameters[param][0] == "--outdir":
+                        continue
+                    if command_parameters[param][0] == "--bowtie2":
+                        continue
+
                     command_params += [command_parameters[param][0], params[param]]
                 else:
                     if command_parameters[param][0]:
@@ -181,7 +187,12 @@ class hicup(Tool):
 
         return command_params
 
-    def digest_genome(self, genome_name, re_enzyme, genome_loc, re_enzyme2=None):
+    #@task(returns=str,
+    #      genome_name=IN,
+    #      re_enzyme=IN,
+    #      genome_loc=FILE_IN,
+    #      re_enzyme2=IN)
+    def digest_genome(self, genome_name, re_enzyme, genome_loc, re_enzyme2):
         """
         This function takes a genome and digest it using a restriction enzyme
         specified
@@ -205,16 +216,16 @@ class hicup(Tool):
             sonication protocol is not followed. Typically the sonication
             protocol is followed.
         """
-        if re_enzyme2 is True:
+        if re_enzyme2 == "enzyme2":
             args = ["hicup_digester",
                     "--genome", genome_name,
                     "--re1", re_enzyme,
-                    "--re2", re_enzyme2,
                     genome_loc]
         else:
             args = ["hicup_digester",
                     "--genome", genome_name,
                     "--re1", re_enzyme,
+                    "--re2", re_enzyme2,
                     genome_loc]
         try:
             logger.info("hicup_digester CMD: " + " ".join(args))
@@ -231,16 +242,17 @@ class hicup(Tool):
         except (IOError, OSError) as msg:
             logger.fatal("I/O error({0}): {1}\n{2}".format(
                 msg.errno, msg.strerror, args))
-            return False
 
         files_dir = os.listdir(".")
-        digest_genome = [file for file in files_dir if \
-            file.startswith("Digest_"+genome_name)]
+
+        digest_genome = [file_ for file_ in files_dir if \
+            file_.startswith("Digest_"+genome_name)]
 
         return "".join(digest_genome)
 
+
     def hicup_alig_filt(self, params, genome_digest, genome_index,
-                        genome_loc, fastq1, fastq2):
+                        genome_loc, fastq1, fastq2, outdir_tar):
         """
         This function aling the HiC read into a reference
         genome and filter them
@@ -248,19 +260,24 @@ class hicup(Tool):
         Parameters
         ----------
         bowtie2_loc:
-        bowtie_gen_idx: str
+        genome_index: str
             location of genome indexed with bowtie2
         digest_genome: str
             location of genome digested
-        longest: str
-            Maximum allowable insert size (bps)
-        shortest: str
-            Minimum allowable insert size (bps)
         fastq1: str
             location of fastq2 file
         fastq2: str
             location of fastq2
+
+        Returns
+        -------
+        Bool
         """
+        folder = os.path.split(outdir_tar)[0]+"/"+ \
+                os.path.split(outdir_tar)[1].split(".")[0]
+
+        if os.path.isdir(folder) is False:
+            os.mkdir(folder)
 
         index_files = {
             "1.bt2": genome_loc + ".1.bt2",
@@ -291,10 +308,10 @@ class hicup(Tool):
             fastq2
             ]
 
-        hicup_args = hicup_args + params
+        hicup_args = hicup_args + params + ["--bowtie2", "/home/compss/bin/bowtie2",
+                                            "--outdir", folder]
 
         logger.info("arguments for hicup:" + " ".join(hicup_args))
-
 
 
         try:
@@ -305,10 +322,25 @@ class hicup(Tool):
 
             logger.info("TARING output folder")
 
-            common.tar_folder(self.configuration["hicup_outdir"],
-                              self.configuration["hicup_outdir"]+".tar",
-                              os.path.split(self.configuration["hicup_outdir"])[1]
-                             )
+            tar_file = outdir_tar
+            archive_name = os.path.split(outdir_tar)[1].split(".")[0]
+
+            onlyfiles = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
+
+            tar = tarfile.open(tar_file, "w")
+
+            for tmp_file in onlyfiles:
+                tar.add(
+                    os.path.join(folder, tmp_file),
+                    arcname=os.path.join(archive_name, tmp_file)
+                )
+
+                os.remove(os.path.join(folder, tmp_file))
+            tar.close()
+
+            shutil.rmtree(folder)
+
+            shutil.move(tar_file, outdir_tar)
 
             for indexed_file in index_files:
                 os.remove(index_files[indexed_file])
@@ -318,6 +350,39 @@ class hicup(Tool):
         except IOError:
             return False
 
+    @task(returns=bool,
+          params=IN,
+          genome_digest=FILE_IN,
+          genome_index=FILE_IN,
+          genome_loc=FILE_IN,
+          fastq1=FILE_IN,
+          fastq2=FILE_IN,
+          outdir_tar=FILE_OUT)
+    def hicup_alig_filt_runner(self, params, genome_digest, genome_index,
+                               genome_loc, fastq1, fastq2, outdir_tar):
+        """
+        This function runs the hicup_alig_filt
+
+        Parameters
+        ----------
+        bowtie2_loc:
+        genome_index: str
+            location of genome indexed with bowtie2
+        digest_genome: str
+            location of genome digested
+        fastq1: str
+            location of fastq2 file
+        fastq2: str
+            location of fastq2
+
+        Returns
+        -------
+        Bool
+        """
+        self.hicup_alig_filt(params, genome_digest, genome_index,
+                             genome_loc, fastq1, fastq2, outdir_tar)
+
+        return True
 
     def run(self, input_files, metadata, output_files):
         """
@@ -331,10 +396,8 @@ class hicup(Tool):
         output_files: dict
         """
         output_dir = os.path.split(output_files["hicup_outdir_tar"])[0]
-        print("this is the outdir fox sakeee", output_dir)
         if os.path.isdir(output_dir) is False:
             os.mkdir(output_dir)
-            print(output_dir)
 
         if isinstance(self.configuration["hicup_renzyme"], list) is True:
             re_enzyme = ":".join(self.configuration["hicup_renzyme"])
@@ -354,12 +417,15 @@ class hicup(Tool):
                 self.configuration["genome_name"],
                 re_enzyme,
                 input_files["genome_fa"],
+                "enzyme2"
             )
 
         parameters_hicup = self.get_hicup_params(self.configuration)
 
-        if os.path.isdir(self.configuration["hicup_outdir"]) is False:
-            os.mkdir(self.configuration["hicup_outdir"])
+        #if os.path.isdir(self.configuration["hicup_outdir"]) is False:
+        #    os.mkdir(self.configuration["hicup_outdir"])
+
+        print(parameters_hicup)
 
         self.hicup_alig_filt(# pylint: disable=too-many-locals,too-many-arguments
             parameters_hicup,
@@ -367,7 +433,8 @@ class hicup(Tool):
             input_files["bowtie_gen_idx"],
             input_files["genome_fa"],
             input_files["fastq1"],
-            input_files["fastq2"])
+            input_files["fastq2"],
+            output_files["hicup_outdir_tar"])
 
         os.remove(genome_d)
 
