@@ -83,6 +83,31 @@ class process_CHiC(Workflow):
         """
 
         try:
+            hicup_caller = hicup(self.configuration)
+            output_files_hicup, output_metadata_hicup = hicup_caller.run(
+                {
+                    "genome_fa": input_files["genome_fa"],
+                    "fastq1": input_files["fastq1"],
+                    "fastq2" : input_files["fastq2"],
+                    "bowtie_gen_idx": input_files["bowtie_gen_idx"]
+                },
+                {
+                    "genome_fa": metadata["genome_fa"],
+                    "fastq1": metadata["fastq1"],
+                    "fastq2": metadata["fastq2"]
+                },
+                {
+                    "hicup_outdir_tar" : output_files["hicup_outdir_tar"]
+                }
+            )
+
+            logger.info("hicup runned succesfully =)")
+
+        except IOError:
+            logger.fatal("hicup failed to run succesfully =(")
+
+
+        try:
             rmap_caller = makeRmapFile(self.configuration)
             output_files_rmap, output_metadata_rmap = rmap_caller.run(
                 {
@@ -157,30 +182,6 @@ class process_CHiC(Workflow):
         except IOError:
             logger.fatal("process_makeDesign failed to" +
                          "generate design files")
-
-        try:
-            hicup_caller = hicup(self.configuration)
-            output_files_hicup, output_metadata_hicup = hicup_caller.run(
-                {
-                    "genome_fa": input_files["genome_fa"],
-                    "fastq1": input_files["fastq1"],
-                    "fastq2" : input_files["fastq2"],
-                    "bowtie_gen_idx": input_files["bowtie_gen_idx"]
-                },
-                {
-                    "genome_fa": metadata["genome_fa"],
-                    "fastq1": metadata["fastq1"],
-                    "fastq2": metadata["fastq2"]
-                },
-                {
-                    "hicup_outdir_tar" : output_files["hicup_outdir_tar"]
-                }
-            )
-
-            logger.info("hicup runned succesfully =)")
-
-        except IOError:
-            logger.fatal("hicup failed to run succesfully =(")
 
         try:
             bam2chicago_caller = bam2chicagoTool(self.configuration)
