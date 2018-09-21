@@ -201,7 +201,7 @@
         "_id": "59b7e020d9422a5900e4",
         "data_type": "data_CHiC",
         "file_type": "nbpb_chicago",
-        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.nbpb",
+        "file_path": "tests/data/test_run_chicago/test.nbpb",
         "sources": ["user"],
         "taxon_id": 9606,
         "meta_data": {
@@ -213,7 +213,7 @@
         "_id": "59b7e020d9422a5900e5",
         "data_type": "data_CHiC",
         "file_type": "npb_chicago",
-        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.npb",
+        "file_path": "tests/data/test_run_chicago/test.npb",
         "sources": ["user"],
         "taxon_id": 9606,
         "meta_data": {
@@ -225,7 +225,7 @@
         "_id": "59b7e020d9422a5900e6",
         "data_type": "data_CHiC",
         "file_type": "poe_chicago",
-        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.poe",
+        "file_path": "tests/data/test_run_chicago/test.poe",
         "sources": ["user"],
         "taxon_id": 9606,
         "meta_data": {
