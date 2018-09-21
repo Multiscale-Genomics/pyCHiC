@@ -153,7 +153,7 @@
         "_id": "59b7e020d9422a5900e1",
         "data_type": "TAR",
         "file_type": "chinput",
-        "file_path": "tests/data/test_run_chicago/data_chicago/GM_rep1.chinput",
+        "file_path": "tests/data/test_bam2chicago_tool/output_chinput.chinput",
         "sources": ["user"],
         "taxon_id": 9606,
         "meta_data": {
