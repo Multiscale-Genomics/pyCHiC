@@ -71,7 +71,7 @@
                     "tool": "rmap_tool",
                     "description": "Output"
                 },
-                "file_path": "tests/data/test_rmap/chr_handler.txt",
+                "file_path": "tests/data/test_baitmap/chr_handler.txt",
                 "data_type": "data_CHi-C",
                 "compressed": "null"
             }

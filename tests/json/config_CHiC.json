@@ -107,6 +107,12 @@
             "allow_multiple": false,
             "name": "poe_chicago",
             "value": "59b7e020d9422a5900e6"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "chr_handler",
+            "value": "59b7e020d9422a5969b65886"
         }
     ],
     "arguments": [
@@ -423,6 +429,22 @@
                 },
                 "file_path": "tests/data/test_run_chicago/data_chicago/out_run_chicago.tar",
                 "data_type": "tar",
+                "compressed": "null"
+            }
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "chr_handler",
+            "file": {
+                "file_type": "TXT",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "rmap_tool",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_baitmap/chr_handler.txt",
+                "data_type": "data_CHi-C",
                 "compressed": "null"
             }
         }
