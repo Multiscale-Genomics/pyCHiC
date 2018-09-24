@@ -52,10 +52,10 @@ def test_baitmap():
     metadata = {
         "genome_idx" : Metadata(
             "index_bwa", "", input_files["genome_fa"],
-               {
-                    "assembly": "test",
-                    "tool": "bwa_indexer"
-                }
+            {
+                "assembly": "test",
+                "tool": "bwa_indexer"
+            }
             ),
         "genome_fa" : Metadata(
             "hg38", "fasta", path + "test_rmap/chr21_hg19.fa",

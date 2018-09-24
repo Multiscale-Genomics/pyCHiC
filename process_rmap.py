@@ -103,7 +103,6 @@ class process_rmap(Workflow):
         except IOError:
             logger.fatal("rmap_tool failed to generate .rmap file")
 
-
         return output_files_rmap, output_metadata_rmap
 
 

@@ -131,7 +131,6 @@ class makeRmapFile(Tool):
             #Ad last chromosome
             genome_dict[chromo_fake] = sequence
 
-
         return genome_dict, chromo_dict
 
     def map_re_sites2(self, enzyme_name, genome_fa):
@@ -331,7 +330,7 @@ class makeRmapFile(Tool):
             output_files["chr_handler"]
         )
 
-        results = compss_wait_on(results)
+        #results = compss_wait_on(results)
 
         output_metadata = {
             "RMAP": Metadata(

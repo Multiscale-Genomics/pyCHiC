@@ -127,7 +127,7 @@
             "value": "1500000"
         },
         {
-            "name": "makeDesignFiles_binSize",
+            "name": "makeDesignFiles_binsize",
             "value": "20000"
         },
         {
@@ -160,7 +160,7 @@
         },
         {
             "name": "threads",
-            "value": "1"
+            "value": "2"
         },
         {
             "name": "outdir",

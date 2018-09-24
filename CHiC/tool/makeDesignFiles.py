@@ -201,6 +201,18 @@ class makeDesignFilesTool(Tool):
             self.configuration["makeDesignFiles_outfilePrefix"].split("/")[-1]
             )+"_tmp"
 
+        maxLBrownEst = int(self.configuration["makeDesignFiles_maxLBrownEst"])
+        binSize = int(self.configuration["makeDesignFiles_binsize"])
+
+        if maxLBrownEst % binSize !=0:
+            logger.info("Warning: the supplied makeDesignFiles_maxLBrownEst="+
+                        str(maxLBrownEst)+" is not a multiple of makeDesignFiles_binSize= "+
+                        str(binSize)+". Will be truncated to the nearest bin boundary.\n")
+
+            self.configuration["makeDesignFiles_maxLBrownEst"] = str(int(
+                maxLBrownEst/binSize
+                )*binSize)
+
         results = self.makeDesignFiles(input_files["RMAP"],
                                        input_files["BAITMAP"],
                                        output_files["nbpb"],
@@ -209,7 +221,7 @@ class makeDesignFilesTool(Tool):
                                        commands_params,
                                        tmp_names)
 
-        results = compss_wait_on(results)
+        #results = compss_wait_on(results)
 
         output_metadata = {
             "nbpb" : Metadata(

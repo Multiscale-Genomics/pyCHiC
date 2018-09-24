@@ -22,6 +22,8 @@ import sys
 import tarfile
 from shutil import rmtree
 from utils import logger
+from tool.common import common
+from shutil import copyfile
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -83,20 +85,21 @@ class ChicagoTool(Tool):
         list of untar files
         """
         if chinput_tar.split(".")[-1] == "tar":
-            tar = tarfile.open("chinput_tar")
-            tar.extractall()
+            tar = tarfile.open(chinput_tar)
+            tar.extractall(path=os.path.split(chinput_tar)[0])
             tar.close()
 
-            directory_path = os.path.split(chinput_tar)
+            directory_path = os.path.split(chinput_tar)[0]+"/chinput"
 
-            if directory_path[0] == "":
-                files_dir = os.listdir(".")
-            else:
-                files_dir = os.listdir(directory_path[0])
+            files_dir = os.listdir(directory_path)
 
-            files_dir = [fl for fl in files_dir if fl.split(".")[-1] == ".chinput"]
+            chinput_paths = []
+            for chinput_name in files_dir:
+                chinput_paths.append(directory_path+"/"+chinput_name)
 
-            return files_dir
+            files_comman_sp = str(",".join(chinput_paths))
+
+            return files_comman_sp
 
         else:
             return chinput_tar
@@ -141,20 +144,10 @@ class ChicagoTool(Tool):
         if not os.path.exists(rlib):
             os.makedirs(rlib)
 
-        """
-        #check if there are more than one .chinput files
-        if isinstance(input_files, list):
-            args = ["Rscript", script, ", ".join(input_files),
-                    output_prefix,
-                    "--output-dir", output_dir,
-                    "--settings-file", setting_file]
+        input_untared = self.untar_chinput(input_files)
 
-            args += params
-
-        else:
-        """
         args = ["Rscript", script,
-                input_files,
+                input_untared,
                 output_prefix,
                 "--output-dir", output_dir,
                 "--settings-file", setting_file,
@@ -189,7 +182,6 @@ class ChicagoTool(Tool):
             rmtree(output_dir+"/enrichment_data")
 
             logger.info("Tar folder with chinput output file")
-
 
         except IOError:
             logger.fatal("chicago failed to generate peak file")
@@ -280,9 +272,25 @@ class ChicagoTool(Tool):
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        #input_chinput = self.untar_chinput(input_files["chinput"])
+        if isinstance(input_files["chinput"], list):
 
-        results = self.chicago(input_files["chinput"],
+            chinput_folder = os.path.split(input_files["chinput"][0])[0]+"/chinput"
+
+            if os.path.isdir(chinput_folder) is False:
+                os.mkdir(chinput_folder)
+
+            for chinput_fl in input_files["chinput"]:
+                copyfile(chinput_fl, chinput_folder+"/"+os.path.split(chinput_fl)[1])
+
+            common.tar_folder(chinput_folder,
+                              chinput_folder+".tar",
+                              os.path.split(chinput_folder)[1])
+            final_chinput = chinput_folder+".tar"
+
+        else:
+            final_chinput = input_files["chinput"]
+
+        results = self.chicago(final_chinput,
                                self.configuration["chicago_out_prefix"],
                                output_files["output"],
                                command_params,
@@ -294,7 +302,7 @@ class ChicagoTool(Tool):
                                input_files["poe_chicago"],
                               )
 
-        results = compss_wait_on(results)
+        #results = compss_wait_on(results)
 
         output_metadata = {
             "output" : Metadata(

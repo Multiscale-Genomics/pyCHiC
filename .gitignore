@@ -22,3 +22,13 @@ dist/
 tool/chr_format_rmapBaitmap.py
 travis_for_R_chicago
 CHiC/tool/bed2bam.pyc
+CHi_C.egg-info/
+CHiC/tool/scripts/makeDesignFiles.py CHiC/tool/scripts/runChicago.R CHiC/tool/scripts/chicago_mod.R CHiC/tool/scripts/bam2chicago.sh CHiC/tool/scripts/runChicago_mod.R
+CHiC/tool/scripts/makeDesignFiles.py
+CHiC/tool/scripts/chicago_mod.R
+CHiC/tool/scripts/runChicago_mod.R
+CHiC/tool/scripts/runChicago.R
+CHiC/tool/scripts/bam2chicago.sh
+tests/test_process_bed2bam.py
+tests/test_process_fastq2bed.py
+tests/test_process_truncater.py

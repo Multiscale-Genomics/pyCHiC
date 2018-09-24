@@ -29,7 +29,10 @@ def test_chicago():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     input_files = {
-        "chinput": path + "test_run_chicago/data_chicago/GM_rep1.chinput",
+        "chinput": [
+            path + "test_run_chicago/data_chicago/GM_rep1.chinput",
+            path + "test_run_chicago/data_chicago/GM_rep2.chinput"
+            ],
         "setting_file" : path + "test_run_chicago/data_chicago/sGM12878.settingsFile",
         "rmap_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.rmap",
         "baitmap_chicago" : path + "test_run_chicago/data_chicago/h19_chr20and21.baitmap",

@@ -31,15 +31,15 @@
             "allow_multiple": false,
             "name": "chinput",
             "file": {
-                "file_type": "chinput",
+                "file_type": "TAR",
                 "meta_data": {
                     "visible": true,
                     "tool": "bam2chicago",
                     "description": "Output"
                 },
                 "file_path": "tests/data/test_bam2chicago_tool/output_chinput.chinput",
-                "data_type": "tar",
-                "compressed": "tar"
+                "data_type": "data_CHiC",
+                "compressed": true
             }
         }
     ]

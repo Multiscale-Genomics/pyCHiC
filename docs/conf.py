@@ -65,9 +65,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'MuG - Test Pipelines'
-copyright = '2017, Mark McDowall'
-author = 'Mark McDowall'
+project = 'MuG - CHi-C Pipeline'
+copyright = '2018, Pablo Acera'
+author = 'Pablo Acera'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -120,7 +120,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'MuG-ProcessTestPipelinesdoc'
+htmlhelp_basename = 'MuG-CHi-CPipelinedoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -147,8 +147,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'MuG-ProcessTestPipelines.tex', 'MuG - Process Test Pipelines Documentation',
-     'Mark McDowall', 'manual'),
+    (master_doc, 'MuG-CHi-CPipeline.tex', 'MuG - CHi-C Pipeline Documentation',
+     'Pablo Acera', 'manual'),
 ]
 
 
@@ -157,7 +157,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'mug-processtsvpipelines', 'MuG - Process Test Pipelines Documentation',
+    (master_doc, 'mug-processtsvpipelines', 'MuG - CHi-C Pipeline Documentation',
      [author], 1)
 ]
 
@@ -168,8 +168,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'MuG-ProcessTestPipelines', 'MuG - Process Test Pipelines Documentation',
-     author, 'MuG-ProcessTestPipelines', 'One line description of project.',
+    (master_doc, 'MuG-CHi-CPipeline', 'MuG - CHi-C Pipeline Documentation',
+     author, 'MuG-CHi-CPipeline', 'The Pipeline analyze capture Hi-C and call chromatin interactions using CHiCAGO algorithm',
      'Miscellaneous'),
 ]
 
