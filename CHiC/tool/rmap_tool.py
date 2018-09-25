@@ -29,8 +29,6 @@ from basic_modules.metadata import Metadata
 
 re.compile("pattern")
 
-
-
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
         raise ImportError
@@ -112,25 +110,28 @@ class makeRmapFile(Tool):
         genome_dict = {}
         sequence = ""
 
+        chromo_fake = 1
+        chromo_dict = {}
+
         with open(genome_fa, "r") as file_handle:
             for line in file_handle:
                 line = line.rstrip()
                 if line[0] == ">":
                     if not sequence:
-                        genome_dict[int(line[4:])] = []
-                        chromo = int(line[4:])
+                        chromo_dict[chromo_fake] = line[1:]
                         continue
                     else:
-                        genome_dict[chromo] = sequence
-                        chromo = int(line[4:])
+                        genome_dict[chromo_fake] = sequence
+                        chromo_fake += 1
+                        chromo_dict[chromo_fake] = line[1:]
                         sequence = ""
                         continue
 
                 sequence += line.upper()
             #Ad last chromosome
-            genome_dict[chromo] = sequence
+            genome_dict[chromo_fake] = sequence
 
-        return genome_dict
+        return genome_dict, chromo_dict
 
     def map_re_sites2(self, enzyme_name, genome_fa):
         """
@@ -166,7 +167,7 @@ class makeRmapFile(Tool):
             enzymes = enzyme_name
 
             #the genome should be in a dictionary
-            genome_seq = self.genome_to_dict(genome_fa)
+            genome_seq, chromo_dict = self.genome_to_dict(genome_fa)
 
             # we match the full cut-site but report the position after the cut site
             # (third group of the regexp)
@@ -198,16 +199,16 @@ class makeRmapFile(Tool):
                 # at the end of last chunk we add the chromosome length
                 frags[crm].append(len(seq))
 
-            return frags
+            return frags, chromo_dict
 
         except IOError:
             logger.fatal("map_re_sites2 function from rmap_tool failed =(")
 
     @task(returns=bool, enzyme_name=IN, genome_fa=FILE_IN,
           rtree=IN, rtree_dat=FILE_OUT, rtree_idx=FILE_OUT,
-          RMAP=FILE_OUT)
+          RMAP=FILE_OUT, chr_handler=FILE_OUT)
     def from_frag_to_rmap(self, enzyme_name, genome_fa,
-                          rtree, rtree_dat, rtree_idx, RMAP):
+                          rtree, rtree_dat, rtree_idx, RMAP, chr_handler):
         """
         This function takes the fragment output from digestion and
         convert them into rmap files.
@@ -231,7 +232,7 @@ class makeRmapFile(Tool):
             name of the output file.
         """
         #include creation folders
-        frags = self.map_re_sites2(enzyme_name, genome_fa)
+        frags, chromo_dict = self.map_re_sites2(enzyme_name, genome_fa)
 
         logger.info("coverting renzime fragments into rmap file")
 
@@ -248,17 +249,17 @@ class makeRmapFile(Tool):
                     counter_id += 1
                     counter += 1
                     if counter == 1:
-                        out.write("chr{}\t{}\t{}\t{}\n".format(str(crm),
-                                                               1,
-                                                               re_site,
-                                                               counter_id),
+                        out.write("{}\t{}\t{}\t{}\n".format(chromo_dict[crm],
+                                                            1,
+                                                            re_site,
+                                                            counter_id),
                                  )
                         idx.insert(counter_id, (1, crm, re_site, crm))
                     else:
-                        out.write("chr{}\t{}\t{}\t{}\n".format(str(crm),
-                                                               prev_re_site+1, # pylint: disable=used-before-assignment
-                                                               re_site,
-                                                               counter_id),
+                        out.write("{}\t{}\t{}\t{}\n".format(chromo_dict[crm],
+                                                            prev_re_site+1, # pylint: disable=used-before-assignment
+                                                            re_site,
+                                                            counter_id),
                                  )
                         idx.insert(counter_id, (prev_re_site+1, crm, re_site, crm))
 
@@ -266,9 +267,14 @@ class makeRmapFile(Tool):
 
         idx.close()
 
+        with open(chr_handler, "w") as chr_file:
+            for chr_fake, chr_real in chromo_dict.items():
+                chr_file.write("{}\t{}\n".format(chr_fake, chr_real))
+
         try:
             move(rtree+".dat", rtree_dat)
             move(rtree+".idx", rtree_idx)
+            return True
 
         except IOError:
             logger.fatal("makeRmap_Tool.py failed to generate .rmap file")
@@ -320,7 +326,8 @@ class makeRmapFile(Tool):
             rtree,
             output_files["Rtree_file_dat"],
             output_files["Rtree_file_idx"],
-            output_files["RMAP"]
+            output_files["RMAP"],
+            output_files["chr_handler"]
         )
 
         #results = compss_wait_on(results)
@@ -364,8 +371,21 @@ class makeRmapFile(Tool):
                     "renzime" : self.configuration["renzime"],
                     "tool": "rmap_tool"
                 }
+            ),
+            "chr_handler": Metadata(
+                data_type="data_CHi-C",
+                file_type="TXT",
+                file_path=output_files["chr_handler"],
+                sources=[
+                    metadata["genome_fa"].file_path
+                ],
+                taxon_id=metadata["genome_fa"].taxon_id,
+                meta_data={
+                    "renzime" : self.configuration["renzime"]
+                }
             )
+
 
         }
 
-        return(output_files, output_metadata)
+        return output_files, output_metadata

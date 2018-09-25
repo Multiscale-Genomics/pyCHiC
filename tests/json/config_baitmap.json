@@ -29,6 +29,12 @@
             "allow_multiple": false,
             "name": "genome_fa",
             "value": "59b7e020d9422a5969b65370"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "chr_handler",
+            "value": "59b7e020d9422a5969b65886"
         }
     ],
     "arguments": [

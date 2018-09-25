@@ -28,7 +28,6 @@ def test_hicup():
 
     input_files = {
         "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
-
         "fastq1" : path + "test_truncater/SRR3535023_1.fastq",
         "fastq2" : path + "test_truncater/SRR3535023_2.fastq",
         "bowtie_gen_idx" : path + "test_baitmap/chr21_hg19.fa.bt2.tar.gz"

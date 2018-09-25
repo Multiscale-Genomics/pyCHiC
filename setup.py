@@ -33,6 +33,9 @@ setup(
     tests_require=[
         'pytest',
     ],
+    # cmdclass={
+    #     'install' : Install_DamIDSeq,
+    # },
     classifiers=[
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.6",

@@ -19,7 +19,7 @@ from __future__ import print_function
 import os
 from basic_modules.metadata import Metadata
 
-from process_chicago_CHiC import process_chicago_CHiC # pylint: disable=import-error
+from process_run_chicago import process_run_chicago # pylint: disable=import-error
 
 def test_process_CHiC():
     """
