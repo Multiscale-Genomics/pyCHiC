@@ -293,6 +293,22 @@
         {
             "required": true,
             "allow_multiple": false,
+            "name": "chr_handler",
+            "file": {
+                "file_type": "TXT",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "rmap_tool",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_baitmap/chr_handler.txt",
+                "data_type": "data_CHi-C",
+                "compressed": "null"
+            }
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
             "name": "out_baitmap",
             "file": {
                 "file_type": ".baitmap",
@@ -431,23 +447,8 @@
                 "data_type": "tar",
                 "compressed": "null"
             }
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
-            "name": "chr_handler",
-            "file": {
-                "file_type": "TXT",
-                "meta_data": {
-                    "visible": true,
-                    "tool": "rmap_tool",
-                    "description": "Output"
-                },
-                "file_path": "tests/data/test_baitmap/chr_handler.txt",
-                "data_type": "data_CHi-C",
-                "compressed": "null"
-            }
         }
+
     ]
 }
 
