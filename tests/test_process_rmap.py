@@ -34,24 +34,24 @@ def test_process_rmap():
 
 
     configuration = {"renzime" : {"HindIII" : 'A|AGCTT'}
-                    }
+                }
 
     input_files = {
-        "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
-        }
-
+    "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
+    }
 
     metadata = {
-        "genome_fa" : Metadata(
-            "txt", "fasta", path+ "test_baitmap/chr21_hg19.fa",
-            None, 9606, ""),
+    "genome_fa" : Metadata(
+        "txt", "fasta", path + "test_baitmap/chr21_hg19.fa",
+        None, 9606, ""),
     }
 
     output_files = {
-        "RMAP" : path + "test_run_chicago/test.rmap",
-        "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
-        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx"
-        }
+    "RMAP" : path + "test_run_chicago/test.rmap",
+    "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
+    "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
+    "chr_handler" : path + "test_baitmap/chr_handler.txt"
+    }
 
 
     rmap_handle = process_rmap(configuration)

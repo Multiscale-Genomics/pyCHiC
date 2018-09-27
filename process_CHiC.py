@@ -77,11 +77,11 @@ class process_CHiC(Workflow):
 
         Returns
         -------
+        output_files
+        output_metadata
 
-
-        #produce rmap file
         """
-
+        #call hicup
         try:
             hicup_caller = hicup(self.configuration)
             output_files_hicup, output_metadata_hicup = hicup_caller.run(
@@ -106,7 +106,7 @@ class process_CHiC(Workflow):
         except IOError:
             logger.fatal("hicup failed to run succesfully =(")
 
-
+        #call ramp
         try:
             rmap_caller = makeRmapFile(self.configuration)
             output_files_rmap, output_metadata_rmap = rmap_caller.run(
@@ -119,9 +119,11 @@ class process_CHiC(Workflow):
                 {
                     "RMAP" : output_files["RMAP"],
                     "Rtree_file_dat" : output_files["Rtree_file_dat"],
-                    "Rtree_file_idx" : output_files["Rtree_file_idx"]
+                    "Rtree_file_idx" : output_files["Rtree_file_idx"],
+                    "chr_handler" : output_files["chr_handler"]
                 }
             )
+
 
             logger.info(".rmap file generated succesfully")
 
@@ -137,7 +139,8 @@ class process_CHiC(Workflow):
                     "probes_fa": input_files["probes_fa"],
                     "Rtree_file_dat": input_files["Rtree_file_dat"],
                     "Rtree_file_idx": input_files["Rtree_file_idx"],
-                    "genome_fa" : input_files["genome_fa"]
+                    "genome_fa" : input_files["genome_fa"],
+                    "chr_handler" : input_files["chr_handler"]
                 },
                 {
                     "genome_fa" : metadata["genome_fa"],
@@ -153,11 +156,11 @@ class process_CHiC(Workflow):
                 }
             )
 
-
             logger.info(".baitmap file generated succesfully")
 
         except IOError:
             logger.fatal("generate_CHiCAGO_baitmap failed to generate .baitmap file")
+
 
         try:
             design_caller = makeDesignFilesTool(self.configuration)

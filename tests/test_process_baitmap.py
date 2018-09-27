@@ -32,6 +32,7 @@ def test_process_baitmap():
     import sys
     sys._run_from_cmdl = True # pylint: disable=protected-access
 
+
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     configuration = {
@@ -42,7 +43,8 @@ def test_process_baitmap():
         "probes_fa" : path + "test_baitmap/baits.fa",
         "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
         "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
-        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa"
+        "genome_fa" : path+ "test_baitmap/chr21_hg19.fa",
+        "chr_handler" : path + "test_baitmap/chr_handler.txt"
     }
 
     output_files = {
