@@ -36,6 +36,7 @@ def test_process_CHiC():
         "probes_fa" : path + "test_baitmap/baits.fa",
         "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
         "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
+        "chr_handler" : path + "test_baitmap/chr_handler.txt",
         "bowtie_gen_idx" : path + "test_baitmap/chr21_hg19.fa.bt2.tar.gz",
         "RMAP" : path + "test_run_chicago/test.rmap",
         "BAITMAP": path + "test_run_chicago/test.baitmap",
@@ -67,8 +68,7 @@ def test_process_CHiC():
         "poe" : path + "test_run_chicago/test.poe",
         "chinput" :  path + "test_bam2chicago_tool/output_chinput.chinput",
         "output": path + "test_run_chicago/data_chicago/out_run_chicago.tar",
-
-
+        "chr_handler" : path + "test_baitmap/chr_handler.txt"
     }
 
     configuration = {
@@ -172,7 +172,7 @@ def test_process_CHiC():
             {"fastq1" : "SRR3535023_1.fastq",
              "fastq2" : "SRR3535023_2.fastq", "genome" : "human_hg19"},
             9606),
-         "chinput" : Metadata(
+        "chinput" : Metadata(
             "data_chicago", "chinput", [], None, None, 9606)
         }
 
