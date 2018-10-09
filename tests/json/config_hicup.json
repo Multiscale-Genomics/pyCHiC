@@ -57,6 +57,10 @@
         {
             "name": "hicup_zip",
             "value": "True"
+        },
+        {
+            "name": "hicup_threads",
+            "value": "2"
         }
     ],
     "output_files": [
