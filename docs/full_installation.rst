@@ -157,7 +157,7 @@ Install CHiCAGO
    echo "options(repos = c(CRAN = 'http://mirrors.ebi.ac.uk/CRAN/'))" > ${HOME}/.Rprofile
    echo ".libPaths('~/R')" >> ${HOME}/.Rprofile
    echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
-   sudo Rscript scripts/install_packages.R
+   sudo Rscript sudo Rscript CHiC/tool/scripts/install_packages.R 
 
    cd ${HOME}/C-HiC/CHiC/tool/scripts/
    wget https://bitbucket.org/chicagoTeam/chicago/raw/e288015f75d36c5367d1595e0ac8099f2ce82aa1/chicagoTools/runChicago.R
