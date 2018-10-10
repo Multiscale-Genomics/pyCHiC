@@ -73,12 +73,13 @@ Installation Process
 --------------------
 
 
-bedtools
-^^^^^^^^
+bedtools and libspatialindex-dev
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: none
    :linenos:
 
    sudo apt-get install bedtools
+   sudo apt-get install libspatialindex-dev
 
 Bowtie2 Aligner
 ^^^^^^^^^^^^^^^
