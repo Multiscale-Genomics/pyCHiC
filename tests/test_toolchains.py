@@ -46,7 +46,7 @@ def all_toolchain(verbose=False):
     if verbose is True:
         params.append('-')
 
-    params.append('test_rmap.py')
+    params.append('test_rmap_tool.py')
     params.append('test_baitmap.py')
     params.append('test_design.py')
     params.append('test_hicup.py')
