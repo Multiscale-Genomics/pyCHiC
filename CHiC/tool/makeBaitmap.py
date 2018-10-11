@@ -68,8 +68,8 @@ class makeBaitmapTool(Tool):
         self.configuration.update(configuration)
 
 
-    @task(returns=list, sam_file=FILE_OUT, out_bam=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
-          rtree_prefix=IN, chr_handler=FILE_IN)
+    #@task(returns=list, sam_file=FILE_OUT, out_bam=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
+    #      rtree_prefix=IN, chr_handler=FILE_IN)
     def sam_to_baitmap(self, sam_file, out_bam, rtree_dat, rtree_idx, rtree_prefix,
                        chr_handler): # pylint: disable=no-self-use
         """
@@ -160,8 +160,8 @@ class makeBaitmapTool(Tool):
 
         return baitmap
 
-    @task(returns=bool, baitmap_list=IN,
-          out_baitmap=FILE_OUT, chr_handler=FILE_IN)
+    #@task(returns=bool, baitmap_list=IN,
+    #      out_baitmap=FILE_OUT, chr_handler=FILE_IN)
     def create_baitmap(self, baitmap_list, out_baitmap, chr_handler): # pylint: disable=no-self-use
         """
         This function takes a list with RE fragments that
@@ -253,6 +253,8 @@ class makeBaitmapTool(Tool):
             input_files["genome_idx"])[0]})
 
         bwa_files, bwa_meta = bwa_t.run(input_bwa, metadata_bwa, output_bwa)
+
+        logger.info("HOLAAAAAA")
 
         #bwa_meta = compss_wait_on(bwa_meta)
 
