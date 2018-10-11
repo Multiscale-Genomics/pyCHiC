@@ -169,7 +169,8 @@ class hicup(Tool):
             "hicup_quite": ["--quiet", False],
             "hicup_temp": ["--temp", False],
             "hicup_version": ["--version", False],
-            "hicup_zip": ["--zip", False]
+            "hicup_zip": ["--zip", False],
+            "hicup_threads": ["--threads", True]
             }
 
         for param in params:

@@ -27,8 +27,8 @@
     },
     {
         "_id": "59b7e020d9422a5969778",
-        "data_type": "rtree",
-        "file_type": "Rtree_file_idx",
+        "data_type": "data_C-HiC",
+        "file_type": "FASTQ",
         "file_path": "tests/data/test_truncater/SRR3535023_2.fastq",
         "compressed": 0,
         "sources": ["user"],
