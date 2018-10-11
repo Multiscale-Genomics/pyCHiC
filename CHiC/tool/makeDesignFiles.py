@@ -204,7 +204,7 @@ class makeDesignFilesTool(Tool):
         maxLBrownEst = int(self.configuration["makeDesignFiles_maxLBrownEst"])
         binSize = int(self.configuration["makeDesignFiles_binsize"])
 
-        if maxLBrownEst % binSize !=0:
+        if maxLBrownEst % binSize != 0:
             logger.info("Warning: the supplied makeDesignFiles_maxLBrownEst="+
                         str(maxLBrownEst)+" is not a multiple of makeDesignFiles_binSize= "+
                         str(binSize)+". Will be truncated to the nearest bin boundary.\n")
@@ -221,10 +221,10 @@ class makeDesignFilesTool(Tool):
                                        commands_params,
                                        tmp_names)
 
-        #results = compss_wait_on(results)
+        # results = compss_wait_on(results)
 
         output_metadata = {
-            "nbpb" : Metadata(
+            "nbpb": Metadata(
                 data_type="nbpb",
                 file_type="nbpb",
                 file_path=output_files["nbpb"],
@@ -234,10 +234,10 @@ class makeDesignFilesTool(Tool):
                     ],
                 taxon_id=input_metadata["RMAP"].taxon_id,
                 meta_data={
-                    "tool" : "makeDesignFiles"
+                    "tool": "makeDesignFiles"
                 }
             ),
-            "npb" : Metadata(
+            "npb": Metadata(
                 data_type="npb",
                 file_type="npb",
                 file_path=output_files["npb"],
@@ -247,10 +247,10 @@ class makeDesignFilesTool(Tool):
                     ],
                 taxon_id=input_metadata["RMAP"].taxon_id,
                 meta_data={
-                    "tool" : "makeDesignFiles"
+                    "tool": "makeDesignFiles"
                 }
             ),
-            "poe" : Metadata(
+            "poe": Metadata(
                 data_type="poe",
                 file_type="poe",
                 file_path=output_files["poe"],
@@ -260,7 +260,7 @@ class makeDesignFilesTool(Tool):
                     ],
                 taxon_id=input_metadata["BAITMAP"].taxon_id,
                 meta_data={
-                    "tool" : "makeDesignFiles"
+                    "tool": "makeDesignFiles"
                 }
             ),
         }

@@ -28,6 +28,7 @@ from CHiC.tool.makeBaitmap import makeBaitmapTool
 
 ################################################
 
+
 class process_baitmap(Workflow):
     """
     This class generate all input files that are needed for
@@ -83,24 +84,24 @@ class process_baitmap(Workflow):
             baitmap_caller = makeBaitmapTool(self.configuration)
             output_files_baitmap, output_metadata_baitmap = baitmap_caller.run(
                 {
-                    "genome_idx" : input_files["genome_idx"],
+                    "genome_idx": input_files["genome_idx"],
                     "probes_fa": input_files["probes_fa"],
                     "Rtree_file_dat": input_files["Rtree_file_dat"],
                     "Rtree_file_idx": input_files["Rtree_file_idx"],
-                    "genome_fa" : input_files["genome_fa"],
-                    "chr_handler" : input_files["chr_handler"]
+                    "genome_fa": input_files["genome_fa"],
+                    "chr_handler": input_files["chr_handler"]
                 },
                 {
-                    "genome_fa" : metadata["genome_fa"],
-                    "probes_fa" : metadata["probes_fa"],
+                    "genome_fa": metadata["genome_fa"],
+                    "probes_fa": metadata["probes_fa"],
                     "Rtree_file_dat": metadata["Rtree_file_dat"],
                     "Rtree_file_idx": metadata["Rtree_file_idx"],
                     "genome_idx": metadata["genome_idx"]
                 },
                 {
-                    "bait_sam" : output_files["bait_sam"],
-                    "out_baitmap" : output_files["out_baitmap"],
-                    "out_bam" : output_files["out_bam"]
+                    "bait_sam": output_files["bait_sam"],
+                    "out_baitmap": output_files["out_baitmap"],
+                    "out_bam": output_files["out_bam"]
                 }
             )
 
@@ -113,6 +114,7 @@ class process_baitmap(Workflow):
 
 #############################################################
 
+
 def main_json(config, in_metadata, out_metadata):
     """
     Alternative main function
@@ -121,7 +123,7 @@ def main_json(config, in_metadata, out_metadata):
     in two json files: config_process_rmapBaitmap.json  and
     input_process_rmapBaitmap.json
     """
-    #Instantiate and lauch the app
+    # Instantiate and lauch the app
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
@@ -129,7 +131,7 @@ def main_json(config, in_metadata, out_metadata):
                          config,
                          in_metadata,
                          out_metadata)
-    #2. The App has finished
+    # 2. The App has finished
     print("2. Execution finished: see " + out_metadata)
     print(results)
 
@@ -137,9 +139,10 @@ def main_json(config, in_metadata, out_metadata):
 
 #########################################################################
 
+
 if __name__ == "__main__":
 
-    #set up the command line parameters
+    # set up the command line parameters
     PARSER = argparse.ArgumentParser(
         description="Pipeline to generate .baitmap file")
 
@@ -151,7 +154,7 @@ if __name__ == "__main__":
     PARSER.add_argument(
         "--local", action="store_const", const=True, default=False)
 
-    #Get matching parameters from the command line
+    # Get matching parameters from the command line
     ARGS = PARSER.parse_args()
 
     CONFIG = ARGS.config
@@ -161,7 +164,7 @@ if __name__ == "__main__":
 
     if LOCAL:
         import sys
-        sys._run_from_cmdl = True # pylint: disable=protected-access
+        sys._run_from_cmdl = True  # pylint: disable=protected-access
 
     RESULTS = main_json(CONFIG, IN_METADATA, OUT_METADATA)
 
