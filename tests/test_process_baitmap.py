@@ -60,7 +60,7 @@ def test_process_baitmap():
             {
                 "assembly": "test",
                 "tool": "bwa_indexer"
-            }
+            }, 9606
             ),
         "genome_fa": Metadata(
             "hg38", "fasta", input_files["genome_fa"], [],
@@ -71,21 +71,24 @@ def test_process_baitmap():
             }, 9606),
 
         "probes_fa": Metadata(
-            "C-HiC probes", "fasta", input_files["probes_fa"],
-            None, None, 9606),
+            "C-HiC probes", "fasta", input_files["probes_fa"], [],
+            {
+                "assembly": "test",
+                "tool": "bwa_indexer"
+            }, 9606),
 
         "Rtree_file_dat": Metadata(
-            "Rtree files", "dat", input_files["Rtree_file_dat"],
+            "Rtree files", "dat", input_files["Rtree_file_dat"], [],
             {"genome": path + "test_rmap/chr21_hg19.fa",
              "RE": {"HindIII": 'A|AGCTT'}},
-            None, 9606
+            9606
             ),
 
         "Rtree_file_idx": Metadata(
-            "Rtree files", "idx", input_files["Rtree_file_idx"],
+            "Rtree files", "idx", input_files["Rtree_file_idx"], [],
             {"genome": path + "test_rmap/chr21_hg19.fa",
              "RE": {"HindIII": 'A|AGCTT'}},
-            None, 9606
+            9606
             )
     }
 
