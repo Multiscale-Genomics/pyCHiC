@@ -294,26 +294,16 @@ class makeBaitmapTool(Tool):
                 ],
                 taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : input_metadata["Rtree_file_idx"].meta_data,
+                    "RE": input_metadata["Rtree_file_idx"].meta_data,
                     "tool": "makeBaitmap",
                 }
             ),
-            "out_bam": Metadata(
-                data_type=".bam",
-                file_type=".bam",
-                file_path=output_files["out_bam"],
-                sources=[
-                    input_metadata["genome_fa"].file_path,
-                    input_metadata["probes_fa"].file_path,
-                    input_metadata["Rtree_file_idx"].file_path,
-                ],
-                taxon_id=input_metadata["genome_fa"].taxon_id,
-                meta_data={
-                    "RE" : input_metadata["Rtree_file_idx"].meta_data,
-                    "tool": "makeBaitmap",
-                }
-            ),
-
+            "out_bam": bwa_meta["bam"],
         }
+
+        tool_name = output_metadata["out_bam"].meta_data["tool"]
+        output_metadata["out_bam"].meta_data["tool_description"] = tool_name
+        output_metadata["out_bam"].meta_data["tool"] = "makeBaitmap",
+        output_metadata["out_bam"].meta_data["RE"] = input_metadata["Rtree_file_idx"].meta_data["RE"]
 
         return output_files, output_metadata

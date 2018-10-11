@@ -67,7 +67,7 @@ def test_process_baitmap():
             {
                 "assembly": "test",
                 "tool": "bwa_indexer",
-                "enzyme": "HindIII"
+                "RE": {"HindIII": 'A|AGCTT'}
             }, 9606),
 
         "probes_fa": Metadata(
