@@ -253,7 +253,7 @@ class makeBaitmapTool(Tool):
             input_files["genome_idx"])[0]})
 
         bwa_files, bwa_meta = bwa_t.run(input_bwa, metadata_bwa, output_bwa)
-
+	
         #bwa_meta = compss_wait_on(bwa_meta)
 
         if "".join(input_files["Rtree_file_dat"].split(".")[:-1]) != \
