@@ -27,8 +27,8 @@
     },
     {
         "_id": "59b7e020d9422a5969b653dasda",
-        "data_type": "TAR",
-        "file_type": "C-HiC_data",
+        "data_type": "CHi-C_data",
+        "file_type": "CHi-C_data",
         "file_path": "tests/data/test_hicup/output.tar",
         "compressed": 0,
         "sources": ["user"],
