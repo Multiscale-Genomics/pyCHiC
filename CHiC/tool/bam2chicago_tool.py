@@ -188,7 +188,7 @@ class bam2chicagoTool(Tool):
             output_files["chinput"]
             )
 
-        #results = compss_wait_on(results)
+        results = compss_wait_on(results)
 
         output_metadata = {
             "chinput" : Metadata(

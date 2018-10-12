@@ -28,14 +28,14 @@ try:
         raise ImportError
     from pycompss.api.parameter import FILE_IN, FILE_OUT, IN
     from pycompss.api.task import task
-    # from pycompss.api.api import compss_wait_on
+    from pycompss.api.api import compss_wait_on
 except ImportError:
     logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
     logger.warn("          Using mock decorators.")
 
     from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task  # pylint: disable=ungrouped-imports
-    # from utils.dummy_pycompss import compss_wait_on  # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import compss_wait_on  # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
@@ -225,7 +225,7 @@ class makeBaitmapTool(Tool):
 
         re_meta = {
             self.configuration["chic_RE_name"]: self.configuration["chic_RE_sequence"]}
-        
+
         input_bwa = {
             "genome": input_files["genome_fa"],
             "index": input_files["genome_idx"],
@@ -267,7 +267,7 @@ class makeBaitmapTool(Tool):
             output_files["out_baitmap"],
             input_files["chr_handler"])
 
-        # results = compss_wait_on(results)
+        results = compss_wait_on(results)
 
         output_metadata = {
             "out_baitmap": Metadata(
