@@ -30,6 +30,7 @@ Documentation for CHi-C Pipeline
    full_installation
    pipelines
    tool
+   adr
    license
 
 
