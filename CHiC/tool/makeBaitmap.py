@@ -223,6 +223,9 @@ class makeBaitmapTool(Tool):
             List of matching metadata dict objects
         """
 
+        re_meta = {
+            self.configuration["chic_RE_name"]: self.configuration["chic_RE_sequence"]}
+        
         input_bwa = {
             "genome": input_files["genome_fa"],
             "index": input_files["genome_idx"],
@@ -270,7 +273,7 @@ class makeBaitmapTool(Tool):
         output_metadata = {
             "out_baitmap": Metadata(
                 data_type="RE sites with baits",
-                file_type=".baitmap",
+                file_type="baitmap",
                 file_path=output_files["out_baitmap"],
                 sources=[
                     input_metadata["genome_fa"].file_path,
@@ -280,13 +283,13 @@ class makeBaitmapTool(Tool):
                 ],
                 taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE": input_metadata["Rtree_file_idx"].meta_data,
-                    "tool": "makeBaitmap",
+                    "RE": re_meta,
+                    "tool": "makeBaitmap"
                 }
             ),
             "bait_sam": Metadata(
                 data_type="TXT",
-                file_type=".sam",
+                file_type="sam",
                 file_path=output_files["bait_sam"],
                 sources=[
                     input_metadata["genome_fa"].file_path,
@@ -295,16 +298,16 @@ class makeBaitmapTool(Tool):
                 ],
                 taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE": input_metadata["Rtree_file_idx"].meta_data,
-                    "tool": "makeBaitmap",
+                    "RE": re_meta,
+                    "tool": "makeBaitmap"
                 }
             ),
-            "out_bam": bwa_meta["bam"],
+            "out_bam": bwa_meta["bam"]
         }
 
         tool_name = output_metadata["out_bam"].meta_data["tool"]
         output_metadata["out_bam"].meta_data["tool_description"] = tool_name
         output_metadata["out_bam"].meta_data["tool"] = "makeBaitmap",
-        output_metadata["out_bam"].meta_data["RE"] = input_metadata["Rtree_file_idx"].meta_data["RE"]
+        output_metadata["out_bam"].meta_data["RE"] = re_meta
 
         return output_files, output_metadata

@@ -31,7 +31,9 @@ def test_baitmap():
     path = os.path.join(os.path.dirname(__file__), "data/")
 
     configuration = {
-        "execution": path
+        "execution": path,
+        "chic_RE_name": "HindIII",
+        "chic_RE_sequence": "A|AGCTT"
     }
 
     input_files = {
@@ -61,8 +63,7 @@ def test_baitmap():
             "hg38", "fasta", input_files["genome_fa"], [],
             {
                 "assembly": "test",
-                "tool": "bwa_indexer",
-                "RE": {"HindIII": 'A|AGCTT'}
+                "tool": "bwa_indexer"
             }, 9606),
 
         "probes_fa": Metadata(
@@ -74,14 +75,14 @@ def test_baitmap():
 
         "Rtree_file_dat": Metadata(
             "Rtree files", "dat", input_files["Rtree_file_dat"], [],
-            {"genome": path + "test_rmap/chr21_hg19.fa",
+            {"genome": genome_fa,
              "RE": {"HindIII": 'A|AGCTT'}},
             9606
             ),
 
         "Rtree_file_idx": Metadata(
             "Rtree files", "idx", input_files["Rtree_file_idx"], [],
-            {"genome": path + "test_rmap/chr21_hg19.fa",
+            {"genome": genome_fa,
              "RE": {"HindIII": 'A|AGCTT'}},
             9606
             )
