@@ -170,9 +170,8 @@ before_script:
 
 # command to run tests
 script:
-    - cd ${HOME}/build/Multiscale-Genomics/CHi-C/tests
-    - python test_toolchains.py
     - cd ${HOME}/build/Multiscale-Genomics/CHi-C
+    - if [[ "$TESTENV" == "code" ]]; then python tests/test_toolchains.py
     - if [[ "$TESTENV" == "docs" ]]; then CHiC/tool/scripts/travis/docs_harness.sh; fi
     - if [[ "$TESTENV" == "pylint" ]]; then CHiC/tool/scripts/travis/pylint_harness.sh; fi
 
