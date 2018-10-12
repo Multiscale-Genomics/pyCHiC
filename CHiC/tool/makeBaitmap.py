@@ -135,7 +135,7 @@ class makeBaitmapTool(Tool):
 
                     if len(hits) > 1:
                         logger.warning("probe map to two RE fragmnets, " +
-                                       " ".join(line)+" start pos" + str(srt_pos) +
+                                       " ".join(line) + " start pos" + str(srt_pos) +
                                        " end pos" + str(end_pos))
 
                     elif not hits:
@@ -185,12 +185,12 @@ class makeBaitmapTool(Tool):
 
         with open(out_baitmap, "a") as file_out:
             for frag_coord in baitmap_list:
-                print("{}\t{}\t{}\t{}\t{}".format(
+                file_out.write("{}\t{}\t{}\t{}\t{}\n".format(
                     chr_dict[frag_coord[0]],
                     frag_coord[1],
                     frag_coord[2],
                     frag_coord[3],
-                    "NaN"), file=file_out)
+                    "NaN"))
 
         if os.path.getsize(out_baitmap) > 0:
             return True
