@@ -45,6 +45,10 @@
         {
             "name": "description",
             "value": null
+        },
+        {
+            "name": "execution",
+            "value": "tests/data/test_baitmap/"
         }
     ],
     "output_files": [
