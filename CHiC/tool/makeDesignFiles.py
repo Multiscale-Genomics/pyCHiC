@@ -221,7 +221,7 @@ class makeDesignFilesTool(Tool):
                                        commands_params,
                                        tmp_names)
 
-        results = compss_wait_on(results)
+        #results = compss_wait_on(results)
 
         output_metadata = {
             "nbpb": Metadata(
