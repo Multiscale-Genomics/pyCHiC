@@ -82,13 +82,13 @@
             "required": true,
             "allow_multiple": false,
             "name": "rmap_chicago",
-            "value": "59b7e020d9422a5969b00"
+            "value": "59b7e020d9422a5901ree"
         },
         {
             "required": true,
             "allow_multiple": false,
             "name": "baitmap_chicago",
-            "value": "59b7e020d9422a59688"
+            "value": "59b7e020d9422a5900e3"
         },
         {
             "required": true,
