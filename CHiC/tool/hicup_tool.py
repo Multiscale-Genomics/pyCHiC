@@ -426,8 +426,6 @@ class hicup(Tool):
         #if os.path.isdir(self.configuration["hicup_outdir"]) is False:
         #    os.mkdir(self.configuration["hicup_outdir"])
 
-        print(parameters_hicup)
-
         variable = self.hicup_alig_filt(# pylint: disable=too-many-locals,too-many-arguments
             parameters_hicup,
             genome_d,
@@ -438,7 +436,7 @@ class hicup(Tool):
             output_files["hicup_outdir_tar"])
 
         os.remove(genome_d)
-        variable = compss_wait_on(variable)
+        #variable = compss_wait_on(variable)
 
         output_metadata = {
             "hicup_outdir_tar" : Metadata(
