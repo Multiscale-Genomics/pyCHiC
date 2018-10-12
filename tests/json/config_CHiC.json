@@ -121,6 +121,22 @@
             "value": {"HindIII" : "A|AGCTT"}
         },
         {
+            "name": "renzime",
+            "value": {"HindIII" : "A|AGCTT"}
+        },
+        {
+            "name": "execution",
+            "value": "tests/data/test_baitmap/"
+        },
+        {
+            "name": "chic_RE_name",
+            "value": "HindIII"
+        },
+        {
+            "name": "chic_RE_sequence",
+            "value": "A|AGCTT"
+        },
+        {
             "name": "makeDesignFiles_minFragLen",
             "value": "150"
         },
