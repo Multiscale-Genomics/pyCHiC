@@ -18,7 +18,6 @@
 """
 
 from __future__ import print_function
-import os
 
 import argparse
 
@@ -28,6 +27,7 @@ from utils import logger
 from CHiC.tool.makeDesignFiles import makeDesignFilesTool
 
 #####################################################
+
 
 class process_design(Workflow):
     """
