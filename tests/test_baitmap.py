@@ -14,10 +14,11 @@
 
 import os.path
 import os
-import pytest # pylint: disable=unused-import
+import pytest  # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
 from CHiC.tool.makeBaitmap import makeBaitmapTool
+
 
 def test_baitmap():
     """
@@ -75,14 +76,14 @@ def test_baitmap():
 
         "Rtree_file_dat": Metadata(
             "Rtree files", "dat", input_files["Rtree_file_dat"], [],
-            {"genome": genome_fa,
+            {"genome": input_files["genome_fa"],
              "RE": {"HindIII": 'A|AGCTT'}},
             9606
             ),
 
         "Rtree_file_idx": Metadata(
             "Rtree files", "idx", input_files["Rtree_file_idx"], [],
-            {"genome": genome_fa,
+            {"genome": input_files["genome_fa"],
              "RE": {"HindIII": 'A|AGCTT'}},
             9606
             )
