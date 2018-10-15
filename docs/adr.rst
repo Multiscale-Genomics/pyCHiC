@@ -28,3 +28,7 @@ ect...
 
 This file is passed to the makeBaitmap.py script and generate the .batimap file with the corresponding chromsome name. This is necesary as the rtrees used in makeBaitmap.py needs an integer instead of "chr" or any other format.
 
+15-10-2018 mm_mods_for_makebaitmaps branch merge with master
+------------------------------------------------------------
+
+This branch contains some modifications from Mark to solve issues with pyCOMPSs regarding makeBaitmap.py tool
