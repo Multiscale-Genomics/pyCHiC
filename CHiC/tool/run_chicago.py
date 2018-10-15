@@ -302,7 +302,7 @@ class ChicagoTool(Tool):
                                input_files["poe_chicago"],
                               )
 
-        #results = compss_wait_on(results)
+        results = compss_wait_on(results)
 
         output_metadata = {
             "output" : Metadata(

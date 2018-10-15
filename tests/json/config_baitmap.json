@@ -45,7 +45,20 @@
         {
             "name": "description",
             "value": null
+        },
+        {
+            "name": "execution",
+            "value": "tests/data/test_baitmap/"
+        },
+        {
+            "name": "chic_RE_name",
+            "value": "HindIII"
+        },
+        {
+            "name": "chic_RE_sequence",
+            "value": "A|AGCTT"
         }
+
     ],
     "output_files": [
         {

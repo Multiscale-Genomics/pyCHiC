@@ -17,7 +17,7 @@
 
 import os.path
 import os
-import pytest # pylint: disable=unused-import
+import pytest  # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
 from CHiC.tool.rmap_tool import makeRmapFile
@@ -30,27 +30,24 @@ def test_rmap_tool():
     """
     path = os.path.join(os.path.dirname(__file__), "data/")
 
-
-    configuration = {"renzime" : {"HindIII" : 'A|AGCTT'}
-                    }
+    configuration = {"renzime": {"HindIII": 'A|AGCTT'}}
 
     input_files = {
-        "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
+        "genome_fa": path + "test_baitmap/chr21_hg19.fa",
         }
 
     metadata = {
-        "genome_fa" : Metadata(
+        "genome_fa": Metadata(
             "txt", "fasta", path + "test_baitmap/chr21_hg19.fa",
             None, 9606, ""),
     }
 
     output_files = {
-        "RMAP" : path + "test_run_chicago/test.rmap",
-        "Rtree_file_dat" : path + "test_rmap/rtree_file.dat",
-        "Rtree_file_idx" : path + "test_rmap/rtree_file.idx",
-        "chr_handler" : path + "test_baitmap/chr_handler.txt"
+        "RMAP": path + "test_run_chicago/test.rmap",
+        "Rtree_file_dat": path + "test_rmap/rtree_file.dat",
+        "Rtree_file_idx": path + "test_rmap/rtree_file.idx",
+        "chr_handler": path + "test_baitmap/chr_handler.txt"
         }
-
 
     rmap_handle = makeRmapFile(configuration)
     rmap_handle.run(input_files, metadata, output_files)

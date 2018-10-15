@@ -34,14 +34,15 @@ except ImportError:
     logger.warn("          Using mock decorators.")
 
     from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import compss_wait_on # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import task  # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import compss_wait_on  # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
 from tool.bwa_mem_aligner import bwaAlignerMEMTool
 
 ##################################################
+
 
 class makeBaitmapTool(Tool):
     """
@@ -67,11 +68,10 @@ class makeBaitmapTool(Tool):
 
         self.configuration.update(configuration)
 
-
-    #@task(returns=list, sam_file=FILE_OUT, out_bam=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
-    #      rtree_prefix=IN, chr_handler=FILE_IN)
+    @task(returns=list, sam_file=FILE_OUT, out_bam=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
+          rtree_prefix=IN, chr_handler=FILE_IN)
     def sam_to_baitmap(self, sam_file, out_bam, rtree_dat, rtree_idx, rtree_prefix,
-                       chr_handler): # pylint: disable=no-self-use
+                       chr_handler):  # pylint: disable=no-self-use
         """
         This function take the sam file, output of bwa
         and the Rtree_files, and output a baitmap file
@@ -135,12 +135,12 @@ class makeBaitmapTool(Tool):
 
                     if len(hits) > 1:
                         logger.warning("probe map to two RE fragmnets, " +
-                                       " ".join(line)+" start pos"+ str(srt_pos) +
-                                       " end pos"+ str(end_pos))
+                                       " ".join(line) + " start pos" + str(srt_pos) +
+                                       " end pos" + str(end_pos))
 
                     elif not hits:
-                        logger.warn("Sequence does not"+
-                                    "match with any RE fragment, "+
+                        logger.warn("Sequence does not" +
+                                    "match with any RE fragment, " +
                                     " ".join(line))
                         continue
 
@@ -160,9 +160,9 @@ class makeBaitmapTool(Tool):
 
         return baitmap
 
-    #@task(returns=bool, baitmap_list=IN,
-    #      out_baitmap=FILE_OUT, chr_handler=FILE_IN)
-    def create_baitmap(self, baitmap_list, out_baitmap, chr_handler): # pylint: disable=no-self-use
+    @task(returns=bool, baitmap_list=IN,
+          out_baitmap=FILE_OUT, chr_handler=FILE_IN)
+    def create_baitmap(self, baitmap_list, out_baitmap, chr_handler):  # pylint: disable=no-self-use
         """
         This function takes a list with RE fragments that
         correspond to baits and print it to a file
@@ -175,7 +175,7 @@ class makeBaitmapTool(Tool):
         out: str
             entire pat and name of the .baitmap file
         """
-        #print(out_baitmap)
+        # print(out_baitmap)
 
         chr_dict = {}
         with open(chr_handler, "r") as chr_file:
@@ -185,12 +185,12 @@ class makeBaitmapTool(Tool):
 
         with open(out_baitmap, "a") as file_out:
             for frag_coord in baitmap_list:
-                print("{}\t{}\t{}\t{}\t{}".format(
+                file_out.write("{}\t{}\t{}\t{}\t{}\n".format(
                     chr_dict[frag_coord[0]],
                     frag_coord[1],
                     frag_coord[2],
                     frag_coord[3],
-                    "NaN"), file=file_out)
+                    "NaN"))
 
         if os.path.getsize(out_baitmap) > 0:
             return True
@@ -223,6 +223,9 @@ class makeBaitmapTool(Tool):
             List of matching metadata dict objects
         """
 
+        re_meta = {
+            self.configuration["chic_RE_name"]: self.configuration["chic_RE_sequence"]}
+
         input_bwa = {
             "genome": input_files["genome_fa"],
             "index": input_files["genome_idx"],
@@ -233,30 +236,15 @@ class makeBaitmapTool(Tool):
             "output": output_files["out_bam"]
         }
         metadata_bwa = {
-            "genome": Metadata(
-                "Assembly", "fasta", input_files["genome_fa"], None,
-                {"assembly": "test"}),
-            "index": Metadata(
-                "index_bwa", "", input_files["genome_fa"],
-                {
-                    "assembly": "test",
-                    "tool": "bwa_indexer"
-                }
-            ),
-            "loc": Metadata(
-                "data_chip_seq", "fastq", output_files["out_bam"], None,
-                {"assembly": "test"}
-            )
+            "genome": input_metadata["genome_fa"],
+            "index": input_metadata["genome_idx"],
+            "loc": input_metadata["probes_fa"]
         }
 
-        bwa_t = bwaAlignerMEMTool({"execution": os.path.split(
-            input_files["genome_idx"])[0]})
-
+        bwa_t = bwaAlignerMEMTool(self.configuration)
         bwa_files, bwa_meta = bwa_t.run(input_bwa, metadata_bwa, output_bwa)
 
-        logger.info("HOLAAAAAA")
-
-        #bwa_meta = compss_wait_on(bwa_meta)
+        # bwa_meta = compss_wait_on(bwa_meta)
 
         if "".join(input_files["Rtree_file_dat"].split(".")[:-1]) != \
            "".join(input_files["Rtree_file_idx"].split(".")[:-1]):
@@ -284,7 +272,7 @@ class makeBaitmapTool(Tool):
         output_metadata = {
             "out_baitmap": Metadata(
                 data_type="RE sites with baits",
-                file_type=".baitmap",
+                file_type="baitmap",
                 file_path=output_files["out_baitmap"],
                 sources=[
                     input_metadata["genome_fa"].file_path,
@@ -294,13 +282,13 @@ class makeBaitmapTool(Tool):
                 ],
                 taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : input_metadata["Rtree_file_idx"].meta_data,
-                    "tool": "makeBaitmap",
+                    "RE": re_meta,
+                    "tool": "makeBaitmap"
                 }
             ),
             "bait_sam": Metadata(
                 data_type="TXT",
-                file_type=".sam",
+                file_type="sam",
                 file_path=output_files["bait_sam"],
                 sources=[
                     input_metadata["genome_fa"].file_path,
@@ -309,26 +297,16 @@ class makeBaitmapTool(Tool):
                 ],
                 taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={
-                    "RE" : input_metadata["Rtree_file_idx"].meta_data,
-                    "tool": "makeBaitmap",
+                    "RE": re_meta,
+                    "tool": "makeBaitmap"
                 }
             ),
-            "out_bam": Metadata(
-                data_type=".bam",
-                file_type=".bam",
-                file_path=output_files["out_bam"],
-                sources=[
-                    input_metadata["genome_fa"].file_path,
-                    input_metadata["probes_fa"].file_path,
-                    input_metadata["Rtree_file_idx"].file_path,
-                ],
-                taxon_id=input_metadata["genome_fa"].taxon_id,
-                meta_data={
-                    "RE" : input_metadata["Rtree_file_idx"].meta_data,
-                    "tool": "makeBaitmap",
-                }
-            ),
-
+            "out_bam": bwa_meta["bam"]
         }
+
+        tool_name = output_metadata["out_bam"].meta_data["tool"]
+        output_metadata["out_bam"].meta_data["tool_description"] = tool_name
+        output_metadata["out_bam"].meta_data["tool"] = "makeBaitmap",
+        output_metadata["out_bam"].meta_data["RE"] = re_meta
 
         return output_files, output_metadata
