@@ -118,12 +118,12 @@ class makeRmapFile(Tool):
                 line = line.rstrip()
                 if line[0] == ">":
                     if not sequence:
-                        chromo_dict[chromo_fake] = line[1:]
+                        chromo_dict[chromo_fake] = line[1:].split(" ")[0]
                         continue
                     else:
                         genome_dict[chromo_fake] = sequence
                         chromo_fake += 1
-                        chromo_dict[chromo_fake] = line[1:]
+                        chromo_dict[chromo_fake] = line[1:].split(" ")[0]
                         sequence = ""
                         continue
 
