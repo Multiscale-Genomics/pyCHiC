@@ -32,8 +32,6 @@ def test_design_process():
         "makeDesignFiles_maxFragLen" : "40000",
         "makeDesignFiles_maxLBrownEst" : "1500000",
         "makeDesignFiles_binsize" : "20000",
-        "makeDesignFiles_removeb2b" : True,
-        "makeDesignFiles_removeAdjacent" : True,
         "makeDesignFiles_outfilePrefix" : path + "test_run_chicago/test",
         #"makeDesignFiles_designDir" : path + "test_run_chicago",
         "makeDesignFiles_rmap" : path + "test_run_chicago/test.rmap",

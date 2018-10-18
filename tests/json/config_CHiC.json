@@ -153,14 +153,6 @@
             "value": "20000"
         },
         {
-            "name" : "makeDesignFiles_removeb2b",
-            "value": "True"
-        },
-        {
-            "name" : "makeDesignFiles_removeAdjacent",
-            "value": "True"
-        },
-        {
             "name" : "makeDesignFiles_outfilePrefix",
             "value" : "tests/data/test_run_chicago/test"
         },
