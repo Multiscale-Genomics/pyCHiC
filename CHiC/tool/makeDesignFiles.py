@@ -139,8 +139,6 @@ class makeDesignFilesTool(Tool):
             "makeDesignFiles_maxFragLen" : ["--maxFragLen", True],
             "makeDesignFiles_maxLBrownEst" :["--maxLBrownEst", True],
             "makeDesignFiles_binsize" : ["--binsize", True],
-            "makeDesignFiles_removeb2b" : ["--removeb2b", False],
-            "makeDesignFiles_removeAdjacent" : ["--removeAdjacent", False],
             "makeDesignFiles_rmapfile" : ["--rmapfile", True],
             "makeDesignFiles_baitmapfail" : ["--baitmapFIle", True],
             "makeDesignFiles_outfilePrefix" : ["--outfilePrefix", True],
