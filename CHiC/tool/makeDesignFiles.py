@@ -95,10 +95,10 @@ class makeDesignFilesTool(Tool):
                 "--binsize", self.configuration["makeDesignFiles_binsize"],
                 "--maxLBrownEst", self.configuration["makeDesignFiles_maxLBrownEst"],
                 "--maxFragLen", self.configuration["makeDesignFiles_maxFragLen"],
-                "--rmapfile", rmap,
-                "--baitmapfile", baitmap,
+                "--rmapfile", "".join(rmap.split("/")[-1]),
+                "--baitmapfile", "".join(baitmap.split("/")[-1]),
                 "--minFragLen", self.configuration["makeDesignFiles_binsize"]
-                ]
+               ]
 
 
         logger.info("makeDesignFile : "+ " ".join(args))
@@ -137,7 +137,7 @@ class makeDesignFilesTool(Tool):
         selecting the given ones and passing to the
         command line.
         """
-
+        command_params = []
         command_parameters = {
             "makeDesignFiles_minFragLen" : ["--minFragLen", True],
             "makeDesignFiles_maxFragLen" : ["--maxFragLen", True],
