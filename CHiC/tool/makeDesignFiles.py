@@ -63,9 +63,11 @@ class makeDesignFilesTool(Tool):
 
         self.configuration.update(configuration)
 
-    @task(returns=bool, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_OUT,
+    @task(returns=bool, binsize=IN, maxLBrownEst=IN, maxFragLen=IN, minFragLen=IN,
+          rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_OUT,
           npb=FILE_OUT, poe=FILE_OUT, parameters=IN, tmp_names=IN)
-    def makeDesignFiles(self, rmap, baitmap, nbpb, npb, poe, parameters, tmp_names):
+    def makeDesignFiles(self, binsize, maxLBrownEst, maxFragLen, minFragLen,
+                        rmap, baitmap, nbpb, npb, poe, parameters, tmp_names):
         """
         make the design files and store it in the specify design folder. It is a
         wrapper of makeDesignFiles.py
@@ -92,12 +94,12 @@ class makeDesignFilesTool(Tool):
 
         args = ["python", script,
                 "--outfilePrefix", tmp_names,
-                "--binsize", self.configuration["makeDesignFiles_binsize"],
-                "--maxLBrownEst", self.configuration["makeDesignFiles_maxLBrownEst"],
-                "--maxFragLen", self.configuration["makeDesignFiles_maxFragLen"],
+                "--binsize", binsize,
+                "--maxLBrownEst", maxLBrownEst,
+                "--maxFragLen", maxFragLen,
                 "--rmapfile", "".join(rmap.split("/")[-1]),
                 "--baitmapfile", "".join(baitmap.split("/")[-1]),
-                "--minFragLen", self.configuration["makeDesignFiles_binsize"]
+                "--minFragLen", minFragLen
                ]
 
 
@@ -215,7 +217,12 @@ class makeDesignFilesTool(Tool):
                 maxLBrownEst/binSize
                 )*binSize)
 
-        results = self.makeDesignFiles(input_files["RMAP"],
+
+        results = self.makeDesignFiles(self.configuration["makeDesignFiles_binsize"],
+                                       self.configuration["makeDesignFiles_maxLBrownEst"],
+                                       self.configuration["makeDesignFiles_maxFragLen"],
+                                       self.configuration["makeDesignFiles_minFragLen"],
+                                       input_files["RMAP"],
                                        input_files["BAITMAP"],
                                        output_files["nbpb"],
                                        output_files["npb"],
