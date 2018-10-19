@@ -400,10 +400,10 @@ class hicup(Tool):
         if os.path.isdir(output_dir) is False:
             os.mkdir(output_dir)
 
-        if isinstance(self.configuration["hicup_renzyme"], list) is True:
-            re_enzyme = ":".join(self.configuration["hicup_renzyme"])
-        else:
-            re_enzyme = self.configuration["hicup_renzyme"]
+        RE = str(self.configuration["chic_RE_sequence"].replace("|", "^"))
+        enzyme = str(self.configuration["chic_RE_name"])
+
+        re_enzyme = RE+","+enzyme
 
         if "renzyme_name2" in self.configuration:
 
@@ -414,6 +414,7 @@ class hicup(Tool):
                 self.configuration["renzyme_name2"]
                 )
         else:
+
             genome_d = self.digest_genome(
                 self.configuration["genome_name"],
                 re_enzyme,

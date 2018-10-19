@@ -117,14 +117,6 @@
     ],
     "arguments": [
         {
-            "name": "renzime",
-            "value": {"HindIII" : "A|AGCTT"}
-        },
-        {
-            "name": "renzime",
-            "value": {"HindIII" : "A|AGCTT"}
-        },
-        {
             "name": "execution",
             "value": "tests/data/test_baitmap/"
         },
@@ -169,20 +161,12 @@
             "value": "True"
         },
         {
-            "name": "RE_truncater",
-            "value": "A^AGCT"
-        },
-        {
             "name": "threads",
             "value": "2"
         },
         {
             "name": "outdir",
             "value": "tests/data/test_truncater"
-        },
-        {
-            "name": "hicup_renzyme",
-            "value": "A^AGCTT,HindIII"
         },
         {
             "name": "genome_name",

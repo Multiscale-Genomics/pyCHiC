@@ -320,6 +320,10 @@ class makeRmapFile(Tool):
 
         rtree = "".join(rtree.split("/")[-1])
 
+        self.configuration["renzime"] = {self.configuration["chic_RE_name"] :
+                                         self.configuration["chic_RE_sequence"]
+                                        }
+
         results = self.from_frag_to_rmap(
             self.configuration["renzime"],
             input_files["genome_fa"],
