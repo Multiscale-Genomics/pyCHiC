@@ -91,9 +91,15 @@ class makeDesignFilesTool(Tool):
         script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
 
         args = ["python", script,
-                "--outfilePrefix", tmp_names]
+                "--outfilePrefix", tmp_names,
+                "--binsize", self.configuration["makeDesignFiles_binsize"],
+                "--maxLBrownEst", self.configuration["makeDesignFiles_maxLBrownEst"],
+                "--maxFragLen", self.configuration["makeDesignFiles_maxFragLen"],
+                "--rmapfile", rmap,
+                "--baitmapfile", baitmap,
+                "--minFragLen", self.configuration["makeDesignFiles_binsize"]
+                ]
 
-        args += parameters
 
         logger.info("makeDesignFile : "+ " ".join(args))
 
@@ -131,8 +137,6 @@ class makeDesignFilesTool(Tool):
         selecting the given ones and passing to the
         command line.
         """
-
-        command_params = []
 
         command_parameters = {
             "makeDesignFiles_minFragLen" : ["--minFragLen", True],
