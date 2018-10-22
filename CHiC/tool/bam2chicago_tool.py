@@ -145,7 +145,7 @@ class bam2chicagoTool(Tool):
             return False
 
 
-    def run(self, input_files, metadata, output_files):
+    def run(self, input_files, input_metadata, output_files):
         """
         Function that runs and pass the parameters to bam2chicago
 
@@ -200,9 +200,12 @@ class bam2chicagoTool(Tool):
                 file_type="tar",
                 file_path=output_files["chinput"],
                 sources=[
-                    metadata["hicup_outdir_tar"].file_path
+                    chinput,
+                    RMAP,
+                    BAITMAP,
+                    path_bam
                     ],
-                taxon_id=metadata["hicup_outdir_tar"].taxon_id,
+                taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={"tool": "bam2chicago_tool"}
             )
         }

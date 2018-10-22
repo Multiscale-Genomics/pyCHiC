@@ -71,12 +71,6 @@
             "allow_multiple": false,
             "name": "poe_chicago",
             "value": "59b7e020d9422a5900e6"
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
-            "name": "chr_handler",
-            "value": "59b7e020d9422a5969b65886"
         }
     ],
     "arguments": [

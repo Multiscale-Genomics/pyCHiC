@@ -83,7 +83,6 @@ class process_CHiC(Workflow):
         """
 
 
-
         #call hicup
         try:
             hicup_caller = hicup(self.configuration)
@@ -173,10 +172,9 @@ class process_CHiC(Workflow):
             bam2chicago_caller = bam2chicagoTool(self.configuration)
             output_files_bam2chicago, output_metadata_bam2chicago = bam2chicago_caller.run(
                 {
-                    "hicup_outdir_tar" : input_files["hicup_outdir_tar"],
                 },
                 {
-                    "hicup_outdir_tar" : metadata["hicup_outdir_tar"],
+                    "genome_fa" : metadata["genome_fa"]
                 },
                 {
                     "chinput": output_files["chinput"]

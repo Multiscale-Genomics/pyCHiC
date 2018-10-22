@@ -262,8 +262,8 @@ class ChicagoTool(Tool):
             List of matching metadata dict objects
         """
         #check if the output directory exists, otherwise create it
-        chinput = "tests/data/test_bam2chicago_tool/output_chinput.chinput"
-        output =  "tests/data/test_run_chicago/data_chicago/out_run_chicago.tar"
+        chinput = "tests/data/test_run_chicago/data_chicago/GM_rep1.chinput"
+        output = "tests/data/test_run_chicago/data_chicago/out_run_chicago.tar"
 
         command_params = self.get_chicago_params(self.configuration)
 
@@ -303,13 +303,16 @@ class ChicagoTool(Tool):
 
         #results = compss_wait_on(results)
 
+
         output_metadata = {
             "output" : Metadata(
                 data_type="chicago_CHIC",
                 file_type="TAR",
                 file_path=output_files["output"],
                 sources=[
-                    input_metadata["chinput"].file_path,
+                    input_metadata["genome_fa"].file_path,
+                    input_metadata["fastq1"].file_path,
+                    input_metadata["fastq2"].file_path
                 ],
                 taxon_id=input_metadata["chinput"].taxon_id,
                 meta_data={
