@@ -93,10 +93,6 @@
     ],
     "arguments": [
         {
-            "name": "execution",
-            "value": "tests/data/test_baitmap/"
-        },
-        {
             "name": "chic_RE_name",
             "value": "HindIII"
         },
