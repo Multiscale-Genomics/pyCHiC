@@ -303,7 +303,6 @@ class ChicagoTool(Tool):
 
         #results = compss_wait_on(results)
 
-
         output_metadata = {
             "output" : Metadata(
                 data_type="chicago_CHIC",
@@ -314,7 +313,7 @@ class ChicagoTool(Tool):
                     input_metadata["fastq1"].file_path,
                     input_metadata["fastq2"].file_path
                 ],
-                taxon_id=input_metadata["chinput"].taxon_id,
+                taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={
                     "tool": "run_chicago"
                 }
