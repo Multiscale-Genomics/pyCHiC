@@ -391,7 +391,10 @@ class hicup(Tool):
         metadata: dict
         output_files: dict
         """
-        output_dir = os.path.split(output_files["hicup_outdir_tar"])[0]
+
+        output_dir = "tests/data/test_hicup"
+        hicup_outdir_tar = "tests/data/test_hicup/output.tar"
+
         if os.path.isdir(output_dir) is False:
             os.mkdir(output_dir)
 
@@ -429,7 +432,7 @@ class hicup(Tool):
             input_files["genome_fa"],
             input_files["fastq1"],
             input_files["fastq2"],
-            output_files["hicup_outdir_tar"])
+            hicup_outdir_tar)
 
         os.remove(genome_d)
         #variable = compss_wait_on(variable)

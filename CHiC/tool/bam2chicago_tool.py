@@ -167,16 +167,17 @@ class bam2chicagoTool(Tool):
         """
         RMAP = "tests/data/test_run_chicago/test.rmap"
         BAITMAP = "tests/data/test_run_chicago/test.baitmap"
+        chinput = "tests/data/test_bam2chicago_tool/output_chinput.chinput"
+        hicup_outdir_tar = "tests/data/test_hicup/output.tar"
 
-        if os.path.isdir(os.path.split(output_files["chinput"])[0]) is False:
+        if os.path.isdir(os.path.split(chinput)[0]) is False:
             logger.info("creating output directory")
-            os.mkdir(os.path.split(output_files["chinput"])[0])
+            os.mkdir(os.path.split(chinput)[0])
 
-        folder_name = os.path.split(input_files["hicup_outdir_tar"])[0] + "/"+\
-                    "".join(os.path.split(input_files["hicup_outdir_tar"])[1].split(".")[:-1])
+        folder_name = "tests/data/test_hicup/output"
 
-        tar = tarfile.open(input_files["hicup_outdir_tar"])
-        tar.extractall(path="".join(os.path.split(input_files["hicup_outdir_tar"])[0]))
+        tar = tarfile.open(hicup_outdir_tar)
+        tar.extractall(path="tests/data/test_hicup")
         tar.close()
 
         bam_file = "".join([file_hdl for file_hdl in os.listdir(folder_name)
@@ -188,7 +189,7 @@ class bam2chicagoTool(Tool):
             path_bam,
             RMAP,
             BAITMAP,
-            output_files["chinput"]
+            chinput
             )
 
         #results = compss_wait_on(results)

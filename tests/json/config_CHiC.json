@@ -39,18 +39,6 @@
         {
             "required": true,
             "allow_multiple": false,
-            "name": "hicup_outdir_tar",
-            "value": "59b7e020d9422a5969b653dasda"
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
-            "name": "chinput",
-            "value": "59b7e020d9422a5900e1"
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
             "name": "setting_file",
             "value": "59b7e020d9422a5900e2"
         },

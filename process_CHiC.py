@@ -81,6 +81,9 @@ class process_CHiC(Workflow):
         output_metadata
 
         """
+
+
+
         #call hicup
         try:
             hicup_caller = hicup(self.configuration)

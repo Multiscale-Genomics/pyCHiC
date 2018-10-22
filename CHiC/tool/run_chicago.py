@@ -262,16 +262,14 @@ class ChicagoTool(Tool):
             List of matching metadata dict objects
         """
         #check if the output directory exists, otherwise create it
-        output_dir = os.path.split(output_files["output"])[0]
-
-        if not os.path.exists(output_dir):
-            logger.info("creating output directory: "+output_dir)
-            os.makedirs(output_dir)
+        chinput = "tests/data/test_bam2chicago_tool/output_chinput.chinput"
+        output =  "tests/data/test_run_chicago/data_chicago/out_run_chicago.tar"
 
         command_params = self.get_chicago_params(self.configuration)
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
+        """
         if isinstance(input_files["chinput"], list):
 
             chinput_folder = os.path.split(input_files["chinput"][0])[0]+"/chinput"
@@ -288,11 +286,12 @@ class ChicagoTool(Tool):
             final_chinput = chinput_folder+".tar"
 
         else:
-            final_chinput = input_files["chinput"]
+        """
+        final_chinput = chinput
 
         results = self.chicago(final_chinput,
                                self.configuration["chicago_out_prefix"],
-                               output_files["output"],
+                               output,
                                command_params,
                                input_files["setting_file"],
                                input_files["rmap_chicago"],
@@ -302,7 +301,7 @@ class ChicagoTool(Tool):
                                input_files["poe_chicago"],
                               )
 
-        results = compss_wait_on(results)
+        #results = compss_wait_on(results)
 
         output_metadata = {
             "output" : Metadata(
