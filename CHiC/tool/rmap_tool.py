@@ -301,9 +301,21 @@ class makeRmapFile(Tool):
         output_metadata: dict
             lest of matching metadata
         """
+
+        if "genome_fa_public" in input_files:
+            input_files["genome_fa"] = input_files.pop("genome_fa_public")
+            metadata["genome_fa"] = metadata.pop("genome_fa_public")
+
+            input_files["genome_idx"] = input_files.pop("genome_idx_public")
+            metadata["genome_idx"] = metadata.pop("genome_idx_public")
+
+            input_files["bowtie_gen_idx"] = input_files.pop("bowtie_gen_idx_public")
+            metadata["bowtie_gen_idx"] = metadata.pop("bowtie_gen_idx_public")
+
+
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
         rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
-        chr_handler =  "tests/data/test_baitmap/chr_handler.txt"
+        chr_handler = "tests/data/test_baitmap/chr_handler.txt"
         RMAP = "tests/data/test_run_chicago/test.rmap"
 
         rtree = "rtree_file"
