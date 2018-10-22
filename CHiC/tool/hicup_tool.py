@@ -188,11 +188,6 @@ class hicup(Tool):
 
         return command_params
 
-    #@task(returns=str,
-    #      genome_name=IN,
-    #      re_enzyme=IN,
-    #      genome_loc=FILE_IN,
-    #      re_enzyme2=IN)
     def digest_genome(self, genome_name, re_enzyme, genome_loc, re_enzyme2):
         """
         This function takes a genome and digest it using a restriction enzyme

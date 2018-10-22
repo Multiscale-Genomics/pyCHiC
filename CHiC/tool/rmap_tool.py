@@ -301,24 +301,12 @@ class makeRmapFile(Tool):
         output_metadata: dict
             lest of matching metadata
         """
-        out_dir_rmap = "/".join(output_files["RMAP"].split("/")[:-1])
-        out_dir_rtree = "/".join(output_files["Rtree_file_dat"].split("/")[:-1])
+        rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
+        rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
+        chr_handler =  "tests/data/test_baitmap/chr_handler.txt"
+        RMAP = "tests/data/test_run_chicago/test.rmap"
 
-        if not os.path.isdir(out_dir_rmap):
-            os.mkdir(out_dir_rmap)
-
-        if not os.path.isdir(out_dir_rtree):
-            os.mkdir(out_dir_rtree)
-
-
-        if "".join(output_files["Rtree_file_dat"].split(".")[:-1]) != \
-           "".join(output_files["Rtree_file_idx"].split(".")[:-1]):
-            logger.fatal("Rtree_file_dat and Rtree_file_idx"
-                         "should have the same prefix name")
-
-        rtree = "".join(output_files["Rtree_file_dat"].split(".")[:-1])
-
-        rtree = "".join(rtree.split("/")[-1])
+        rtree = "rtree_file"
 
         self.configuration["renzime"] = {self.configuration["chic_RE_name"] :
                                          self.configuration["chic_RE_sequence"]
@@ -328,67 +316,15 @@ class makeRmapFile(Tool):
             self.configuration["renzime"],
             input_files["genome_fa"],
             rtree,
-            output_files["Rtree_file_dat"],
-            output_files["Rtree_file_idx"],
-            output_files["RMAP"],
-            output_files["chr_handler"]
+            rtree_file_dat,
+            rtree_file_idx,
+            RMAP,
+            chr_handler
         )
 
         #results = compss_wait_on(results)
 
         output_metadata = {
-            "RMAP": Metadata(
-                data_type=metadata['genome_fa'].data_type,
-                file_type="rmap",
-                file_path=output_files["RMAP"],
-                sources=[
-                    metadata["genome_fa"].file_path
-                ],
-                taxon_id=metadata["genome_fa"].taxon_id,
-                meta_data={
-                    "renzime" : self.configuration["renzime"],
-                    "tool": "rmap_tool"
-                }
-            ),
-            "Rtree_file_dat": Metadata(
-                data_type="Rtree_file_dat",
-                file_type="Rtree_file_dat",
-                file_path=output_files["Rtree_file_dat"],
-                sources=[
-                    metadata["genome_fa"].file_path
-                ],
-                taxon_id=metadata["genome_fa"].taxon_id,
-                meta_data={
-                    "renzime" : self.configuration["renzime"],
-                    "tool": "rmap_tool"
-                }
-            ),
-            "Rtree_file_idx": Metadata(
-                data_type="Rtree_file_idx",
-                file_type="Rtree_file_idx",
-                file_path=output_files["Rtree_file_dat"],
-                sources=[
-                    metadata["genome_fa"].file_path
-                ],
-                taxon_id=metadata["genome_fa"].taxon_id,
-                meta_data={
-                    "renzime" : self.configuration["renzime"],
-                    "tool": "rmap_tool"
-                }
-            ),
-            "chr_handler": Metadata(
-                data_type="data_CHi-C",
-                file_type="TXT",
-                file_path=output_files["chr_handler"],
-                sources=[
-                    metadata["genome_fa"].file_path
-                ],
-                taxon_id=metadata["genome_fa"].taxon_id,
-                meta_data={
-                    "renzime" : self.configuration["renzime"]
-                }
-            )
-
 
         }
 

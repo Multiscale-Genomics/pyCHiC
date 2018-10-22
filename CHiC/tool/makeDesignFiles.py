@@ -197,6 +197,13 @@ class makeDesignFilesTool(Tool):
             List of matching metadata dict objects.
         """
 
+
+        RMAP = "tests/data/test_run_chicago/test.rmap"
+        BAITMAP = "tests/data/test_run_chicago/test.baitmap"
+        nbpb = "tests/data/test_run_chicago/test.nbpb"
+        npb = "tests/data/test_run_chicago/test.npb"
+        poe = "tests/data/test_run_chicago/test.poe"
+
         commands_params = self.get_design_params(self.configuration)
 
         logger.info("makeDesignFiles command parameters " + " ".join(commands_params))
@@ -222,56 +229,17 @@ class makeDesignFilesTool(Tool):
                                        self.configuration["makeDesignFiles_maxLBrownEst"],
                                        self.configuration["makeDesignFiles_maxFragLen"],
                                        self.configuration["makeDesignFiles_minFragLen"],
-                                       input_files["RMAP"],
-                                       input_files["BAITMAP"],
-                                       output_files["nbpb"],
-                                       output_files["npb"],
-                                       output_files["poe"],
+                                       RMAP,
+                                       BAITMAP,
+                                       nbpb,
+                                       npb,
+                                       poe,
                                        commands_params,
                                        tmp_names)
 
         #results = compss_wait_on(results)
 
         output_metadata = {
-            "nbpb": Metadata(
-                data_type="nbpb",
-                file_type="nbpb",
-                file_path=output_files["nbpb"],
-                sources=[
-                    input_metadata["RMAP"].file_path,
-                    input_metadata["BAITMAP"].file_path
-                    ],
-                taxon_id=input_metadata["RMAP"].taxon_id,
-                meta_data={
-                    "tool": "makeDesignFiles"
-                }
-            ),
-            "npb": Metadata(
-                data_type="npb",
-                file_type="npb",
-                file_path=output_files["npb"],
-                sources=[
-                    input_metadata["RMAP"].file_path,
-                    input_metadata["BAITMAP"].file_path
-                    ],
-                taxon_id=input_metadata["RMAP"].taxon_id,
-                meta_data={
-                    "tool": "makeDesignFiles"
-                }
-            ),
-            "poe": Metadata(
-                data_type="poe",
-                file_type="poe",
-                file_path=output_files["poe"],
-                sources=[
-                    input_metadata["RMAP"].file_path,
-                    input_metadata["BAITMAP"].file_path
-                    ],
-                taxon_id=input_metadata["BAITMAP"].taxon_id,
-                meta_data={
-                    "tool": "makeDesignFiles"
-                }
-            ),
         }
 
         return output_files, output_metadata

@@ -222,6 +222,13 @@ class makeBaitmapTool(Tool):
         output_metadata : list
             List of matching metadata dict objects
         """
+        out_bam = "tests/data/test_baitmap/baits.bam"
+        rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
+        rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
+        chr_handler = "tests/data/test_baitmap/chr_handler.txt"
+        out_baitmap = "tests/data/test_run_chicago/test.baitmap"
+        bait_sam = "tests/data/test_baitmap/baits.sam"
+
 
         re_meta = {
             self.configuration["chic_RE_name"]: self.configuration["chic_RE_sequence"]}
@@ -233,7 +240,7 @@ class makeBaitmapTool(Tool):
         }
 
         output_bwa = {
-            "output": output_files["out_bam"]
+            "output": out_bam
         }
         metadata_bwa = {
             "genome": input_metadata["genome_fa"],
@@ -246,67 +253,26 @@ class makeBaitmapTool(Tool):
 
         # bwa_meta = compss_wait_on(bwa_meta)
 
-        if "".join(input_files["Rtree_file_dat"].split(".")[:-1]) != \
-           "".join(input_files["Rtree_file_idx"].split(".")[:-1]):
-            logger.fatal("Rtree_file_dat and Rtree_file_idx"
-                         "should have the same prefix name")
-            return False
 
-        prefix_rtree = "".join(input_files["Rtree_file_idx"].split(".")[-1])
+        prefix_rtree = "rtree_file"
 
         baitmap_list = self.sam_to_baitmap(
-            output_files["bait_sam"],
+            bait_sam,
             bwa_files["bam"],
-            input_files["Rtree_file_dat"],
-            input_files["Rtree_file_idx"],
+            rtree_file_dat,
+            rtree_file_idx,
             prefix_rtree,
-            input_files["chr_handler"])
+            chr_handler)
 
         results = self.create_baitmap(
             baitmap_list,
-            output_files["out_baitmap"],
-            input_files["chr_handler"])
+            out_baitmap,
+            chr_handler)
 
         #results = compss_wait_on(results)
 
         output_metadata = {
-            "out_baitmap": Metadata(
-                data_type="RE sites with baits",
-                file_type="baitmap",
-                file_path=output_files["out_baitmap"],
-                sources=[
-                    input_metadata["genome_fa"].file_path,
-                    input_metadata["probes_fa"].file_path,
-                    input_metadata["Rtree_file_dat"].file_path,
-                    input_metadata["Rtree_file_dat"].file_path,
-                ],
-                taxon_id=input_metadata["genome_fa"].taxon_id,
-                meta_data={
-                    "RE": re_meta,
-                    "tool": "makeBaitmap"
-                }
-            ),
-            "bait_sam": Metadata(
-                data_type="TXT",
-                file_type="sam",
-                file_path=output_files["bait_sam"],
-                sources=[
-                    input_metadata["genome_fa"].file_path,
-                    input_metadata["probes_fa"].file_path,
-                    input_metadata["Rtree_file_idx"].file_path,
-                ],
-                taxon_id=input_metadata["genome_fa"].taxon_id,
-                meta_data={
-                    "RE": re_meta,
-                    "tool": "makeBaitmap"
-                }
-            ),
-            "out_bam": bwa_meta["bam"]
-        }
+            }
 
-        tool_name = output_metadata["out_bam"].meta_data["tool"]
-        output_metadata["out_bam"].meta_data["tool_description"] = tool_name
-        output_metadata["out_bam"].meta_data["tool"] = "makeBaitmap",
-        output_metadata["out_bam"].meta_data["RE"] = re_meta
 
         return output_files, output_metadata

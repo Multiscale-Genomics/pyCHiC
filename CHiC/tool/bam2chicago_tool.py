@@ -165,6 +165,9 @@ class bam2chicagoTool(Tool):
         output_metadata : list
         List of matching metadata dict objects
         """
+        RMAP = "tests/data/test_run_chicago/test.rmap"
+        BAITMAP = "tests/data/test_run_chicago/test.baitmap"
+
         if os.path.isdir(os.path.split(output_files["chinput"])[0]) is False:
             logger.info("creating output directory")
             os.mkdir(os.path.split(output_files["chinput"])[0])
@@ -183,8 +186,8 @@ class bam2chicagoTool(Tool):
 
         results = self.bam2chicago(
             path_bam,
-            input_files["RMAP"],
-            input_files["BAITMAP"],
+            RMAP,
+            BAITMAP,
             output_files["chinput"]
             )
 
@@ -196,8 +199,6 @@ class bam2chicagoTool(Tool):
                 file_type="tar",
                 file_path=output_files["chinput"],
                 sources=[
-                    metadata["RMAP"].file_path,
-                    metadata["BAITMAP"].file_path,
                     metadata["hicup_outdir_tar"].file_path
                     ],
                 taxon_id=metadata["hicup_outdir_tar"].taxon_id,

@@ -117,14 +117,8 @@ class process_CHiC(Workflow):
                     "genome_fa" : metadata["genome_fa"]
                 },
                 {
-                    "RMAP" : output_files["RMAP"],
-                    "Rtree_file_dat" : output_files["Rtree_file_dat"],
-                    "Rtree_file_idx" : output_files["Rtree_file_idx"],
-                    "chr_handler" : output_files["chr_handler"]
                 }
             )
-
-
             logger.info(".rmap file generated succesfully")
 
         except IOError:
@@ -137,22 +131,14 @@ class process_CHiC(Workflow):
                 {
                     "genome_idx" : input_files["genome_idx"],
                     "probes_fa": input_files["probes_fa"],
-                    "Rtree_file_dat": input_files["Rtree_file_dat"],
-                    "Rtree_file_idx": input_files["Rtree_file_idx"],
                     "genome_fa" : input_files["genome_fa"],
-                    "chr_handler" : input_files["chr_handler"]
                 },
                 {
                     "genome_fa" : metadata["genome_fa"],
                     "probes_fa" : metadata["probes_fa"],
-                    "Rtree_file_dat": metadata["Rtree_file_dat"],
-                    "Rtree_file_idx": metadata["Rtree_file_idx"],
                     "genome_idx": metadata["genome_idx"]
                 },
                 {
-                    "bait_sam" : output_files["bait_sam"],
-                    "out_baitmap" : output_files["out_baitmap"],
-                    "out_bam" : output_files["out_bam"]
                 }
             )
 
@@ -166,17 +152,11 @@ class process_CHiC(Workflow):
             design_caller = makeDesignFilesTool(self.configuration)
             design_out, design_meta = design_caller.run(
                 {
-                    "RMAP" : input_files["RMAP"],
-                    "BAITMAP": input_files["BAITMAP"]
+
                 },
                 {
-                    "RMAP" : metadata["RMAP"],
-                    "BAITMAP" : metadata["BAITMAP"]
                 },
                 {
-                    "nbpb" : output_files["nbpb"],
-                    "npb"  : output_files["npb"],
-                    "poe" : output_files["poe"]
                 }
             )
 
@@ -191,13 +171,9 @@ class process_CHiC(Workflow):
             output_files_bam2chicago, output_metadata_bam2chicago = bam2chicago_caller.run(
                 {
                     "hicup_outdir_tar" : input_files["hicup_outdir_tar"],
-                    "RMAP" : input_files["RMAP"],
-                    "BAITMAP" : input_files["BAITMAP"]
                 },
                 {
                     "hicup_outdir_tar" : metadata["hicup_outdir_tar"],
-                    "RMAP" : metadata["RMAP"],
-                    "BAITMAP" : metadata["BAITMAP"]
                 },
                 {
                     "chinput": output_files["chinput"]
