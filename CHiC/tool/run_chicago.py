@@ -20,7 +20,7 @@ import os
 import subprocess
 import sys
 import tarfile
-from shutil import rmtree
+from shutil import rmtree, move
 from utils import logger
 
 try:
@@ -328,8 +328,30 @@ class ChicagoTool(Tool):
         compss_delete_file(out_bam)
 
         compss_wait_on(results)
-        #rmtree(chinput_folder)
-        #move output to the execution folder
+
+        #pull out result files
+        tar = tarfile.open(output_files["output"])
+        tar.extractall(path=self.configuration["execution"])
+        tar.close()
+
+        washu = self.configuration["execution"]+\
+            "/data/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
+
+        pdf = self.configuration["execution"]+\
+            "/examples/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
+
+        move(washu, self.configuration["execution"]+"/"+\
+                    self.configuration["chicago_out_prefix"]+"_washU_text.txt")
+
+        move(pdf, self.configuration["execution"]+"/"+\
+                    self.configuration["chicago_out_prefix"]+"_proxExamples.pdf")
+
+        print("removing ", self.configuration["execution"])
+        rmtree(self.configuration["execution"]+"/data")
+        rmtree(self.configuration["execution"]+"/diag_plots")
+        rmtree(self.configuration["execution"]+"/examples")
+        rmtree(self.configuration["execution"]+"/enrichment_data")
+
 
 
         output_metadata = {
