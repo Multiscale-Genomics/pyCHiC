@@ -327,7 +327,7 @@ class ChicagoTool(Tool):
         compss_delete_file(poe)
         compss_delete_file(out_bam)
 
-        rmtree(hicup_outdir)
+        #rmtree(hicup_outdir)
         rmtree(chinput_folder)
         #move output to the execution folder
         hicup_outdir_tar = "tests/data/test_hicup/output.tar"
