@@ -195,7 +195,6 @@ class bam2chicagoTool(Tool):
                             if file_hdl.endswith(".bam")])
 
         path_bam = folder_name + "/" + bam_file
-        logger.info("does it work????")
         """
 
         folder_name = "tests/data/test_hicup/output"
