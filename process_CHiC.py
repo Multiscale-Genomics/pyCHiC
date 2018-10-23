@@ -22,9 +22,12 @@ from __future__ import print_function
 #Required for ReadTheDocs
 
 import argparse
+import os
+from shutil import move
 
 from basic_modules.workflow import Workflow
 from utils import logger
+
 
 from CHiC.tool.rmap_tool import makeRmapFile
 from CHiC.tool.makeBaitmap import makeBaitmapTool
@@ -211,6 +214,21 @@ class process_CHiC(Workflow):
         output_metadata.update(output_metadata_hicup)
         output_metadata.update(output_metadata_bam2chicago)
         output_metadata.update(output_metadata_chicago)
+
+        #move output_files to the execution directory
+
+        hicup_outdir_tar = "tests/data/test_hicup/output.tar"
+        chinput = "tests/data/test_bam2chicago_tool/output_chinput.chinput"
+        output = "tests/data/test_run_chicago/data_chicago/out_run_chicago.tar"
+
+        hicup_loc = os.path.split(hicup_outdir_tar)[1]
+        chinput_loc = os.path.split(chinput)[1]
+        output_loc = os.path.split(output)[1]
+
+
+        move(hicup_outdir_tar, self.configuration["execution"]+"/"+hicup_loc)
+        move(chinput, self.configuration["execution"]+"/"+chinput_loc)
+        move(output, self.configuration["execution"]+"/"+output_loc)
 
         return output_files, output_metadata
 
