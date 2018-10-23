@@ -22,8 +22,8 @@ import sys
 import tarfile
 from shutil import rmtree
 from utils import logger
-from tool.common import common
-from shutil import copyfile
+from shutil import rmtree
+from shutil import move
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -311,6 +311,9 @@ class ChicagoTool(Tool):
         nbpb = "tests/data/test_run_chicago/test.nbpb"
         npb = "tests/data/test_run_chicago/test.npb"
         poe = "tests/data/test_run_chicago/test.poe"
+        out_bam = "tests/data/test_baitmap/baits.bam"
+        hicup_outdir = "tests/data/test_hicup/output"
+        chinput_folder = "tests/data/test_bam2chicago_tool/output_chinput"
 
 
         compss_delete_file(rtree_file_idx)
@@ -322,7 +325,18 @@ class ChicagoTool(Tool):
         compss_delete_file(npb)
         compss_delete_file(nbpb)
         compss_delete_file(poe)
+        compss_delete_file(out_bam)
 
+        rmtree(hicup_outdir)
+        rmtree(chinput_folder)
+        #move output to the execution folder
+        hicup_outdir_tar = "tests/data/test_hicup/output.tar"
+        chinput = "tests/data/test_bam2chicago_tool/output_chinput.chinput"
+
+        move(hicup_outdir_tar, self.configuration["execution"]+"/"+
+             output_files["hicup_outdir_tar"])
+        move(chinput, self.configuration["execution"]+"/"+output_files["chinput"])
+        move(output, self.configuration["execution"]+"/"+output_files["output"])
 
 
         output_metadata = {
