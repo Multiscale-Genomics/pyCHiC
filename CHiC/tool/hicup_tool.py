@@ -380,7 +380,7 @@ class hicup(Tool):
 
         return True
 
-    def run(self, input_files, metadata, output_files):
+    def run(self, input_files, input_metadata, output_files):
         """
         Function that runs and pass the parameters for
         all the functions
@@ -391,12 +391,21 @@ class hicup(Tool):
         metadata: dict
         output_files: dict
         """
+        if "genome_fa_public" in input_files:
+            input_files["genome_fa"] = input_files.pop("genome_fa_public")
+            input_metadata["genome_fa"] = input_metadata.pop("genome_fa_public")
 
-        output_dir = "tests/data/test_hicup"
-        hicup_outdir_tar = "tests/data/test_hicup/output.tar"
+            input_files["genome_idx"] = input_files.pop("genome_idx_public")
+            input_metadata["genome_idx"] = input_metadata.pop("genome_idx_public")
 
-        if os.path.isdir(output_dir) is False:
-            os.mkdir(output_dir)
+            input_files["bowtie_gen_idx"] = input_files.pop("bowtie_gen_idx_public")
+            input_metadata["bowtie_gen_idx"] = input_metadata.pop("bowtie_gen_idx_public")
+
+
+        #hicup_outdir_tar = "tests/data/test_hicup/output.tar"
+        output_files["hicup_outdir_tar"] = self.configuration["execution"]+"/"+\
+                                           os.path.split(output_files["hicup_outdir_tar"])[1]
+
 
         RE = str(self.configuration["chic_RE_sequence"].replace("|", "^"))
         enzyme = str(self.configuration["chic_RE_name"])
@@ -432,7 +441,7 @@ class hicup(Tool):
             input_files["genome_fa"],
             input_files["fastq1"],
             input_files["fastq2"],
-            hicup_outdir_tar)
+            output_files["hicup_outdir_tar"])
 
         os.remove(genome_d)
         #variable = compss_wait_on(variable)
@@ -443,11 +452,11 @@ class hicup(Tool):
                 file_type="TAR",
                 file_path=output_files["hicup_outdir_tar"],
                 sources=[
-                    metadata["genome_fa"].file_path,
-                    metadata["fastq1"].file_path,
-                    metadata["fastq1"].file_path
+                    input_metadata["genome_fa"].file_path,
+                    input_metadata["fastq1"].file_path,
+                    input_metadata["fastq1"].file_path
                     ],
-                taxon_id=metadata["genome_fa"].taxon_id,
+                taxon_id=input_metadata["genome_fa"].taxon_id,
                 meta_data={"tool": "hicup_tool"}
                 )
         }
