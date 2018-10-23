@@ -317,7 +317,6 @@ class makeRmapFile(Tool):
         rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
         chr_handler = "tests/data/test_baitmap/chr_handler.txt"
         RMAP = "tests/data/test_run_chicago/test.rmap"
-
         rtree = "rtree_file"
 
         self.configuration["renzime"] = {self.configuration["chic_RE_name"] :

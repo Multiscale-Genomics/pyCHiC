@@ -30,14 +30,14 @@ try:
         raise ImportError
     from pycompss.api.parameter import FILE_IN, FILE_OUT, IN
     from pycompss.api.task import task
-    from pycompss.api.api import compss_wait_on
+    from pycompss.api.api import compss_wait_on, compss_delete_file
 except ImportError:
     logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
     logger.warn("          Using mock decorators.")
 
     from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import compss_wait_on # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import compss_wait_on, compss_delete_file # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
@@ -301,7 +301,29 @@ class ChicagoTool(Tool):
                                input_files["poe_chicago"],
                               )
 
-        #results = compss_wait_on(results)
+        #delete files that are not returned to the user
+        rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
+        rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
+        chr_handler = "tests/data/test_baitmap/chr_handler.txt"
+        RMAP = "tests/data/test_run_chicago/test.rmap"
+        out_baitmap = "tests/data/test_run_chicago/test.baitmap"
+        bait_sam = "tests/data/test_baitmap/baits.sam"
+        nbpb = "tests/data/test_run_chicago/test.nbpb"
+        npb = "tests/data/test_run_chicago/test.npb"
+        poe = "tests/data/test_run_chicago/test.poe"
+
+
+        compss_delete_file(rtree_file_idx)
+        compss_delete_file(rtree_file_dat)
+        compss_delete_file(chr_handler)
+        compss_delete_file(RMAP)
+        compss_delete_file(out_baitmap)
+        compss_delete_file(bait_sam)
+        compss_delete_file(npb)
+        compss_delete_file(nbpb)
+        compss_delete_file(poe)
+
+
 
         output_metadata = {
             "output" : Metadata(

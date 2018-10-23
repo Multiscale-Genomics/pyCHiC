@@ -226,6 +226,7 @@ class makeBaitmapTool(Tool):
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
         rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
         chr_handler = "tests/data/test_baitmap/chr_handler.txt"
+        RMAP = "tests/data/test_run_chicago/test.rmap"
         out_baitmap = "tests/data/test_run_chicago/test.baitmap"
         bait_sam = "tests/data/test_baitmap/baits.sam"
 
