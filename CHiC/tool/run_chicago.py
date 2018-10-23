@@ -333,10 +333,10 @@ class ChicagoTool(Tool):
         hicup_outdir_tar = "tests/data/test_hicup/output.tar"
         chinput = "tests/data/test_bam2chicago_tool/output_chinput.chinput"
 
-        move(hicup_outdir_tar, self.configuration["execution"]+"/"+
-             output_files["hicup_outdir_tar"])
-        move(chinput, self.configuration["execution"]+"/"+output_files["chinput"])
-        move(output, self.configuration["execution"]+"/"+output_files["output"])
+        #move(hicup_outdir_tar, self.configuration["execution"]+"/"+
+        #     output_files["hicup_outdir_tar"])
+        #move(chinput, self.configuration["execution"]+"/"+output_files["chinput"])
+        #move(output, self.configuration["execution"]+"/"+output_files["output"])
 
 
         output_metadata = {
