@@ -195,19 +195,6 @@ class bam2chicagoTool(Tool):
                             if file_hdl.endswith(".bam")])
 
         path_bam = folder_name + "/" + bam_file
-        """
-
-        folder_name = "tests/data/test_hicup/output"
-
-        tar = tarfile.open(hicup_outdir_tar)
-        tar.extractall(path="tests/data/test_hicup")
-        tar.close()
-
-        bam_file = "".join([file_hdl for file_hdl in os.listdir(folder_name)
-                            if file_hdl.endswith(".bam")])
-
-        path_bam = folder_name + "/" + bam_file
-        """
 
         results = self.bam2chicago(
             path_bam,
@@ -216,11 +203,6 @@ class bam2chicagoTool(Tool):
             output_files["chinput"]
             )
 
-        #results = compss_wait_on(results)
-        #logger.info("deleting untared hicup folder: "+folder_name)
-        #rmtree(folder_name)
-        #logger.info("deleting chinput folder: "+output_files["chinput"].split(".")[0])
-        #rmtree(output_files["chinput"].split(".")[0])
 
         output_metadata = {
             "chinput" : Metadata(
@@ -236,5 +218,7 @@ class bam2chicagoTool(Tool):
                 meta_data={"tool": "bam2chicago_tool"}
             )
         }
+        logger.info("deleting"+folder_name)
+        rmtree(folder_name)
 
         return output_files, output_metadata
