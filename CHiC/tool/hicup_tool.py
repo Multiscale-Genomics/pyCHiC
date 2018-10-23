@@ -402,6 +402,13 @@ class hicup(Tool):
             input_metadata["bowtie_gen_idx"] = input_metadata.pop("bowtie_gen_idx_public")
 
 
+        #check if there is any digest files and delete it
+        files_dir = os.listdir(".")
+        for file_ in files_dir:
+            if file_.startswith("Digest_"+self.configuration["genome_name"]):
+                os.remove(file_)
+
+
         #hicup_outdir_tar = "tests/data/test_hicup/output.tar"
         output_files["hicup_outdir_tar"] = self.configuration["execution"]+"/"+\
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
