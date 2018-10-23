@@ -168,25 +168,18 @@ class bam2chicagoTool(Tool):
         RMAP = "tests/data/test_run_chicago/test.rmap"
         BAITMAP = "tests/data/test_run_chicago/test.baitmap"
 
-
         #hicup_outdir_tar = "tests/data/test_hicup/output.tar"
         output_files["hicup_outdir_tar"] = self.configuration["execution"]+"/"+\
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
 
 
-
         output_files["chinput"] = self.configuration["execution"]+"/"+\
                                     os.path.split(output_files["chinput"])[1]
 
-        #chinput = "tests/data/test_bam2chicago_tool/output_chinput.chinput"
-
-        #hicup_outdir_tar = "tests/data/test_hicup/output.tar"
 
         folder_name = os.path.split(output_files["hicup_outdir_tar"])[0] + "/"+\
                     "".join(os.path.split(output_files["hicup_outdir_tar"])[1].split(".")[:-1])
 
-        print("folder_name", folder_name)
-        print(output_files["hicup_outdir_tar"])
         tar = tarfile.open(output_files["hicup_outdir_tar"])
         tar.extractall(path="".join(os.path.split(output_files["hicup_outdir_tar"])[0]))
         tar.close()
@@ -203,6 +196,9 @@ class bam2chicagoTool(Tool):
             output_files["chinput"]
             )
 
+        compss_wait_on(results)
+
+        rmtree(folder_name)
 
         output_metadata = {
             "chinput" : Metadata(
@@ -218,7 +214,5 @@ class bam2chicagoTool(Tool):
                 meta_data={"tool": "bam2chicago_tool"}
             )
         }
-        logger.info("deleting"+folder_name)
-        rmtree(folder_name)
 
         return output_files, output_metadata

@@ -264,6 +264,9 @@ class ChicagoTool(Tool):
         output_files["output"] = self.configuration["execution"]+"/"+\
                                     os.path.split(output_files["output"])[1]
 
+        hicup_folder = self.configuration["execution"]+"/"+\
+                                           os.path.split(output_files["hicup_outdir_tar"])[1]
+
 
         command_params = self.get_chicago_params(self.configuration)
 
