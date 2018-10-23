@@ -217,9 +217,6 @@ class process_CHiC(Workflow):
         output_metadata.update(output_metadata_bam2chicago)
         output_metadata.update(output_metadata_chicago)
 
-        #remove useless
-        #rmtree(output_files["hicup_outdir_tar"].split(".")[0])
-
 
         return output_files, output_metadata
 
