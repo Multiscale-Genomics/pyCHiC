@@ -167,12 +167,36 @@ class bam2chicagoTool(Tool):
         """
         RMAP = "tests/data/test_run_chicago/test.rmap"
         BAITMAP = "tests/data/test_run_chicago/test.baitmap"
-        chinput = "tests/data/test_bam2chicago_tool/output_chinput.chinput"
-        hicup_outdir_tar = "tests/data/test_hicup/output.tar"
 
-        if os.path.isdir(os.path.split(chinput)[0]) is False:
-            logger.info("creating output directory")
-            os.mkdir(os.path.split(chinput)[0])
+
+        #hicup_outdir_tar = "tests/data/test_hicup/output.tar"
+        output_files["hicup_outdir_tar"] = self.configuration["execution"]+"/"+\
+                                           os.path.split(output_files["hicup_outdir_tar"])[1]
+
+
+
+        output_files["chinput"] = self.configuration["execution"]+"/"+\
+                                    os.path.split(output_files["chinput"])[1]
+
+        #chinput = "tests/data/test_bam2chicago_tool/output_chinput.chinput"
+
+        #hicup_outdir_tar = "tests/data/test_hicup/output.tar"
+
+        folder_name = os.path.split(output_files["hicup_outdir_tar"])[0] + "/"+\
+                    "".join(os.path.split(output_files["hicup_outdir_tar"])[1].split(".")[:-1])
+
+        print("folder_name", folder_name)
+        print(output_files["hicup_outdir_tar"])
+        tar = tarfile.open(output_files["hicup_outdir_tar"])
+        tar.extractall(path="".join(os.path.split(output_files["hicup_outdir_tar"])[0]))
+        tar.close()
+
+        bam_file = "".join([file_hdl for file_hdl in os.listdir(folder_name)
+                            if file_hdl.endswith(".bam")])
+
+        path_bam = folder_name + "/" + bam_file
+
+        """
 
         folder_name = "tests/data/test_hicup/output"
 
@@ -184,15 +208,20 @@ class bam2chicagoTool(Tool):
                             if file_hdl.endswith(".bam")])
 
         path_bam = folder_name + "/" + bam_file
+        """
 
         results = self.bam2chicago(
             path_bam,
             RMAP,
             BAITMAP,
-            chinput
+            output_files["chinput"]
             )
 
         #results = compss_wait_on(results)
+        logger.info("deleting untared hicup folder: "+folder_name)
+        rmtree(folder_name)
+        logger.info("deleting chinput folder: "+output_files["chinput"].split(".")[0])
+        rmtree(output_files["chinput"].split(".")[0])
 
         output_metadata = {
             "chinput" : Metadata(
@@ -200,7 +229,6 @@ class bam2chicagoTool(Tool):
                 file_type="tar",
                 file_path=output_files["chinput"],
                 sources=[
-                    chinput,
                     RMAP,
                     BAITMAP,
                     path_bam

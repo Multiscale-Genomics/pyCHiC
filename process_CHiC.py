@@ -24,6 +24,7 @@ from __future__ import print_function
 import argparse
 import os
 from shutil import move
+from shutil import rmtree
 
 from basic_modules.workflow import Workflow
 from utils import logger
@@ -180,7 +181,8 @@ class process_CHiC(Workflow):
                     "genome_fa" : metadata["genome_fa"]
                 },
                 {
-                    "chinput": output_files["chinput"]
+                    "chinput": output_files["chinput"],
+                    "hicup_outdir_tar": output_files["hicup_outdir_tar"]
                 }
             )
 
@@ -215,20 +217,9 @@ class process_CHiC(Workflow):
         output_metadata.update(output_metadata_bam2chicago)
         output_metadata.update(output_metadata_chicago)
 
-        #move output_files to the execution directory
+        #remove useless
+        #rmtree(output_files["hicup_outdir_tar"].split(".")[0])
 
-        hicup_outdir_tar = "tests/data/test_hicup/output.tar"
-        chinput = "tests/data/test_bam2chicago_tool/output_chinput.chinput"
-        output = "tests/data/test_run_chicago/data_chicago/out_run_chicago.tar"
-
-        hicup_loc = os.path.split(hicup_outdir_tar)[1]
-        chinput_loc = os.path.split(chinput)[1]
-        output_loc = os.path.split(output)[1]
-
-
-        move(hicup_outdir_tar, self.configuration["execution"]+"/"+hicup_loc)
-        move(chinput, self.configuration["execution"]+"/"+chinput_loc)
-        move(output, self.configuration["execution"]+"/"+output_loc)
 
         return output_files, output_metadata
 

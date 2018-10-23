@@ -261,7 +261,9 @@ class ChicagoTool(Tool):
         """
         #check if the output directory exists, otherwise create it
         chinput = "tests/data/test_run_chicago/data_chicago/GM_rep1.chinput"
-        output = "tests/data/test_run_chicago/data_chicago/out_run_chicago.tar"
+        output_files["output"] = self.configuration["execution"]+"/"+\
+                                    os.path.split(output_files["output"])[1]
+
 
         command_params = self.get_chicago_params(self.configuration)
 
@@ -289,7 +291,7 @@ class ChicagoTool(Tool):
 
         results = self.chicago(final_chinput,
                                self.configuration["chicago_out_prefix"],
-                               output,
+                               output_files["output"],
                                command_params,
                                input_files["setting_file"],
                                input_files["rmap_chicago"],
