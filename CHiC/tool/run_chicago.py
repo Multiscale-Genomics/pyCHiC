@@ -336,7 +336,8 @@ class ChicagoTool(Tool):
             tar.close()
 
         except IOError:
-            logger.fatal("tarfile chicago output could not be extracted")
+            logger.fatal("tarfile chicago output could not be extracted : "+
+                         output_files["output"])
 
         washu = self.configuration["execution"]+\
             "/data/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
