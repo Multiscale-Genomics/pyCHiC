@@ -186,7 +186,6 @@ class ChicagoTool(Tool):
             logger.fatal("chicago stdout" + proc_out)
             logger.fatal("chicago stderr" + proc_err)
 
-
         return tar
 
     @staticmethod
@@ -307,7 +306,7 @@ class ChicagoTool(Tool):
         compss_delete_file(poe)
         compss_delete_file(out_bam)
 
-        compss_wait_on(results)
+        results = compss_wait_on(results)
 
         try:
             os.path.isfile(output_files["output"])
