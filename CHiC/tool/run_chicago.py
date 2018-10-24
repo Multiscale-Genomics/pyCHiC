@@ -329,6 +329,13 @@ class ChicagoTool(Tool):
 
         compss_wait_on(results)
 
+
+        try:
+            os.path.isfile(output_files["output"])
+            logger.info("The file exists")
+        except:
+            logger.fatal("The file does not exists")
+
         #pull out result files
         try:
             tar = tarfile.open(output_files["output"])
