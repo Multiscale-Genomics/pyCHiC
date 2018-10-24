@@ -185,9 +185,9 @@ class ChicagoTool(Tool):
             logger.fatal("chicago failed to generate peak file")
             logger.fatal("chicago stdout" + proc_out)
             logger.fatal("chicago stderr" + proc_err)
-            return False
 
-        return True
+
+        return tar
 
     @staticmethod
     def get_chicago_params(params):
@@ -307,7 +307,7 @@ class ChicagoTool(Tool):
         compss_delete_file(poe)
         compss_delete_file(out_bam)
 
-        compss_wait_on(output_files["output"])
+        compss_wait_on(results)
 
         try:
             os.path.isfile(output_files["output"])
