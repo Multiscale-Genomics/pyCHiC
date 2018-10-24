@@ -332,9 +332,10 @@ class ChicagoTool(Tool):
 
         try:
             os.path.isfile(output_files["output"])
-            os.listdir(os.path.split(output_files)[0])
             logger.info("The file exists")
         except:
+            logger.info(os.path.split(output_files)[0])
+            os.listdir(os.path.split(output_files)[0])
             logger.fatal("The file does not exists")
 
         #pull out result files
