@@ -35,7 +35,7 @@ except ImportError:
 
     from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import compss_wait_on, compss_delete_file # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import compss_wait_on, compss_delete_file, compss_barrier # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
@@ -272,27 +272,7 @@ class ChicagoTool(Tool):
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        """
-        if isinstance(input_files["chinput"], list):
-
-            chinput_folder = os.path.split(input_files["chinput"][0])[0]+"/chinput"
-
-            if os.path.isdir(chinput_folder) is False:
-                os.mkdir(chinput_folder)
-
-            for chinput_fl in input_files["chinput"]:
-                copyfile(chinput_fl, chinput_folder+"/"+os.path.split(chinput_fl)[1])
-
-            common.tar_folder(chinput_folder,
-                              chinput_folder+".tar",
-                              os.path.split(chinput_folder)[1])
-            final_chinput = chinput_folder+".tar"
-
-        else:
-        """
-        final_chinput = chinput
-
-        results = self.chicago(final_chinput,
+        results = self.chicago(chinput,
                                self.configuration["chicago_out_prefix"],
                                output_files["output"],
                                command_params,
@@ -327,8 +307,7 @@ class ChicagoTool(Tool):
         compss_delete_file(poe)
         compss_delete_file(out_bam)
 
-        compss_wait_on(results)
-
+        compss_barrier()
 
         try:
             os.path.isfile(output_files["output"])
