@@ -337,7 +337,7 @@ class ChicagoTool(Tool):
             logger.fatal("The file does not exists")
 
         logger.info(os.path.split(output_files["output"])[0])
-        os.listdir(os.path.split(output_files["output"])[0])
+        logger.info(os.listdir(os.path.split(output_files["output"])[0]))
 
         #pull out result files
         try:
