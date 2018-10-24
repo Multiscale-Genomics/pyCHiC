@@ -330,9 +330,13 @@ class ChicagoTool(Tool):
         compss_wait_on(results)
 
         #pull out result files
-        tar = tarfile.open(output_files["output"])
-        tar.extractall(path=self.configuration["execution"])
-        tar.close()
+        try:
+            tar = tarfile.open(output_files["output"])
+            tar.extractall(path=self.configuration["execution"])
+            tar.close()
+
+        except IOError:
+            logger.fatal("tarfile chicago output could not be extracted")
 
         washu = self.configuration["execution"]+\
             "/data/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
@@ -351,8 +355,6 @@ class ChicagoTool(Tool):
         rmtree(self.configuration["execution"]+"/diag_plots")
         rmtree(self.configuration["execution"]+"/examples")
         rmtree(self.configuration["execution"]+"/enrichment_data")
-
-
 
         output_metadata = {
             "output" : Metadata(
