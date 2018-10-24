@@ -307,7 +307,7 @@ class ChicagoTool(Tool):
         compss_delete_file(poe)
         compss_delete_file(out_bam)
 
-        compss_barrier()
+        compss_wait_on(output_files["output"])
 
         try:
             os.path.isfile(output_files["output"])
