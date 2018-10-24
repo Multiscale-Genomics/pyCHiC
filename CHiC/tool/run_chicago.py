@@ -181,12 +181,14 @@ class ChicagoTool(Tool):
 
             logger.info("Tar folder with chinput output file")
 
+            return tar
+
         except IOError:
             logger.fatal("chicago failed to generate peak file")
             logger.fatal("chicago stdout" + proc_out)
             logger.fatal("chicago stderr" + proc_err)
 
-        return tar
+
 
     @staticmethod
     def get_chicago_params(params):
