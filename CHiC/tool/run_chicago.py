@@ -28,14 +28,14 @@ try:
         raise ImportError
     from pycompss.api.parameter import FILE_IN, FILE_OUT, IN
     from pycompss.api.task import task
-    from pycompss.api.api import compss_wait_on, compss_delete_file, compss_barrier
+    from pycompss.api.api import compss_wait_on, compss_delete_file
 except ImportError:
     logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
     logger.warn("          Using mock decorators.")
 
     from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import compss_wait_on, compss_delete_file, compss_barrier # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import compss_wait_on, compss_delete_file # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
@@ -104,9 +104,9 @@ class ChicagoTool(Tool):
 
     @task(returns=bool, input_files=FILE_IN, output=FILE_OUT, params=IN,
           setting_file=FILE_IN, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_IN,
-          npb=FILE_IN, poe=FILE_IN)
+          npb=FILE_IN, poe=FILE_IN, pdf=FILE_OUT, washu=FILE_OUT)
     def chicago(self, input_files, output_prefix, output, params, setting_file,
-                rmap, baitmap, nbpb, npb, poe):
+                rmap, baitmap, nbpb, npb, poe, pdf, washu):
         """
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
         data :
@@ -173,6 +173,13 @@ class ChicagoTool(Tool):
             tar.add(output_dir+"/enrichment_data",
                     arcname="enrichment_data")
             tar.close()
+
+            move(output_dir+"/data/"+self.configuration["chicago_out_prefix"]+
+                 "_washU_text.txt", washu)
+
+            move(output_dir+"/examples/"+self.configuration["chicago_out_prefix"]+
+                 "_proxExamples.pdf", pdf)
+
 
             rmtree(output_dir+"/data")
             rmtree(output_dir+"/diag_plots")
@@ -262,16 +269,24 @@ class ChicagoTool(Tool):
         """
         #check if the output directory exists, otherwise create it
         chinput = "tests/data/test_run_chicago/data_chicago/GM_rep1.chinput"
+
         output_files["output"] = self.configuration["execution"]+"/"+\
                                     os.path.split(output_files["output"])[1]
 
         hicup_folder = self.configuration["execution"]+"/"+\
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
 
+        washu = self.configuration["execution"]+\
+            "/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
+
+        pdf = self.configuration["execution"]+\
+            "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
+
 
         command_params = self.get_chicago_params(self.configuration)
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
+
 
         results = self.chicago(chinput,
                                self.configuration["chicago_out_prefix"],
@@ -283,6 +298,8 @@ class ChicagoTool(Tool):
                                input_files["nbpb_chicago"],
                                input_files["npb_chicago"],
                                input_files["poe_chicago"],
+                               pdf,
+                               washu
                               )
 
         #delete files that are not returned to the user
@@ -308,8 +325,7 @@ class ChicagoTool(Tool):
         compss_delete_file(poe)
         compss_delete_file(out_bam)
 
-        results = compss_wait_on(results)
-
+        """
         try:
             os.path.isfile(output_files["output"])
             logger.info("The file exists")
@@ -346,7 +362,7 @@ class ChicagoTool(Tool):
         rmtree(self.configuration["execution"]+"/diag_plots")
         rmtree(self.configuration["execution"]+"/examples")
         rmtree(self.configuration["execution"]+"/enrichment_data")
-
+        """
         output_metadata = {
             "output" : Metadata(
                 data_type="chicago_CHIC",
