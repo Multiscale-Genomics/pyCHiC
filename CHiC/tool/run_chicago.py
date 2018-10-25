@@ -28,14 +28,14 @@ try:
         raise ImportError
     from pycompss.api.parameter import FILE_IN, FILE_OUT, IN
     from pycompss.api.task import task
-    from pycompss.api.api import compss_wait_on, compss_delete_file, compss_barrier
+    from pycompss.api.api import compss_wait_on, compss_delete_file
 except ImportError:
     logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
     logger.warn("          Using mock decorators.")
 
     from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import compss_wait_on, compss_delete_file, compss_barrier # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import compss_wait_on, compss_delete_file # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
@@ -174,13 +174,11 @@ class ChicagoTool(Tool):
                     arcname="enrichment_data")
             tar.close()
 
-            move(output_dir+"/data/"+\
-                 self.configuration["chicago_out_prefix"]+"_washU_text.txt"),\
-                 washu
+            move(output_dir+"/data/"+self.configuration["chicago_out_prefix"]+
+                 "_washU_text.txt", washu)
 
-            move(output_dir+"/examples/"+\
-                 self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"),\
-                 pdf
+            move(output_dir+"/examples/"+self.configuration["chicago_out_prefix"]+
+                 "_proxExamples.pdf", pdf)
 
 
             rmtree(output_dir+"/data")
@@ -279,10 +277,10 @@ class ChicagoTool(Tool):
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
 
         washu = self.configuration["execution"]+\
-            "/data/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
+            "/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
 
         pdf = self.configuration["execution"]+\
-            "/examples/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
+            "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
 
 
         command_params = self.get_chicago_params(self.configuration)
@@ -327,6 +325,7 @@ class ChicagoTool(Tool):
         compss_delete_file(poe)
         compss_delete_file(out_bam)
 
+        """
         try:
             os.path.isfile(output_files["output"])
             logger.info("The file exists")
@@ -335,7 +334,7 @@ class ChicagoTool(Tool):
 
         logger.info(os.path.split(output_files["output"])[0])
         logger.info(" ".join(os.listdir(os.path.split(output_files["output"])[0])))
-        """
+
         #pull out result files
         try:
             tar = tarfile.open(output_files["output"])
