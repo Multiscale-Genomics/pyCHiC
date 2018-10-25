@@ -188,7 +188,7 @@ class ChicagoTool(Tool):
 
             logger.info("Tar folder with chinput output file")
 
-            return tar
+            return True
 
         except IOError:
             logger.fatal("chicago failed to generate peak file")
@@ -196,12 +196,6 @@ class ChicagoTool(Tool):
             logger.fatal("chicago stderr" + proc_err)
 
             return False
-
-   # @task(returns=bool, input_files=FILE_IN, output=FILE_OUT, params=IN,
-   #       setting_file=FILE_IN, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_IN,
-   #       npb=FILE_IN, poe=FILE_IN)
-   # def pull_output(tar_output, wash, examples)
-
 
 
     @staticmethod
@@ -251,6 +245,29 @@ class ChicagoTool(Tool):
                         command_params += [command_parameters[param][0]]
 
         return command_params
+
+    @task(returns=bool, tar_output=FILE_IN, wash=FILE_OUT, examples=FILE_OUT)
+    def pull_output(self, tar_output, washu, examples):
+        tar = tarfile.open(tar_output)
+        tar.extractall(path=self.configuration["execution"])
+
+        logger.info(self.configuration["execution"]+"/data/"+\
+             self.configuration["chicago_out_prefix"]+"_washU_text.txt")
+        logger.info(washu)
+
+        move(self.configuration["execution"]+"/data/"+\
+             self.configuration["chicago_out_prefix"]+"_washU_text.txt", washu)
+
+        logger.info(self.configuration["execution"]+"/examples/"+\
+             self.configuration["chicago_out_prefix"]+"_proxExamples.pdf")
+        logger.info(examples)
+
+        move(self.configuration["execution"]+"/examples/"+\
+             self.configuration["chicago_out_prefix"]+"_proxExamples.pdf", examples)
+
+        tar.close()
+
+        return True
 
     def run(self, input_files, input_metadata, output_files):
         """
@@ -307,7 +324,15 @@ class ChicagoTool(Tool):
                                input_files["poe_chicago"]
                               )
 
-        #pull_output
+        washu = self.configuration["execution"]+\
+            "/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
+
+        pdf = self.configuration["execution"]+\
+            "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
+
+
+        pull_output = self.pull_output(output_files["output"],
+                                        washu,pdf)
 
         #delete files that are not returned to the user
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
