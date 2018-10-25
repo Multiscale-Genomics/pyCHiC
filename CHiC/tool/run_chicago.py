@@ -104,9 +104,9 @@ class ChicagoTool(Tool):
 
     @task(returns=bool, input_files=FILE_IN, output=FILE_OUT, params=IN,
           setting_file=FILE_IN, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_IN,
-          npb=FILE_IN, poe=FILE_IN, pdf=FILE_OUT, washu=FILE_OUT)
+          npb=FILE_IN, poe=FILE_IN)
     def chicago(self, input_files, output_prefix, output, params, setting_file,
-                rmap, baitmap, nbpb, npb, poe, pdf, washu):
+                rmap, baitmap, nbpb, npb, poe):
         """
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
         data :
@@ -174,11 +174,11 @@ class ChicagoTool(Tool):
                     arcname="enrichment_data")
             tar.close()
 
-            move(output_dir+"/data/"+self.configuration["chicago_out_prefix"]+
-                 "_washU_text.txt", washu)
+            #move(output_dir+"/data/"+self.configuration["chicago_out_prefix"]+
+            #     "_washU_text.txt", washu)
 
-            move(output_dir+"/examples/"+self.configuration["chicago_out_prefix"]+
-                 "_proxExamples.pdf", pdf)
+            #move(output_dir+"/examples/"+self.configuration["chicago_out_prefix"]+
+            #     "_proxExamples.pdf", pdf)
 
 
             rmtree(output_dir+"/data")
@@ -194,6 +194,13 @@ class ChicagoTool(Tool):
             logger.fatal("chicago failed to generate peak file")
             logger.fatal("chicago stdout" + proc_out)
             logger.fatal("chicago stderr" + proc_err)
+
+            return False
+
+   # @task(returns=bool, input_files=FILE_IN, output=FILE_OUT, params=IN,
+   #       setting_file=FILE_IN, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_IN,
+   #       npb=FILE_IN, poe=FILE_IN)
+   # def pull_output(tar_output, wash, examples)
 
 
 
@@ -297,10 +304,10 @@ class ChicagoTool(Tool):
                                input_files["baitmap_chicago"],
                                input_files["nbpb_chicago"],
                                input_files["npb_chicago"],
-                               input_files["poe_chicago"],
-                               pdf,
-                               washu
+                               input_files["poe_chicago"]
                               )
+
+        #pull_output
 
         #delete files that are not returned to the user
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
