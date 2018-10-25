@@ -174,13 +174,6 @@ class ChicagoTool(Tool):
                     arcname="enrichment_data")
             tar.close()
 
-            #move(output_dir+"/data/"+self.configuration["chicago_out_prefix"]+
-            #     "_washU_text.txt", washu)
-
-            #move(output_dir+"/examples/"+self.configuration["chicago_out_prefix"]+
-            #     "_proxExamples.pdf", pdf)
-
-
             rmtree(output_dir+"/data")
             rmtree(output_dir+"/diag_plots")
             rmtree(output_dir+"/examples")
@@ -250,7 +243,8 @@ class ChicagoTool(Tool):
     def pull_output(self, tar_output, washu, examples):
 
         tar = tarfile.open(tar_output)
-        tar.extractall(path=".")
+        logger.info(os.path.split(tar_output)[0])
+        tar.extractall(path=os.path.split(tar_output)[0])
 
         logger.info(self.configuration["execution"]+"/data/"+\
              self.configuration["chicago_out_prefix"]+"_washU_text.txt")
