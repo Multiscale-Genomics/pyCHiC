@@ -248,8 +248,9 @@ class ChicagoTool(Tool):
 
     @task(returns=bool, tar_output=FILE_IN, wash=FILE_OUT, examples=FILE_OUT)
     def pull_output(self, tar_output, washu, examples):
+
         tar = tarfile.open(tar_output)
-        tar.extractall(path=self.configuration["execution"])
+        tar.extractall(path=".")
 
         logger.info(self.configuration["execution"]+"/data/"+\
              self.configuration["chicago_out_prefix"]+"_washU_text.txt")
