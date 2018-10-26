@@ -20,7 +20,8 @@ import os
 import subprocess
 import sys
 import tarfile
-from shutil import rmtree, move
+from shutil import rmtree
+from shutil import move
 from utils import logger
 
 try:
@@ -160,6 +161,14 @@ class ChicagoTool(Tool):
         proc_out, proc_err = process.communicate()
 
         try:
+
+            move(output_dir+"/data/"+output_prefix+"_washU_text.txt",
+                 output_dir+"/"+output_prefix+"_washU_text.txt")
+
+            move(output_dir+"/examples/"+output_prefix+"_proxExamples.pdf",
+                 output_dir+"/"+output_prefix+"_proxExamples.pdf")
+
+
             tar = tarfile.open(output, "w")
             tar.add(output_dir+"/data",
                     arcname="data")
@@ -244,6 +253,7 @@ class ChicagoTool(Tool):
 
         tar = tarfile.open(tar_output)
         logger.info(os.path.split(tar_output)[0])
+        """
         tar.extractall(path=os.path.split(tar_output)[0])
 
         logger.info(self.configuration["execution"]+"/data/"+\
@@ -261,6 +271,7 @@ class ChicagoTool(Tool):
              self.configuration["chicago_out_prefix"]+"_proxExamples.pdf", examples)
 
         tar.close()
+        """
 
         return True
 
