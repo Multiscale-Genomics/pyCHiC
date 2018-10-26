@@ -20,7 +20,8 @@ import os
 import subprocess
 import sys
 import tarfile
-from shutil import rmtree, move
+from shutil import rmtree
+from shutil import move
 from utils import logger
 
 try:
@@ -160,6 +161,14 @@ class ChicagoTool(Tool):
         proc_out, proc_err = process.communicate()
 
         try:
+
+            move(output_dir+"/data/"+output_prefix+"_washU_text.txt",
+                 output_dir+"/"+output_prefix+"_washU_text.txt")
+
+            move(output_dir+"/examples/"+output_prefix+"_proxExamples.pdf",
+                 output_dir+"/"+output_prefix+"_proxExamples.pdf")
+
+
             tar = tarfile.open(output, "w")
             tar.add(output_dir+"/data",
                     arcname="data")
@@ -173,13 +182,6 @@ class ChicagoTool(Tool):
             tar.add(output_dir+"/enrichment_data",
                     arcname="enrichment_data")
             tar.close()
-
-            #move(output_dir+"/data/"+self.configuration["chicago_out_prefix"]+
-            #     "_washU_text.txt", washu)
-
-            #move(output_dir+"/examples/"+self.configuration["chicago_out_prefix"]+
-            #     "_proxExamples.pdf", pdf)
-
 
             rmtree(output_dir+"/data")
             rmtree(output_dir+"/diag_plots")
@@ -248,8 +250,11 @@ class ChicagoTool(Tool):
 
     @task(returns=bool, tar_output=FILE_IN, wash=FILE_OUT, examples=FILE_OUT)
     def pull_output(self, tar_output, washu, examples):
+
         tar = tarfile.open(tar_output)
-        tar.extractall(path=self.configuration["execution"])
+        logger.info(os.path.split(tar_output)[0])
+        """
+        tar.extractall(path=os.path.split(tar_output)[0])
 
         logger.info(self.configuration["execution"]+"/data/"+\
              self.configuration["chicago_out_prefix"]+"_washU_text.txt")
@@ -266,6 +271,7 @@ class ChicagoTool(Tool):
              self.configuration["chicago_out_prefix"]+"_proxExamples.pdf", examples)
 
         tar.close()
+        """
 
         return True
 
