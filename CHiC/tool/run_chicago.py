@@ -162,11 +162,11 @@ class ChicagoTool(Tool):
 
         try:
 
-            move(output_dir+"/data/"+output_prefix+"_washU_text.txt",
-                 output_dir+"/"+output_prefix+"_washU_text.txt")
+           # move(output_dir+"/data/"+output_prefix+"_washU_text.txt",
+            #     output_dir+"/"+output_prefix+"_washU_text.txt")
 
-            move(output_dir+"/examples/"+output_prefix+"_proxExamples.pdf",
-                 output_dir+"/"+output_prefix+"_proxExamples.pdf")
+            #move(output_dir+"/examples/"+output_prefix+"_proxExamples.pdf",
+            #     output_dir+"/"+output_prefix+"_proxExamples.pdf")
 
 
             tar = tarfile.open(output, "w")
@@ -248,12 +248,13 @@ class ChicagoTool(Tool):
 
         return command_params
 
+    """
     @task(returns=bool, tar_output=FILE_IN, wash=FILE_OUT, examples=FILE_OUT)
     def pull_output(self, tar_output, washu, examples):
 
         tar = tarfile.open(tar_output)
         logger.info(os.path.split(tar_output)[0])
-        """
+
         tar.extractall(path=os.path.split(tar_output)[0])
 
         logger.info(self.configuration["execution"]+"/data/"+\
@@ -271,9 +272,10 @@ class ChicagoTool(Tool):
              self.configuration["chicago_out_prefix"]+"_proxExamples.pdf", examples)
 
         tar.close()
-        """
+
 
         return True
+    """
 
     def run(self, input_files, input_metadata, output_files):
         """
@@ -337,8 +339,8 @@ class ChicagoTool(Tool):
             "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
 
 
-        pull_output = self.pull_output(output_files["output"],
-                                        washu,pdf)
+       # pull_output = self.pull_output(output_files["output"],
+        #                                washu,pdf)
 
         #delete files that are not returned to the user
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
