@@ -250,7 +250,7 @@ class ChicagoTool(Tool):
 
 
     @staticmethod
-    def pull_output(self, tar_output, washu, examples):
+    def pull_output(tar_output, washu, examples):
 
         tar = tarfile.open(tar_output)
         logger.info(os.path.split(tar_output)[0])
@@ -340,7 +340,7 @@ class ChicagoTool(Tool):
 
 
         pull_output = self.pull_output(output_files["output"],
-                                       washu,pdf)
+                                       washu, pdf)
 
         #delete files that are not returned to the user
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
