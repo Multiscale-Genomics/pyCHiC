@@ -249,35 +249,6 @@ class ChicagoTool(Tool):
 
         return command_params
 
-
-    @staticmethod
-    def pull_output(tar_output, washu, examples, prefix):
-
-        tar = tarfile.open(tar_output)
-        logger.info(os.path.split(tar_output)[0])
-
-        tar.extractall(path=os.path.split(tar_output)[0])
-
-        logger.info(os.path.split(tar_output)[0]+"/data/"+\
-             prefix+"_washU_text.txt")
-        logger.info(washu)
-
-        move(os.path.split(tar_output)[0]+"/data/"+\
-             prefix+"_washU_text.txt", washu)
-
-
-        logger.info(os.path.split(tar_output)[0]+"/examples/"+\
-             prefix+"_proxExamples.pdf")
-        logger.info(examples)
-
-        move(os.path.split(tar_output)[0]+"/examples/"+\
-             prefix+"_proxExamples.pdf", examples)
-
-        tar.close()
-
-        return True
-
-
     def run(self, input_files, input_metadata, output_files):
         """
         The main function to run chicago for peak calling. The input files
@@ -340,13 +311,6 @@ class ChicagoTool(Tool):
                                washu,
                                pdf
                                )
-
-
-
-       # pull_output = self.pull_output(output_files["output"],
-       #                                washu,
-       #                                pdf,
-       #                               self.configuration["chicago_out_prefix"])
 
         #delete files that are not returned to the user
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
