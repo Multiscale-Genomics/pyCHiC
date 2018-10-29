@@ -162,7 +162,7 @@ class ChicagoTool(Tool):
 
         try:
 
-           # move(output_dir+"/data/"+output_prefix+"_washU_text.txt",
+            #move(output_dir+"/data/"+output_prefix+"_washU_text.txt",
             #     output_dir+"/"+output_prefix+"_washU_text.txt")
 
             #move(output_dir+"/examples/"+output_prefix+"_proxExamples.pdf",
@@ -248,8 +248,8 @@ class ChicagoTool(Tool):
 
         return command_params
 
-    """
-    @task(returns=bool, tar_output=FILE_IN, wash=FILE_OUT, examples=FILE_OUT)
+
+    @staticmethod
     def pull_output(self, tar_output, washu, examples):
 
         tar = tarfile.open(tar_output)
@@ -330,7 +330,7 @@ class ChicagoTool(Tool):
                                input_files["nbpb_chicago"],
                                input_files["npb_chicago"],
                                input_files["poe_chicago"]
-                              )
+                               )
 
         washu = self.configuration["execution"]+\
             "/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
