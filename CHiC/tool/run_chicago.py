@@ -250,26 +250,27 @@ class ChicagoTool(Tool):
 
 
     @staticmethod
-    def pull_output(tar_output, washu, examples):
+    def pull_output(tar_output, washu, examples, prefix):
 
         tar = tarfile.open(tar_output)
         logger.info(os.path.split(tar_output)[0])
 
         tar.extractall(path=os.path.split(tar_output)[0])
 
-        logger.info(self.configuration["execution"]+"/data/"+\
-             self.configuration["chicago_out_prefix"]+"_washU_text.txt")
+        logger.info(os.path.split(tar_output)[0]+"/data/"+\
+             prefix+"_washU_text.txt")
         logger.info(washu)
 
-        move(self.configuration["execution"]+"/data/"+\
-             self.configuration["chicago_out_prefix"]+"_washU_text.txt", washu)
+        move(os.path.split(tar_output)[0]+"/data/"+\
+             prefix+"_washU_text.txt", washu)
 
-        logger.info(self.configuration["execution"]+"/examples/"+\
-             self.configuration["chicago_out_prefix"]+"_proxExamples.pdf")
+
+        logger.info(os.path.split(tar_output)[0]+"/examples/"+\
+             prefix+"_proxExamples.pdf")
         logger.info(examples)
 
-        move(self.configuration["execution"]+"/examples/"+\
-             self.configuration["chicago_out_prefix"]+"_proxExamples.pdf", examples)
+        move(os.path.split(tar_output)[0]+"/examples/"+\
+             prefix+"_proxExamples.pdf", examples)
 
         tar.close()
 
@@ -340,7 +341,9 @@ class ChicagoTool(Tool):
 
 
         pull_output = self.pull_output(output_files["output"],
-                                       washu, pdf)
+                                       washu,
+                                       pdf,
+                                       self.configuration["chicago_out_prefix"])
 
         #delete files that are not returned to the user
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
