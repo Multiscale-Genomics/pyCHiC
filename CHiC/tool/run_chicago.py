@@ -105,9 +105,9 @@ class ChicagoTool(Tool):
 
     @task(returns=bool, input_files=FILE_IN, output=FILE_OUT, params=IN,
           setting_file=FILE_IN, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_IN,
-          npb=FILE_IN, poe=FILE_IN)
+          npb=FILE_IN, poe=FILE_IN, washu=FILE_OUT )
     def chicago(self, input_files, output_prefix, output, params, setting_file,
-                rmap, baitmap, nbpb, npb, poe):
+                rmap, baitmap, nbpb, npb, poe, washu):
         """
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
         data :
@@ -161,9 +161,12 @@ class ChicagoTool(Tool):
         proc_out, proc_err = process.communicate()
 
         try:
+            logger.info(output_dir+"/data/"+output_prefix+"_washU_text.txt")
+            logger.info(washu)
 
-            #move(output_dir+"/data/"+output_prefix+"_washU_text.txt",
-            #     output_dir+"/"+output_prefix+"_washU_text.txt")
+            move(output_dir+"/data/"+output_prefix+"_washU_text.txt",
+                 washu)
+                 #output_dir+"/"+output_prefix+"_washU_text.txt")
 
             #move(output_dir+"/examples/"+output_prefix+"_proxExamples.pdf",
             #     output_dir+"/"+output_prefix+"_proxExamples.pdf")
@@ -274,7 +277,6 @@ class ChicagoTool(Tool):
 
         tar.close()
 
-
         return True
 
 
@@ -320,6 +322,9 @@ class ChicagoTool(Tool):
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
+        washu = self.configuration["execution"]+\
+            "/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
+
 
         results = self.chicago(chinput,
                                self.configuration["chicago_out_prefix"],
@@ -330,7 +335,8 @@ class ChicagoTool(Tool):
                                input_files["baitmap_chicago"],
                                input_files["nbpb_chicago"],
                                input_files["npb_chicago"],
-                               input_files["poe_chicago"]
+                               input_files["poe_chicago"],
+                               washu
                                )
 
         washu = self.configuration["execution"]+\
@@ -368,44 +374,6 @@ class ChicagoTool(Tool):
         compss_delete_file(poe)
         compss_delete_file(out_bam)
 
-        """
-        try:
-            os.path.isfile(output_files["output"])
-            logger.info("The file exists")
-        except:
-            logger.fatal("The file does not exists")
-
-        logger.info(os.path.split(output_files["output"])[0])
-        logger.info(" ".join(os.listdir(os.path.split(output_files["output"])[0])))
-
-        #pull out result files
-        try:
-            tar = tarfile.open(output_files["output"])
-            tar.extractall(path=self.configuration["execution"])
-            tar.close()
-
-        except IOError:
-            logger.fatal("tarfile chicago output could not be extracted : "+
-                         output_files["output"])
-
-        washu = self.configuration["execution"]+\
-            "/data/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
-
-        pdf = self.configuration["execution"]+\
-            "/examples/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
-
-        move(washu, self.configuration["execution"]+"/"+\
-                    self.configuration["chicago_out_prefix"]+"_washU_text.txt")
-
-        move(pdf, self.configuration["execution"]+"/"+\
-                    self.configuration["chicago_out_prefix"]+"_proxExamples.pdf")
-
-        print("removing ", self.configuration["execution"])
-        rmtree(self.configuration["execution"]+"/data")
-        rmtree(self.configuration["execution"]+"/diag_plots")
-        rmtree(self.configuration["execution"]+"/examples")
-        rmtree(self.configuration["execution"]+"/enrichment_data")
-        """
         output_metadata = {
             "output" : Metadata(
                 data_type="chicago_CHIC",
