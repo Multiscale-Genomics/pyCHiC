@@ -105,9 +105,9 @@ class ChicagoTool(Tool):
 
     @task(returns=bool, input_files=FILE_IN, output=FILE_OUT, params=IN,
           setting_file=FILE_IN, rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_IN,
-          npb=FILE_IN, poe=FILE_IN, washu=FILE_OUT )
+          npb=FILE_IN, poe=FILE_IN, washu=FILE_OUT, pdf=FILE_OUT)
     def chicago(self, input_files, output_prefix, output, params, setting_file,
-                rmap, baitmap, nbpb, npb, poe, washu):
+                rmap, baitmap, nbpb, npb, poe, washu, pdf):
         """
         Run and annotate the Capture-HiC peaks. Chicago will create 4 folders under the outpu_prefix
         data :
@@ -166,11 +166,9 @@ class ChicagoTool(Tool):
 
             move(output_dir+"/data/"+output_prefix+"_washU_text.txt",
                  washu)
-                 #output_dir+"/"+output_prefix+"_washU_text.txt")
 
             move(output_dir+"/examples/"+output_prefix+"_proxExamples.pdf",
                  pdf)
-
 
             tar = tarfile.open(output, "w")
             tar.add(output_dir+"/data",
@@ -339,7 +337,8 @@ class ChicagoTool(Tool):
                                input_files["nbpb_chicago"],
                                input_files["npb_chicago"],
                                input_files["poe_chicago"],
-                               washu
+                               washu,
+                               pdf
                                )
 
 
