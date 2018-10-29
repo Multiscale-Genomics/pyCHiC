@@ -339,8 +339,8 @@ class ChicagoTool(Tool):
             "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
 
 
-       # pull_output = self.pull_output(output_files["output"],
-        #                                washu,pdf)
+        pull_output = self.pull_output(output_files["output"],
+                                       washu,pdf)
 
         #delete files that are not returned to the user
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
