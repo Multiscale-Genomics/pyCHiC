@@ -168,8 +168,8 @@ class ChicagoTool(Tool):
                  washu)
                  #output_dir+"/"+output_prefix+"_washU_text.txt")
 
-            #move(output_dir+"/examples/"+output_prefix+"_proxExamples.pdf",
-            #     output_dir+"/"+output_prefix+"_proxExamples.pdf")
+            move(output_dir+"/examples/"+output_prefix+"_proxExamples.pdf",
+                 pdf)
 
 
             tar = tarfile.open(output, "w")
@@ -325,6 +325,9 @@ class ChicagoTool(Tool):
         washu = self.configuration["execution"]+\
             "/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
 
+        pdf = self.configuration["execution"]+\
+            "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
+
 
         results = self.chicago(chinput,
                                self.configuration["chicago_out_prefix"],
@@ -339,17 +342,12 @@ class ChicagoTool(Tool):
                                washu
                                )
 
-        washu = self.configuration["execution"]+\
-            "/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
-
-        pdf = self.configuration["execution"]+\
-            "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
 
 
-        pull_output = self.pull_output(output_files["output"],
-                                       washu,
-                                       pdf,
-                                       self.configuration["chicago_out_prefix"])
+       # pull_output = self.pull_output(output_files["output"],
+       #                                washu,
+       #                                pdf,
+       #                               self.configuration["chicago_out_prefix"])
 
         #delete files that are not returned to the user
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
