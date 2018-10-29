@@ -275,7 +275,7 @@ class ChicagoTool(Tool):
 
 
         return True
-    """
+
 
     def run(self, input_files, input_metadata, output_files):
         """
