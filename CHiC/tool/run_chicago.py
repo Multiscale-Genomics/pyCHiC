@@ -271,8 +271,19 @@ class ChicagoTool(Tool):
         output_metadata : Dict
             List of matching metadata dict objects
         """
-        #check if the output directory exists, otherwise create it
-        chinput = "tests/data/test_run_chicago/data_chicago/GM_rep1.chinput"
+        #delete files that are not returned to the user
+        rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
+        rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
+        chr_handler = "tests/data/test_baitmap/chr_handler.txt"
+        RMAP = "tests/data/test_run_chicago/test.rmap"
+        out_baitmap = "tests/data/test_run_chicago/test.baitmap"
+        bait_sam = "tests/data/test_baitmap/baits.sam"
+        nbpb = "tests/data/test_run_chicago/test.nbpb"
+        npb = "tests/data/test_run_chicago/test.npb"
+        poe = "tests/data/test_run_chicago/test.poe"
+        out_bam = "tests/data/test_baitmap/baits.bam"
+
+        #chinput = "tests/data/test_run_chicago/data_chicago/GM_rep1.chinput"
 
         output_files["output"] = self.configuration["execution"]+"/"+\
                                     os.path.split(output_files["output"])[1]
@@ -298,31 +309,21 @@ class ChicagoTool(Tool):
             "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
 
 
-        results = self.chicago(chinput,
+        results = self.chicago(output_files["chinput"],
                                self.configuration["chicago_out_prefix"],
                                output_files["output"],
                                command_params,
                                input_files["setting_file"],
-                               input_files["rmap_chicago"],
-                               input_files["baitmap_chicago"],
-                               input_files["nbpb_chicago"],
-                               input_files["npb_chicago"],
-                               input_files["poe_chicago"],
+                               RMAP,
+                               out_baitmap,
+                               nbpb,
+                               npb,
+                               poe,
                                washu,
                                pdf
-                               )
+                              )
 
-        #delete files that are not returned to the user
-        rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
-        rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
-        chr_handler = "tests/data/test_baitmap/chr_handler.txt"
-        RMAP = "tests/data/test_run_chicago/test.rmap"
-        out_baitmap = "tests/data/test_run_chicago/test.baitmap"
-        bait_sam = "tests/data/test_baitmap/baits.sam"
-        nbpb = "tests/data/test_run_chicago/test.nbpb"
-        npb = "tests/data/test_run_chicago/test.npb"
-        poe = "tests/data/test_run_chicago/test.poe"
-        out_bam = "tests/data/test_baitmap/baits.bam"
+
 
         compss_delete_file(rtree_file_idx)
         compss_delete_file(rtree_file_dat)
