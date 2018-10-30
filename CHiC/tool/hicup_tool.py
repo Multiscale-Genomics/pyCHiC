@@ -409,7 +409,6 @@ class hicup(Tool):
                 os.remove(file_)
 
 
-        #hicup_outdir_tar = "tests/data/test_hicup/output.tar"
         output_files["hicup_outdir_tar"] = self.configuration["execution"]+"/"+\
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
 

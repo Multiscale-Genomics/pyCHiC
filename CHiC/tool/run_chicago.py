@@ -284,6 +284,9 @@ class ChicagoTool(Tool):
         out_bam = "tests/data/test_baitmap/baits.bam"
 
         #chinput = "tests/data/test_run_chicago/data_chicago/GM_rep1.chinput"
+        output_files["chinput"] = self.configuration["execution"]+"/"+\
+                                    os.path.split(output_files["chinput"])[1]
+
 
         output_files["output"] = self.configuration["execution"]+"/"+\
                                     os.path.split(output_files["output"])[1]
