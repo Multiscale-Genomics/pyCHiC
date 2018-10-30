@@ -36,7 +36,7 @@
         "_id": "59b7e020d9422a5969b34",
         "data_type": "DNA sequence probes",
         "file_type": "FASTA",
-        "file_path": "tests/data/test_baitmap/baits.fa",
+        "file_path": "tests/data/test_baitmap/h19_promoter.fa",
         "compressed": 0,
         "sources": ["user"],
         "taxon_id": 9606,
