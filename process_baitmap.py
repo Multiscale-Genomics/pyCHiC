@@ -86,22 +86,15 @@ class process_baitmap(Workflow):
                 {
                     "genome_idx": input_files["genome_idx"],
                     "probes_fa": input_files["probes_fa"],
-                    "Rtree_file_dat": input_files["Rtree_file_dat"],
-                    "Rtree_file_idx": input_files["Rtree_file_idx"],
                     "genome_fa": input_files["genome_fa"],
-                    "chr_handler": input_files["chr_handler"]
                 },
                 {
                     "genome_fa": metadata["genome_fa"],
                     "probes_fa": metadata["probes_fa"],
-                    "Rtree_file_dat": metadata["Rtree_file_dat"],
-                    "Rtree_file_idx": metadata["Rtree_file_idx"],
                     "genome_idx": metadata["genome_idx"]
                 },
                 {
-                    "bait_sam": output_files["bait_sam"],
-                    "out_baitmap": output_files["out_baitmap"],
-                    "out_bam": output_files["out_bam"]
+
                 }
             )
 

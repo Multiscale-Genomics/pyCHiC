@@ -30,7 +30,9 @@ def test_rmap_tool():
     """
     path = os.path.join(os.path.dirname(__file__), "data/")
 
-    configuration = {"renzime": {"HindIII": 'A|AGCTT'}}
+    configuration = {"chic_RE_name" : "HindIII",
+                     "chic_RE_sequence" : "A|AGCTT"
+                    }
 
     input_files = {
         "genome_fa": path + "test_baitmap/chr21_hg19.fa",
