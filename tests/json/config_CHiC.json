@@ -73,18 +73,6 @@
             "value": "20000"
         },
         {
-            "name" : "makeDesignFiles_outfilePrefix",
-            "value" : "tests/data/test_run_chicago/test"
-        },
-        {
-            "name" : "makeDesignFiles_rmap",
-            "value" : "tests/data/test_run_chicago/test.rmap"
-        },
-        {
-            "name" : "makeDesignFiles_baitmap",
-            "value" : "tests/data/test_run_chicago/test.baitmap"
-        },
-        {
             "name": "quiet_progress",
             "value": "True"
         },
