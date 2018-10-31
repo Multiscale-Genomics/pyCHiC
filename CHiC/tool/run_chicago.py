@@ -249,35 +249,6 @@ class ChicagoTool(Tool):
 
         return command_params
 
-
-    @staticmethod
-    def pull_output(tar_output, washu, examples, prefix):
-
-        tar = tarfile.open(tar_output)
-        logger.info(os.path.split(tar_output)[0])
-
-        tar.extractall(path=os.path.split(tar_output)[0])
-
-        logger.info(os.path.split(tar_output)[0]+"/data/"+\
-             prefix+"_washU_text.txt")
-        logger.info(washu)
-
-        move(os.path.split(tar_output)[0]+"/data/"+\
-             prefix+"_washU_text.txt", washu)
-
-
-        logger.info(os.path.split(tar_output)[0]+"/examples/"+\
-             prefix+"_proxExamples.pdf")
-        logger.info(examples)
-
-        move(os.path.split(tar_output)[0]+"/examples/"+\
-             prefix+"_proxExamples.pdf", examples)
-
-        tar.close()
-
-        return True
-
-
     def run(self, input_files, input_metadata, output_files):
         """
         The main function to run chicago for peak calling. The input files
@@ -300,8 +271,22 @@ class ChicagoTool(Tool):
         output_metadata : Dict
             List of matching metadata dict objects
         """
-        #check if the output directory exists, otherwise create it
-        chinput = "tests/data/test_run_chicago/data_chicago/GM_rep1.chinput"
+        #delete files that are not returned to the user
+        rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
+        rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
+        chr_handler = "tests/data/test_baitmap/chr_handler.txt"
+        RMAP = "tests/data/test_run_chicago/test.rmap"
+        out_baitmap = "tests/data/test_run_chicago/test.baitmap"
+        bait_sam = "tests/data/test_baitmap/baits.sam"
+        nbpb = "tests/data/test_run_chicago/test.nbpb"
+        npb = "tests/data/test_run_chicago/test.npb"
+        poe = "tests/data/test_run_chicago/test.poe"
+        out_bam = "tests/data/test_baitmap/baits.bam"
+
+        #chinput = "tests/data/test_run_chicago/data_chicago/GM_rep1.chinput"
+        output_files["chinput"] = self.configuration["execution"]+"/"+\
+                                    os.path.split(output_files["chinput"])[1]
+
 
         output_files["output"] = self.configuration["execution"]+"/"+\
                                     os.path.split(output_files["output"])[1]
@@ -327,38 +312,21 @@ class ChicagoTool(Tool):
             "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
 
 
-        results = self.chicago(chinput,
+        results = self.chicago(output_files["chinput"],
                                self.configuration["chicago_out_prefix"],
                                output_files["output"],
                                command_params,
                                input_files["setting_file"],
-                               input_files["rmap_chicago"],
-                               input_files["baitmap_chicago"],
-                               input_files["nbpb_chicago"],
-                               input_files["npb_chicago"],
-                               input_files["poe_chicago"],
+                               RMAP,
+                               out_baitmap,
+                               nbpb,
+                               npb,
+                               poe,
                                washu,
                                pdf
-                               )
+                              )
 
 
-
-       # pull_output = self.pull_output(output_files["output"],
-       #                                washu,
-       #                                pdf,
-       #                               self.configuration["chicago_out_prefix"])
-
-        #delete files that are not returned to the user
-        rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
-        rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
-        chr_handler = "tests/data/test_baitmap/chr_handler.txt"
-        RMAP = "tests/data/test_run_chicago/test.rmap"
-        out_baitmap = "tests/data/test_run_chicago/test.baitmap"
-        bait_sam = "tests/data/test_baitmap/baits.sam"
-        nbpb = "tests/data/test_run_chicago/test.nbpb"
-        npb = "tests/data/test_run_chicago/test.npb"
-        poe = "tests/data/test_run_chicago/test.poe"
-        out_bam = "tests/data/test_baitmap/baits.bam"
 
         compss_delete_file(rtree_file_idx)
         compss_delete_file(rtree_file_dat)

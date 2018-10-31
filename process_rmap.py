@@ -89,14 +89,9 @@ class process_rmap(Workflow):
                     "genome_fa" : metadata["genome_fa"]
                 },
                 {
-                    "RMAP" : output_files["RMAP"],
-                    "Rtree_file_dat" : output_files["Rtree_file_dat"],
-                    "Rtree_file_idx" : output_files["Rtree_file_idx"],
-                    "chr_handler" : output_files["chr_handler"]
+
                 }
             )
-
-
 
             logger.info(".rmap file generated succesfully")
 

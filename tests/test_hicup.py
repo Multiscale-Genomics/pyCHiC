@@ -28,19 +28,22 @@ def test_hicup():
 
     input_files = {
         "genome_fa" : path + "test_baitmap/chr21_hg19.fa",
-        "fastq1" : path + "test_truncater/SRR3535023_1.fastq",
-        "fastq2" : path + "test_truncater/SRR3535023_2.fastq",
+        "fastq1" : path + "test_truncater/SRR3535023_1_chr21.hicup.fastq",
+        "fastq2" : path + "test_truncater/SRR3535023_2_chr21.hicup.fastq",
         "bowtie_gen_idx" : path + "test_baitmap/chr21_hg19.fa.bt2.tar.gz"
     }
 
     configuration = {
         "hicup_renzyme" : "A^AGCTT,HindIII",
+        "chic_RE_sequence" : "A^AGCTT",
+        "chic_RE_name" : "HindIII",
         "genome_name" : "test_hg19",
         "hicup_bowtie2_loc": "/usr/bin/bowtie2",
         "hicup_longest": "800",
         "hicup_shortest": "150",
         "hicup_outdir": path + "test_hicup/output",
         "hicup_zip": "True",
+        "execution" : path + "test_baitmap"
     }
 
     output_files = {

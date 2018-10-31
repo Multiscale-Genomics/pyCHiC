@@ -9,8 +9,12 @@
     ],
     "arguments": [
         {
-            "name": "renzime",
-            "value": {"HindIII" : "A|AGCTT"}
+            "name": "chic_RE_name",
+            "value": "HindIII"
+        },
+        {
+            "name": "chic_RE_sequence",
+            "value": "A|AGCTT"
         }
     ],
     "output_files": [

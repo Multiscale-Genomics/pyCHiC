@@ -116,6 +116,8 @@ class bam2chicagoTool(Tool):
         """
         out_folder = "".join(chinput.split(".")[0])
 
+
+
         try:
             bam2chicago_script = os.path.join(os.path.dirname(__file__), "scripts/bam2chicago.sh")
 
@@ -129,9 +131,8 @@ class bam2chicagoTool(Tool):
 
             process = subprocess.Popen(
                 ' '.join(args),
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
+                shell=True
+                )
 
             process.wait()
 
@@ -144,6 +145,35 @@ class bam2chicagoTool(Tool):
             logger.fatal("bam2chicago failed to generate chicago output files =(")
             return False
 
+    @staticmethod
+    def sort_chicago(bamfile, sorted_bam):
+        """
+        This function sort bamfile by name of the reads as bam2chicago requires
+
+        Parameters
+        ----------
+        bamfile: str
+        sorted_bam: str
+
+        Returns
+        -------
+        sorted_bam: str
+        """
+        logger.info("Sorting bamfile")
+
+        args = ["samtools", "sort", "-n", bamfile, "-o", sorted_bam]
+
+        logger.info("bam2chicago CMD: " + " ".join(args))
+
+        process = subprocess.Popen(
+            ' '.join(args),
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+
+        process.wait()
+
+        return sorted_bam
 
     def run(self, input_files, input_metadata, output_files):
         """
@@ -188,9 +218,13 @@ class bam2chicagoTool(Tool):
                             if file_hdl.endswith(".bam")])
 
         path_bam = folder_name + "/" + bam_file
+        sorted_bam = folder_name + "/" + "sorted_bam"
+
+
+        sorted_bam = self.sort_chicago(path_bam, sorted_bam)
 
         results = self.bam2chicago(
-            path_bam,
+            sorted_bam,
             RMAP,
             BAITMAP,
             output_files["chinput"]
