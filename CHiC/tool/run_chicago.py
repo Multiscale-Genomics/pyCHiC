@@ -241,11 +241,6 @@ class ChicagoTool(Tool):
 
         for param in params:
             if param in command_parameters and params[param] != "None":
-                if command_parameters[param][0] == "--export-format":
-                    command_params += [command_parameters[param][0],
-                                       str(",".join(params[param]))
-                                      ]
-                    continue
                 if command_parameters[param][1]:
                     command_params += [command_parameters[param][0], params[param]]
                 else:
