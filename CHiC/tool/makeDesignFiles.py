@@ -197,6 +197,9 @@ class makeDesignFilesTool(Tool):
             List of matching metadata dict objects.
         """
 
+        self.configuration["makeDesignFiles_outfilePrefix"] = "tests/data/test_run_chicago/test"
+        self.configuration["makeDesignFiles_rmap"] = "tests/data/test_run_chicago/test.rmap"
+        self.configuration["makeDesignFiles_baitmap"] = "tests/data/test_run_chicago/test.baitmap"
 
         RMAP = "tests/data/test_run_chicago/test.rmap"
         BAITMAP = "tests/data/test_run_chicago/test.baitmap"

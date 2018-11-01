@@ -73,28 +73,12 @@
             "value": "20000"
         },
         {
-            "name" : "makeDesignFiles_outfilePrefix",
-            "value" : "tests/data/test_run_chicago/test"
-        },
-        {
-            "name" : "makeDesignFiles_rmap",
-            "value" : "tests/data/test_run_chicago/test.rmap"
-        },
-        {
-            "name" : "makeDesignFiles_baitmap",
-            "value" : "tests/data/test_run_chicago/test.baitmap"
-        },
-        {
             "name": "quiet_progress",
             "value": "True"
         },
         {
             "name": "threads",
             "value": "2"
-        },
-        {
-            "name": "outdir",
-            "value": "tests/data/test_truncater"
         },
         {
             "name": "genome_name",
@@ -110,20 +94,12 @@
             "value": "/home/compss/bin/bowtie2"
         },
         {
-            "name": "",
-            "value": "/usr/bin/bowtie2"
-        },
-        {
             "name": "hicup_longest",
             "value": "800"
         },
         {
             "name": "hicup_shortest",
             "value": "150"
-        },
-        {
-            "name": "hicup_outdir",
-            "value": "tests/data/test_hicup/output"
         },
         {
             "name": "hicup_zip",
@@ -139,7 +115,7 @@
         },
         {
             "name": "chicago_export_format",
-            "value": "washU_text"
+            "value": ["washU_text"]
         },
         {
             "name": "chicago_examples_prox_dist",
@@ -156,12 +132,7 @@
         {
             "name": "chicago_en_sample_no",
             "value": "100"
-        },
-        {
-            "name": "chicago_design_dir",
-            "value": "tests/data/test_run_chicago/data_chicago"
         }
-
     ],
     "output_files": [
         {

@@ -413,6 +413,9 @@ class hicup(Tool):
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
 
 
+        self.configuration["hicup_outdir"] = output_files["hicup_outdir_tar"].split(".")[0]
+
+
         RE = str(self.configuration["chic_RE_sequence"].replace("|", "^"))
         enzyme = str(self.configuration["chic_RE_name"])
 
