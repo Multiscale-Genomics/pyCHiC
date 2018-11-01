@@ -241,12 +241,18 @@ class ChicagoTool(Tool):
 
         for param in params:
             if param in command_parameters and params[param] != "None":
+                if command_parameters[param][0] == "--export-format":
+                    command_params += [command_parameters[param][0],
+                                       str(",".join(params[param]))
+                                      ]
+                    continue
                 if command_parameters[param][1]:
                     command_params += [command_parameters[param][0], params[param]]
                 else:
                     if command_parameters[param][0]:
                         command_params += [command_parameters[param][0]]
 
+        print(command_params)
         return command_params
 
     def run(self, input_files, input_metadata, output_files):
@@ -282,6 +288,9 @@ class ChicagoTool(Tool):
         npb = "tests/data/test_run_chicago/test.npb"
         poe = "tests/data/test_run_chicago/test.poe"
         out_bam = "tests/data/test_baitmap/baits.bam"
+
+
+        self.configuration["chicago_design_dir"] = "tests/data/test_run_chicago/data_chicago"
 
         #chinput = "tests/data/test_run_chicago/data_chicago/GM_rep1.chinput"
         output_files["chinput"] = self.configuration["execution"]+"/"+\
@@ -325,8 +334,6 @@ class ChicagoTool(Tool):
                                washu,
                                pdf
                               )
-
-
 
         compss_delete_file(rtree_file_idx)
         compss_delete_file(rtree_file_dat)
