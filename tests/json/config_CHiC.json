@@ -90,7 +90,7 @@
         },
         {
             "name": "chicago_export_format",
-            "value": ["washU_text"]
+            "value": "washU_text"
         },
         {
             "name": "chicago_examples_prox_dist",
