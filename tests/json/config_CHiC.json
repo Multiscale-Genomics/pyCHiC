@@ -81,10 +81,6 @@
             "value": "150"
         },
         {
-            "name": "hicup_zip",
-            "value": "True"
-        },
-        {
             "name": "chicago_out_prefix",
             "value": "output_test"
         },
