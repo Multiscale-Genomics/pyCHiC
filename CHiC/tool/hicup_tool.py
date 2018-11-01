@@ -402,6 +402,7 @@ class hicup(Tool):
             input_metadata["bowtie_gen_idx"] = input_metadata.pop("bowtie_gen_idx_public")
 
         self.configuration["genome_name"] = "digested_genome"
+        self.configuration["hicup_zip"] = "True"
 
         #check if there is any digest files and delete it
         files_dir = os.listdir(".")
