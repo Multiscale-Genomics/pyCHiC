@@ -73,27 +73,6 @@
             "value": "20000"
         },
         {
-            "name": "quiet_progress",
-            "value": "True"
-        },
-        {
-            "name": "threads",
-            "value": "2"
-        },
-        {
-            "name": "genome_name",
-            "value": "test_hg19"
-        },
-        {
-            "name": "hicup_bowtie2_loc",
-            "description": "Location of the bowtie2 executables",
-            "help": "Location of the bowtie2 executables",
-            "type": "string",
-            "required": true,
-            "default": "/home/compss/bin/bowtie2",
-            "value": "/home/compss/bin/bowtie2"
-        },
-        {
             "name": "hicup_longest",
             "value": "800"
         },

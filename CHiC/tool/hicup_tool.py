@@ -169,8 +169,7 @@ class hicup(Tool):
             "hicup_quite": ["--quiet", False],
             "hicup_temp": ["--temp", False],
             "hicup_version": ["--version", False],
-            "hicup_zip": ["--zip", False],
-            "hicup_threads": ["--threads", True]
+            "hicup_zip": ["--zip", False]
             }
 
         for param in params:
@@ -305,6 +304,7 @@ class hicup(Tool):
             ]
 
         hicup_args = hicup_args + params + ["--bowtie2", "/home/compss/bin/bowtie2",
+                                            "--threads", "2",
                                             "--outdir", folder]
 
         logger.info("arguments for hicup:" + " ".join(hicup_args))
@@ -401,6 +401,7 @@ class hicup(Tool):
             input_files["bowtie_gen_idx"] = input_files.pop("bowtie_gen_idx_public")
             input_metadata["bowtie_gen_idx"] = input_metadata.pop("bowtie_gen_idx_public")
 
+        self.configuration["genome_name"] = "digested_genome"
 
         #check if there is any digest files and delete it
         files_dir = os.listdir(".")
