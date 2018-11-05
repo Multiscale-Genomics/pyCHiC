@@ -355,6 +355,36 @@ class ChicagoTool(Tool):
                 meta_data={
                     "tool": "run_chicago"
                 }
+            ),
+
+            "washu" : Metadata(
+                data_type="chicago_CHIC",
+                file_type="TXT",
+                file_path=output_files["output"],
+                sources=[
+                    input_metadata["genome_fa"].file_path,
+                    input_metadata["fastq1"].file_path,
+                    input_metadata["fastq2"].file_path
+                ],
+                taxon_id=input_metadata["genome_fa"].taxon_id,
+                meta_data={
+                    "tool": "run_chicago"
+                }
+            ),
+
+            "examples" : Metadata(
+                data_type="chicago_CHIC",
+                file_type="PDF",
+                file_path=output_files["output"],
+                sources=[
+                    input_metadata["genome_fa"].file_path,
+                    input_metadata["fastq1"].file_path,
+                    input_metadata["fastq2"].file_path
+                ],
+                taxon_id=input_metadata["genome_fa"].taxon_id,
+                meta_data={
+                    "tool": "run_chicago"
+                }
             )
         }
 

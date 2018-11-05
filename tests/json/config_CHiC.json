@@ -157,6 +157,38 @@
                 "data_type": "tar",
                 "compressed": "null"
             }
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "washu",
+            "file": {
+                "file_type": "tar",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "bam2chicago",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_baitmap/output_test_washU_text.txt",
+                "data_type": "tar",
+                "compressed": "null"
+            }
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "examples",
+            "file": {
+                "file_type": "tar",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "bam2chicago",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/test_baitmap/output_test_proxExamples.pdf",
+                "data_type": "tar",
+                "compressed": "null"
+            }
         }
 
     ]
