@@ -247,7 +247,7 @@ class hicup(Tool):
 
 
     def hicup_alig_filt(self, params, genome_digest, genome_index,
-                        genome_loc, fastq1, fastq2, outdir_tar):
+                        genome_loc, fastq1, fastq2, outdir_tar, input_files):
         """
         This function aling the HiC read into a reference
         genome and filter them
@@ -274,26 +274,30 @@ class hicup(Tool):
         if os.path.isdir(folder) is False:
             os.mkdir(folder)
 
-        index_files = {
-            "1.bt2": genome_loc + ".1.bt2",
-            "2.bt2": genome_loc + ".2.bt2",
-            "3.bt2": genome_loc + ".3.bt2",
-            "4.bt2": genome_loc + ".4.bt2",
-            "rev.1.bt2": genome_loc + ".rev.1.bt2",
-            "rev.2.bt2": genome_loc + ".rev.2.bt2"
-        }
+        if "genome_fa_public" in input_files:
+            genome_loc = "/orozco/services/MuGdev/MuG_public/refGenomes/hg19/BOWTIE2/bt2/hg19.fa"
 
-        logger.progress("Untar Index: "+genome_loc+", "+genome_index)
-        self.untar_index(
-            genome_loc,
-            genome_index,
-            index_files["1.bt2"],
-            index_files["2.bt2"],
-            index_files["3.bt2"],
-            index_files["4.bt2"],
-            index_files["rev.1.bt2"],
-            index_files["rev.2.bt2"]
-            )
+        else:
+            index_files = {
+                "1.bt2": genome_loc + ".1.bt2",
+                "2.bt2": genome_loc + ".2.bt2",
+                "3.bt2": genome_loc + ".3.bt2",
+                "4.bt2": genome_loc + ".4.bt2",
+                "rev.1.bt2": genome_loc + ".rev.1.bt2",
+                "rev.2.bt2": genome_loc + ".rev.2.bt2"
+            }
+
+            logger.progress("Untar Index: "+genome_loc+", "+genome_index)
+            self.untar_index(
+                genome_loc,
+                genome_index,
+                index_files["1.bt2"],
+                index_files["2.bt2"],
+                index_files["3.bt2"],
+                index_files["4.bt2"],
+                index_files["rev.1.bt2"],
+                index_files["rev.2.bt2"]
+                )
 
         hicup_args = [
             "hicup",
@@ -353,9 +357,10 @@ class hicup(Tool):
           genome_loc=FILE_IN,
           fastq1=FILE_IN,
           fastq2=FILE_IN,
-          outdir_tar=FILE_OUT)
+          outdir_tar=FILE_OUT,
+          input_files=IN)
     def hicup_alig_filt_runner(self, params, genome_digest, genome_index,
-                               genome_loc, fastq1, fastq2, outdir_tar):
+                               genome_loc, fastq1, fastq2, outdir_tar, input_files):
         """
         This function runs the hicup_alig_filt
 
@@ -376,7 +381,7 @@ class hicup(Tool):
         Bool
         """
         self.hicup_alig_filt(params, genome_digest, genome_index,
-                             genome_loc, fastq1, fastq2, outdir_tar)
+                             genome_loc, fastq1, fastq2, outdir_tar, input_files)
 
         return True
 
@@ -452,7 +457,8 @@ class hicup(Tool):
             input_files["genome_fa"],
             input_files["fastq1"],
             input_files["fastq2"],
-            output_files["hicup_outdir_tar"])
+            output_files["hicup_outdir_tar"],
+            input_files)
 
         os.remove(genome_d)
         #variable = compss_wait_on(variable)
