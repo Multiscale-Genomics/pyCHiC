@@ -277,30 +277,30 @@ class hicup(Tool):
         if os.path.isdir(folder) is False:
             os.mkdir(folder)
 
-        if "genome_fa_public" in input_files:
-            genome_loc = "/orozco/services/MuGdev/MuG_public/refGenomes/hg19/BOWTIE2/bt2/hg19.fa"
+        #if "genome_fa_public" in input_files:
+        #    genome_loc = "/orozco/services/MuGdev/MuG_public/refGenomes/hg19/BOWTIE2/bt2/hg19.fa"
 
-        else:
-            index_files = {
-                "1.bt2": genome_loc + ".1.bt2",
-                "2.bt2": genome_loc + ".2.bt2",
-                "3.bt2": genome_loc + ".3.bt2",
-                "4.bt2": genome_loc + ".4.bt2",
-                "rev.1.bt2": genome_loc + ".rev.1.bt2",
-                "rev.2.bt2": genome_loc + ".rev.2.bt2"
-            }
 
-            logger.progress("Untar Index: "+genome_loc+", "+genome_index)
-            self.untar_index(
-                genome_loc,
-                genome_index,
-                index_files["1.bt2"],
-                index_files["2.bt2"],
-                index_files["3.bt2"],
-                index_files["4.bt2"],
-                index_files["rev.1.bt2"],
-                index_files["rev.2.bt2"]
-                )
+        index_files = {
+            "1.bt2": genome_loc + ".1.bt2",
+            "2.bt2": genome_loc + ".2.bt2",
+            "3.bt2": genome_loc + ".3.bt2",
+            "4.bt2": genome_loc + ".4.bt2",
+            "rev.1.bt2": genome_loc + ".rev.1.bt2",
+            "rev.2.bt2": genome_loc + ".rev.2.bt2"
+        }
+
+        logger.progress("Untar Index: "+genome_loc+", "+genome_index)
+        self.untar_index(
+            genome_loc,
+            genome_index,
+            index_files["1.bt2"],
+            index_files["2.bt2"],
+            index_files["3.bt2"],
+            index_files["4.bt2"],
+            index_files["rev.1.bt2"],
+            index_files["rev.2.bt2"]
+            )
 
         hicup_args = [
             "hicup",
@@ -452,8 +452,6 @@ class hicup(Tool):
 
         #if os.path.isdir(self.configuration["hicup_outdir"]) is False:
         #    os.mkdir(self.configuration["hicup_outdir"])
-
-        if "genome_fa_public" in input_files:
 
 
         variable = self.hicup_alig_filt(# pylint: disable=too-many-locals,too-many-arguments
