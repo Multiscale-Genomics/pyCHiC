@@ -110,6 +110,7 @@ class hicup(Tool):
 
         return True
 
+
     @staticmethod
     def get_hicup_params(params):
         """
