@@ -85,6 +85,15 @@ class process_CHiC(Workflow):
         output_metadata
 
         """
+        if "genome_fa_public" in input_files:
+            input_files["genome_fa"] = input_files.pop("genome_fa_public")
+            metadata["genome_fa"] = metadata.pop("genome_fa_public")
+
+            input_files["genome_idx"] = input_files.pop("genome_idx_public")
+            metadata["genome_idx"] = metadata.pop("genome_idx_public")
+
+            input_files["bowtie_gen_idx"] = input_files.pop("bowtie_gen_idx_public")
+            metadata["bowtie_gen_idx"] = metadata.pop("bowtie_gen_idx_public")
 
 
         #call hicup
