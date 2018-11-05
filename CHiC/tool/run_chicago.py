@@ -357,7 +357,7 @@ class ChicagoTool(Tool):
                 }
             ),
 
-            "washu" : Metadata(
+            "washU_text" : Metadata(
                 data_type="chicago_CHIC",
                 file_type="TXT",
                 file_path=output_files["output"],
@@ -372,7 +372,7 @@ class ChicagoTool(Tool):
                 }
             ),
 
-            "examples" : Metadata(
+            "pdf_examples" : Metadata(
                 data_type="chicago_CHIC",
                 file_type="PDF",
                 file_path=output_files["output"],
