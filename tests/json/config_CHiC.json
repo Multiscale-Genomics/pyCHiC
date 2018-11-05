@@ -161,7 +161,7 @@
         {
             "required": true,
             "allow_multiple": false,
-            "name": "washu",
+            "name": "washU_text",
             "file": {
                 "file_type": "tar",
                 "meta_data": {
@@ -177,7 +177,7 @@
         {
             "required": true,
             "allow_multiple": false,
-            "name": "examples",
+            "name": "pdf_examples",
             "file": {
                 "file_type": "tar",
                 "meta_data": {
