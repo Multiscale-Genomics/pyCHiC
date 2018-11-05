@@ -66,6 +66,9 @@ class hicup(Tool):
 
         self.configuration.update(configuration)
 
+    @task(returns=bool, genome_file_name=IN, genome_idx=FILE_IN,
+          bt2_1_file=FILE_OUT, bt2_2_file=FILE_OUT, bt2_3_file=FILE_OUT,
+          bt2_4_file=FILE_OUT, bt2_rev1_file=FILE_OUT, bt2_rev2_file=FILE_OUT)
     def untar_index(  # pylint: disable=too-many-locals,too-many-arguments
             self, genome_file_name, genome_idx,
             bt2_1_file, bt2_2_file, bt2_3_file, bt2_4_file,
@@ -449,6 +452,9 @@ class hicup(Tool):
 
         #if os.path.isdir(self.configuration["hicup_outdir"]) is False:
         #    os.mkdir(self.configuration["hicup_outdir"])
+
+        if "genome_fa_public" in input_files:
+
 
         variable = self.hicup_alig_filt(# pylint: disable=too-many-locals,too-many-arguments
             parameters_hicup,
