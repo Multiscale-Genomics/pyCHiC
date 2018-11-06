@@ -66,9 +66,9 @@ class hicup(Tool):
 
         self.configuration.update(configuration)
 
-    #@task(returns=bool, genome_file_name=IN, genome_idx=FILE_IN,
-    #      bt2_1_file=FILE_OUT, bt2_2_file=FILE_OUT, bt2_3_file=FILE_OUT,
-    #      bt2_4_file=FILE_OUT, bt2_rev1_file=FILE_OUT, bt2_rev2_file=FILE_OUT)
+    @task(returns=bool, genome_file_name=IN, genome_idx=FILE_IN,
+          bt2_1_file=FILE_OUT, bt2_2_file=FILE_OUT, bt2_3_file=FILE_OUT,
+          bt2_4_file=FILE_OUT, bt2_rev1_file=FILE_OUT, bt2_rev2_file=FILE_OUT)
     def untar_index(  # pylint: disable=too-many-locals,too-many-arguments
             self, genome_file_name, genome_idx,
             bt2_1_file, bt2_2_file, bt2_3_file, bt2_4_file,
@@ -251,7 +251,9 @@ class hicup(Tool):
 
 
     def hicup_alig_filt(self, params, genome_digest, genome_index,
-                        genome_loc, fastq1, fastq2, outdir_tar):
+                        genome_loc, fastq1, fastq2, outdir_tar,
+                        bt2_1, bt2_2, bt2_3, bt2_4, bt2_rev_1,
+                        bt2_rev_2):
         """
         This function aling the HiC read into a reference
         genome and filter them
@@ -334,10 +336,18 @@ class hicup(Tool):
           genome_loc=FILE_IN,
           fastq1=FILE_IN,
           fastq2=FILE_IN,
-          outdir_tar=FILE_OUT
-          )
+          outdir_tar=FILE_OUT,
+          bt2_1=FILE_IN,
+          bt2_2=FILE_IN,
+          bt2_3=FILE_IN,
+          bt2_4=FILE_IN,
+          bt2_rev_1=FILE_IN,
+          bt2_rev_2=FILE_IN
+         )
     def hicup_alig_filt_runner(self, params, genome_digest, genome_index,
-                               genome_loc, fastq1, fastq2, outdir_tar):
+                               genome_loc, fastq1, fastq2, outdir_tar,
+                               bt2_1, bt2_2, bt2_3, bt2_4, bt2_rev_1,
+                               bt2_rev_2):
         """
         This function runs the hicup_alig_filt
 
@@ -358,7 +368,9 @@ class hicup(Tool):
         Bool
         """
         self.hicup_alig_filt(params, genome_digest, genome_index,
-                             genome_loc, fastq1, fastq2, outdir_tar)
+                             genome_loc, fastq1, fastq2, outdir_tar,
+                             bt2_1, bt2_2, bt2_3, bt2_4, bt2_rev_1,
+                             bt2_rev_2)
 
         return True
 
@@ -392,6 +404,7 @@ class hicup(Tool):
             if file_.startswith("Digest_"+self.configuration["genome_name"]):
                 os.remove(file_)
 
+        print(self.configuration)
 
         output_files["hicup_outdir_tar"] = self.configuration["execution"]+"/"+\
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
@@ -457,7 +470,13 @@ class hicup(Tool):
             input_files["genome_fa"],
             input_files["fastq1"],
             input_files["fastq2"],
-            output_files["hicup_outdir_tar"])
+            output_files["hicup_outdir_tar"],
+            index_files["1.bt2"],
+            index_files["2.bt2"],
+            index_files["3.bt2"],
+            index_files["4.bt2"],
+            index_files["rev.1.bt2"],
+            index_files["rev.2.bt2"])
 
         os.remove(genome_d)
         #variable = compss_wait_on(variable)
