@@ -474,7 +474,7 @@ class hicup(Tool):
             )
 
         logger.info("genome_d: "+genome_d)
-        logger.info(os.listdir(" ".join(os.getcwd())))
+        logger.info(" ".join(os.listdir(join(os.getcwd())))
 
         variable = self.hicup_alig_filt(# pylint: disable=too-many-locals,too-many-arguments
             parameters_hicup,
