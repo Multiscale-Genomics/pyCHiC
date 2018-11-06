@@ -29,7 +29,7 @@
         "_id": "59b7e020d9422a5969b653dasda",
         "data_type": "CHi-C_data",
         "file_type": "CHi-C_data",
-        "file_path": "tests/data/test_hicup/output.tar",
+        "file_path": "tests/data/test_baitmao/output.tar",
         "compressed": 0,
         "sources": ["user"],
         "taxon_id": 9606,
