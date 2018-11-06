@@ -66,9 +66,9 @@ class hicup(Tool):
 
         self.configuration.update(configuration)
 
-    @task(returns=bool, genome_file_name=IN, genome_idx=FILE_IN,
-          bt2_1_file=FILE_OUT, bt2_2_file=FILE_OUT, bt2_3_file=FILE_OUT,
-          bt2_4_file=FILE_OUT, bt2_rev1_file=FILE_OUT, bt2_rev2_file=FILE_OUT)
+    #@task(returns=bool, genome_file_name=IN, genome_idx=FILE_IN,
+    #      bt2_1_file=FILE_OUT, bt2_2_file=FILE_OUT, bt2_3_file=FILE_OUT,
+    #      bt2_4_file=FILE_OUT, bt2_rev1_file=FILE_OUT, bt2_rev2_file=FILE_OUT)
     def untar_index(  # pylint: disable=too-many-locals,too-many-arguments
             self, genome_file_name, genome_idx,
             bt2_1_file, bt2_2_file, bt2_3_file, bt2_4_file,
@@ -251,7 +251,7 @@ class hicup(Tool):
 
 
     def hicup_alig_filt(self, params, genome_digest, genome_index,
-                        genome_loc, fastq1, fastq2, outdir_tar, input_files):
+                        genome_loc, fastq1, fastq2, outdir_tar):
         """
         This function aling the HiC read into a reference
         genome and filter them
@@ -334,10 +334,10 @@ class hicup(Tool):
           genome_loc=FILE_IN,
           fastq1=FILE_IN,
           fastq2=FILE_IN,
-          outdir_tar=FILE_OUT,
-          input_files=IN)
+          outdir_tar=FILE_OUT
+          )
     def hicup_alig_filt_runner(self, params, genome_digest, genome_index,
-                               genome_loc, fastq1, fastq2, outdir_tar, input_files):
+                               genome_loc, fastq1, fastq2, outdir_tar):
         """
         This function runs the hicup_alig_filt
 
@@ -358,7 +358,7 @@ class hicup(Tool):
         Bool
         """
         self.hicup_alig_filt(params, genome_digest, genome_index,
-                             genome_loc, fastq1, fastq2, outdir_tar, input_files)
+                             genome_loc, fastq1, fastq2, outdir_tar)
 
         return True
 
@@ -457,8 +457,7 @@ class hicup(Tool):
             input_files["genome_fa"],
             input_files["fastq1"],
             input_files["fastq2"],
-            output_files["hicup_outdir_tar"],
-            input_files)
+            output_files["hicup_outdir_tar"])
 
         os.remove(genome_d)
         #variable = compss_wait_on(variable)
