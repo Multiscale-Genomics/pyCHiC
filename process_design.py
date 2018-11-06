@@ -82,17 +82,11 @@ class process_design(Workflow):
             design_caller = makeDesignFilesTool(self.configuration)
             design_out, design_meta = design_caller.run(
                 {
-                    "RMAP" : input_files["RMAP"],
-                    "BAITMAP": input_files["BAITMAP"]
+
                 },
                 {
-                    "RMAP" : metadata["RMAP"],
-                    "BAITMAP" : metadata["BAITMAP"]
                 },
                 {
-                    "nbpb" : output_files["nbpb"],
-                    "npb"  : output_files["npb"],
-                    "poe" : output_files["poe"]
                 }
             )
 
