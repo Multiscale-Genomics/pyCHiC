@@ -177,7 +177,6 @@ class bam2chicagoTool(Tool):
 
         return sorted_bam
 
-
     @task(returns=bool,
           hicup_outdir_tar=FILE_IN,
           path_bam=FILE_OUT)
@@ -201,8 +200,6 @@ class bam2chicagoTool(Tool):
         tar.close()
 
         return True
-
-
 
     def run(self, input_files, input_metadata, output_files):
         """
