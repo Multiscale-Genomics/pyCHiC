@@ -145,8 +145,10 @@ class bam2chicagoTool(Tool):
             logger.fatal("bam2chicago failed to generate chicago output files =(")
             return False
 
-    @staticmethod
-    def sort_chicago(bamfile, sorted_bam):
+    @task(returns=bool,
+          bamfile=FILE_IN,
+          sorted_bam=FILE_OUT)
+    def sort_chicago(self, bamfile, sorted_bam):
         """
         This function sort bamfile by name of the reads as bam2chicago requires
 
@@ -163,7 +165,7 @@ class bam2chicagoTool(Tool):
 
         args = ["samtools", "sort", "-n", bamfile, "-o", sorted_bam]
 
-        logger.info("bam2chicago CMD: " + " ".join(args))
+        logger.info("samtools CMD: " + " ".join(args))
 
         process = subprocess.Popen(
             ' '.join(args),
@@ -174,6 +176,30 @@ class bam2chicagoTool(Tool):
         process.wait()
 
         return sorted_bam
+
+    @task(returns=bool,
+          hicup_outdir_tar=FILE_IN,
+          path_bam=FILE_OUT)
+    def untar_hicup_out(self, hicup_outdir_tar, path_bam):
+        """
+        Untar hicup output filder
+
+        Parameters
+        ----------
+        hicup_outdir_tar: str
+            path to hicup output folder
+        path_bam: str
+            path to bam file
+
+        Returns
+        -------
+        bool
+        """
+        tar = tarfile.open(hicup_outdir_tar)
+        tar.extractall(path="".join(os.path.split(hicup_outdir_tar)[0]))
+        tar.close()
+
+        return True
 
     def run(self, input_files, input_metadata, output_files):
         """
@@ -198,7 +224,6 @@ class bam2chicagoTool(Tool):
         RMAP = "tests/data/test_run_chicago/test.rmap"
         BAITMAP = "tests/data/test_run_chicago/test.baitmap"
 
-        print(output_files)
         #hicup_outdir_tar = "tests/data/test_hicup/output.tar"
         output_files["hicup_outdir_tar"] = self.configuration["execution"]+"/"+\
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
@@ -211,9 +236,6 @@ class bam2chicagoTool(Tool):
         folder_name = os.path.split(output_files["hicup_outdir_tar"])[0] + "/"+\
                     "".join(os.path.split(output_files["hicup_outdir_tar"])[1].split(".")[:-1])
 
-        tar = tarfile.open(output_files["hicup_outdir_tar"])
-        tar.extractall(path="".join(os.path.split(output_files["hicup_outdir_tar"])[0]))
-        tar.close()
 
         bam_file = "".join([file_hdl for file_hdl in os.listdir(folder_name)
                             if file_hdl.endswith(".bam")])
@@ -221,6 +243,7 @@ class bam2chicagoTool(Tool):
         path_bam = folder_name + "/" + bam_file
         sorted_bam = folder_name + "/" + "sorted_bam"
 
+        self.untar_hicup_out(output_files["hicup_outdir_tar"], path_bam)
 
         sorted_bam = self.sort_chicago(path_bam, sorted_bam)
 
