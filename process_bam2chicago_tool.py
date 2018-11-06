@@ -88,7 +88,8 @@ class process_bam2chicago(Workflow):
                     "BAITMAP" : metadata["BAITMAP"]
                 },
                 {
-                    "chinput": output_files["chinput"]
+                    "chinput": output_files["chinput"],
+                    "hicup_outdir_tar" : output_files["hicup_outdir_tar"],
                 }
             )
 
