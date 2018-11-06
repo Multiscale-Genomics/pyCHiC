@@ -66,9 +66,9 @@ class hicup(Tool):
 
         self.configuration.update(configuration)
 
-    @task(returns=bool, genome_file_name=IN, genome_idx=FILE_IN,
-          bt2_1_file=FILE_OUT, bt2_2_file=FILE_OUT, bt2_3_file=FILE_OUT,
-          bt2_4_file=FILE_OUT, bt2_rev1_file=FILE_OUT, bt2_rev2_file=FILE_OUT)
+    #@task(returns=bool, genome_file_name=IN, genome_idx=FILE_IN,
+    #      bt2_1_file=FILE_OUT, bt2_2_file=FILE_OUT, bt2_3_file=FILE_OUT,
+    #      bt2_4_file=FILE_OUT, bt2_rev1_file=FILE_OUT, bt2_rev2_file=FILE_OUT)
     def untar_index(  # pylint: disable=too-many-locals,too-many-arguments
             self, genome_file_name, genome_idx,
             bt2_1_file, bt2_2_file, bt2_3_file, bt2_4_file,
@@ -249,7 +249,7 @@ class hicup(Tool):
 
         return "".join(digest_genome)
 
-
+    """
     @task(returns=bool,
           params=IN,
           genome_digest=FILE_IN,
@@ -264,6 +264,7 @@ class hicup(Tool):
           bt2_4=FILE_IN,
           bt2_rev_1=FILE_IN,
           bt2_rev_2=FILE_IN)
+    """
     def hicup_alig_filt(self, params, genome_digest, genome_index,
                         genome_loc, fastq1, fastq2, outdir_tar,
                         bt2_1, bt2_2, bt2_3, bt2_4, bt2_rev_1,
