@@ -476,6 +476,7 @@ class hicup(Tool):
         logger.info("genome_d: "+genome_d)
         logger.info(" ".join(os.listdir(os.getcwd())))
 
+
         variable = self.hicup_alig_filt(# pylint: disable=too-many-locals,too-many-arguments
             parameters_hicup,
             genome_d,
@@ -491,7 +492,7 @@ class hicup(Tool):
             index_files["rev.1.bt2"],
             index_files["rev.2.bt2"])
 
-        os.remove(genome_d)
+        #os.remove(genome_d)
         #variable = compss_wait_on(variable)
 
         output_metadata = {
