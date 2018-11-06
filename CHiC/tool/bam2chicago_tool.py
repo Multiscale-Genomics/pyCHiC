@@ -198,7 +198,7 @@ class bam2chicagoTool(Tool):
         RMAP = "tests/data/test_run_chicago/test.rmap"
         BAITMAP = "tests/data/test_run_chicago/test.baitmap"
 
-        logger.info(output_files)
+        print(output_files)
         #hicup_outdir_tar = "tests/data/test_hicup/output.tar"
         output_files["hicup_outdir_tar"] = self.configuration["execution"]+"/"+\
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
