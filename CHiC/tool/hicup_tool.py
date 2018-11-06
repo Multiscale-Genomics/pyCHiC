@@ -423,9 +423,7 @@ class hicup(Tool):
         output_files["hicup_outdir_tar"] = self.configuration["execution"]+"/"+\
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
 
-
         self.configuration["hicup_outdir"] = output_files["hicup_outdir_tar"].split(".")[0]
-
 
         RE = str(self.configuration["chic_RE_sequence"].replace("|", "^"))
         enzyme = str(self.configuration["chic_RE_name"])
@@ -433,7 +431,6 @@ class hicup(Tool):
         re_enzyme = RE+","+enzyme
 
         if "renzyme_name2" in self.configuration:
-
             genome_d = self.digest_genome(
                 self.configuration["genome_name"],
                 re_enzyme,
@@ -441,7 +438,6 @@ class hicup(Tool):
                 self.configuration["renzyme_name2"]
                 )
         else:
-
             genome_d = self.digest_genome(
                 self.configuration["genome_name"],
                 re_enzyme,
@@ -476,6 +472,10 @@ class hicup(Tool):
             index_files["rev.1.bt2"],
             index_files["rev.2.bt2"]
             )
+
+        logger.info("genome_d: "+genome_d)
+        logger.info(os.getcwd())
+        logger.info(os.listdir(os.getcwd()))
 
         variable = self.hicup_alig_filt(# pylint: disable=too-many-locals,too-many-arguments
             parameters_hicup,
