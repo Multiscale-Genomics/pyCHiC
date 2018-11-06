@@ -232,6 +232,7 @@ class bam2chicagoTool(Tool):
         output_files["chinput"] = self.configuration["execution"]+"/"+\
                                     os.path.split(output_files["chinput"])[1]
 
+        bam_name =
 
         folder_name = os.path.split(output_files["hicup_outdir_tar"])[0] + "/"+\
                     "".join(os.path.split(output_files["hicup_outdir_tar"])[1].split(".")[:-1])
@@ -243,7 +244,7 @@ class bam2chicagoTool(Tool):
         path_bam = folder_name + "/" + bam_file
         sorted_bam = folder_name + "/" + "sorted_bam"
 
-        self.untar_hicup_out(output_files["hicup_outdir_tar"], path_bam)
+        path_bam = self.untar_hicup_out(output_files["hicup_outdir_tar"], path_bam)
 
         sorted_bam = self.sort_chicago(path_bam, sorted_bam)
 
