@@ -102,7 +102,7 @@
                 "compressed": true
             }
         },
-         {
+        {
             "required": true,
             "allow_multiple": false,
             "name": "hicup_outdir_tar",
