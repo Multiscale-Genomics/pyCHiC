@@ -146,9 +146,10 @@ class bam2chicagoTool(Tool):
             return False
 
     @task(returns=bool,
+          sorted_bam=FILE_OUT,
           hicup_outdir_tar= FILE_IN,
-          bam_name=FILE_IN,
-          sorted_bam=FILE_OUT)
+          bam_name=IN
+          )
     def sort_chicago(self, sorted_bam, hicup_outdir_tar, bam_name):
         """
         This function sort bamfile by name of the reads as bam2chicago requires
