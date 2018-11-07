@@ -283,7 +283,7 @@ class bam2chicagoTool(Tool):
             output_files["chinput"]
             )
 
-        rmtree(folder_name)
+        #rmtree(folder_name)
 
         output_metadata = {
             "chinput" : Metadata(
