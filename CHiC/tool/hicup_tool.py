@@ -418,8 +418,6 @@ class hicup(Tool):
             if file_.startswith("Digest_"+self.configuration["genome_name"]):
                 os.remove(file_)
 
-        print(self.configuration)
-
         output_files["hicup_outdir_tar"] = self.configuration["execution"]+"/"+\
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
 
