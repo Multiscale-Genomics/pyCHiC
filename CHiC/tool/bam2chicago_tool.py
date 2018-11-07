@@ -147,9 +147,9 @@ class bam2chicagoTool(Tool):
 
     @task(returns=bool,
           sorted_bam=FILE_OUT,
-          hicup_outdir_tar= FILE_IN,
+          hicup_outdir_tar=FILE_IN,
           bam_name=IN
-          )
+         )
     def sort_chicago(self, sorted_bam, hicup_outdir_tar, bam_name):
         """
         This function sort bamfile by name of the reads as bam2chicago requires
@@ -180,7 +180,7 @@ class bam2chicagoTool(Tool):
 
         process.wait()
 
-        return sorted_bam
+        return True
 
     @staticmethod
     def untar_hicup_out(hicup_outdir_tar, bam_name):
@@ -271,10 +271,10 @@ class bam2chicagoTool(Tool):
 
         sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
 
-        sorted_bam = self.sort_chicago(sorted_bam,
-                                       output_files["hicup_outdir_tar"],
-                                       bam_name
-                                      )
+        self.sort_chicago(sorted_bam,
+                          output_files["hicup_outdir_tar"],
+                          bam_name
+                         )
 
         results = self.bam2chicago(
             sorted_bam,
