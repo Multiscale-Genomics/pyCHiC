@@ -253,7 +253,8 @@ class makeBaitmapTool(Tool):
         }
 
         output_bwa = {
-            "output": out_bam
+            "output": out_bam,
+            "bai" : "bam.bai"
         }
         metadata_bwa = {
             "genome": input_metadata["genome_fa"],
