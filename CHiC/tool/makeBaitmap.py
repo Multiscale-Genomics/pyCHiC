@@ -234,6 +234,9 @@ class makeBaitmapTool(Tool):
             input_metadata["bowtie_gen_idx"] = input_metadata.pop("bowtie_gen_idx_public")
 
 
+        if os.path.isfile("bam.bai"):
+            os.remove("bam.bai")
+
         out_bam = "tests/data/test_baitmap/baits.bam"
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
         rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
