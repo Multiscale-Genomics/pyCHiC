@@ -318,12 +318,12 @@ class hicup(Tool):
 
             logger.info("TARING output folder")
 
-            tar_file = outdir_tar
+            # tar_file = outdir_tar
             archive_name = os.path.split(outdir_tar)[1].split(".")[0]
 
             onlyfiles = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
 
-            tar = tarfile.open(tar_file, "w")
+            tar = tarfile.open(outdir_tar, "w")
 
             for tmp_file in onlyfiles:
                 tar.add(
@@ -336,7 +336,7 @@ class hicup(Tool):
 
             shutil.rmtree(folder)
 
-            shutil.move(tar_file, outdir_tar)
+            # shutil.move(tar_file, outdir_tar)
 
             return True
 
