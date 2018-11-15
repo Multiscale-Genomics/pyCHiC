@@ -144,14 +144,14 @@ class process_CHiC(Workflow):
             baitmap_caller = makeBaitmapTool(self.configuration)
             output_files_baitmap, output_metadata_baitmap = baitmap_caller.run(
                 {
-                    "genome_idx" : input_files["genome_idx"],
+                    "bowtie_gen_idx" : input_files["bowtie_gen_idx"],
                     "probes_fa": input_files["probes_fa"],
                     "genome_fa" : input_files["genome_fa"],
                 },
                 {
                     "genome_fa" : metadata["genome_fa"],
                     "probes_fa" : metadata["probes_fa"],
-                    "genome_idx": metadata["genome_idx"]
+                    "bowtie_gen_idx": metadata["bowtie_gen_idx"]
                 },
                 {
                 }
