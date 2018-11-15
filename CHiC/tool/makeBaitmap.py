@@ -39,7 +39,7 @@ except ImportError:
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
-from bowtie_aligner import bowtie2AlignerTool
+from tool.bowtie_aligner import bowtie2AlignerTool
 
 ##################################################
 
