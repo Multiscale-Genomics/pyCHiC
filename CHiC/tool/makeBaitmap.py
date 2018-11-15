@@ -39,7 +39,7 @@ except ImportError:
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
-from tool.bwa_mem_aligner import bwaAlignerMEMTool
+from bowtie_aligner import bowtie2AlignerTool
 
 ##################################################
 
@@ -245,13 +245,12 @@ class makeBaitmapTool(Tool):
         out_baitmap = "tests/data/test_run_chicago/test.baitmap"
         bait_sam = "tests/data/test_baitmap/baits.sam"
 
-
         re_meta = {
             self.configuration["chic_RE_name"]: self.configuration["chic_RE_sequence"]}
 
         input_bwa = {
             "genome": input_files["genome_fa"],
-            "index": input_files["genome_idx"],
+            "index": input_files["bowtie_gen_idx"],
             "loc": input_files["probes_fa"]
         }
 
@@ -261,11 +260,11 @@ class makeBaitmapTool(Tool):
         }
         metadata_bwa = {
             "genome": input_metadata["genome_fa"],
-            "index": input_metadata["genome_idx"],
+            "index": input_metadata["bowtie_gen_idx"],
             "loc": input_metadata["probes_fa"]
         }
 
-        bwa_t = bwaAlignerMEMTool(self.configuration)
+        bwa_t = bowtie2AlignerTool(self.configuration)
         bwa_files, bwa_meta = bwa_t.run(input_bwa, metadata_bwa, output_bwa)
 
         # bwa_meta = compss_wait_on(bwa_meta)
