@@ -403,9 +403,6 @@ class hicup(Tool):
             input_files["genome_fa"] = input_files.pop("genome_fa_public")
             input_metadata["genome_fa"] = input_metadata.pop("genome_fa_public")
 
-            input_files["genome_idx"] = input_files.pop("genome_idx_public")
-            input_metadata["genome_idx"] = input_metadata.pop("genome_idx_public")
-
             input_files["bowtie_gen_idx"] = input_files.pop("bowtie_gen_idx_public")
             input_metadata["bowtie_gen_idx"] = input_metadata.pop("bowtie_gen_idx_public")
 
