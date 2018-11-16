@@ -85,6 +85,8 @@ class process_CHiC(Workflow):
         output_metadata
 
         """
+        self.configuration["bowtie2_fasta_input"] = "True"
+
         if "genome_fa_public" in input_files:
             input_files["genome_fa"] = input_files.pop("genome_fa_public")
             metadata["genome_fa"] = metadata.pop("genome_fa_public")
