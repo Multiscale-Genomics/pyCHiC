@@ -49,6 +49,10 @@
             "value": "tests/data/test_baitmap"
         },
         {
+            "name": "bowtie2_fasta_input",
+            "value": "True"
+        },
+        {
             "name": "chic_RE_name",
             "value": "HindIII"
         },
