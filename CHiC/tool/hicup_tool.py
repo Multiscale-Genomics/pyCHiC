@@ -412,7 +412,7 @@ class hicup(Tool):
 
         logger.progress("Untar Index: "+input_files["genome_fa"]+", "
                         + input_files["bowtie_gen_idx"])
-        self.untar_index(
+        untar = self.untar_index(
             input_files["genome_fa"],
             input_files["bowtie_gen_idx"],
             index_files["1.bt2"],
