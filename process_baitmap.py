@@ -84,20 +84,20 @@ class process_baitmap(Workflow):
             input_files["genome_fa"] = input_files.pop("genome_fa_public")
             metadata["genome_fa"] = metadata.pop("genome_fa_public")
 
-            input_files["genome_idx"] = input_files.pop("genome_idx_public")
-            metadata["genome_idx"] = metadata.pop("genome_idx_public")
-
             input_files["bowtie_gen_idx"] = input_files.pop("bowtie_gen_idx_public")
             metadata["bowtie_gen_idx"] = metadata.pop("bowtie_gen_idx_public")
         try:
             baitmap_caller = makeBaitmapTool(self.configuration)
             output_files_baitmap, output_metadata_baitmap = baitmap_caller.run(
                 {
-
-                    "genome_fa": input_files["genome_fa"]
+                    "bowtie_gen_idx": input_files["bowtie_gen_idx"],
+                    "probes_fa": input_files["probes_fa"],
+                    "genome_fa": input_files["genome_fa"],
                 },
                 {
-                    "genome_fa": metadata["genome_fa"]
+                    "genome_fa": metadata["genome_fa"],
+                    "probes_fa": metadata["probes_fa"],
+                    "bowtie_gen_idx": metadata["bowtie_gen_idx"]
                 },
                 {
 
