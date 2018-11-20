@@ -9,12 +9,6 @@
         {
             "required": true,
             "allow_multiple": false,
-            "name": "genome_idx",
-            "value": "59b7e020d9422a5969b65373"
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
             "name": "probes_fa",
             "value": "59b7e020d9422a5969b34"
         },

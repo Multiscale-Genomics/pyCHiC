@@ -57,7 +57,7 @@
         "_id": "59b7e020d9422a5969b65373",
         "data_type": "data_CHiC",
         "file_type": "TAR",
-        "file_path": "tests/data/test_baitmap/bwa.tar.gz",
+        "file_path": "tests/data/test_baitmap/chr21_hg19.fa.bt2.tar.gz",
         "sources": ["tests/data/test_baitmap/bwa"],
         "taxon_id": 9606,
         "meta_data": {
