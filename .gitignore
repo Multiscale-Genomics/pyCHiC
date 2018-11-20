@@ -32,3 +32,4 @@ CHiC/tool/scripts/bam2chicago.sh
 tests/test_process_bed2bam.py
 tests/test_process_fastq2bed.py
 tests/test_process_truncater.py
+CHiC/tool/pyCHiC.py
