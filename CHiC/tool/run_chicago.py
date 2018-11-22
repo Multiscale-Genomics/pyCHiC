@@ -343,17 +343,16 @@ class ChicagoTool(Tool):
         compss_delete_file(out_bam)
         compss_delete_file(sorted_bam)
 
-
         files_dir = os.listdir(self.configuration["execution"])
         for file_ in files_dir:
             if file_.startswith("Digest_"+self.configuration["genome_name"]):
                 os.remove(file_)
 
-        compss_open(pdf)
-        compss_open(washu)
+        PDF = compss_open(pdf)
+        WASHU = compss_open(washu)
 
-        move(pdf, output_files["pdf_examples"])
-        move(washu, output_files["washU_text"] )
+        move(PDF, output_files["pdf_examples"])
+        move(WASHU, output_files["washU_text"] )
 
         output_metadata = {
             "output" : Metadata(
