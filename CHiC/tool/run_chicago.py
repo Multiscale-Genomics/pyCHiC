@@ -314,10 +314,10 @@ class ChicagoTool(Tool):
         logger.info(pdf)
 
         washu = self.configuration["execution"]+\
-            "/"+output_files["washU_text"]
+            "/"+ os.path.split(output_files["washU_text"])[1]
 
         pdf = self.configuration["execution"]+\
-            "/"+output_files["pdf_examples"]
+            "/"+ os.path.split(output_files["pdf_examples"])[1]
 
         logger.info(washu)
         logger.info(pdf)
