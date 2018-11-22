@@ -167,7 +167,7 @@
                     "tool": "bam2chicago",
                     "description": "Output"
                 },
-                "file_path": "tests/data/test_baitmap/output_test_washU_text.txt",
+                "file_path": "tests/data/test_baitmap/washu_test.txt",
                 "data_type": "tar",
                 "compressed": "null"
             }
@@ -183,7 +183,7 @@
                     "tool": "bam2chicago",
                     "description": "Output"
                 },
-                "file_path": "tests/data/test_baitmap/output_test_proxExamples.pdf",
+                "file_path": "tests/data/test_baitmap/pdf_examples.pdf",
                 "data_type": "tar",
                 "compressed": "null"
             }
