@@ -453,7 +453,8 @@ class hicup(Tool):
                     input_metadata["fastq1"].file_path
                     ],
                 taxon_id=input_metadata["genome_fa"].taxon_id,
-                meta_data={"tool": "hicup_tool"}
+                meta_data={"tool": "process_CHiC",
+                           "tool_description" : "hicup_tool"},
                 )
         }
 

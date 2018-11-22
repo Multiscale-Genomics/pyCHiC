@@ -288,7 +288,7 @@ class bam2chicagoTool(Tool):
         output_metadata = {
             "chinput" : Metadata(
                 data_type="CHiC_data",
-                file_type="tar",
+                file_type="TXT",
                 file_path=output_files["chinput"],
                 sources=[
                     RMAP,
@@ -296,7 +296,8 @@ class bam2chicagoTool(Tool):
                     sorted_bam
                     ],
                 taxon_id=input_metadata["genome_fa"].taxon_id,
-                meta_data={"tool": "bam2chicago_tool"}
+                meta_data={"tool": "process_CHiC",
+                           "tool_description" : "bam2chicago_tool", }
             )
         }
 
