@@ -298,26 +298,29 @@ class ChicagoTool(Tool):
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
 
 
-        washu = self.configuration["execution"]+\
-            "/"+output_files["washU_text"]
-
-        pdf = self.configuration["execution"]+\
-            "/"+output_files["pdf_examples"]
-
-
 
         command_params = self.get_chicago_params(self.configuration)
 
         logger.info("Chicago command parameters "+ " ".join(command_params))
 
-        """
+
         washu = self.configuration["execution"]+\
             "/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
 
         pdf = self.configuration["execution"]+\
             "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
 
-        """
+        logger.info(washu)
+        logger.info(pdf)
+
+        washu = self.configuration["execution"]+\
+            "/"+output_files["washU_text"]
+
+        pdf = self.configuration["execution"]+\
+            "/"+output_files["pdf_examples"]
+
+        logger.info(washu)
+        logger.info(pdf)
 
         results = self.chicago(output_files["chinput"],
                                self.configuration["chicago_out_prefix"],
