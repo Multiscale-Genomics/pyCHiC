@@ -371,7 +371,7 @@ class ChicagoTool(Tool):
             "washU_text" : Metadata(
                 data_type="chicago_CHIC",
                 file_type="TXT",
-                file_path=washu,
+                file_path="washu",
                 sources=[
                     input_metadata["genome_fa"].file_path,
                     input_metadata["fastq1"].file_path,
@@ -387,7 +387,7 @@ class ChicagoTool(Tool):
             "pdf_examples" : Metadata(
                 data_type="chicago_CHIC",
                 file_type="PDF",
-                file_path=pdf,
+                file_path="pdf",
                 sources=[
                     input_metadata["genome_fa"].file_path,
                     input_metadata["fastq1"].file_path,
