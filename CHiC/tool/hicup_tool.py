@@ -343,51 +343,6 @@ class hicup(Tool):
         except IOError:
             return False
 
-    @task(returns=bool,
-          params=IN,
-          genome_digest=FILE_IN,
-          genome_index=FILE_IN,
-          genome_loc=FILE_IN,
-          fastq1=FILE_IN,
-          fastq2=FILE_IN,
-          outdir_tar=FILE_OUT,
-          bt2_1=FILE_IN,
-          bt2_2=FILE_IN,
-          bt2_3=FILE_IN,
-          bt2_4=FILE_IN,
-          bt2_rev_1=FILE_IN,
-          bt2_rev_2=FILE_IN
-         )
-    def hicup_alig_filt_runner(self, params, genome_digest, genome_index,
-                               genome_loc, fastq1, fastq2, outdir_tar,
-                               bt2_1, bt2_2, bt2_3, bt2_4, bt2_rev_1,
-                               bt2_rev_2):
-        """
-        This function runs the hicup_alig_filt
-
-        Parameters
-        ----------
-        bowtie2_loc:
-        genome_index: str
-            location of genome indexed with bowtie2
-        digest_genome: str
-            location of genome digested
-        fastq1: str
-            location of fastq2 file
-        fastq2: str
-            location of fastq2
-
-        Returns
-        -------
-        Bool
-        """
-        self.hicup_alig_filt(params, genome_digest, genome_index,
-                             genome_loc, fastq1, fastq2, outdir_tar,
-                             bt2_1, bt2_2, bt2_3, bt2_4, bt2_rev_1,
-                             bt2_rev_2)
-
-        return True
-
     def run(self, input_files, input_metadata, output_files):
         """
         Function that runs and pass the parameters for
@@ -457,7 +412,7 @@ class hicup(Tool):
 
         logger.progress("Untar Index: "+input_files["genome_fa"]+", "
                         + input_files["bowtie_gen_idx"])
-        self.untar_index(
+        untar = self.untar_index(
             input_files["genome_fa"],
             input_files["bowtie_gen_idx"],
             index_files["1.bt2"],
@@ -498,7 +453,8 @@ class hicup(Tool):
                     input_metadata["fastq1"].file_path
                     ],
                 taxon_id=input_metadata["genome_fa"].taxon_id,
-                meta_data={"tool": "hicup_tool"}
+                meta_data={"tool": "process_CHiC",
+                           "tool_description" : "hicup_tool"},
                 )
         }
 

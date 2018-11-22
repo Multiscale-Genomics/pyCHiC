@@ -99,7 +99,6 @@ class process_rmap(Workflow):
                     "genome_fa" : metadata["genome_fa"]
                 },
                 {
-
                 }
             )
 
