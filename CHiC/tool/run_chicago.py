@@ -161,8 +161,6 @@ class ChicagoTool(Tool):
         proc_out, proc_err = process.communicate()
 
         try:
-            logger.info(output_dir+"/data/"+output_prefix+"_washU_text.txt")
-            logger.info(washu)
 
             move(output_dir+"/data/"+output_prefix+"_washU_text.txt",
                  washu)
@@ -298,12 +296,20 @@ class ChicagoTool(Tool):
 
         hicup_folder = self.configuration["execution"]+"/"+\
                                            os.path.split(output_files["hicup_outdir_tar"])[1]
-
+        """
         washu = self.configuration["execution"]+\
             "/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
 
         pdf = self.configuration["execution"]+\
             "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
+        """
+
+
+        washu = self.configuration["execution"]+\
+            "/"+output_files["washU_text"]
+
+        pdf = self.configuration["execution"]+\
+            "/"+output_files["pdf_examples"]
 
 
         command_params = self.get_chicago_params(self.configuration)
@@ -347,12 +353,6 @@ class ChicagoTool(Tool):
         for file_ in files_dir:
             if file_.startswith("Digest_"+self.configuration["genome_name"]):
                 os.remove(file_)
-
-        PDF = compss_open(pdf)
-        WASHU = compss_open(washu)
-
-        move(PDF, output_files["pdf_examples"])
-        move(WASHU, output_files["washU_text"] )
 
         output_metadata = {
             "output" : Metadata(
