@@ -305,22 +305,10 @@ class ChicagoTool(Tool):
 
 
         washu = self.configuration["execution"]+\
-            "/"+self.configuration["chicago_out_prefix"]+"_washU_text.txt"
-
-        pdf = self.configuration["execution"]+\
-            "/"+self.configuration["chicago_out_prefix"]+"_proxExamples.pdf"
-
-        logger.info(washu)
-        logger.info(pdf)
-
-        washu = self.configuration["execution"]+\
             "/"+ os.path.split(output_files["washU_text"])[1]
 
         pdf = self.configuration["execution"]+\
             "/"+ os.path.split(output_files["pdf_examples"])[1]
-
-        logger.info(washu)
-        logger.info(pdf)
 
         results = self.chicago(output_files["chinput"],
                                self.configuration["chicago_out_prefix"],
@@ -374,7 +362,7 @@ class ChicagoTool(Tool):
             "washU_text" : Metadata(
                 data_type="chicago_CHIC",
                 file_type="TXT",
-                file_path=washu,
+                file_path=output_files["washU_text"]
                 sources=[
                     input_metadata["genome_fa"].file_path,
                     input_metadata["fastq1"].file_path,
@@ -390,7 +378,7 @@ class ChicagoTool(Tool):
             "pdf_examples" : Metadata(
                 data_type="chicago_CHIC",
                 file_type="PDF",
-                file_path=pdf,
+                file_path=output_files["pdf_examples"],
                 sources=[
                     input_metadata["genome_fa"].file_path,
                     input_metadata["fastq1"].file_path,
