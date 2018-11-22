@@ -243,7 +243,8 @@ class makeBaitmapTool(Tool):
         bait_sam = "tests/data/test_baitmap/baits.sam"
 
         re_meta = {
-            self.configuration["chic_RE_name"]: self.configuration["chic_RE_sequence"]}
+            self.configuration["chic_RE_name"]: self.configuration["chic_RE_sequence"],
+            "bowtie2_fasta_input" : "True"}
 
         input_bwa = {
             "genome": input_files["genome_fa"],
@@ -261,8 +262,8 @@ class makeBaitmapTool(Tool):
             "loc": input_metadata["probes_fa"]
         }
 
-        bwa_t = bowtie2AlignerTool(self.configuration)
-        bwa_files, bwa_meta = bwa_t.run(input_bwa, metadata_bwa, output_bwa)
+        bowtie2_t = bowtie2AlignerTool(self.configuration)
+        bowtie_files, bowtie_meta = bowtie2_t.run(input_bwa, metadata_bwa, output_bwa)
 
         # bwa_meta = compss_wait_on(bwa_meta)
 
@@ -271,7 +272,7 @@ class makeBaitmapTool(Tool):
 
         baitmap_list = self.sam_to_baitmap(
             bait_sam,
-            bwa_files["bam"],
+            bowtie_files["bam"],
             rtree_file_dat,
             rtree_file_idx,
             prefix_rtree,
