@@ -36,7 +36,7 @@ except ImportError:
 
     from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import compss_wait_on, compss_delete_file # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import compss_wait_on, compss_delete_file, compss_open # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata
@@ -349,6 +349,11 @@ class ChicagoTool(Tool):
             if file_.startswith("Digest_"+self.configuration["genome_name"]):
                 os.remove(file_)
 
+        compss_open(pdf)
+        compss_open(washu)
+
+        move(pdf, output_files["pdf_examples"])
+        move(washu, output_files["washU_text"] )
 
         output_metadata = {
             "output" : Metadata(
@@ -371,7 +376,7 @@ class ChicagoTool(Tool):
             "washU_text" : Metadata(
                 data_type="chicago_CHIC",
                 file_type="TXT",
-                file_path="washu",
+                file_path=washu,
                 sources=[
                     input_metadata["genome_fa"].file_path,
                     input_metadata["fastq1"].file_path,
@@ -387,7 +392,7 @@ class ChicagoTool(Tool):
             "pdf_examples" : Metadata(
                 data_type="chicago_CHIC",
                 file_type="PDF",
-                file_path="pdf",
+                file_path=pdf,
                 sources=[
                     input_metadata["genome_fa"].file_path,
                     input_metadata["fastq1"].file_path,
