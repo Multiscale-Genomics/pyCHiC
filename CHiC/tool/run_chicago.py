@@ -343,7 +343,7 @@ class ChicagoTool(Tool):
 
         output_metadata = {
             "output" : Metadata(
-                data_type="chicago_CHIC",
+                data_type="data_chic",
                 file_type="TAR",
                 file_path=output_files["output"],
                 sources=[
@@ -360,9 +360,9 @@ class ChicagoTool(Tool):
             ),
 
             "washU_text" : Metadata(
-                data_type="chicago_CHIC",
+                data_type="data_chic",
                 file_type="TXT",
-                file_path=self.configuration["execution"]+"/"+os.path.split(output_files["washU_text"])[1],
+                file_path= output_files["washU_text"],
                 sources=[
                     input_metadata["genome_fa"].file_path,
                     input_metadata["fastq1"].file_path,
@@ -376,9 +376,9 @@ class ChicagoTool(Tool):
             ),
 
             "pdf_examples" : Metadata(
-                data_type="chicago_CHIC",
+                data_type="data_chic",
                 file_type="PDF",
-                file_path=self.configuration["execution"]+"/"+os.path.split(output_files["pdf_examples"])[1],
+                file_path= output_files["pdf_examples"],
                 sources=[
                     input_metadata["genome_fa"].file_path,
                     input_metadata["fastq1"].file_path,

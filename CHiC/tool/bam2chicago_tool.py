@@ -287,7 +287,7 @@ class bam2chicagoTool(Tool):
 
         output_metadata = {
             "chinput" : Metadata(
-                data_type="CHiC_data",
+                data_type="data_chic",
                 file_type="TXT",
                 file_path=output_files["chinput"],
                 sources=[
