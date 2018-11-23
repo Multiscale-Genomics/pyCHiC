@@ -30,10 +30,13 @@ def test_bam2chicago():
         "RMAP" : path + "test_run_chicago/test.rmap",
         "BAITMAP" : path +  "test_run_chicago/test.baitmap",
         "hicup_outdir_tar" : path + "test_hicup/output.tar",
+        "fastq1": "/home/pacera/MuG/CHi-C/tests/data/test_truncater/SRR3535023_1.fastq",
+        "fastq2": "/home/pacera/MuG/CHi-C/tests/data/test_truncater/SRR3535023_2.fastq"
     }
 
     output_files = {
         "chinput" :  path + "test_bam2chicago_tool/output_chinput.chinput",
+        "hicup_outdir_tar": path + "test_hicup/output.tar"
     }
 
     metadata = {
@@ -51,7 +54,8 @@ def test_bam2chicago():
     }
 
     configuration = {
-        "aligner" : "tadbit"
+        "aligner" : "tadbit",
+        "execution" : path + "test_baitmap"
     }
 
     bam2chicago_handle = bam2chicagoTool(configuration)
