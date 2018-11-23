@@ -34,11 +34,12 @@ def test_baitmap():
     configuration = {
         "execution": path,
         "chic_RE_name": "HindIII",
-        "chic_RE_sequence": "A|AGCTT"
+        "chic_RE_sequence": "A|AGCTT",
+        "bowtie2_fasta_input" : "True"
     }
 
     input_files = {
-        "genome_idx": path + "test_baitmap/bwa.tar.gz",
+        "bowtie_gen_idx": path + "test_baitmap/chr21_hg19.fa.bt2.tar.gz",
         "probes_fa": path + "test_baitmap/h19_promoter.fa",
         "Rtree_file_dat": path + "test_rmap/rtree_file.dat",
         "Rtree_file_idx": path + "test_rmap/rtree_file.idx",
@@ -53,25 +54,25 @@ def test_baitmap():
     }
 
     metadata = {
-        "genome_idx": Metadata(
-            "index_bwa", "tar", input_files["genome_idx"], [input_files["genome_fa"]],
+        "bowtie_gen_idx": Metadata(
+            "bowtie_gen_idx", "tar", input_files["bowtie_gen_idx"], [input_files["genome_fa"]],
             {
                 "assembly": "test",
-                "tool": "bwa_indexer"
+                "tool": "bowtie_gen_idx"
             }, 9606
             ),
         "genome_fa": Metadata(
             "hg38", "fasta", input_files["genome_fa"], [],
             {
                 "assembly": "test",
-                "tool": "bwa_indexer"
+                "tool": "bowtie_gen_idx"
             }, 9606),
 
         "probes_fa": Metadata(
             "C-HiC probes", "fasta", input_files["probes_fa"], [],
             {
                 "assembly": "test",
-                "tool": "bwa_indexer"
+                "tool": "bowtie_gen_idx"
             }, 9606),
 
         "Rtree_file_dat": Metadata(
