@@ -83,7 +83,6 @@ class process_CHiC(Workflow):
         -------
         output_files
         output_metadata
-
         """
         self.configuration["bowtie2_fasta_input"] = "True"
 

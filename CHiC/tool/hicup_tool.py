@@ -444,7 +444,7 @@ class hicup(Tool):
 
         output_metadata = {
             "hicup_outdir_tar" : Metadata(
-                data_type="data_CHiC",
+                data_type="data_chic",
                 file_type="TAR",
                 file_path=output_files["hicup_outdir_tar"],
                 sources=[
