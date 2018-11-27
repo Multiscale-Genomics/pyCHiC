@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+from __future__ import print_function
 import getopt
 import sys
 import random
@@ -255,7 +256,7 @@ for i in range(len(st)):
   npb.write("\n")
 
   if int(random.uniform(0,100))==1:
-   print("%d " % i, end=' ')
+   print("%d " % i, end=" ")
 
 npb.close()
 poe.close()
