@@ -20,7 +20,7 @@ dist: trusty
 group: edge
 
 python:
-  - "2.7.12"
+  - "3.6"
 
 perl:
   - "5.24"
