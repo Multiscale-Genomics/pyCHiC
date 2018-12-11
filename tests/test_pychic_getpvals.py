@@ -31,6 +31,6 @@ def test_pychic_getpvals():
 
    pyCHiC_object = pyCHiC()
 
-   output = pyCHiC_object.getPvals(input_getpvals, dispersion)
+   current_output = pyCHiC_object.getPvals(input_getpvals, dispersion)
 
-   pd.testing.assert_frame_equal(output_getpvals, output)
+   pd.testing.assert_frame_equal(output_getpvals, current_output)
