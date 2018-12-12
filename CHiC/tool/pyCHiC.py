@@ -858,7 +858,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 #wb2b
                 pass
 
-            chinput_j["transLength"] = np.where(chinput_j['distSign']==transD, 1, 0)
+            chinput_j["transLength"] = np.where(chinput_j['distSign'] == transD, 1, 0)
 
             transLen = chinput_j[["otherEndID",
                                   "transLength",
@@ -985,8 +985,40 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if "tbl" in chinput_j.columns:
             chinput_j.drop(["tbl"], axis=1, inplace=True)
 
+
+        print(chinput_j[chinput_j["otherEndID"] == 419466] )
+        print(chinput_j)
+
         chinput_j = pd.merge(chinput_j, transLen, how="left", on="otherEndID")
 
+
+        """
+         428139 0.9398174     419466 1        3195 -31823781       FALSE         NA
+        2  427751 1.2124222     419466 1        3195 -30521967       FALSE         NA
+        3  425079 2.0696748     419466 1        3195 -21272923       FALSE         NA
+        4  424854 1.2550334     419466 2        3195 -20594316       FALSE         NA
+        5  423617 0.6890949     419466 1        3195 -16816825       FALSE         NA
+        6  423560 1.2931352     419466 1        3195 -16591004       FALSE         NA
+        7  423450 1.3431198     419466 1        3195 -16216369       FALSE         NA
+        8  421902 2.6059243     419466 1        3195 -11008896       FALSE         NA
+        9  403965 1.3534728     419466 1        3195  62753699       FALSE         NA
+        10 404491 1.6695769     419466 1        3195  62753699       FALSE         NA
+        11 408471 0.5752988     419466 1        3195  62753699       FALSE         NA
+        12 409144 0.8654104     419466 1        3195  62753699       FALSE         NA
+        13 410108 0.6957737     419466 1        3195  62753699       FALSE         NA
+        14 411133 0.5165262     419466 1        3195  62753699       FALSE         NA
+        15 411164 0.9946355     419466 1        3195  62753699       FALSE         NA
+        16 411831 1.5086577     419466 1        3195  62753699       FALSE         NA
+        17 412613 2.0638962     419466 1        3195  62753699       FALSE         NA
+        18 418022 0.7670651     419466 1        3195  62753699       FALSE         NA
+        19 418110 0.7582941     419466 1        3195  62753699       FALSE         NA
+        """
+
+        chinput_j =  chinput_j[chinput_j["otherEndID"] != 419466]
+
+        print(chinput_j[chinput_j["otherEndID"] != 419466])
+
+        print("sasasdasdasdasd")
         if transNA:
             chinput_j["distSign"] = np.where(chinput_j["distSign"] == max(chinput_j["distSign"]), \
                                              np.nan, \
@@ -1737,7 +1769,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if x["log_p"].isna().any():
             logger.info("Some log-p-values were NA.")
 
-        print(x)
         return x
 
     def getAvgFragLength(self, x, rmap, excludeMT=True):
