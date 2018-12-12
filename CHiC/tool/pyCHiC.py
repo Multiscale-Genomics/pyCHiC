@@ -986,9 +986,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             chinput_j.drop(["tbl"], axis=1, inplace=True)
 
 
-        print(chinput_j[chinput_j["otherEndID"] == 419466] )
-        print(chinput_j)
-
         chinput_j = pd.merge(chinput_j, transLen, how="left", on="otherEndID")
 
 
@@ -1666,7 +1663,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_jiw, param_dispersion
 
-    #@profile
+    @profile
     def getPvals(self, x, dispersion):
         """
         Get the pvalues for each interaction
@@ -1695,7 +1692,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         delaporte = importr('Delaporte')
 
-        x["Tmean"].astype(float, inplace=True)
+        #x["Tmean"].astype(float, inplace=True)
 
         n_r = robjects.numpy2ri.numpy2ri(np.array(x["N"]))
         tmean_r = robjects.numpy2ri.numpy2ri(np.array(x["Tmean"]))
@@ -1706,21 +1703,23 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         robjects.r.assign("Bmean", bmean_r)
         robjects.r.assign("alpha", dispersion)
 
+
+        robjects.r("""
+            Tmean = as.numeric(Tmean)
+            """)
+
         robjects.r("log.p1 <- pdelap(N - 1L, alpha, beta=Bmean/alpha, lambda=Tmean, lower.tail=FALSE, log.p=TRUE)")
-
         log_p1 = robjects.r("log.p1")
-
         x["log_p1"] = log_p1
 
-        robjects.r("log.p2 <- pdelap(N - 1L, alpha, beta=Bmean/alpha, lambda=Tmean, lower.tail=FALSE, log.p=TRUE)")
 
+        robjects.r("log.p2 <- ppois(N - 1L, lambda=Tmean, lower.tail=FALSE, log.p=TRUE)")
         log_p2 = robjects.r("log.p2")
-
         x["log_p2"] = log_p2
 
         x["log_p"] = np.where(x['Bmean'] < np.finfo(float).eps, x["log_p2"], x["log_p1"])
 
-        x.drop(["log_p1","log_p2"], axis=1, inplace=True)
+        x.drop(["log_p1", "log_p2"], axis=1, inplace=True)
         #poisson_sf = np.vectorize(poisson.sf)
 
         # Large N approximation
@@ -1765,7 +1764,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if x["log_p"].isna().any():
             logger.info("Some log-p-values were NA.")
 
-        print(x)
         return x
 
     def getAvgFragLength(self, x, rmap, excludeMT=True):
@@ -2370,7 +2368,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         chinput_jiwb_pval = self.getPvals(chinput_jiwb, dispersion)
 
-        #chinput_jiwb_pval.to_csv("/home/pacera/MuG/CHi-C/tests/data/getpvals_output.csv", sep="\t")
+        chinput_jiwb_pval.to_csv("/home/pacera/MuG/CHi-C/tests/data/getpvals_output.csv", sep="\t")
 
         rmap_df = pd.read_csv(input_files["RMAP"],
                               sep="\t",
