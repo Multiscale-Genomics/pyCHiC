@@ -1013,12 +1013,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         18 418022 0.7670651     419466 1        3195  62753699       FALSE         NA
         19 418110 0.7582941     419466 1        3195  62753699       FALSE         NA
         """
-
         chinput_j =  chinput_j[chinput_j["otherEndID"] != 419466]
 
-        print(chinput_j[chinput_j["otherEndID"] != 419466])
-
-        print("sasasdasdasdasd")
         if transNA:
             chinput_j["distSign"] = np.where(chinput_j["distSign"] == max(chinput_j["distSign"]), \
                                              np.nan, \
@@ -1769,6 +1765,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if x["log_p"].isna().any():
             logger.info("Some log-p-values were NA.")
 
+        print(x)
         return x
 
     def getAvgFragLength(self, x, rmap, excludeMT=True):
