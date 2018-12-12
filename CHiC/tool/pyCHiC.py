@@ -149,6 +149,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 break
             return True
 
+    @profile
     def checks(self, pychic_export_format, pychic_export_order, rmap, baitmap,
                nbpb, npb, poe, settingsFile): # pylint: disable=invalid-name
         """
@@ -179,7 +180,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         export_formats = ["seqMonk", "interBed", "washU_text", "washU_track"]
 
-        if pychic_export_format in export_formats:
+        if set(export_formats).intersection(set(pychic_export_format)):
             pass
         else:
             logger.fatal("pychic_export_format must be either seqMonk,"
@@ -220,7 +221,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             logger.fatal("Number of columns found "+str(len(rmap_df.columns)))
             return False
 
-        IDbaits = list(baitmap_df.iloc[:, 3]) # pylint: disable=invalid-name
+        IDbaits = baitmap_df.iloc[:, 3] # pylint: disable=invalid-name
         IDbaitSet = set(IDbaits) # pylint: disable=invalid-name
         if len(IDbaits) != len(IDbaitSet):
             logger.fatal("Duplicated fragment IDs found in baitmapfile. "
@@ -228,7 +229,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                          "round (4rd column ID)")
             logger.fatal(str(len(IDbaits)), str(len(IDbaitSet)))
 
-        IDrmap = list(rmap_df.iloc[:, 3]) # pylint: disable=invalid-name
+        IDrmap = rmap_df.iloc[:, 3] # pylint: disable=invalid-name
         IDrmapSet = set(IDrmap) # pylint: disable=invalid-name
         if len(IDrmap) != len(IDrmapSet):
             logger.fatal("Duplicated fragment IDs found in baitmapfile. "
@@ -255,6 +256,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if self.check_design(poe, rmap, baitmap, 7, 8) is False:
             return False
 
+        import sys
+        sys.exit()
         return True
 
     def readSample(self, chinput, bamFile, rmap, baitmap): # pylint: disable=invalid-name
@@ -1663,7 +1666,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_jiw, param_dispersion
 
-    @profile
+    #@profile
     def getPvals(self, x, dispersion):
         """
         Get the pvalues for each interaction
@@ -1686,6 +1689,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ##(gives P(X > x-1) = P(X >= x))
         ##Note that the cases Bmean = 0 and Bmean > 0 are considered separately.
 
+        print(x)
         log_p = []
 
         robjects.numpy2ri.activate()
@@ -1702,7 +1706,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         robjects.r.assign("Tmean", tmean_r)
         robjects.r.assign("Bmean", bmean_r)
         robjects.r.assign("alpha", dispersion)
-
 
         robjects.r("""
             Tmean = as.numeric(Tmean)
