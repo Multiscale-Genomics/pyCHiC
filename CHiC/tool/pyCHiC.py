@@ -410,10 +410,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         import time
 
+        start_time = time.time()
         #remove baits without proximal non-bait2bait interactions
         x["isBait2bait"] = np.where(x["baitID"].isin(baitmap_id) &
                                     x["otherEndID"].isin(baitmap_id),
                                     "TRUE", "FALSE")
+
+        print("--- %s seconds ---" % (time.time() - start_time))
+
 
 
         NoB2BProxInter = x.loc[x["isBait2bait"] == "FALSE"] # pylint: disable=invalid-name
@@ -624,7 +628,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_merge, npb
 
-    #@profile
+
     def normaliseFragmentSets(self, x, viewpoint, idcol, Ncol, binsize, # pylint: disable=invalid-name
                               npb=False, adjBait2bait=True,
                               shrink=False, refExcludeSuffix=None,
@@ -658,12 +662,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         x_
         """
-        start = time.time()
         if viewpoint == "bait":
             scol = "s_j"
 
             x["distbin"] = pd.cut(x["distSign"].abs(),
-                np.arange(0, self.configuration["pychic_maxLBrownEst"], binsize))
+                np.arange(0, self.configuration["pychic_maxLBrownEst"]+1, binsize))
 
             x["distbin"] =  x['distbin'].apply(lambda x: x.left)
 
@@ -711,7 +714,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             ["ntot", "distbin", idcol],
             sort=False,
             as_index=False).sum()
-        print(sbbm)
 
         sbbm["bbm"] = sbbm[Ncol]/sbbm["ntot"]
 
@@ -785,10 +787,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                "distbin" : pd.unique(sbbm["distbin"])})
             xAll = pd.merge(xAll, gm, how="left", on="distbin")
 
-        print(print("--- %s seconds ---" % (time.time() - start)))
         print(xAll)
-        import sys
-        sys.exit()
         return xAll
 
 
