@@ -624,7 +624,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_merge, npb
 
-    #@profile
     def normaliseFragmentSets(self, x, viewpoint, idcol, Ncol, binsize, # pylint: disable=invalid-name
                               npb=False, adjBait2bait=True,
                               shrink=False, refExcludeSuffix=None,
@@ -702,17 +701,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             x["ntot"] = [int(i) for i in ntot]
 
-            """
-
-            x = pd.merge(x, npb, how="left", on="baitID")
-            #SLOW CODE!!!! TRY TO SPEED UP BY CREATING NUMPY ARRAYS AND SLICE TRHOUGH THEM
-            ntot = []
-            for binN in x["bincol"].iteritems(): # pylint: disable=invalid-name
-                ntot.append(x.loc[binN[0],binN[1]])
-            x["ntot"] = ntot
-
-            x.drop("bincol", axis=1, inplace=True)
-            """
         else:
             scol = "s_i"
 
@@ -799,9 +787,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                "distbin" : pd.unique(sbbm["distbin"])})
             xAll = pd.merge(xAll, gm, how="left", on="distbin")
 
-
-        import sys
-        sys.exit()
 
         return xAll
 
@@ -2345,7 +2330,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             #chinput_filtered.to_csv("chinput_filteres.csv", sep="\t", index=False)
 
-            npb = self.prepare_design(input_files["npb"], "baitID")
+            #npb = self.prepare_design(input_files["npb"], "baitID")
 
         else:
             chinputs_filtered = {}
