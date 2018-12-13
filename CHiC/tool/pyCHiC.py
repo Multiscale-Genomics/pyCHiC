@@ -408,13 +408,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x_shape = int(x.shape[0])
 
+        import time
 
         #remove baits without proximal non-bait2bait interactions
         x["isBait2bait"] = np.where(x["baitID"].isin(baitmap_id) &
                                     x["otherEndID"].isin(baitmap_id),
-                                    True, False)
+                                    "TRUE", "FALSE")
 
-        NoB2BProxInter = x.loc[x["isBait2bait"] == False] # pylint: disable=invalid-name
+
+        NoB2BProxInter = x.loc[x["isBait2bait"] == "FALSE"] # pylint: disable=invalid-name
         NoB2BProxInter = NoB2BProxInter.loc[ # pylint: disable=invalid-name
             x["distSign"] < self.configuration["pychic_maxLBrownEst"]
         ]
@@ -656,36 +658,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         x_
         """
+        start = time.time()
         if viewpoint == "bait":
             scol = "s_j"
 
-
-
-            bin_tuple = []
-            for distance in x["distSign"]:
-                if math.isnan(distance):
-                    bin_tuple.append(np.nan)
-                elif abs(distance) > self.configuration["pychic_maxLBrownEst"]:
-                    bin_tuple.append(np.nan)
-                else:
-                    number = int((abs(distance)/binsize))*binsize
-                    bin_tuple.append(int(number))
-
-            # this column indicate the first coordinate of the bin,
-            # instead of (0,20000],(20000,40000]
-            # will be 0 , 20000. Having integers is going to facilitate future operations
-            x["distbin"] = bin_tuple
-
-            print(x)
-            b = x
-
-            b["distbin"] = pd.cut(b["distSign"].abs(),
+            x["distbin"] = pd.cut(x["distSign"].abs(),
                 np.arange(0, self.configuration["pychic_maxLBrownEst"], binsize))
 
-            b["distbin"] =  b['distbin'].apply(lambda x: x.left)
+            x["distbin"] =  x['distbin'].apply(lambda x: x.left)
 
-            print(b)
-            print(pd.testing.assert_frame_equal(x,b))
+            x["distbin"] = x["distbin"].astype(float)
 
             xAll = x # pylint: disable=invalid-name
 
@@ -696,7 +678,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     x[, isBait2bait := FALSE]
                     x[wb2b(otherEndID), isBait2bait:= TRUE]
                 """
-                x = x.loc[x["isBait2bait"] == False]
+                x = x.loc[x["isBait2bait"] == "FALSE"]
 
             # x is the data table used to compute the scaling factors
             x = x.loc[x["distbin"].notna()]
@@ -711,7 +693,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             #SLOW CODE!!!! TRY TO SPEED UP BY CREATING NUMPY ARRAYS AND SLICE TRHOUGH THEM
             ntot = []
             for binN in x["bincol"].iteritems(): # pylint: disable=invalid-name
-                ntot.append(x.loc[binN[0], binN[1]])
+                ntot.append(x.loc[binN[0],binN[1]])
             x["ntot"] = ntot
 
             x.drop("bincol", axis=1, inplace=True)
@@ -729,7 +711,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             ["ntot", "distbin", idcol],
             sort=False,
             as_index=False).sum()
-
+        print(sbbm)
 
         sbbm["bbm"] = sbbm[Ncol]/sbbm["ntot"]
 
@@ -758,7 +740,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             distbin_sorted = sorted(sbbm["distbin"].unique())
 
-            sbbm_NB2B = sbbm[sbbm["tlb"].astype("str").str.contains("B2B") is False]
+            sbbm_NB2B = sbbm[sbbm["tlb"].astype("str").str.contains("B2B")==False]
 
             geomean = sbbm_NB2B.groupby(
                 ["distbin"],
@@ -788,8 +770,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         if len(s_v[s_v[scol].isnull()]) > 0:
             logger.info("The following viewpoints couldn't be robustly "
-                        "normalised (too sparse?) and will be removed")
-            #logger.info(s_v[s_v[scol].isnull()])
+                        "normalised (too sparse?) and will be removed:")
+            logger.info(s_v[s_v[scol].isnull()])
             s_v = s_v[s_v[scol].notnull()]
 
         if viewpoint == "otherEnd":
@@ -803,11 +785,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                "distbin" : pd.unique(sbbm["distbin"])})
             xAll = pd.merge(xAll, gm, how="left", on="distbin")
 
-
+        print(print("--- %s seconds ---" % (time.time() - start)))
         print(xAll)
         import sys
         sys.exit()
-
         return xAll
 
 
@@ -935,8 +916,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         if adjBait2bait:
             transLend0 = transLen.copy()
-            transLen = transLend0.loc[transLend0["isBait2bait"] == False]
-            transLenB2B = transLend0[transLend0["isBait2bait"] == True]
+            transLen = transLend0.loc[transLend0["isBait2bait"] == "FALSE"]
+            transLenB2B = transLend0[transLend0["isBait2bait"] == "TRUE"]
 
         logger.info("Binning..")
 
@@ -1511,10 +1492,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #remove bait2bait...
         if adjBait2bait == True:
             if "isBait2bait" not in x.columns:
-                x = x[x["isBait2bait"] == False]
+                x = x[x["isBait2bait"] == "FALSE"]
                 #CARFEULL IF THIS IS USED IN A DIFFERENT OCASION
             else:
-                x = x[x["isBait2bait"] == False]
+                x = x[x["isBait2bait"] == "FALSE"]
 
 
         ##1) Reinstate zeros:
