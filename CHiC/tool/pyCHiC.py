@@ -408,15 +408,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x_shape = int(x.shape[0])
 
-        import time
-
-        start_time = time.time()
         #remove baits without proximal non-bait2bait interactions
         x["isBait2bait"] = np.where(x["baitID"].isin(baitmap_id) &
                                     x["otherEndID"].isin(baitmap_id),
                                     "TRUE", "FALSE")
 
-        print("--- %s seconds ---" % (time.time() - start_time))
 
 
 
@@ -628,7 +624,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_merge, npb
 
-
+    #@profile
     def normaliseFragmentSets(self, x, viewpoint, idcol, Ncol, binsize, # pylint: disable=invalid-name
                               npb=False, adjBait2bait=True,
                               shrink=False, refExcludeSuffix=None,
@@ -686,13 +682,29 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             # x is the data table used to compute the scaling factors
             x = x.loc[x["distbin"].notna()]
 
+            #x["bincol"] = ["bin"+str(int(i/binsize)+1) for i in x["distbin"]]
+
+            x["bincol"] = [int(i/binsize)+1 for i in x["distbin"]]
+
+            npb_dic = {}
+            with open(npb, "r") as npb_file:
+                for line in npb_file:
+                    line_hdl = line.rstrip().split("\t")
+                    try:
+                        npb_dic[int(line_hdl[0])] = line_hdl[1:]
+                    except ValueError:
+                        continue
+
+            ntot = []
+
+            for r in zip(x["baitID"], x["bincol"]):
+                ntot.append(npb_dic[r[0]][r[1]-1])
+
+            x["ntot"] = [int(i) for i in ntot]
+
+            """
+
             x = pd.merge(x, npb, how="left", on="baitID")
-
-            x["bincol"] = ["bin"+str(int(i/binsize)+1) for i in x["distbin"]]
-
-            #Thake x[X] as the column name and the [y] is the numnber of the row where we have
-            #to look for the right number of OE
-
             #SLOW CODE!!!! TRY TO SPEED UP BY CREATING NUMPY ARRAYS AND SLICE TRHOUGH THEM
             ntot = []
             for binN in x["bincol"].iteritems(): # pylint: disable=invalid-name
@@ -700,7 +712,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             x["ntot"] = ntot
 
             x.drop("bincol", axis=1, inplace=True)
-
+            """
         else:
             scol = "s_i"
 
@@ -787,7 +799,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                "distbin" : pd.unique(sbbm["distbin"])})
             xAll = pd.merge(xAll, gm, how="left", on="distbin")
 
-        print(xAll)
+
+        import sys
+        sys.exit()
+
         return xAll
 
 
@@ -2347,7 +2362,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         logger.info("\nRunning normaliseBaits")
 
         chinput_j = self.normaliseBaits(chinput_filtered, \
-                                       npb)
+                                       input_files["npb"])
 
 
         chinput_ji = self.normaliseOtherEnds(chinput_j,
