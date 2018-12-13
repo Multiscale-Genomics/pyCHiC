@@ -149,7 +149,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 break
             return True
 
-    @profile
     def checks(self, pychic_export_format, pychic_export_order, rmap, baitmap,
                nbpb, npb, poe, settingsFile): # pylint: disable=invalid-name
         """
@@ -256,9 +255,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if self.check_design(poe, rmap, baitmap, 7, 8) is False:
             return False
 
-        import sys
-        sys.exit()
         return True
+
 
     def readSample(self, chinput, bamFile, rmap, baitmap): # pylint: disable=invalid-name
         """
@@ -280,6 +278,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ------
         chinput_filtered: data frame
         """
+
         chinput = "".join(chinput)
         logger.info("reading and checking "+chinput)
 
@@ -312,7 +311,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     if "".join(rmap_chinput).split("=")[1] != rmap_name:
                         logger.fatal("The chinput file was not generated using "
                                      "the rmap file specified, rmap provided"
-                                     +rmap_name+" rmap found"+"".join(rmap_chinput).split("=")[1])
+                                     +rmap_name+" rmap found x"+"".join(rmap_chinput).split("=")[1])
                 else:
                     break
 
@@ -402,7 +401,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         # remove adjacent pairs
         if self.configuration["pychic_removeAdjacent"] is True:
             #adjacent = chinput_filt3.loc abs(chinput_filt3["baitID"]-chinput_filt3["otherEndID"])
-            x = x.ix[abs(x['baitID']-x["otherEndID"]) > 1] # pylint: disable=invalid-name
+            x = x.loc[abs(x['baitID']-x["otherEndID"]) > 1] # pylint: disable=invalid-name
             logger.info("Removed interactions with fragments adjacent to baits.")
 
         if int(x.shape[0]) == 0:
@@ -415,16 +414,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                     x["otherEndID"].isin(baitmap_id),
                                     "TRUE", "FALSE")
 
-        NoB2BProxInter = x.loc[x["isBait2bait"] == "FALSE"] # pylint: disable=invalid-name
-        NoB2BProxInter = NoB2BProxInter.ix[ # pylint: disable=invalid-name
+        NoB2BProxInter = x[x["isBait2bait"] == "FALSE"] # pylint: disable=invalid-name
+        NoB2BProxInter = NoB2BProxInter.loc[ # pylint: disable=invalid-name
             x["distSign"] < self.configuration["pychic_maxLBrownEst"]
         ]
         NoB2BProxInter = NoB2BProxInter[["baitID", "N"]].groupby("baitID").sum() # pylint: disable=invalid-name
 
-        NoB2BProxInter = NoB2BProxInter.ix[NoB2BProxInter["N"] > 0] # pylint: disable=invalid-name
+        NoB2BProxInter = NoB2BProxInter[NoB2BProxInter["N"] > 0] # pylint: disable=invalid-name
 
-        x = x.ix[x["baitID"].isin(NoB2BProxInter.index)] # pylint: disable=invalid-name
-
+        x = x[x["baitID"].isin(NoB2BProxInter.index)] # pylint: disable=invalid-name
 
         logger.info("Filtered out "+ str(x.shape[0]-x_shape)+
                     " baits without proximal non-Bait2bait interactions")
@@ -685,10 +683,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     x[, isBait2bait := FALSE]
                     x[wb2b(otherEndID), isBait2bait:= TRUE]
                 """
-                x = x.ix[x["isBait2bait"] == "FALSE"]
+                x = x.loc[x["isBait2bait"] == "FALSE"]
 
             # x is the data table used to compute the scaling factors
-            x = x.ix[x["distbin"].notna()]
+            x = x.loc[x["distbin"].notna()]
 
             x = pd.merge(x, npb, how="left", on="baitID")
 
@@ -2332,6 +2330,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                                input_files["RMAP"],
                                                input_files["BAITMAP"])
 
+            chinput_filtered.to_csv("chinput_filteres.csv", sep="\t", index=False)
+
             npb = self.prepare_design(input_files["npb"], "baitID")
 
         else:
@@ -2366,12 +2366,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         distFunParams = self.estimateDistFun(chinput_jiw)
 
-
         chinput_jiwb, dispersion = self.estimateBrownianComponent(chinput_jiw, distFunParams)
 
         chinput_jiwb_pval = self.getPvals(chinput_jiwb, dispersion)
-
-        chinput_jiwb_pval.to_csv("/home/pacera/MuG/CHi-C/tests/data/getpvals_output.csv", sep="\t")
 
         rmap_df = pd.read_csv(input_files["RMAP"],
                               sep="\t",
