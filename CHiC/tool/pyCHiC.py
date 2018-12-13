@@ -257,7 +257,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return True
 
-
     def readSample(self, chinput, bamFile, rmap, baitmap): # pylint: disable=invalid-name
         """
         This function takes the chinput file and filter it according
@@ -409,12 +408,19 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x_shape = int(x.shape[0])
 
+        import time
+
+        start_time = time.time()
         #remove baits without proximal non-bait2bait interactions
         x["isBait2bait"] = np.where(x["baitID"].isin(baitmap_id) &
                                     x["otherEndID"].isin(baitmap_id),
                                     "TRUE", "FALSE")
 
-        NoB2BProxInter = x[x["isBait2bait"] == "FALSE"] # pylint: disable=invalid-name
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+
+
+        NoB2BProxInter = x.loc[x["isBait2bait"] == "FALSE"] # pylint: disable=invalid-name
         NoB2BProxInter = NoB2BProxInter.loc[ # pylint: disable=invalid-name
             x["distSign"] < self.configuration["pychic_maxLBrownEst"]
         ]
@@ -431,7 +437,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             logger.fatal("All interactions have been filtered out.")
 
         return x
-
 
     def dataframe_merge(self, chinputs):
         """
@@ -713,13 +718,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #sbbm is the input matrix for normalisation that contains the mean number of reads per bin for each bait
         #This makes the dataframe sum all the interactions "N" ma
         sbbm = x.groupby(
-            ["ntot","distbin",idcol],
+            ["ntot", "distbin", idcol],
             sort=False,
             as_index=False).sum()
 
         sbbm["bbm"] = sbbm[Ncol]/sbbm["ntot"]
 
-        sbbm.drop([Ncol,"ntot"], axis=1, inplace=True)
+        sbbm.drop([Ncol, "ntot"], axis=1, inplace=True)
 
         sbbm.sort_values(by=["distbin"], inplace=True)
 
@@ -809,9 +814,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         binsize = self.configuration["pychic_binsize"]
 
         x = self.normaliseFragmentSets(x, "bait", "baitID",
-                                             "N", binsize, npb)
+                                       "N", binsize, npb)
 
-        x["NNb"] =  (x["N"]/x["s_j"]).round()
+        x["NNb"] = (x["N"]/x["s_j"]).round()
         x["NNb"] = np.where(x["NNb"] == 0, 1, x["NNb"])
 
         return x
@@ -1664,7 +1669,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_jiw, param_dispersion
 
-    #@profile
     def getPvals(self, x, dispersion):
         """
         Get the pvalues for each interaction
@@ -2330,7 +2334,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                                input_files["RMAP"],
                                                input_files["BAITMAP"])
 
-            chinput_filtered.to_csv("chinput_filteres.csv", sep="\t", index=False)
+            #chinput_filtered.to_csv("chinput_filteres.csv", sep="\t", index=False)
 
             npb = self.prepare_design(input_files["npb"], "baitID")
 
