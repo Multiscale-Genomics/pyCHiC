@@ -994,7 +994,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_j
 
-    #@profile
     def normaliseOtherEnds(self, chinput_j, nbpb, Ncol="NNb", normNcol="NNboe"):
         """
         This function is used to calculate the normalization parameter for
@@ -1013,7 +1012,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         DataFrame
         """
-        start_time = time.time()
 
         chinput_j = self.addTLB(chinput_j)
 
@@ -1023,45 +1021,49 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("Computing total bait counts...")
 
-        nbpb = self.prepare_design(nbpb, "otherEndID")
-
-        nbpb = pd.merge(x, nbpb, how="left", on="otherEndID")
+        nbpb_dic = {}
+        with open(nbpb, "r") as nbpb_file:
+            for line in nbpb_file:
+                line_hdl = line.rstrip().split("\t")
+                try:
+                    nbpb_dic[int(line_hdl[0])] = line_hdl[1:]
+                except ValueError:
+                    continue
 
         # Compute the sums of observed baits per bin for pools of other ends -
         # NB: we need to some only once for each other end, but each other end is present
         # more than once for each tlb
 
         #Eliminate the first occurence from OE and distbin
-        nbpb.sort_values(["otherEndID", "distbin"], ascending =[True, True], inplace =True)
+        x.sort_values(["otherEndID", "distbin"], ascending =[True, True], inplace =True)
 
-        nbpb.drop_duplicates(subset = ['otherEndID', 'distbin'], keep="first", inplace=True)
+        x.drop_duplicates(subset = ['otherEndID', 'distbin'], keep="first", inplace=True)
 
-        nbpb["BinN"] = nbpb["distbin"]/self.configuration["pychic_binsize"]+1
+        x["BinN"] = x["distbin"]/self.configuration["pychic_binsize"]+1
 
-        nbpb["BinN"] = "bin"+ nbpb["BinN"].astype(int).astype(str)
+        x["BinN"] = x["BinN"].astype(int)
 
-        nbpb.reset_index(inplace=True)
+        #x.reset_index(inplace=True)
 
-        print(nbpb)
         ntot = []
-        for binN in nbpb["BinN"].iteritems():
-            ntot.append(nbpb.loc[binN[0], binN[1]])
+        for r in zip(x["otherEndID"], x["BinN"]):
+            ntot.append(nbpb_dic[r[0]][r[1]-1])
 
-        nbpb["ntot"] = ntot
+        x["ntot"] = [int(i) for i in ntot]
 
-
-        nbpbSum = nbpb[["tlb", "distbin", "ntot"]]
-
-        nbpb.drop(["ntot"], axis=1, inplace=True)
+        nbpbSum = x[["tlb", "distbin", "ntot"]]
 
         nbpbSum = nbpbSum.groupby(["tlb", "distbin"], as_index=False)["ntot"].sum()
+
+        x.drop(["ntot"], inplace=True, axis=1)
 
         x = pd.merge(x, nbpbSum, how="left", on=["tlb", "distbin"])
 
         logger.info("Computing scaling factors")
 
+
         x = self.normaliseFragmentSets(x, "otherEnd", "tlb", "NNb", self.configuration["pychic_binsize"],
-                                        refExcludeSuffix="B2B")
+                                       refExcludeSuffix="B2B")
 
         x.drop_duplicates(subset=["s_i"], keep="first", inplace=True)
 
@@ -1083,11 +1085,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_j["NNboe"] = chinput_j[Ncol]/chinput_j["s_i"]
         chinput_j["NNboe"]  = chinput_j["NNboe"].round(decimals=0)
         chinput_j["NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1 )
-
-        print("--- %s seconds ---" % (time.time() - start_time))
-
-        import sys
-        sys.exit()
 
         return chinput_j
 
@@ -1118,6 +1115,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return design
 
+    #@profile
     def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap):
         """
         This function estimate the technical noise of the experiments
@@ -1132,6 +1130,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_jiw
 
         """
+        start_time = time.time()
+
         logger.info("Estimating technical noise based on trans-counts...")
 
         minBaitsPerBin = self.configuration["pychic_techNoise_minBaitsPerBin"]
@@ -1190,10 +1190,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         res = res_chinput.groupby(["tlb", "tblb"], as_index=False)["N"].sum()
 
         tlb_tblb = chinput_ji.drop_duplicates(["tlb", "tblb"])
-        tlb_tblb = tlb_tblb[["tlb","tblb"]]
+        tlb_tblb = tlb_tblb[["tlb", "tblb"]]
 
 
         numPairsdf = pd.DataFrame(columns = {"tlb", "tblb", "numPairs"})
+
+
 
         for i in tlb_tblb.index:
             tlb = tlb_tblb.at[i, "tlb"]
@@ -1213,7 +1215,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             numPairs = 0
             for chromo in bChr.unique():
-                pairs = (len([x for x in bChr if x== chromo])*len([y for y in oeChr if y != chromo]))-len(baits_set.intersection(oes_set))
+                pairs = (len([x for x in bChr if x == chromo])* \
+                    len([y for y in oeChr if y != chromo]))-len(baits_set.intersection(oes_set))
+
                 numPairs += pairs
 
             numPairsdf = numPairsdf.append({
@@ -1222,6 +1226,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 "numPairs" : numPairs
                 }, ignore_index=True)
 
+        print("AAAA")
+        print(numPairs)
         res = pd.merge(numPairsdf, res,  how="left", on=["tlb", "tblb"])
 
         res = res.rename(columns={"N" : "nTrans"})
@@ -1241,6 +1247,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                          "otherEndchr"],
                          axis=1,
                          inplace=True)
+
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+        import sys
+        sys.exit()
 
         return chinput_ji
 
@@ -2342,7 +2353,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_jiw = self.estimateTechnicalNoise(chinput_ji,
                                                   input_files["RMAP"],
                                                   input_files["BAITMAP"])
-
 
         distFunParams = self.estimateDistFun(chinput_jiw)
 
