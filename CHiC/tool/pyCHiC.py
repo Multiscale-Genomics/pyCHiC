@@ -870,43 +870,17 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                      "distSign" : abs(chinput_j["distSign"])})
 
 
-            transLen2.sort_values(["otherEndID","distSign"], inplace=True)
-
             transLen2 = transLen2[["distSign" , "isBait2bait", "otherEndID"]]
-
-            distSign = []
-            isBait2bait = []
-            otherEndID = []
-            counter= 0
-            for row in transLen2.itertuples():
-                counter += 1
-                if counter == 1 :
-                    distSign.append(row[1])
-                    isBait2bait.append(row[2])
-                    otherEndID.append(row[3])
-                    OE = row[3]
-                else:
-                    if row[3] == OE:
-                        continue
-                    else:
-                        distSign.append(row[1])
-                        isBait2bait.append(row[2])
-                        otherEndID.append(row[3])
-                        OE = row[3]
-
-            transLen2 = pd.DataFrame({"otherEndID" : otherEndID,
-                                      "isBait2bait" : isBait2bait,
-                                      "distSign" : distSign
-                                     })
+            transLen2.sort_values(["otherEndID", "distSign"], inplace=True)
+            transLen2.drop_duplicates(["otherEndID"], inplace=True)
 
             transLen = pd.merge(transLen, transLen2, on="otherEndID", how="right")
 
-
         else:
             pass
-            #something similar to the above function
+            # something similar to the above function
 
-        #remember to rename the transD column for te else statement
+        # remember to rename the transD column for te else statement
         transLend0 = transLen.copy()
 
         transLen = transLen[transLen["transLength"] <= np.percentile(
@@ -946,7 +920,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             # cutB2B = cut2(transLenB2B[abs(distSign)<= s$maxLBrownEst]$transLength,
             #        m=minProxB2BPerBin, onlycuts=TRUE)
-            #cutB2B = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+            # cutB2B = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
             transLen_length = transLenB2B[transLenB2B["distSign"].abs() <= \
                 self.configuration["pychic_maxLBrownEst"]]["transLength"]
@@ -1010,15 +984,17 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         18 418022 0.7670651     419466 1        3195  62753699       FALSE         NA
         19 418110 0.7582941     419466 1        3195  62753699       FALSE         NA
         """
+        #delveloping propuses
         chinput_j =  chinput_j[chinput_j["otherEndID"] != 419466]
 
         if transNA:
             chinput_j["distSign"] = np.where(chinput_j["distSign"] == max(chinput_j["distSign"]), \
                                              np.nan, \
                                              chinput_j["distSign"])
+
         return chinput_j
 
-
+    #@profile
     def normaliseOtherEnds(self, chinput_j, nbpb, Ncol="NNb", normNcol="NNboe"):
         """
         This function is used to calculate the normalization parameter for
@@ -1037,6 +1013,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         DataFrame
         """
+        start_time = time.time()
 
         chinput_j = self.addTLB(chinput_j)
 
@@ -1065,24 +1042,25 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         nbpb.reset_index(inplace=True)
 
-
+        print(nbpb)
         ntot = []
         for binN in nbpb["BinN"].iteritems():
-            ntot.append(nbpb.loc[binN[0],binN[1]])
+            ntot.append(nbpb.loc[binN[0], binN[1]])
 
         nbpb["ntot"] = ntot
 
-        nbpbSum = nbpb[["tlb","distbin","ntot"]]
+
+        nbpbSum = nbpb[["tlb", "distbin", "ntot"]]
 
         nbpb.drop(["ntot"], axis=1, inplace=True)
 
-        nbpbSum = nbpbSum.groupby(["tlb","distbin"], as_index=False)["ntot"].sum()
+        nbpbSum = nbpbSum.groupby(["tlb", "distbin"], as_index=False)["ntot"].sum()
 
-        x = pd.merge(x, nbpbSum, how="left", on=["tlb","distbin"])
+        x = pd.merge(x, nbpbSum, how="left", on=["tlb", "distbin"])
 
         logger.info("Computing scaling factors")
 
-        x =  self.normaliseFragmentSets(x, "otherEnd", "tlb", "NNb", self.configuration["pychic_binsize"],
+        x = self.normaliseFragmentSets(x, "otherEnd", "tlb", "NNb", self.configuration["pychic_binsize"],
                                         refExcludeSuffix="B2B")
 
         x.drop_duplicates(subset=["s_i"], keep="first", inplace=True)
@@ -1105,6 +1083,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_j["NNboe"] = chinput_j[Ncol]/chinput_j["s_i"]
         chinput_j["NNboe"]  = chinput_j["NNboe"].round(decimals=0)
         chinput_j["NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1 )
+
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+        import sys
+        sys.exit()
 
         return chinput_j
 
@@ -1685,7 +1668,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ##(gives P(X > x-1) = P(X >= x))
         ##Note that the cases Bmean = 0 and Bmean > 0 are considered separately.
 
-        print(x)
         log_p = []
 
         robjects.numpy2ri.activate()
