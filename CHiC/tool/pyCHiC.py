@@ -661,9 +661,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             scol = "s_j"
 
             x["distbin"] = pd.cut(x["distSign"].abs(),
-                np.arange(0, self.configuration["pychic_maxLBrownEst"]+1, binsize))
+                                  np.arange(0, self.configuration["pychic_maxLBrownEst"]+1,
+                                  binsize))
 
-            x["distbin"] =  x['distbin'].apply(lambda x: x.left)
+            x["distbin"] = x['distbin'].apply(lambda x: x.left)
 
             x["distbin"] = x["distbin"].astype(float)
 
@@ -696,7 +697,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             ntot = []
 
-            for r in zip(x["baitID"], x["bincol"]):
+            for r in zip(x["baitID"], x["bincol"]): # pylint: disable=invalid-name
                 ntot.append(npb_dic[r[0]][r[1]-1])
 
             x["ntot"] = [int(i) for i in ntot]
@@ -721,7 +722,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         sbbm.sort_values(by=["distbin"], inplace=True)
 
-        if viewpoint == "bait" or refExcludeSuffix == False:
+        if viewpoint == "bait" or refExcludeSuffix is False:
             #IMPROVE THIS APPLYING THE FUNCTION TO BLOCK AND CREATING A COLUMN AT THE SAME TIME
             geomean = sbbm.groupby(
                 ["distbin"],
@@ -770,28 +771,26 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         s_v.rename(columns={"s_iv": scol}, inplace=True)
 
-        if len(s_v[s_v[scol].isnull()]) > 0:
+        if not s_v[s_v[scol].isnull()].empty :
             logger.info("The following viewpoints couldn't be robustly "
                         "normalised (too sparse?) and will be removed:")
             logger.info(s_v[s_v[scol].isnull()])
             s_v = s_v[s_v[scol].notnull()]
 
         if viewpoint == "otherEnd":
-            xAll = x
-            xAll = pd.merge(xAll, s_v, how="left", on="tlb")
+            xAll = x # pylint: disable=invalid-name
+            xAll = pd.merge(xAll, s_v, how="left", on="tlb") # pylint: disable=invalid-name
 
         if viewpoint == "bait":
-            xAll = pd.merge(s_v, xAll, how="left",
+            xAll = pd.merge(s_v, xAll, how="left", # pylint: disable=invalid-name
                             on = "baitID")
-            gm = pd.DataFrame({"refBinMean" : geomean,
+            gm = pd.DataFrame({"refBinMean" : geomean, # pylint: disable=invalid-name
                                "distbin" : pd.unique(sbbm["distbin"])})
-            xAll = pd.merge(xAll, gm, how="left", on="distbin")
-
+            xAll = pd.merge(xAll, gm, how="left", on="distbin") # pylint: disable=invalid-name
 
         return xAll
 
-
-    def normaliseBaits(self, x, npb):
+    def normaliseBaits(self, x, npb): # pylint: disable=invalid-name
         """
         This function normalize the baits, calulating the s_j parameter part of the
         mean of the negative binomial model used to model the background error
@@ -1083,7 +1082,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
 
         chinput_j["NNboe"] = chinput_j[Ncol]/chinput_j["s_i"]
-        chinput_j["NNboe"]  = chinput_j["NNboe"].round(decimals=0)
+        chinput_j["NNboe"] = chinput_j["NNboe"].round(decimals=0)
         chinput_j["NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1 )
 
         return chinput_j
@@ -1115,7 +1114,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return design
 
-    #@profile
+
     def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap):
         """
         This function estimate the technical noise of the experiments
@@ -1130,8 +1129,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_jiw
 
         """
-        start_time = time.time()
-
         logger.info("Estimating technical noise based on trans-counts...")
 
         minBaitsPerBin = self.configuration["pychic_techNoise_minBaitsPerBin"]
@@ -1146,7 +1143,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         transBaitLen = pd.DataFrame(transBaits)
 
-        transBaitLen = transBaitLen.rename(columns = {"baitID": "transBaitLen"})
+        transBaitLen = transBaitLen.rename(columns={"baitID": "transBaitLen"})
 
         transBaitLen["baitID"] = transBaitLen.index.tolist()
 
@@ -1174,9 +1171,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         baitmap = pd.read_csv(baitmap, sep="\t", header=None)
         rmap = pd.read_csv(rmap, sep="\t", header=None)
 
-        baitmap = baitmap.rename(columns = {0:"baitchr", 3:"baitID"})
+        baitmap = baitmap.rename(columns={0:"baitchr", 3:"baitID"})
         baitmap.drop([1, 2, 4], axis=1, inplace=True)
-        rmap = rmap.rename(columns = {0:"otherEndchr", 3:"otherEndID"})
+        rmap = rmap.rename(columns={0:"otherEndchr", 3:"otherEndID"})
         rmap.drop([1, 2], axis=1, inplace=True)
 
         chinput_ji = pd.merge(chinput_ji, rmap, how="left", on="otherEndID")
@@ -1192,11 +1189,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         tlb_tblb = chinput_ji.drop_duplicates(["tlb", "tblb"])
         tlb_tblb = tlb_tblb[["tlb", "tblb"]]
 
-
         numPairsdf = pd.DataFrame(columns = {"tlb", "tblb", "numPairs"})
 
-
-
+        #SLOW CODE
         for i in tlb_tblb.index:
             tlb = tlb_tblb.at[i, "tlb"]
             tblb = tlb_tblb.at[i, "tblb"]
@@ -1213,7 +1208,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             oeChr = temp_chinput.drop_duplicates("otherEndID")
             oeChr = oeChr["otherEndchr"]
 
-            numPairs = 0
+            numPairs = 0 # pylint: disable=invalid-name
+
             for chromo in bChr.unique():
                 pairs = (len([x for x in bChr if x == chromo])* \
                     len([y for y in oeChr if y != chromo]))-len(baits_set.intersection(oes_set))
@@ -1226,8 +1222,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 "numPairs" : numPairs
                 }, ignore_index=True)
 
-        print("AAAA")
-        print(numPairs)
+        #print(numPairs)
         res = pd.merge(numPairsdf, res,  how="left", on=["tlb", "tblb"])
 
         res = res.rename(columns={"N" : "nTrans"})
@@ -1245,15 +1240,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_ji.drop(["transBaitLen",
                          "baitchr",
                          "otherEndchr"],
-                         axis=1,
-                         inplace=True)
-
-        print("--- %s seconds ---" % (time.time() - start_time))
-
-        import sys
-        sys.exit()
+                        axis=1,
+                        inplace=True)
 
         return chinput_ji
+
 
     def estimateDistFun(self, chinput_jiw):
         """
@@ -1270,13 +1261,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         # Get f(d_b)
         chinput_jiw = chinput_jiw[chinput_jiw["refBinMean"].notnull()]
+
         f_d = chinput_jiw.drop_duplicates(["distbin", "refBinMean"])
         f_d = f_d[["distbin", "refBinMean"]]
         f_d.sort_values(by=["refBinMean"], inplace=True, ascending=False)
 
         f_d["midpoint"] = np.arange(self.configuration["pychic_binsize"]/2,
-                             self.configuration["pychic_binsize"]*f_d.shape[0],
-                             self.configuration["pychic_binsize"])
+                                    self.configuration["pychic_binsize"]*f_d.shape[0],
+                                    self.configuration["pychic_binsize"])
 
         obs_min = np.log(min(f_d["midpoint"]))
         obs_max = np.log(max(f_d["midpoint"]))
@@ -1440,6 +1432,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return x
 
+    #@profile
     def estimateDispersion(self, chinput_jiw, proxOE, distFunParams):
         """
         Estimate the dispersion
@@ -1563,8 +1556,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x["zeros"] = np.zeros(len(x["Bmean"]))
 
         logger.info("Sampling the dispersion...")
-        """
-        LOOK AT THE TYPES OF THE PANDAS COLUMNS AND SEE IF THAT AFFECTS
+
+        #LOOK AT THE TYPES OF THE PANDAS COLUMNS AND SEE IF THAT AFFECTS
         from rpy2.robjects.packages import importr
         from rpy2.robjects.numpy2ri import numpy2ri
         from rpy2 import robjects
@@ -1578,6 +1571,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         numpyN = np.array(x["N"])
         numpyBmenalog = np.array(x["Bmeanlog"])
 
+        print(len(numpyN))
+        print(len(numpyBmenalog))
+
         r_y = numpy2ri(numpyN)
         r_x = numpy2ri(numpyBmenalog)
 
@@ -1586,12 +1582,17 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         r("x <- as.matrix(x)")
         r("y <- as.matrix(y)")
+
+        start_time = time.time()
         r("res <- glm.nb(formula=y~x + 0)")
+        print("--- %s seconds ---" % (time.time() - start_time))
+
         model_theta = r("res$theta")
 
-        print(model_theta)
-        """
-        model_theta = 2.5563913
+        import sys
+        sys.exit()
+
+        #model_theta = 2.5563913
 
         return model_theta
 
@@ -1621,17 +1622,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         maxLBrownEst = self.configuration["pychic_maxLBrownEst"]
 
         #Seed
-
         if samples is None:
             samples = 5
 
-        if subset is not None:
+        if subset:
             if subset > len(chinput_jiw["baitID"].unique()):
                 logger.info("subset > number of baits in data,"+
                             "so used the full dataset.\n")
                 subset = None
 
-        if subset == None and samples !=1:
+        if subset is None and samples != 1:
             logger.info("We're using the whole data set to calculate "+
                         "dispersion. There's no reason to sample repeatedly "+
                         "in this case, so overriding brownianNoise.samples to 1.")
@@ -2450,7 +2450,7 @@ if __name__ == "__main__":
         "pychic_tlb_minProxOEPerBin" : 150,
         "pychic_tlb_minProxB2BPerBin" : 15,
         "pychic_techNoise_minBaitsPerBin" : 150,
-        "pychic_brownianNoise_samples" : 5,
+        "pychic_brownianNoise_samples" : 1,
         "pychic_brownianNoise_subset" : 500,
         "pychic_brownianNoise_seed" : "NA",
         "pychic_baitIDcol" : "baitID",
