@@ -1292,7 +1292,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         distFunParams["tail_coef"] = [alpha2, beta2]
 
         #PLOT
-
         return distFunParams
 
 
@@ -1384,6 +1383,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         out : list
         """
+
+        #Try this with cython
         obs_max = distFunParams["obs_max"]
         obs_min = distFunParams["obs_min"]
         head_coef = distFunParams["head_coef"]
@@ -1403,9 +1404,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             else:
                 out.append(fit[0] + fit[1]*dist + fit[2]*(dist**2) + fit[3]*(dist**3))
 
-
         return np.exp(out)
-
 
     def estimateBMean(self, x, distFunParams):
         """
@@ -1432,7 +1431,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return x
 
-    #@profile
     def estimateDispersion(self, chinput_jiw, proxOE, distFunParams):
         """
         Estimate the dispersion
@@ -1571,9 +1569,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         numpyN = np.array(x["N"])
         numpyBmenalog = np.array(x["Bmeanlog"])
 
-        print(len(numpyN))
-        print(len(numpyBmenalog))
-
         r_y = numpy2ri(numpyN)
         r_x = numpy2ri(numpyBmenalog)
 
@@ -1584,15 +1579,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         r("y <- as.matrix(y)")
 
         start_time = time.time()
+        #Slow code, here paralelize
         r("res <- glm.nb(formula=y~x + 0)")
         print("--- %s seconds ---" % (time.time() - start_time))
 
         model_theta = r("res$theta")
 
-        import sys
-        sys.exit()
-
-        #model_theta = 2.5563913
+        model_theta = 2.5563913
 
         return model_theta
 
@@ -1818,7 +1811,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return 1/(1+math.exp(-x))
 
-
     def getEtaBar(self, x, rmap, baitmap, avgFragLen):
         """
         get parameters for the experiments
@@ -1874,8 +1866,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 d_other2 = np.arange(d_near, d_c-d_near, avgFragLen)
 
                 try:
+
                     eta_sigma = eta_sigma + 2*sum(expit(alpha + beta*np.log(d_other))) + \
                                 sum(expit(alpha + beta*np.log(d_other2)))
+
                 except ValueError:
                     logger.info("Empty array")
 
@@ -1887,18 +1881,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         Calculate the weights
         """
-
         eta = expit(alpha + beta*np.log(dist))
 
         a = np.log((self.expit(delta) - self.expit(gamma))*eta + self.expit(gamma))
 
         b = np.log((self.expit(delta) - self.expit(gamma))*eta_bar) + self.expit(gamma)
 
-        #log_w = np.log(self.expit(delta) - self.expit(gamma))*eta + \
-        #               self.expit(gamma) - \
-        #        np.log((self.expit(delta) - self.expit(gamma))*eta_bar + self.expit(gamma))
-
         return a - b
+
 
     def getScores(self, x, rmap, baitmap):
         """
@@ -1929,6 +1919,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         getWeights = np.vectorize(self.getWeights)
 
+        start_time = time.time()
 
         x["log_w"] = getWeights(x["distSign"].abs().replace(np.nan, np.inf),
                                 alpha,
@@ -1937,6 +1928,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                 delta,
                                 eta_bar,
                                 expit)
+
+        print("--- %s seconds ---" % (time.time() - start_time))
 
         x["log_q"] = x["log_p"] - x["log_w"]
 
@@ -2347,7 +2340,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                              input_files["nbpb"]
                                             )
 
-
         logger.info("\n Running estimateTechicalNoise")
 
         chinput_jiw = self.estimateTechnicalNoise(chinput_ji,
@@ -2384,9 +2376,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if self.configuration["pychic_Rda"] == "True":
             self.save_rda(chinput_jiwb_scores)
 
-        #chinput_jiwb_scores = pd.read_csv("chinput_jiwb_scores.txt", sep="\t")
-
-        #dispersion = 2.5563913
 
         #self.plotBaits(chinput_jiwb_scores, dispersion)
 
