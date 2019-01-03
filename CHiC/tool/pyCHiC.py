@@ -895,6 +895,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         distSign = transLen[transLen["distSign"].abs() <= self.configuration["pychic_maxLBrownEst"]]["transLength"]
 
+
         cuts = self.cut2(distSign, int(self.configuration["pychic_tlb_minProxOEPerBin"]))
 
         #with depleated datasets curs == 1
@@ -1148,6 +1149,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         transBaitLen["baitID"] = transBaitLen.index.tolist()
 
         #levels = [6, 22, 32, 46, 131]
+
         levels = self.cut2(transBaitLen["transBaitLen"],
                            self.configuration["pychic_techNoise_minBaitsPerBin"])
 
@@ -1223,7 +1225,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 }, ignore_index=True)
 
         #print(numPairs)
-        res = pd.merge(numPairsdf, res,  how="left", on=["tlb", "tblb"])
+        res = pd.merge(numPairsdf, res, how="left", on=["tlb", "tblb"])
 
         res = res.rename(columns={"N" : "nTrans"})
 
@@ -1341,9 +1343,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         binsz = "".join([param for param in params if param.startswith("binsize")])
         if int(binsz.split("=")[1]) != self.configuration["pychic_binsize"]:
             logger.info("The binsize specified in the ProxOE file header is"+
-                       "not equal to binsize defined in experiment settigs."+
-                       " Amend either parameter setting (and if needed, "+
-                       "generate a new ProxOE file) before running the analysis\n")
+                        "not equal to binsize defined in experiment settigs."+
+                        " Amend either parameter setting (and if needed, "+
+                        "generate a new ProxOE file) before running the analysis\n")
 
         removeb2b = "".join([param for param in params if param.startswith("removeb2b")])
         if removeb2b.split("=")[1] != "True":
@@ -1367,7 +1369,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         poe = pd.read_csv(poe, sep="\t", skiprows=1, header=None, names=["baitID", "otherEndID", "dist"])
 
-        return(poe)
+        return poe
 
     def distFun(self, d, distFunParams):
         """
@@ -1404,6 +1406,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             else:
                 out.append(fit[0] + fit[1]*dist + fit[2]*(dist**2) + fit[3]*(dist**3))
 
+
         return np.exp(out)
 
     def estimateBMean(self, x, distFunParams):
@@ -1420,10 +1423,23 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
 
         if "s_i" in x.columns:
+            """
+            #This is the cython
+            start_time = time.time()
+
+            import distFun # This
+
+            out = distFun.distFun(x["distSign"].abs(), distFunParams)
+            print("--- %s seconds ---" % (time.time() - start_time))
+            """
+
             out = self.distFun(x["distSign"].abs(), distFunParams)
+
             x["Bmean"] = x["s_j"]*x["s_i"]*out
         else:
-            logger.info("s_i factors NOT found in .estimateBMean - variance will increase, estimating means anyway...")
+            logger.info("s_i factors NOT found in .estimateBMean - variance will increase,"
+                "estimating means anyway...")
+
             out = self.distFun(x["distSign"], distFunParams)
             x["Bmean"] = x["s_j"]*out
 
@@ -1505,10 +1521,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             siLookup = siLookup.drop_duplicates(["otherEndID"])
 
         if siPresent:
-            x = x[["baitID","otherEndID", "s_i", "s_j", "N", "distSign"]]
+            x = x[["baitID", "otherEndID", "s_i", "s_j", "N", "distSign"]]
             x = pd.merge(proxOE, x, how="left", on=["baitID", "otherEndID"])
         else:
-            x = x[["baitID","otherEndID", "s_j", "N", "distSign"]]
+            x = x[["baitID", "otherEndID", "s_j", "N", "distSign"]]
             x = pd.merge(proxOE, x, how="left", on=["baitID", "otherEndID"])
 
         ##Merging like this means that we are missing N, s_i, s_j information for most of the rows. So:
@@ -1578,14 +1594,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         r("x <- as.matrix(x)")
         r("y <- as.matrix(y)")
 
-        start_time = time.time()
-        #Slow code, here paralelize
         r("res <- glm.nb(formula=y~x + 0)")
-        print("--- %s seconds ---" % (time.time() - start_time))
 
         model_theta = r("res$theta")
 
-        model_theta = 2.5563913
+        #model_theta = 2.5563913
 
         return model_theta
 
@@ -1632,14 +1645,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         proxOE = self.readProxOEfile(input_files["poe"])
 
-
         #Run this the same as the number of Samples
         dispersion_samples = []
         for i in range(samples):
             dispersion_samples.append(
                 self.estimateDispersion(
-                            chinput_jiw, proxOE, distFunParams
-                            )
+                    chinput_jiw, proxOE, distFunParams
+                    )
             )
 
         logger.info("Getting consensus dispersion estimate...")
@@ -1919,8 +1931,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         getWeights = np.vectorize(self.getWeights)
 
-        start_time = time.time()
-
+        #paralelize
         x["log_w"] = getWeights(x["distSign"].abs().replace(np.nan, np.inf),
                                 alpha,
                                 beta,
@@ -1928,8 +1939,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                 delta,
                                 eta_bar,
                                 expit)
-
-        print("--- %s seconds ---" % (time.time() - start_time))
 
         x["log_q"] = x["log_p"] - x["log_w"]
 
@@ -2413,6 +2422,7 @@ if __name__ == "__main__":
     }
 
     configuration = {
+        "pychic_cpu" : 3,
         "pychic_cutoff" : 5,
         "pychic_Rda" : "False",
         "execution" : ".",
