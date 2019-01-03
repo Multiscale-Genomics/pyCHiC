@@ -1889,10 +1889,18 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return eta_bar
 
-    def getWeights(self, dist, alpha, beta, gamma, delta, eta_bar, expit):
+    def getWeights(self, dist):
         """
         Calculate the weights
         """
+        alpha = self.configuration["pychic_weightAlpha"]
+        beta = self.configuration["pychic_weightBeta"]
+        gamma = self.configuration["pychic_weightGamma"]
+        delta = self.configuration["pychic_weightDelta"]
+        eta_bar = self.configuration["pychic_eta"]
+
+        expit = np.vectorize(self.expit)
+
         eta = expit(alpha + beta*np.log(dist))
 
         a = np.log((self.expit(delta) - self.expit(gamma))*eta + self.expit(gamma))
@@ -1900,7 +1908,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         b = np.log((self.expit(delta) - self.expit(gamma))*eta_bar) + self.expit(gamma)
 
         return a - b
-
 
     def getScores(self, x, rmap, baitmap):
         """
@@ -1919,20 +1926,37 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         eta_bar = self.getEtaBar(x, rmap, baitmap, avgFragLen)
 
+        self.configuration["pychic_eta"] = eta_bar
         #Gets weights
         logger.info("Calculating p-values weights...")
-
-        alpha = self.configuration["pychic_weightAlpha"]
-        beta = self.configuration["pychic_weightBeta"]
-        gamma = self.configuration["pychic_weightGamma"]
-        delta = self.configuration["pychic_weightDelta"]
-
-        expit = np.vectorize(self.expit)
 
         getWeights = np.vectorize(self.getWeights)
 
         #paralelize
-        x["log_w"] = getWeights(x["distSign"].abs().replace(np.nan, np.inf),
+
+        start_time = time.time()
+        x["log_w"] = getWeights(x["distSign"].abs().replace(np.nan, np.inf))
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+        start_time = time.time()
+
+        #get the numbers for partition distSign
+        """
+        div = int(len(x["distSign"])/self.configuration["pychic_cpu"])
+        divisions = []
+        while div < len(x["distSign"]):
+            divisions.append(div)
+            div += div
+
+        from multiprocessing import Pool
+
+        distSign_split = np.split(x["distSign"], divisions)
+
+        print(distSign_split)
+
+        pool = Pool(self.configuration["pychic_cpu"])
+
+        x["log_w2"] = pd.contact(pool.map(getWeights(x["distSign"].abs().replace(np.nan, np.inf),
                                 alpha,
                                 beta,
                                 gamma,
@@ -1940,23 +1964,23 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                 eta_bar,
                                 expit)
 
+
+        print("--- %s seconds ---" % (time.time() - start_time))
+        """
+        #sys.exit()
+
         x["log_q"] = x["log_p"] - x["log_w"]
 
         logger.info("Calculating scores..")
 
         ##get score (more interpretable than log.q)
-        minval = getWeights(0,
-                            alpha,
-                            beta,
-                            gamma,
-                            delta,
-                            eta_bar,
-                            expit)
+        minval = getWeights(0)
 
         x["score"] = -x["log_q"] - minval
 
         x["score"] = np.where(x["score"] > 0, x["score"], 0)
 
+        print(x)
         return x
 
 
