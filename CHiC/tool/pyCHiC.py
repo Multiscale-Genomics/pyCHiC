@@ -1299,7 +1299,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return distFunParams
 
 
-    def readProxOEfile(self, poe):
+    def readProxOEfile(self, poe, rmap):
 
         """
         Reads a pre-computed text file that denotes which other ends are in the proximal
@@ -1363,7 +1363,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
 
         rmapfile = "".join([param for param in params if param.startswith("rmapfile")])
-        if os.path.split(rmapfile.split("=")[1])[1] != os.path.split(input_files["RMAP"])[1]:
+        if os.path.split(rmapfile.split("=")[1])[1] != os.path.split(rmap)[1]:
             logger.info("The .rmap files used for generating the ProxOE file "+
                         "(according to the ProxOE header) and the one defined "+
                         "in experiment settings do not match. Amend either setting "+
@@ -1604,7 +1604,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return model_theta
 
-    def estimateBrownianComponent(self, chinput_jiw, distFunParams):
+    def estimateBrownianComponent(self, chinput_jiw, distFunParams, poe, rmap):
         """
         1) Reinstate zeros
         2) Add a "Bmean" column to x, giving expected Brownian component.
@@ -1645,7 +1645,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                         "in this case, so overriding brownianNoise.samples to 1.")
             samples = 1
 
-        proxOE = self.readProxOEfile(input_files["poe"])
+        proxOE = self.readProxOEfile(poe, rmap)
 
         #Run this the same as the number of Samples
         dispersion_samples = []
@@ -2129,7 +2129,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if "seqMonk" in export_format:
             logger.info("Writing out for seqMonk...")
 
-            out["bait_name"] = out["bait_name"].replace(",","|")
+            out["bait_name"] = out["bait_name"].replace(",", "|")
 
             out["newLineOEChr"] = '\n'+out["otherEnd_chr"].astype(str)
 
@@ -2184,13 +2184,20 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 os.mkdir(self.configuration["pychic_outprefix"])
 
             res = pd.DataFrame()
-            res["1bait"] = out["bait_chr"].astype(str)+","+out["bait_start"].astype(str)+","+out["bait_end"].astype(str)
-            res["2bait"] = out["otherEnd_chr"].astype(str)+","+out["otherEnd_start"].astype(str)+","+out["otherEnd_end"].astype(str)
+            res["1bait"] = out["bait_chr"].astype(str)+","+ \
+                out["bait_start"].astype(str)+","+ \
+                out["bait_end"].astype(str)
+
+            res["2bait"] = out["otherEnd_chr"].astype(str)+","+ \
+                out["otherEnd_start"].astype(str)+","+ \
+                out["otherEnd_end"].astype(str)
+
             res["score"] = out["score"]
 
             name = self.configuration["pychic_outprefix"]+"/"+ \
                         self.configuration["pychic_outprefix"]+"_washU_text.txt"
 
+            res.to_csv("/home/pacera/MuG/CHi-C/tests/data/output_pychic.txt", sep="\t", header=False, index=False)
             res.to_csv(name, sep="\t", header=False, index=False)
         """
         if "washU_track" in export_format:
@@ -2293,7 +2300,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             pychic_examples_full_range
 
         output_files : dict
-            pychic_output_dir: path to the output folder
             pychic_outprefix: output prefix
 
         Returns
@@ -2302,8 +2308,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         output_metadata : dict
         """
 
-        if os.path.isdir(self.configuration["pychic_output_dir"]) is False:
-            os.makedirs(self.configuration["pychic_output_dir"])
 
         for test_file in input_files:
             if self.exist_file(input_files[test_file], test_file) is False:
@@ -2361,7 +2365,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         distFunParams = self.estimateDistFun(chinput_jiw)
 
-        chinput_jiwb, dispersion = self.estimateBrownianComponent(chinput_jiw, distFunParams)
+        chinput_jiwb, dispersion = self.estimateBrownianComponent(
+            chinput_jiw,
+            distFunParams,
+            input_files["poe"],
+            input_files["RMAP"])
 
         chinput_jiwb_pval = self.getPvals(chinput_jiwb, dispersion)
 
@@ -2433,7 +2441,7 @@ if __name__ == "__main__":
         "pychic_outprefix" : "out_test",
         "pychic_export_format" : ["washU_text"],
         "pychic_order" : "score",
-        "pychic_output_dir" : path +"output_pyCHiC",
+        #"pychic_output_dir" : path +"output_pyCHiC",
         "pychic_rmapfile" : "NA",
         "pychic_baitmapfile" :"NA",
         "pychic_nperbinfile" : "NA",
