@@ -21,6 +21,8 @@ import math
 from scipy.stats.mstats import gmean
 from collections import Counter
 from random import sample
+from multiprocessing import Pool
+
 
 import pandas as pd
 import numpy as np
@@ -1823,6 +1825,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return 1/(1+math.exp(-x))
 
+
     def getEtaBar(self, x, rmap, baitmap, avgFragLen):
         """
         get parameters for the experiments
@@ -1932,42 +1935,20 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         getWeights = np.vectorize(self.getWeights)
 
-        #paralelize
-
-        start_time = time.time()
-        x["log_w"] = getWeights(x["distSign"].abs().replace(np.nan, np.inf))
-        print("--- %s seconds ---" % (time.time() - start_time))
-
-        start_time = time.time()
-
-        #get the numbers for partition distSign
-        """
+        # get the numbers for partition distSign based on CPUs
         div = int(len(x["distSign"])/self.configuration["pychic_cpu"])
         divisions = []
         while div < len(x["distSign"]):
             divisions.append(div)
             div += div
 
-        from multiprocessing import Pool
-
-        distSign_split = np.split(x["distSign"], divisions)
-
-        print(distSign_split)
+        distSign_split = np.split(x["distSign"].abs().replace(np.nan, np.inf),
+                                  divisions)
 
         pool = Pool(self.configuration["pychic_cpu"])
 
-        x["log_w2"] = pd.contact(pool.map(getWeights(x["distSign"].abs().replace(np.nan, np.inf),
-                                alpha,
-                                beta,
-                                gamma,
-                                delta,
-                                eta_bar,
-                                expit)
-
-
-        print("--- %s seconds ---" % (time.time() - start_time))
-        """
-        #sys.exit()
+        x["log_w"] = np.concatenate(pool.map(getWeights, distSign_split)
+                                   )
 
         x["log_q"] = x["log_p"] - x["log_w"]
 
@@ -1980,7 +1961,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x["score"] = np.where(x["score"] > 0, x["score"], 0)
 
-        print(x)
         return x
 
 
