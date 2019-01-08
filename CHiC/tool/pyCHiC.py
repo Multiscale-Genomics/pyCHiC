@@ -664,7 +664,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             x["distbin"] = pd.cut(x["distSign"].abs(),
                                   np.arange(0, self.configuration["pychic_maxLBrownEst"]+1,
-                                  binsize))
+                                  binsize)
+                                  )
 
             x["distbin"] = x['distbin'].apply(lambda x: x.left)
 
@@ -1083,7 +1084,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #If we can estimate s_i robustly, assume it to be one
         chinput_j["tlb"].fillna(1, inplace=True)
 
-
         chinput_j["NNboe"] = chinput_j[Ncol]/chinput_j["s_i"]
         chinput_j["NNboe"] = chinput_j["NNboe"].round(decimals=0)
         chinput_j["NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1 )
@@ -1105,12 +1105,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         DataFrame
         """
         design = pd.read_csv(design, sep="\t", skiprows=1, header=None,
-                         )
+                            )
 
         column_names = {}
         column_names[0] = first_col
 
-        for i in enumerate(design.columns,1):
+        for i in enumerate(design.columns, 1):
             column_names[i[0]] = "bin"+str(i[0])
 
         design.rename(columns=column_names, inplace=True)
@@ -1577,13 +1577,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         from rpy2.robjects.packages import importr
         from rpy2.robjects.numpy2ri import numpy2ri
         from rpy2 import robjects
+        from rpy2.robjects import r
 
         robjects.numpy2ri.activate()
 
         MASS = importr('MASS')
         stats = importr('stats')
 
-        from rpy2.robjects import r
         numpyN = np.array(x["N"])
         numpyBmenalog = np.array(x["Bmeanlog"])
 
@@ -1599,8 +1599,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         r("res <- glm.nb(formula=y~x + 0)")
 
         model_theta = r("res$theta")
-
-        #model_theta = 2.5563913
 
         return model_theta
 
@@ -1650,7 +1648,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #Run this the same as the number of Samples
         dispersion_samples = []
         for i in range(samples):
-            dispersion_samples.append(
+                dispersion_samples.append(
                 self.estimateDispersion(
                     chinput_jiw, proxOE, distFunParams
                     )
@@ -1954,6 +1952,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return eta_bar
 
+
     def getWeights(self, dist):
         """
         Calculate the weights
@@ -2241,7 +2240,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             # Bait to bait interactions can be asymmetric in terms of score.
             # Here, we find asymmetric interactions and delete the minimum score
 
-            x.sort_values("score").drop_duplicates(subset=["baitID","otherEndID"], keep="last")
+            x.sort_values("score").drop_duplicates(subset=["baitID", "otherEndID"], keep="last")
 
         if "washU_text" in export_format:
             logger.info("Writing out text file for WashU browser upload...")
@@ -2259,10 +2258,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             res["score"] = out["score"]
 
-            name = self.configuration["pychic_outprefix"]+"/"+ \
-                        self.configuration["pychic_outprefix"]+"_washU_text.txt"
+            name = self.configuration["pychic_outprefix"]+"_washU_text.txt"
 
-            res.to_csv("/home/pacera/MuG/CHi-C/tests/data/output_pychic.txt", sep="\t", header=False, index=False)
             res.to_csv(name, sep="\t", header=False, index=False)
         """
         if "washU_track" in export_format:
@@ -2318,8 +2315,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
                 axs[j, i].scatter(x_red["distSign"], x_red["N"], \
                     s=15, c="red", label="Significant interactions")
+
                 axs[j, i].scatter(x_blue["distSign"], x_blue["N"], \
                     s=15, c="blue", label="Sub-threshold interactions")
+
                 axs[j, i].scatter(x_black["distSign"], x_black["N"], \
                     s=15, facecolors='none', edgecolors='black', label="Non significant interactions")
 
@@ -2345,7 +2344,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     box_inches='tight', pad_inches="tight")
 
 
-    def run(self, input_files, metadata, output_files):
+    def run(self, input_files, input_metadata, output_files):
         """
         Function that runs and pass the parameters to PyCHiC
 
@@ -2375,8 +2374,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         output_files : dict
         output_metadata : dict
         """
-
-
         for test_file in input_files:
             if self.exist_file(input_files[test_file], test_file) is False:
                 return False
@@ -2413,7 +2410,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         chinput_j = self.normaliseBaits(chinput_filtered, \
                                        input_files["npb"])
-
 
         chinput_ji = self.normaliseOtherEnds(chinput_j,
                                              input_files["nbpb"]
@@ -2471,18 +2467,51 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                            baitmap_df
                           )
 
+        output_metadata = {
+            "washU_text" : Metadata(
+                data_type="data_chic",
+                file_type="TXT",
+                file_path=output_files["washU_text"],
+                sources=[
+
+                ],
+                taxon_id=input_metadata["washU_text"].taxon_id,
+                meta_data={
+                    "tool": "process_CHiC",
+                    "tool_description" : "run_chicago"
+                }
+            ),
+
+            "pdf_examples" : Metadata(
+                data_type="data_chic",
+                file_type="PDF",
+                file_path=output_files["pdf_examples"],
+                sources=[
+                ],
+                taxon_id=input_metadata["pdf_examples"].taxon_id,
+                meta_data={
+                    "tool": "process_CHiC",
+                    "tool_description" : "run_chicago"
+                }
+            )
+        }
+
+        return output_files, output_metadata
+
+
+"""
 if __name__ == "__main__":
 
     path = "../../tests/data/test_run_chicago/data_chicago/"
 
     input_files = {
-         "RMAP" : path +"h19_chr20and21.rmap",
-         "BAITMAP" : path +"h19_chr20and21.baitmap",
-         "nbpb" : path +"h19_chr20and21.nbpb",
-         "npb" : path +"h19_chr20and21.npb",
-         "poe" : path +"h19_chr20and21.poe",
-         "pychic_settings_file" : path +"sGM12878.settingsFile",
-         "chinput" :  [
+        "RMAP" : path +"h19_chr20and21.rmap",
+        "BAITMAP" : path +"h19_chr20and21.baitmap",
+        "nbpb" : path +"h19_chr20and21.nbpb",
+        "npb" : path +"h19_chr20and21.npb",
+        "poe" : path +"h19_chr20and21.poe",
+        "pychic_settings_file" : path +"sGM12878.settingsFile",
+        "chinput" :  [
                       path + "GM_rep1.chinput",
                       #path + "GM_rep2.chinput",
                       #path + "GM_rep3.chinput"
@@ -2540,8 +2569,4 @@ if __name__ == "__main__":
 
     pyCHiC_obj = pyCHiC(configuration)
     pyCHiC_obj.run(input_files, metadata, output_files)
-
-
-"""
-Write to output the parameters
 """

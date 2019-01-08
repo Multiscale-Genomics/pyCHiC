@@ -378,7 +378,7 @@ class ChicagoTool(Tool):
             "pdf_examples" : Metadata(
                 data_type="data_chic",
                 file_type="PDF",
-                file_path= output_files["pdf_examples"],
+                file_path=output_files["pdf_examples"],
                 sources=[
                     input_metadata["genome_fa"].file_path,
                     input_metadata["fastq1"].file_path,
