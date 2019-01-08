@@ -1680,7 +1680,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         alpha = dispersion
 
-        logger.info("Calculting p-values...")
+        logger.info("Calculating p-values...")
 
         ##p-values:
         ##(gives P(X > x-1) = P(X >= x))
@@ -1825,6 +1825,54 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return 1/(1+math.exp(-x))
 
+    def eta_sigma(self, chrs):
+        """
+        Calculate eta_sigma parameter
+
+        Parameters
+        ----------
+
+        """
+        alpha = self.configuration["pychic_weightAlpha"]
+        beta = self.configuration["pychic_weightBeta"]
+
+        chrMAX = self.configuration["chrMAX"]
+        baitmap = self.configuration["baitmap"]
+        avgFragLen = self.configuration["avgFragLen"]
+
+        expit = np.vectorize(self.expit)
+
+        eta_sigma = 0
+
+        for c in chrs:
+            #length of chromosome
+            d_c = chrMAX[chrMAX["chr"] == c]
+            d_c = d_c["end"]
+
+            nBaits = baitmap[baitmap["chr"] == c]
+            n_c = nBaits["chr"].value_counts()
+
+            n_c = int("".join([str(i) for i in n_c]))
+
+            for i in range(1, n_c+1):
+                d = round(d_c*i/n_c, 1)
+
+                d_near = min(float(d), float(d_c-d))
+
+                d_other = np.arange(avgFragLen, max(avgFragLen, d_near), avgFragLen)
+
+                d_other2 = np.arange(d_near, d_c-d_near, avgFragLen)
+
+                try:
+                    eta_sigma = eta_sigma + 2*sum(expit(alpha + beta*np.log(d_other))) + \
+                                sum(expit(alpha + beta*np.log(d_other2)))
+
+                except ValueError:
+                    logger.info("Empty array")
+
+        return eta_sigma
+
+
 
     def getEtaBar(self, x, rmap, baitmap, avgFragLen):
         """
@@ -1838,6 +1886,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         """
         ##1. Collect parameters
+
         alpha = self.configuration["pychic_weightAlpha"]
         beta = self.configuration["pychic_weightBeta"]
         gamma = self.configuration["pychic_weightGamma"]
@@ -1861,32 +1910,45 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         expit = np.vectorize(self.expit)
 
-        for c in rmap["chr"].unique():
-            #length of chromosome
-            d_c = chrMAX[chrMAX["chr"] == c]
-            d_c = d_c["end"]
+        self.configuration["chrMAX"] = chrMAX
+        self.configuration["baitmap"] = baitmap
+        self.configuration["avgFragLen"] = avgFragLen
 
-            nBaits = baitmap[baitmap["chr"] == c]
-            n_c = nBaits["chr"].value_counts()
+        chrs = [c for c in rmap["chr"].unique()]
 
-            n_c = int("".join([str(i) for i in n_c]))
+        start_time = time.time()
 
-            for i in range(1, n_c+1):
-                d = round(d_c*i/n_c, 1)
+        if len(chrs) < self.configuration["pychic_cpu"]:
+            pool = Pool(self.configuration["pychic_cpu"])
 
-                d_near = min(float(d), float(d_c-d))
+            chrs_list = [[chrs[i]] for i in range(len(chrs))]
 
-                d_other = np.arange(avgFragLen, max(avgFragLen, d_near), avgFragLen)
+            eta_sigma = np.array(pool.map(self.eta_sigma, chrs_list)).sum()
 
-                d_other2 = np.arange(d_near, d_c-d_near, avgFragLen)
+        else:
+            div = int(len(chrs)/self.configuration["pychic_cpu"])
+            divisions = []
+            count = div
+            while count <= len(chrs):
+                divisions.append(count)
+                count += div
 
+            divisions[-1] = len(chrs)
+            divisions = [0] + divisions
+
+            chrs_list = []
+
+            for i in enumerate(divisions):
                 try:
-
-                    eta_sigma = eta_sigma + 2*sum(expit(alpha + beta*np.log(d_other))) + \
-                                sum(expit(alpha + beta*np.log(d_other2)))
-
+                    chrs_list.append(chrs[divisions[i[0]]:divisions[i[0]+1]])
                 except ValueError:
-                    logger.info("Empty array")
+                    pass
+
+            pool = Pool(self.configuration["pychic_cpu"])
+
+            eta_sigma = np.array(
+                pool.map(self.eta_sigma, chrs_list)
+            ).sum()
 
         eta_bar = eta_sigma/Nhyp
 
@@ -1924,6 +1986,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         chinput_jiwb_scores: DataFrame
         """
+
         Set = self.configuration
         avgFragLen, rmap = self.getAvgFragLength(x, rmap)
 
@@ -1933,14 +1996,17 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #Gets weights
         logger.info("Calculating p-values weights...")
 
-        getWeights = np.vectorize(self.getWeights)
+        getWeights = np.vectorize(self.getWeights, otypes=[float])
 
         # get the numbers for partition distSign based on CPUs
         div = int(len(x["distSign"])/self.configuration["pychic_cpu"])
         divisions = []
-        while div < len(x["distSign"]):
-            divisions.append(div)
-            div += div
+        count = div
+        while count <= len(x["distSign"]):
+            divisions.append(count)
+            count += div
+
+        divisions[-1] = len(x["distSign"])
 
         distSign_split = np.split(x["distSign"].abs().replace(np.nan, np.inf),
                                   divisions)
@@ -1976,7 +2042,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         Bool
         """
-
         file = self.configuration["execution"]+"/"+ \
                    pychic_outprefix+"_params.txt"
 
@@ -2251,9 +2316,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 x_blue = x_temp[(x_temp["score"] >= 3) & (x_temp["score"] < 5)]
                 x_black = x_temp[x_temp["score"] < 3]
 
-                axs[j, i].scatter(x_red["distSign"], x_red["N"], s=15, c="red", label= "Significant interactions")
-                axs[j, i].scatter(x_blue["distSign"], x_blue["N"], s=15, c="blue", label = "Sub-threshold interactions")
-                axs[j, i].scatter(x_black["distSign"], x_black["N"], s=15,  facecolors='none', edgecolors='black', label="Non significant interactions")
+                axs[j, i].scatter(x_red["distSign"], x_red["N"], \
+                    s=15, c="red", label="Significant interactions")
+                axs[j, i].scatter(x_blue["distSign"], x_blue["N"], \
+                    s=15, c="blue", label="Sub-threshold interactions")
+                axs[j, i].scatter(x_black["distSign"], x_black["N"], \
+                    s=15, facecolors='none', edgecolors='black', label="Non significant interactions")
 
                 axs[j, i].plot([0, max(x_temp["N"])], c="black")
                 axs[j, i].set_xlabel("Genomic distance from viewpoint")
@@ -2270,11 +2338,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
                 index += 1
 
-        plt.show()
-        #plt.savefig(self.configuration["pychic_outprefix"]+"_examples.pdf",
-        #            quality=95, dpi="figure", facecolor='w', edgecolor='w',
-        #            papertype=None,
-        #            box_inches='tight', pad_inches="tight")
+        #plt.show()
+        plt.savefig(self.configuration["pychic_outprefix"]+"_examples.pdf",
+                    quality=95, dpi="figure", facecolor='w', edgecolor='w',
+                    papertype=None,
+                    box_inches='tight', pad_inches="tight")
 
 
     def run(self, input_files, metadata, output_files):
@@ -2324,17 +2392,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             input_files["pychic_settings_file"]
         )
 
-
         if len(input_files["chinput"]) == 1:
             chinput_filtered = self.readSample(input_files["chinput"],
                                                self.configuration["pychic_bam"],
                                                input_files["RMAP"],
                                                input_files["BAITMAP"])
-
-            #chinput_filtered.to_csv("chinput_filteres.csv", sep="\t", index=False)
-
-            #npb = self.prepare_design(input_files["npb"], "baitID")
-
         else:
             chinputs_filtered = {}
             for i in range(len(input_files["chinput"])):
@@ -2397,8 +2459,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if self.configuration["pychic_Rda"] == "True":
             self.save_rda(chinput_jiwb_scores)
 
-
-        #self.plotBaits(chinput_jiwb_scores, dispersion)
+        if self.configuration["pychic_plot"] == "True":
+            self.plotBaits(chinput_jiwb_scores, dispersion)
 
         self.exportResults(chinput_jiwb_scores,
                            self.configuration["pychic_outprefix"],
@@ -2434,6 +2496,7 @@ if __name__ == "__main__":
     }
 
     configuration = {
+        "pychic_plot" : "False",
         "pychic_cpu" : 3,
         "pychic_cutoff" : 5,
         "pychic_Rda" : "False",
