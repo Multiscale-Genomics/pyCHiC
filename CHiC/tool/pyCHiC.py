@@ -1440,7 +1440,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             x["Bmean"] = x["s_j"]*x["s_i"]*out
         else:
             logger.info("s_i factors NOT found in .estimateBMean - variance will increase,"
-                "estimating means anyway...")
+                        "estimating means anyway...")
 
             out = self.distFun(x["distSign"], distFunParams)
             x["Bmean"] = x["s_j"]*out
@@ -2374,6 +2374,19 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         output_files : dict
         output_metadata : dict
         """
+        rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
+        rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
+        chr_handler = "tests/data/test_baitmap/chr_handler.txt"
+        RMAP = "tests/data/test_run_chicago/test.rmap"
+        out_baitmap = "tests/data/test_run_chicago/test.baitmap"
+        bait_sam = "tests/data/test_baitmap/baits.sam"
+        nbpb = "tests/data/test_run_chicago/test.nbpb"
+        npb = "tests/data/test_run_chicago/test.npb"
+        poe = "tests/data/test_run_chicago/test.poe"
+        out_bam = "tests/data/test_baitmap/baits.bam"
+        sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
+
+
         for test_file in input_files:
             if self.exist_file(input_files[test_file], test_file) is False:
                 return False
@@ -2466,6 +2479,23 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                            rmap_df,
                            baitmap_df
                           )
+
+        compss_delete_file(rtree_file_idx)
+        compss_delete_file(rtree_file_dat)
+        compss_delete_file(chr_handler)
+        compss_delete_file(RMAP)
+        compss_delete_file(out_baitmap)
+        compss_delete_file(bait_sam)
+        compss_delete_file(npb)
+        compss_delete_file(nbpb)
+        compss_delete_file(poe)
+        compss_delete_file(out_bam)
+        compss_delete_file(sorted_bam)
+
+        files_dir = os.listdir(self.configuration["execution"])
+        for file_ in files_dir:
+            if file_.startswith("Digest_"+self.configuration["genome_name"]):
+                os.remove(file_)
 
         output_metadata = {
             "washU_text" : Metadata(
