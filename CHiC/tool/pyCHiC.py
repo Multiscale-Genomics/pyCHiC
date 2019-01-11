@@ -1153,6 +1153,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         levels = self.cut2(transBaitLen["transBaitLen"],
                            self.configuration["pychic_techNoise_minBaitsPerBin"])
 
+        print(levels)
         transBaitLen["tblb"] = pd.cut(transBaitLen["transBaitLen"], levels, right=False)
         transBaitLen["tblb"] = transBaitLen["tblb"].astype(str)
         transBaitLen["tblb"] = np.where(transBaitLen["tblb"] == "nan",
@@ -2390,6 +2391,17 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         out_bam = "tests/data/test_baitmap/baits.bam"
         sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
 
+        print(input_files)
+
+        if self.configuration["pychic_removeAdjacent"] == "True":
+            self.configuration["pychic_removeAdjacent"] = True
+        else:
+            self.configuration["pychic_removeAdjacent"] = False
+
+        if self.configuration["pychic_adjBait2bait"] == "True":
+            self.configuration["pychic_adjBait2bait"] = True
+        else:
+            self.configuration["pychic_adjBait2bait"] = False
 
         if "pychic_cpu" not in self.configuration:
             self.configuration["pychic_cpu"] = 3
@@ -2415,11 +2427,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             input_files["poe"]
             )
 
-        if len(input_files["chinput"]) == 1:
-            chinput_filtered = self.readSample(input_files["chinput"],
+        #For now keep it to 1
+        #if len(input_files["chinput"]) == 1:
+        chinput_filtered = self.readSample(input_files["chinput"],
                                                self.configuration["pychic_bam"],
                                                input_files["RMAP"],
                                                input_files["BAITMAP"])
+        """
         else:
             chinputs_filtered = {}
             for i in range(len(input_files["chinput"])):
@@ -2431,7 +2445,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 chinputs_filtered[str(i)] = new_chinput
 
             chinput_filtered, npb = self.merge_chinputs(chinputs_filtered, input_files["npb"])
-
+        """
         logger.info("\nRunning normaliseBaits")
 
         chinput_j = self.normaliseBaits(chinput_filtered, \
@@ -2563,8 +2577,8 @@ if __name__ == "__main__":
     }
 
     metadata = {
-     "chinput" : Metadata(
-            "data_chicago", "chinput", [], None, None, 9606)
+        "chinput" : Metadata(
+        "data_chicago", "chinput", [], None, None, 9606)
     }
 
     output_files = {
