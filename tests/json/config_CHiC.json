@@ -79,12 +79,17 @@
             "value": "150"
         },
         {
+            "name": "execution",
+            "value": "tests/data/test_baitmap"
+        },
+        {
             "name": "pychic_cutoff",
-            "value": 5
+            "value": "5"
         },
         {
             "name": "pychic_export_format",
             "description": "Export Format",
+            "value": ["washU_text"],
             "help": "For more information about the formats: https:\/\/bitbucket.org\/chicagoTeam\/chicago\/src\/3512c631887f4ec8cace60c1886cb11012d8bc23\/chicagoTools\/?at=master",
             "type": "enum",
             "enum_items": {
@@ -110,32 +115,36 @@
             "value": "score"
         },
         {
+            "name": "pychic_binsize",
+            "value": "20000"
+        },
+        {
             "name": "pychic_maxLBrownEst",
-            "value": 1500000.0
+            "value": "1500000.0"
         },
         {
             "name": "pychic_minFragLen",
-            "value": 150
+            "value": "150"
         },
         {
             "name": "pychic_maxFragLen",
-            "value": 40000
+            "value": "40000"
         },
         {
             "name": "pychic_minNPerBait",
-            "value": 250
+            "value": "250"
         },
         {
             "name": "pychic_removeAdjacent",
-            "value": True
+            "value": "True"
         },
         {
             "name": "pychic_adjBait2bait",
-            "value": True
+            "value": "True"
         },
          {
             "name": "pychic_tlb_filterTopPercent",
-            "value": 0.01
+            "value": "0.01"
         },
          {
             "name": "pychic_tlb_minProxOEPerBin",
@@ -143,7 +152,7 @@
         },
         {
             "name": "pychic_tlb_minProxB2BPerBin",
-            "value": "150"
+            "value": "15"
         },
         {
             "name": "pychic_techNoise_minBaitsPerBin",
@@ -151,31 +160,31 @@
         },
         {
             "name": "pychic_brownianNoise_samples",
-            "value": "150"
+            "value": "1"
         },
         {
             "name": "pychic_brownianNoise_subset",
-            "value": 500
+            "value": "500"
         },
         {
             "name": "pychic_brownianNoise_seed",
-            "value": "NA"
+            "value": "3"
         },
         {
             "name": "pychic_weightAlpha",
-            "value": 34.1157346557331
+            "value": "34.1157346557331"
         },
         {
             "name": "pychic_weightBeta",
-            "value": -2.58688050486759
+            "value": "-2.58688050486759"
         },
         {
             "name": "pychic_weightGamma",
-            "value": -17.1347845819659
+            "value": "-17.1347845819659"
         },
         {
             "name": "pychic_weightDelta",
-            "value": -7.07609245521541
+            "value": "-7.07609245521541"
         }
     ],
     "output_files": [

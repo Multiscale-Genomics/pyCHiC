@@ -2349,14 +2349,25 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
         rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
         chr_handler = "tests/data/test_baitmap/chr_handler.txt"
-        RMAP = "tests/data/test_run_chicago/test.rmap"
-        out_baitmap = "tx`ests/data/test_run_chicago/test.baitmap"
+        rmap = "tests/data/test_run_chicago/test.rmap"
+        baitmap = "tests/data/test_run_chicago/test.baitmap"
         bait_sam = "tests/data/test_baitmap/baits.sam"
         nbpb = "tests/data/test_run_chicago/test.nbpb"
         npb = "tests/data/test_run_chicago/test.npb"
         poe = "tests/data/test_run_chicago/test.poe"
         out_bam = "tests/data/test_baitmap/baits.bam"
         sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
+
+        if "RMAP" not in input_files:
+            input_files["RMAP"] = rmap
+        if "BAITMAP" not in input_files:
+            input_files["BAITMAP"] = baitmap
+        if "nbpb" not in input_files:
+            input_files["nbpb"] = nbpb
+        if "npb" not in input_files:
+            input_files["npb"] = npb
+        if "poe" not in input_files:
+            input_files["poe"] = poe
 
         self.configuration["pychic_cutoff"] = int(self.configuration["pychic_cutoff"])
         self.configuration["pychic_binsize"] = int(self.configuration["pychic_binsize"])
@@ -2490,19 +2501,19 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                        output_files["pdf_examples"])
 
         self.exportResults(chinput_jiwb_scores,
-                                    output_files["washU_text"],
-                                    self.configuration["pychic_cutoff"],
-                                    self.configuration["pychic_export_format"],
-                                    self.configuration["pychic_order"],
-                                    rmap_df,
-                                    baitmap_df
-                                    )
+                           output_files["washU_text"],
+                           self.configuration["pychic_cutoff"],
+                           self.configuration["pychic_export_format"],
+                           self.configuration["pychic_order"],
+                           rmap_df,
+                           baitmap_df
+                          )
 
         compss_delete_file(rtree_file_idx)
         compss_delete_file(rtree_file_dat)
         compss_delete_file(chr_handler)
-        compss_delete_file(RMAP)
-        compss_delete_file(out_baitmap)
+        compss_delete_file(rmap)
+        compss_delete_file(baitmap)
         compss_delete_file(bait_sam)
         compss_delete_file(npb)
         compss_delete_file(nbpb)
