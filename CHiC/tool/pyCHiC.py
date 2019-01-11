@@ -1153,7 +1153,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         levels = self.cut2(transBaitLen["transBaitLen"],
                            self.configuration["pychic_techNoise_minBaitsPerBin"])
 
-        print(levels)
         transBaitLen["tblb"] = pd.cut(transBaitLen["transBaitLen"], levels, right=False)
         transBaitLen["tblb"] = transBaitLen["tblb"].astype(str)
         transBaitLen["tblb"] = np.where(transBaitLen["tblb"] == "nan",
@@ -1568,6 +1567,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x = self.estimateBMean(x, distFunParams)
         ##3)Fit model
         ##---------
+        print(x["Bmean"].isna().any())
         x["Bmeanlog"] = np.log(x["Bmean"])
 
         x["zeros"] = np.zeros(len(x["Bmean"]))
