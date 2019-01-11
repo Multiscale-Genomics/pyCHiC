@@ -2226,6 +2226,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             name = self.configuration["execution"]+"/"+os.path.split(outprefix)[1]
             res.to_csv(name, sep="\t", header=False, index=False)
 
+
         """
         if "washU_track" in export_format:
             logger.info("Writing out track for WashU browser...")
@@ -2368,6 +2369,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             input_files["npb"] = npb
         if "poe" not in input_files:
             input_files["poe"] = poe
+        if "chinput" not in input_files:
+            input_files["chinput"] = output_files["chinput"]
 
         self.configuration["pychic_cutoff"] = int(self.configuration["pychic_cutoff"])
         self.configuration["pychic_binsize"] = int(self.configuration["pychic_binsize"])
@@ -2571,7 +2574,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return output_files, output_metadata
 
-"""
+
 
 if __name__ == "__main__":
 
@@ -2631,4 +2634,3 @@ if __name__ == "__main__":
 
     pyCHiC_obj = pyCHiC(configuration)
     pyCHiC_obj.run(input_files, metadata, output_files)
-"""

@@ -90,7 +90,7 @@ class makeDesignFilesTool(Tool):
         copy(rmap, "".join(rmap).split("/")[-1])
         copy(baitmap, "".join(baitmap).split("/")[-1])
 
-        script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles3.py")
+        script = os.path.join(os.path.dirname(__file__), "scripts/makeDesignFiles.py")
 
         args = ["python", script,
                 "--outfilePrefix", tmp_names,

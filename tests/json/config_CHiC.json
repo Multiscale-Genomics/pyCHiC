@@ -223,22 +223,6 @@
         {
             "required": true,
             "allow_multiple": false,
-            "name": "output",
-            "file": {
-                "file_type": "tar",
-                "meta_data": {
-                    "visible": true,
-                    "tool": "bam2chicago",
-                    "description": "Output"
-                },
-                "file_path": "tests/data/test_run_chicago/data_chicago/out_run_chicago.tar",
-                "data_type": "tar",
-                "compressed": "null"
-            }
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
             "name": "washU_text",
             "file": {
                 "file_type": "tar",
@@ -267,8 +251,23 @@
                 "data_type": "tar",
                 "compressed": "null"
             }
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "params_out",
+            "file": {
+                "file_type": "tar",
+                "meta_data": {
+                    "visible": true,
+                    "tool": "pyCHiC",
+                    "description": "Output"
+                },
+                "file_path": "tests/data/parameters.txt",
+                "data_type": "tar",
+                "compressed": "null"
+            }
         }
-
     ]
 }
 
