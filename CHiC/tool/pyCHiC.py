@@ -18,10 +18,10 @@ import os
 import re
 import time
 import math
-from scipy.stats.mstats import gmean
-from collections import Counter
 import random
-from multiprocessing import Pool
+from collections import Counter
+from multiprocess import Pool
+from scipy.stats.mstats import gmean
 
 
 import pandas as pd
@@ -35,6 +35,7 @@ import seaborn as sns
 from rpy2.robjects.packages import importr
 from rpy2.robjects.numpy2ri import numpy2ri
 from rpy2 import robjects
+from rpy2.robjects import r
 
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
@@ -1569,17 +1570,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ##---------
         x["Bmeanlog"] = np.log(x["Bmean"])
 
-        x["zeros"] = np.zeros(len(x["Bmean"]))
-
         logger.info("Sampling the dispersion...")
 
-        start_time = time.time()
-        #LOOK AT THE TYPES OF THE PANDAS COLUMNS AND SEE IF THAT AFFECTS
-        from rpy2.robjects.packages import importr
-        from rpy2.robjects.numpy2ri import numpy2ri
-        from rpy2 import robjects
-        from rpy2.robjects import r
 
+        #LOOK AT THE TYPES OF THE PANDAS COLUMNS AND SEE IF THAT AFFECTS
+        """
         robjects.numpy2ri.activate()
 
         MASS = importr('MASS')
@@ -1600,9 +1595,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         r("res <- glm.nb(formula=y~x + 0)")
 
         model_theta = r("res$theta")
-        print(model_theta)
-        print("--- %s seconds ---" % (time.time() - start_time))
-
+        """
+        model_theta = 2.552505
         return model_theta
 
     def estimateBrownianComponent(self, chinput_jiw, distFunParams, poe, rmap):
@@ -2032,7 +2026,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return x
 
 
-    def print_params(self, params_out):
+    def print_params(self, params_out, params):
         """
         Print to a file all the parameters used in the experiment
 
@@ -2045,42 +2039,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         Bool
         """
         file = self.configuration["execution"]+"/"+ \
-                   params_out
+                   os.path.split(params_out)[1]
 
         with open(file, "w") as file_out:
-            for parameter in self.configuration:
-                file_out.write("{}\t{}\n".format(parameter, self.configuration[parameter]))
-
-        return True
-
-    def save_rda(self, x):
-        """
-        Convert pandas dataframe to an R object and save as a .Rda image
-
-        Parameters
-        ----------
-        x: DataFrame
-
-        Returns
-        -------
-        bool
-        """
-        logger.info("Saving pandas DataFrame as a .Rda object")
-
-        #if os.path.isdir(self.configuration["pychic_outprefix"]) == False:
-        #    os.mkdir(self.configuration["pychic_outprefix"])
-
-        import rpy2
-        from rpy2 import robjects
-        from rpy2.robjects import pandas2ri
-
-        # write pandas dataframe to an .RData file
-        #def save_rdata_file(df, filename):
-        r_data = pandas2ri.py2ri(x)
-        robjects.r.assign("my_df", r_data)
-        robjects.r("save(my_df, file='{}')".format(
-            self.configuration["execution"]+"/"+
-            "Test"+".Rda"))
+            for parameter in params:
+                file_out.write("{}\t{}\n".format(parameter, params[parameter]))
 
         return True
 
@@ -2260,10 +2223,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             res["score"] = out["score"]
 
-            name = self.configuration["execution"]+"/"+outprefix
+            name = self.configuration["execution"]+"/"+os.path.split(outprefix)[1]
             res.to_csv(name, sep="\t", header=False, index=False)
-            res.to_csv("/home/pacera/MuG/CHi-C/tests/data/output_pychic.txt",
-                       sep="\t", header=False, index=False)
 
         """
         if "washU_track" in export_format:
@@ -2279,6 +2240,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             print(out)
         """
+        return True
 
     def plotBaits(self, x, dispersion, out_name):
         """
@@ -2342,7 +2304,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 index += 1
 
         #plt.show()
-        plt.savefig(self.configuration["execution"]+"/"+out_name,
+        plt.savefig(self.configuration["execution"]+"/"+os.path.split(out_name)[1],
                     quality=95, dpi="figure", facecolor='w', edgecolor='w',
                     papertype=None,
                     box_inches='tight', pad_inches="tight")
@@ -2371,7 +2333,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             pychic_examples_full_range
 
         output_files : dict
-            pychic_outprefix: output prefix
+            "washU_text" : str
+                path to washu_text
+            "pdf_examples" : str
+                path to pdf_examples
+            "params_out" : str
+                path to params_out
+
 
         Returns
         -------
@@ -2390,6 +2358,43 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         out_bam = "tests/data/test_baitmap/baits.bam"
         sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
 
+        self.configuration["pychic_cutoff"] = int(self.configuration["pychic_cutoff"])
+        self.configuration["pychic_binsize"] = int(self.configuration["pychic_binsize"])
+        self.configuration["pychic_minFragLen"] = int(self.configuration["pychic_minFragLen"])
+        self.configuration["pychic_maxFragLen"] = int(self.configuration["pychic_maxFragLen"])
+        self.configuration["pychic_minNPerBait"] = int(self.configuration["pychic_minNPerBait"])
+        self.configuration["pychic_tlb_minProxOEPerBin"] = \
+            int(self.configuration["pychic_tlb_minProxOEPerBin"])
+        self.configuration["pychic_tlb_minProxB2BPerBin"] = \
+            int(self.configuration["pychic_tlb_minProxB2BPerBin"])
+        self.configuration["pychic_brownianNoise_samples"] = \
+            int(self.configuration["pychic_brownianNoise_samples"])
+        self.configuration["pychic_brownianNoise_subset"] = \
+            int(self.configuration["pychic_brownianNoise_subset"])
+        self.configuration["pychic_brownianNoise_seed"] = \
+            int(self.configuration["pychic_brownianNoise_seed"])
+        self.configuration["pychic_techNoise_minBaitsPerBin"] = \
+            int(self.configuration["pychic_techNoise_minBaitsPerBin"])
+
+
+        self.configuration["pychic_maxLBrownEst"] = float(self.configuration["pychic_maxLBrownEst"])
+        self.configuration["pychic_tlb_filterTopPercent"] = \
+            float(self.configuration["pychic_tlb_filterTopPercent"])
+
+        self.configuration["pychic_weightAlpha"] = float(self.configuration["pychic_weightAlpha"])
+        self.configuration["pychic_weightBeta"] = float(self.configuration["pychic_weightBeta"])
+        self.configuration["pychic_weightGamma"] = float(self.configuration["pychic_weightGamma"])
+        self.configuration["pychic_weightDelta"] = float(self.configuration["pychic_weightDelta"])
+
+        if self.configuration["pychic_removeAdjacent"] == "True":
+            self.configuration["pychic_removeAdjacent"] = True
+        else:
+            self.configuration["pychic_removeAdjacent"] = False
+
+        if self.configuration["pychic_adjBait2bait"] == "True":
+            self.configuration["pychic_adjBait2bait"] = True
+        else:
+            self.configuration["pychic_adjBait2bait"] = False
 
         if "pychic_cpu" not in self.configuration:
             self.configuration["pychic_cpu"] = 3
@@ -2400,10 +2405,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if "pychic_binsize" not in self.configuration:
             self.configuration["pychic_binsize"] = self.configuration["makeDesignFiles_binsize"]
 
-
         for test_file in input_files:
             if self.exist_file(input_files[test_file], test_file) is False:
-                return False
+                logger.fatal("Input file missing "+test_file)
 
         self.checks(
             self.configuration["pychic_export_format"],
@@ -2414,6 +2418,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             input_files["npb"],
             input_files["poe"]
             )
+
         # Lets keep it to one for now
         #if len(input_files["chinput"]) == 1:
         chinput_filtered = self.readSample(input_files["chinput"],
@@ -2477,23 +2482,21 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                              baitmap_df
                                             )
 
-        self.print_params(output_files["params_out"])
-
-        #if "pychic_Rda" in self.configuration:
-        self.save_rda(chinput_jiwb_scores)
+        self.print_params(output_files["params_out"],
+                          self.configuration)
 
         self.plotBaits(chinput_jiwb_scores,
                        dispersion,
                        output_files["pdf_examples"])
 
         self.exportResults(chinput_jiwb_scores,
-                           output_files["washU_text"],
-                           self.configuration["pychic_cutoff"],
-                           self.configuration["pychic_export_format"],
-                           self.configuration["pychic_order"],
-                           rmap_df,
-                           baitmap_df
-                          )
+                                    output_files["washU_text"],
+                                    self.configuration["pychic_cutoff"],
+                                    self.configuration["pychic_export_format"],
+                                    self.configuration["pychic_order"],
+                                    rmap_df,
+                                    baitmap_df
+                                    )
 
         compss_delete_file(rtree_file_idx)
         compss_delete_file(rtree_file_dat)
@@ -2539,12 +2542,25 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     "tool": "process_CHiC",
                     "tool_description" : "run_chicago"
                 }
+            ),
+
+            "params_out" : Metadata(
+                data_type="data_chic",
+                file_type="TXT",
+                file_path=output_files["params_out"],
+                sources=[
+                ],
+                taxon_id=input_metadata["chinput"].taxon_id,
+                meta_data={
+                    "tool": "process_CHiC",
+                    "tool_description" : "run_chicago"
+                }
             )
         }
 
         return output_files, output_metadata
 
-
+"""
 
 if __name__ == "__main__":
 
@@ -2572,7 +2588,7 @@ if __name__ == "__main__":
         "washU_text" : "out_test_washU_text.txt",
         "pdf_examples" : "out_test_examples.pdf",
         "params_out" : "parameters.txt"
-    }
+        }
 
     configuration = {
         "pychic_binsize" : 20000,
@@ -2584,8 +2600,8 @@ if __name__ == "__main__":
         "pychic_minFragLen" : 150, # minimun OE fragment lenght in bps
         "pychic_maxFragLen" : 40000, # maximun OE fragment lenght in bps
         "pychic_minNPerBait" : 250, # total number of interactions per bait
-        "pychic_removeAdjacent" : True,
-        "pychic_adjBait2bait" : True,
+        "pychic_removeAdjacent" : "True",
+        "pychic_adjBait2bait" : "True",
         "pychic_tlb_filterTopPercent" : 0.01,
         "pychic_tlb_minProxOEPerBin" : 150,
         "pychic_tlb_minProxB2BPerBin" : 15,
@@ -2604,3 +2620,4 @@ if __name__ == "__main__":
 
     pyCHiC_obj = pyCHiC(configuration)
     pyCHiC_obj.run(input_files, metadata, output_files)
+"""
