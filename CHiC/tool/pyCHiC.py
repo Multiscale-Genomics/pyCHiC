@@ -221,13 +221,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             logger.fatal("Number of columns found "+str(len(rmap_df.columns)))
             return False
 
-        IDbaits = baitmap_df.iloc[:, 3] # pylint: disable=invalid-name
+        IDbaits = list(baitmap_df.iloc[:, 3]) # pylint: disable=invalid-name
+        print(IDbaits)
         IDbaitSet = set(IDbaits) # pylint: disable=invalid-name
+        print(IDbaitSet)
         if len(IDbaits) != len(IDbaitSet):
             logger.fatal("Duplicated fragment IDs found in baitmapfile. "
                          "Check that the baitmap columns are not swapped "
                          "round (4rd column ID)")
-            logger.fatal(str(len(IDbaits)), str(len(IDbaitSet)))
+            logger.fatal(str(len(IDbaits))+" "+str(len(IDbaitSet)))
 
         IDrmap = rmap_df.iloc[:, 3] # pylint: disable=invalid-name
         IDrmapSet = set(IDrmap) # pylint: disable=invalid-name
@@ -735,7 +737,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             geo_mean = []
             m = 0
+
+            print(geomean)
+            print(int(max(bins_elements)))
+            print(binsize)
             for i in range(0, int(max(bins_elements))+1, binsize):
+                print(m)
                 geo_mean = geo_mean + [geomean[m]]*bins_elements[i]
                 m +=1
 
@@ -1917,7 +1924,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             pool = Pool(self.configuration["pychic_cpu"])
 
             chrs_list = [[chrs[i]] for i in range(len(chrs))]
-
+            print(chrs_list)
+            print(pool.map(self.eta_sigma, chrs_list))
             eta_sigma = np.array(pool.map(self.eta_sigma, chrs_list)).sum()
 
         else:

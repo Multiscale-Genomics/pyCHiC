@@ -132,7 +132,7 @@
         },
         {
             "name": "pychic_minNPerBait",
-            "value": "250"
+            "value": "1"
         },
         {
             "name": "pychic_removeAdjacent",
@@ -148,15 +148,15 @@
         },
          {
             "name": "pychic_tlb_minProxOEPerBin",
-            "value": "150"
+            "value": "1"
         },
         {
             "name": "pychic_tlb_minProxB2BPerBin",
-            "value": "15"
+            "value": "1"
         },
         {
             "name": "pychic_techNoise_minBaitsPerBin",
-            "value": "150"
+            "value": "1"
         },
         {
             "name": "pychic_brownianNoise_samples",
