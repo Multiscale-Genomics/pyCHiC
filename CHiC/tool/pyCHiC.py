@@ -1567,7 +1567,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x = self.estimateBMean(x, distFunParams)
         ##3)Fit model
         ##---------
-        print(x["Bmean"].isna().any())
         x["Bmeanlog"] = np.log(x["Bmean"])
 
         x["zeros"] = np.zeros(len(x["Bmean"]))
@@ -2068,8 +2067,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         logger.info("Saving pandas DataFrame as a .Rda object")
 
-        if os.path.isdir(self.configuration["pychic_outprefix"]) == False:
-            os.mkdir(self.configuration["pychic_outprefix"])
+        #if os.path.isdir(self.configuration["pychic_outprefix"]) == False:
+        #    os.mkdir(self.configuration["pychic_outprefix"])
 
         import rpy2
         from rpy2 import robjects
@@ -2080,8 +2079,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         r_data = pandas2ri.py2ri(x)
         robjects.r.assign("my_df", r_data)
         robjects.r("save(my_df, file='{}')".format(
-            self.configuration["pychic_outprefix"]+"/"+
-            self.configuration["pychic_outprefix"]+".Rda"))
+            self.configuration["execution"]+"/"+
+            "Test"+".Rda"))
 
         return True
 
@@ -2391,17 +2390,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         out_bam = "tests/data/test_baitmap/baits.bam"
         sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
 
-        print(input_files)
-
-        if self.configuration["pychic_removeAdjacent"] == "True":
-            self.configuration["pychic_removeAdjacent"] = True
-        else:
-            self.configuration["pychic_removeAdjacent"] = False
-
-        if self.configuration["pychic_adjBait2bait"] == "True":
-            self.configuration["pychic_adjBait2bait"] = True
-        else:
-            self.configuration["pychic_adjBait2bait"] = False
 
         if "pychic_cpu" not in self.configuration:
             self.configuration["pychic_cpu"] = 3
@@ -2426,13 +2414,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             input_files["npb"],
             input_files["poe"]
             )
-
-        #For now keep it to 1
+        # Lets keep it to one for now
         #if len(input_files["chinput"]) == 1:
         chinput_filtered = self.readSample(input_files["chinput"],
-                                               self.configuration["pychic_bam"],
-                                               input_files["RMAP"],
-                                               input_files["BAITMAP"])
+                                           self.configuration["pychic_bam"],
+                                           input_files["RMAP"],
+                                           input_files["BAITMAP"])
         """
         else:
             chinputs_filtered = {}
@@ -2492,8 +2479,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         self.print_params(output_files["params_out"])
 
-        if "pychic_Rda" in self.configuration:
-            self.save_rda(chinput_jiwb_scores)
+        #if "pychic_Rda" in self.configuration:
+        self.save_rda(chinput_jiwb_scores)
 
         self.plotBaits(chinput_jiwb_scores,
                        dispersion,
@@ -2577,8 +2564,8 @@ if __name__ == "__main__":
     }
 
     metadata = {
-        "chinput" : Metadata(
-        "data_chicago", "chinput", [], None, None, 9606)
+     "chinput" : Metadata(
+            "data_chicago", "chinput", [], None, None, 9606)
     }
 
     output_files = {
