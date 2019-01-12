@@ -222,9 +222,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             return False
 
         IDbaits = list(baitmap_df.iloc[:, 3]) # pylint: disable=invalid-name
-        print(IDbaits)
         IDbaitSet = set(IDbaits) # pylint: disable=invalid-name
-        print(IDbaitSet)
         if len(IDbaits) != len(IDbaitSet):
             logger.fatal("Duplicated fragment IDs found in baitmapfile. "
                          "Check that the baitmap columns are not swapped "
@@ -736,23 +734,18 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             bins_elements = Counter(sbbm["distbin"])
 
             geo_mean = []
-            m = 0
+            counter = 0
 
-            print(geomean)
-            print(int(max(bins_elements)))
-            print(binsize)
-            for i in range(0, int(max(bins_elements))+1, binsize):
-                print(m)
-                geo_mean = geo_mean + [geomean[m]]*bins_elements[i]
-                m +=1
+            for bin_number in bins_elements:
+                geo_mean = geo_mean + [geomean[counter]]*bins_elements[bin_number]
+                counter += 1
 
             sbbm["geo_mean"] = geo_mean
 
         else:
-
             distbin_sorted = sorted(sbbm["distbin"].unique())
 
-            sbbm_NB2B = sbbm[sbbm["tlb"].astype("str").str.contains("B2B")==False]
+            sbbm_NB2B = sbbm[sbbm["tlb"].astype("str").str.contains("B2B") == False]
 
             geomean = sbbm_NB2B.groupby(
                 ["distbin"],
@@ -780,7 +773,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         s_v.rename(columns={"s_iv": scol}, inplace=True)
 
-        if not s_v[s_v[scol].isnull()].empty :
+        if not s_v[s_v[scol].isnull()].empty:
             logger.info("The following viewpoints couldn't be robustly "
                         "normalised (too sparse?) and will be removed:")
             logger.info(s_v[s_v[scol].isnull()])
@@ -792,7 +785,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         if viewpoint == "bait":
             xAll = pd.merge(s_v, xAll, how="left", # pylint: disable=invalid-name
-                            on = "baitID")
+                            on="baitID")
             gm = pd.DataFrame({"refBinMean" : geomean, # pylint: disable=invalid-name
                                "distbin" : pd.unique(sbbm["distbin"])})
             xAll = pd.merge(xAll, gm, how="left", on="distbin") # pylint: disable=invalid-name
@@ -1145,8 +1138,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("Binning baits based on observed trans-counts...")
 
-
         trans = chinput_ji[chinput_ji["distSign"].isnull()]
+
+        print(trans)
 
         transBaits = trans['baitID'].value_counts()
 
@@ -1155,8 +1149,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         transBaitLen = transBaitLen.rename(columns={"baitID": "transBaitLen"})
 
         transBaitLen["baitID"] = transBaitLen.index.tolist()
-
-        #levels = [6, 22, 32, 46, 131]
 
         levels = self.cut2(transBaitLen["transBaitLen"],
                            self.configuration["pychic_techNoise_minBaitsPerBin"])
@@ -1924,8 +1916,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             pool = Pool(self.configuration["pychic_cpu"])
 
             chrs_list = [[chrs[i]] for i in range(len(chrs))]
-            print(chrs_list)
-            print(pool.map(self.eta_sigma, chrs_list))
             eta_sigma = np.array(pool.map(self.eta_sigma, chrs_list)).sum()
 
         else:
@@ -2062,6 +2052,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         having at least m numbers in each bin. The funciton wont guarantee
         that it will be exactly m number of elements in the last bin.
         """
+        print(num_list)
+        print(m)
+
         num_list = sorted(num_list)
         unique_list = list(set(num_list))
         unique_counts = {}
