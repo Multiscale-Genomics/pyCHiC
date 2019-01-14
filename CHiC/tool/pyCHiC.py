@@ -1245,9 +1245,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         res = pd.merge(numPairsdf, res, how="left", on=["tlb", "tblb"])
         res = res.rename(columns={"N" : "nTrans"})
 
-        #try:
-        #res["Tmean"] = res["nTrans"]/res["numPairs"]
-        #print(res)
         res["Tmean"] = res.nTrans.div(res.numPairs.where(res.numPairs != 0, np.nan))
         res["Tmean"].replace(-0, 0, inplace=True)
 
@@ -1616,7 +1613,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         model_theta = r("res$theta")
 
-        print(model_theta)
         #model_theta = 2.552505
         return model_theta
 
