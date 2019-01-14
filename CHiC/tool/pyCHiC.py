@@ -1138,11 +1138,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("Binning baits based on observed trans-counts...")
 
+        baitids = list(chinput_ji.baitID.unique())
+
         trans = chinput_ji[chinput_ji["distSign"].isnull()]
 
-        print(trans)
-
         transBaits = trans['baitID'].value_counts()
+
+        for bait in baitids:
+            if bait not in transBaits:
+                transBaits[bait] = 0
 
         transBaitLen = pd.DataFrame(transBaits)
 
@@ -1153,12 +1157,19 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         levels = self.cut2(transBaitLen["transBaitLen"],
                            self.configuration["pychic_techNoise_minBaitsPerBin"])
 
+        if len(levels) == 1:
+            levels.append(levels[0]+1)
+
+
         transBaitLen["tblb"] = pd.cut(transBaitLen["transBaitLen"], levels, right=False)
+
         transBaitLen["tblb"] = transBaitLen["tblb"].astype(str)
+
         transBaitLen["tblb"] = np.where(transBaitLen["tblb"] == "nan",
                                         #"[46, 131)"
                                         "["+str(levels[-2])+", "+str(levels[-1])+")",
                                         transBaitLen["tblb"])
+
         chinput_ji = pd.merge(chinput_ji, transBaitLen, how="left", on="baitID")
 
         logger.info("Defining interaction pools and gathering "+
@@ -1183,17 +1194,24 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("\nProcessing fragment pools")
 
-        chinput_ji["tlb"] = chinput_ji["tlb"].astype(str)
-
+        chinput_ji["tlb"].astype(str, copy=False)
         res_chinput = chinput_ji[chinput_ji["distSign"].isnull()]
-        res = res_chinput.groupby(["tlb", "tblb"], as_index=False)["N"].sum()
+
+        #If there is no trans interactions
+        if res_chinput.empty:
+            res = chinput_ji.groupby(["tlb", "tblb"], as_index=False)["N"].sum()
+            res["N"] = np.zeros(res.shape[0])
+
+        else:
+            res = res_chinput.groupby(["tlb", "tblb"], as_index=False)["N"].sum()
+
 
         tlb_tblb = chinput_ji.drop_duplicates(["tlb", "tblb"])
         tlb_tblb = tlb_tblb[["tlb", "tblb"]]
 
-        numPairsdf = pd.DataFrame(columns = {"tlb", "tblb", "numPairs"})
+        numPairsdf = pd.DataFrame(columns={"tlb", "tblb", "numPairs"})
 
-        #SLOW CODE
+        #SLOW CODE paralelize
         for i in tlb_tblb.index:
             tlb = tlb_tblb.at[i, "tlb"]
             tblb = tlb_tblb.at[i, "tblb"]
@@ -1224,12 +1242,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 "numPairs" : numPairs
                 }, ignore_index=True)
 
-        #print(numPairs)
         res = pd.merge(numPairsdf, res, how="left", on=["tlb", "tblb"])
-
         res = res.rename(columns={"N" : "nTrans"})
 
-        res["Tmean"] = res["nTrans"]/res["numPairs"]
+        #try:
+        #res["Tmean"] = res["nTrans"]/res["numPairs"]
+        #print(res)
+        res["Tmean"] = res.nTrans.div(res.numPairs.where(res.numPairs != 0, np.nan))
+        res["Tmean"].replace(-0, 0, inplace=True)
 
         res.drop(["numPairs",
                   "nTrans"], axis=1, inplace=True)
@@ -1505,7 +1525,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ##1A) Choose some (uncensored) baits. Pick relevant proxOE rows. Note: censored fragments,
         ##   censored bait2bait pairs (etc...) already taken care of in pre-computation of ProxOE.
 
-        if subset != False:
+        if subset:
             ## if we chose a subset of baits, restrict to that (none of these should be censored)
             sel_baits = sel_sub
         else:
@@ -1565,22 +1585,23 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x.sort_values(["baitID", "otherEndID"], inplace=True)
 
         x = self.estimateBMean(x, distFunParams)
+        print(x)
         ##3)Fit model
         ##---------
-        x["Bmeanlog"] = np.log(x["Bmean"])
+        #x["Bmeanlog"] = np.log(x["Bmean"])
 
         logger.info("Sampling the dispersion...")
 
 
         #LOOK AT THE TYPES OF THE PANDAS COLUMNS AND SEE IF THAT AFFECTS
-        """
+
         robjects.numpy2ri.activate()
 
         MASS = importr('MASS')
         stats = importr('stats')
 
         numpyN = np.array(x["N"])
-        numpyBmenalog = np.array(x["Bmeanlog"])
+        numpyBmenalog = np.array(x["Bmean"])
 
         r_y = numpy2ri(numpyN)
         r_x = numpy2ri(numpyBmenalog)
@@ -1591,11 +1612,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         r("x <- as.matrix(x)")
         r("y <- as.matrix(y)")
 
-        r("res <- glm.nb(formula=y~x + 0)")
+        r("res <- glm.nb(formula=y~offset(log(x)) + 0)")
 
         model_theta = r("res$theta")
-        """
-        model_theta = 2.552505
+
+        print(model_theta)
+        #model_theta = 2.552505
         return model_theta
 
     def estimateBrownianComponent(self, chinput_jiw, distFunParams, poe, rmap):
@@ -1705,7 +1727,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         log_p1 = robjects.r("log.p1")
         x["log_p1"] = log_p1
 
-
         robjects.r("log.p2 <- ppois(N - 1L, lambda=Tmean, lower.tail=FALSE, log.p=TRUE)")
         log_p2 = robjects.r("log.p2")
         x["log_p2"] = log_p2
@@ -1723,11 +1744,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ##NaNs occur when pdelap() thinks the p-value is negative (since can have 1 - 1 != 0),
         ##thus these are also approximated.
 
-        sel = x[(x["log_p"] == np.nan) | (x["log_p"] == np.inf) | (x["log_p"] == -np.inf)]
+        sel = x[(x["log_p"].isnull()) | (x["log_p"] == np.inf) | (x["log_p"] == -np.inf)]
 
         if sel.shape[0] > 0:
             logger.info("Approximating "+ str(len(sel))+ " very small p-values.")
-
 
             sel["gamma"] = dispersion * (1+sel["Tmean"]/sel["Bmean"])**2
 
@@ -1749,8 +1769,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             sel["log_p"] = log_p
 
-            sel.sort_values(by=["log_p"])
-            x.sort_values(by=["log_p"])
+            sel.sort_values(by=["log_p"], inplace=True)
+
+            x.sort_values(by=["log_p"], inplace=True)
 
             x.update(sel)
 
@@ -2052,9 +2073,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         having at least m numbers in each bin. The funciton wont guarantee
         that it will be exactly m number of elements in the last bin.
         """
-        print(num_list)
-        print(m)
-
         num_list = sorted(num_list)
         unique_list = list(set(num_list))
         unique_counts = {}
@@ -2264,7 +2282,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         baits = list(baits)
 
-        fig, axs = plt.subplots(row, col, figsize=(15,15))
+        fig, axs = plt.subplots(row, col, figsize=(15, 15))
 
         index = 0
         for i in range(col):
@@ -2288,7 +2306,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     s=15, c="blue", label="Sub-threshold interactions")
 
                 axs[j, i].scatter(x_black["distSign"], x_black["N"], \
-                    s=15, facecolors='none', edgecolors='black', label="Non significant interactions")
+                                  s=15, facecolors='none', edgecolors='black', \
+                                  label="Non significant interactions")
 
                 axs[j, i].plot([0, max(x_temp["N"])], c="black")
                 axs[j, i].set_xlabel("Genomic distance from viewpoint")
@@ -2297,7 +2316,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 significant = x_temp["Bmean"].astype(float)+1.96*np.sqrt(
                     x_temp["Bmean"].astype(float)+x_temp["Bmean"].astype(float)**2/dispersion)
 
-                axs[j, i].fill_between(x_temp["distSign"],0,
+                axs[j, i].fill_between(x_temp["distSign"], 0,
                                        significant,
                                        facecolor='grey', alpha=0.5, label="Background model")
 
@@ -2530,6 +2549,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             for file_ in files_dir:
                 if file_.startswith("Digest_"+self.configuration["genome_name"]):
                     os.remove(file_)
+
+        if "chinput" not in input_metadata:
+            input_metadata["chinput"] = input_metadata["genome_fa"]
 
         output_metadata = {
             "washU_text" : Metadata(
