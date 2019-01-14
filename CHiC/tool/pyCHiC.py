@@ -664,7 +664,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             x["distbin"] = pd.cut(x["distSign"].abs(),
                                   np.arange(0, self.configuration["pychic_maxLBrownEst"]+1,
-                                  binsize)
+                                            binsize)
                                   )
 
             x["distbin"] = x['distbin'].apply(lambda x: x.left)
@@ -898,7 +898,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         distSign = transLen[transLen["distSign"].abs() <= self.configuration["pychic_maxLBrownEst"]]["transLength"]
 
-
         cuts = self.cut2(distSign, int(self.configuration["pychic_tlb_minProxOEPerBin"]))
 
         #with depleated datasets curs == 1
@@ -918,12 +917,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         transLen.loc[:, "tlb"] = tlbClasses
 
-
         if adjBait2bait:
-
-            # cutB2B = cut2(transLenB2B[abs(distSign)<= s$maxLBrownEst]$transLength,
-            #        m=minProxB2BPerBin, onlycuts=TRUE)
-            # cutB2B = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
             transLen_length = transLenB2B[transLenB2B["distSign"].abs() <= \
                 self.configuration["pychic_maxLBrownEst"]]["transLength"]
@@ -962,33 +956,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if "tbl" in chinput_j.columns:
             chinput_j.drop(["tbl"], axis=1, inplace=True)
 
-
         chinput_j = pd.merge(chinput_j, transLen, how="left", on="otherEndID")
 
-
-        """
-         428139 0.9398174     419466 1        3195 -31823781       FALSE         NA
-        2  427751 1.2124222     419466 1        3195 -30521967       FALSE         NA
-        3  425079 2.0696748     419466 1        3195 -21272923       FALSE         NA
-        4  424854 1.2550334     419466 2        3195 -20594316       FALSE         NA
-        5  423617 0.6890949     419466 1        3195 -16816825       FALSE         NA
-        6  423560 1.2931352     419466 1        3195 -16591004       FALSE         NA
-        7  423450 1.3431198     419466 1        3195 -16216369       FALSE         NA
-        8  421902 2.6059243     419466 1        3195 -11008896       FALSE         NA
-        9  403965 1.3534728     419466 1        3195  62753699       FALSE         NA
-        10 404491 1.6695769     419466 1        3195  62753699       FALSE         NA
-        11 408471 0.5752988     419466 1        3195  62753699       FALSE         NA
-        12 409144 0.8654104     419466 1        3195  62753699       FALSE         NA
-        13 410108 0.6957737     419466 1        3195  62753699       FALSE         NA
-        14 411133 0.5165262     419466 1        3195  62753699       FALSE         NA
-        15 411164 0.9946355     419466 1        3195  62753699       FALSE         NA
-        16 411831 1.5086577     419466 1        3195  62753699       FALSE         NA
-        17 412613 2.0638962     419466 1        3195  62753699       FALSE         NA
-        18 418022 0.7670651     419466 1        3195  62753699       FALSE         NA
-        19 418110 0.7582941     419466 1        3195  62753699       FALSE         NA
-        """
-        #delveloping propuses
-        chinput_j =  chinput_j[chinput_j["otherEndID"] != 419466]
+        chinput_j = chinput_j[chinput_j["tlb"].notnull()]
 
         if transNA:
             chinput_j["distSign"] = np.where(chinput_j["distSign"] == max(chinput_j["distSign"]), \
@@ -1118,52 +1088,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return design
 
 
-    def pairs(self, index, chinput_ji):
-        """
-        This function is going to be used to paralelize the pairs calculation
-
-        Parameters
-        ----------
-
-        Return
-        ------
-
-        """
-        tlb_tblb = self.configuration["tlb_tblb"]
-        numPairsdf = pd.DataFrame(columns={"tlb", "tblb", "numPairs"})
-
-        for i in index:
-            tlb = tlb_tblb.at[i, "tlb"]
-            tblb = tlb_tblb.at[i, "tblb"]
-            temp_chinput = chinput_ji[(chinput_ji["tlb"] == tlb) &
-                                      (chinput_ji["tblb"] == tblb)]
-
-            baits = temp_chinput["baitID"].unique()
-            oes = temp_chinput["otherEndID"].unique()
-
-            baits_set = set(baits)
-            oes_set = set(oes)
-            bChr = temp_chinput.drop_duplicates("baitID")
-            bChr = bChr["baitchr"]
-            oeChr = temp_chinput.drop_duplicates("otherEndID")
-            oeChr = oeChr["otherEndchr"]
-
-            numPairs = 0 # pylint: disable=invalid-name
-
-            for chromo in bChr.unique():
-                pairs = (len([x for x in bChr if x == chromo])* \
-                    len([y for y in oeChr if y != chromo]))-len(baits_set.intersection(oes_set))
-
-                numPairs += pairs
-
-            numPairsdf = numPairsdf.append({
-                "tlb" : tlb,
-                "tblb" : tblb,
-                "numPairs" : numPairs
-                }, ignore_index=True)
-
-        return numPairsdf
-
     def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap):
         """
         This function estimate the technical noise of the experiments
@@ -1249,15 +1173,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             res["N"] = np.zeros(res.shape[0])
 
         else:
+            print(res_chinput[res_chinput["otherEndID"] == 419466])
             res = res_chinput.groupby(["tlb", "tblb"], as_index=False)["N"].sum()
-
 
         tlb_tblb = chinput_ji.drop_duplicates(["tlb", "tblb"])
         tlb_tblb = tlb_tblb[["tlb", "tblb"]]
-
-        start_time = time.time()
-
-        self.configuration["tlb_tblb"] = tlb_tblb
 
         numPairsdf = pd.DataFrame(columns={"tlb", "tblb", "numPairs"})
 
@@ -2048,7 +1968,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_jiwb_scores: DataFrame
         """
 
-        Set = self.configuration
         avgFragLen, rmap = self.getAvgFragLength(x, rmap)
 
         eta_bar = self.getEtaBar(x, rmap, baitmap, avgFragLen)
