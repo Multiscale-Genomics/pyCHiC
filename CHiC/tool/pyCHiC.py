@@ -20,6 +20,7 @@ import time
 import math
 import random
 from collections import Counter
+from functools import partial
 from multiprocess import Pool
 from scipy.stats.mstats import gmean
 
@@ -1117,6 +1118,52 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return design
 
 
+    def pairs(self, index, chinput_ji):
+        """
+        This function is going to be used to paralelize the pairs calculation
+
+        Parameters
+        ----------
+
+        Return
+        ------
+
+        """
+        tlb_tblb = self.configuration["tlb_tblb"]
+        numPairsdf = pd.DataFrame(columns={"tlb", "tblb", "numPairs"})
+
+        for i in index:
+            tlb = tlb_tblb.at[i, "tlb"]
+            tblb = tlb_tblb.at[i, "tblb"]
+            temp_chinput = chinput_ji[(chinput_ji["tlb"] == tlb) &
+                                      (chinput_ji["tblb"] == tblb)]
+
+            baits = temp_chinput["baitID"].unique()
+            oes = temp_chinput["otherEndID"].unique()
+
+            baits_set = set(baits)
+            oes_set = set(oes)
+            bChr = temp_chinput.drop_duplicates("baitID")
+            bChr = bChr["baitchr"]
+            oeChr = temp_chinput.drop_duplicates("otherEndID")
+            oeChr = oeChr["otherEndchr"]
+
+            numPairs = 0 # pylint: disable=invalid-name
+
+            for chromo in bChr.unique():
+                pairs = (len([x for x in bChr if x == chromo])* \
+                    len([y for y in oeChr if y != chromo]))-len(baits_set.intersection(oes_set))
+
+                numPairs += pairs
+
+            numPairsdf = numPairsdf.append({
+                "tlb" : tlb,
+                "tblb" : tblb,
+                "numPairs" : numPairs
+                }, ignore_index=True)
+
+        return numPairsdf
+
     def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap):
         """
         This function estimate the technical noise of the experiments
@@ -1159,7 +1206,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         if len(levels) == 1:
             levels.append(levels[0]+1)
-
 
         transBaitLen["tblb"] = pd.cut(transBaitLen["transBaitLen"], levels, right=False)
 
@@ -1209,9 +1255,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         tlb_tblb = chinput_ji.drop_duplicates(["tlb", "tblb"])
         tlb_tblb = tlb_tblb[["tlb", "tblb"]]
 
+        start_time = time.time()
+
+        self.configuration["tlb_tblb"] = tlb_tblb
+
         numPairsdf = pd.DataFrame(columns={"tlb", "tblb", "numPairs"})
 
-        #SLOW CODE paralelize
+        #SLOW CODE
         for i in tlb_tblb.index:
             tlb = tlb_tblb.at[i, "tlb"]
             tblb = tlb_tblb.at[i, "tblb"]
@@ -1241,6 +1291,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 "tblb" : tblb,
                 "numPairs" : numPairs
                 }, ignore_index=True)
+
 
         res = pd.merge(numPairsdf, res, how="left", on=["tlb", "tblb"])
         res = res.rename(columns={"N" : "nTrans"})
@@ -1582,7 +1633,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x.sort_values(["baitID", "otherEndID"], inplace=True)
 
         x = self.estimateBMean(x, distFunParams)
-        print(x)
+
         ##3)Fit model
         ##---------
         #x["Bmeanlog"] = np.log(x["Bmean"])
@@ -1613,7 +1664,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         model_theta = r("res$theta")
 
-        #model_theta = 2.552505
         return model_theta
 
     def estimateBrownianComponent(self, chinput_jiw, distFunParams, poe, rmap):
