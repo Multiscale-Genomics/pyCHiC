@@ -1008,15 +1008,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         # more than once for each tlb
 
         #Eliminate the first occurence from OE and distbin
-        x.sort_values(["otherEndID", "distbin"], ascending =[True, True], inplace =True)
+        x = x.sort_values(["otherEndID", "distbin"], ascending=[True, True])
 
-        x.drop_duplicates(subset = ['otherEndID', 'distbin'], keep="first", inplace=True)
+        x = x.drop_duplicates(subset=['otherEndID', 'distbin'], keep="first")
 
         x["BinN"] = x["distbin"]/self.configuration["pychic_binsize"]+1
 
         x["BinN"] = x["BinN"].astype(int)
 
-        #x.reset_index(inplace=True)
 
         ntot = []
         for r in zip(x["otherEndID"], x["BinN"]):
@@ -1171,9 +1170,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if res_chinput.empty:
             res = chinput_ji.groupby(["tlb", "tblb"], as_index=False)["N"].sum()
             res["N"] = np.zeros(res.shape[0])
-
         else:
-            print(res_chinput[res_chinput["otherEndID"] == 419466])
             res = res_chinput.groupby(["tlb", "tblb"], as_index=False)["N"].sum()
 
         tlb_tblb = chinput_ji.drop_duplicates(["tlb", "tblb"])
@@ -2108,7 +2105,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         out = pd.merge(x, bm2, how="left", on="otherEndID")
 
-        out["promID_y"] = np.where(out["promID_y"].isna(), ".", out["promID_y"])
+        out.loc[:,"promID_y"] = np.where(out["promID_y"].isna(), ".", out["promID_y"])
 
         out.rename({"promID":"promID_x"}, axis="columns", inplace=True)
 
@@ -2121,24 +2118,24 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                        "otherEnd_ID", "score", "N_reads", "otherEnd_name"]
 
         out["N_reads"].fillna(0, inplace=True)
-        out["score"] = out["score"].round(2)
+        out.loc[:,"score"] = out["score"].round(2)
 
         if order == "position":
-            out.sort_values(["bait_chr",
-                             "bait_start",
-                             "bait_end",
-                             "otherEnd_chr",
-                             "otherEnd_start",
-                             "otherEnd_end"],
-                            inplace=True)
+            out = out.sort_values(["bait_chr",
+                                   "bait_start",
+                                   "bait_end",
+                                   "otherEnd_chr",
+                                   "otherEnd_start",
+                                   "otherEnd_end"],
+                                 )
 
         elif order == "score":
-            out.sort_values(["score"], inplace=True, ascending=False)
+            out = out.sort_values(["score"], ascending=False)
 
         #Modify so it would look at the mt form the begining
         out = out[out["bait_chr"].astype(str).str.lower() != "chrmt"]
 
-        out0 = out
+        out0 = out.copy(deep=True)
         """
         if "seqMonk" in export_format:
             logger.info("Writing out for seqMonk...")
@@ -2182,30 +2179,29 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             out = out0[["bait_chr", "bait_start", "bait_end",
                         "otherEnd_chr", "otherEnd_start", "otherEnd_end", "otherEnd_name",
                         "score"]]
-
             if str(out.iloc[0:1, 0][:3]) != "chr":
-                out["bait_chr"] = "chr"+out["bait_chr"].astype(str)
+                out.loc[:, "bait_chr"] = "chr"+out["bait_chr"].astype(str)
             if str(out.iloc[0:1, 3][:3]) != "chr":
-                out["otherEnd_chr"] = "chr"+out["otherEnd_chr"].astype(str)
+                out.loc[:, "otherEnd_chr"] = "chr"+out["otherEnd_chr"].astype(str)
 
             # Bait to bait interactions can be asymmetric in terms of score.
             # Here, we find asymmetric interactions and delete the minimum score
 
-            x.sort_values("score").drop_duplicates(subset=["baitID", "otherEndID"], keep="last")
+            x = x.sort_values("score").drop_duplicates(subset=["baitID", "otherEndID"], keep="last")
 
         if "washU_text" in export_format:
             logger.info("Writing out text file for WashU browser upload...")
 
             res = pd.DataFrame()
-            res["1bait"] = out["bait_chr"].astype(str)+","+ \
+            res.loc[:, "1bait"] = out["bait_chr"].astype(str)+","+ \
                 out["bait_start"].astype(str)+","+ \
                 out["bait_end"].astype(str)
 
-            res["2bait"] = out["otherEnd_chr"].astype(str)+","+ \
+            res.loc[:, "2bait"] = out["otherEnd_chr"].astype(str)+","+ \
                 out["otherEnd_start"].astype(str)+","+ \
                 out["otherEnd_end"].astype(str)
 
-            res["score"] = out["score"]
+            res.loc[:, "score"] = out["score"]
 
             name = self.configuration["execution"]+"/"+os.path.split(outprefix)[1]
             res.to_csv(name, sep="\t", header=False, index=False)
