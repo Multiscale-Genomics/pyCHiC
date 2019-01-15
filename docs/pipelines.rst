@@ -30,11 +30,11 @@ Map and parse CHi-C reads
    Parameters
    ----------
    config : str
-      Configuration JSON file
+      tests/json/config_hicup.json
    in_metadata : str
-      Location of input JSON metadata for files
+      tests/json/input_hicup.json
    out_metadata : str
-      Location of output JSON metadata for files
+      tests/json/out_hicup.json
 
    Returns
    -------
@@ -91,11 +91,11 @@ Create CHiCAGO input RMAP
    Parameters
    ----------
    config : str
-      Configuration JSON file
+      tests/json/config_rmap.json
    in_metadata : str
-      Location of input JSON metadata for files
+      tests/json/input_rmap.json
    out_metadata : str
-      Location of output JSON metadata for files
+      tests/json/out_rmap.json
 
    Returns
    -------
@@ -155,11 +155,11 @@ Create CHiCAGO input BAITMAP
    Parameters
    ----------
    config : str
-      Configuration JSON file
+      tests/json/config_baitmap.json
    in_metadata : str
-      Location of input JSON metadata for files
+      tests/json/input_baitmap.json
    out_metadata : str
-      Location of output JSON metadata for files
+      tests/json/out_baitmap.json
 
    Returns
    -------
@@ -228,11 +228,11 @@ Create CHiCAGO input Design files
    Parameters
    ----------
    config : str
-      Configuration JSON file
+      tests/json/config_design.json
    in_metadata : str
-      Location of input JSON metadata for files
+      tests/json/input_design.json
    out_metadata : str
-      Location of output JSON metadata for files
+      tests/json/out_design.json
 
    Returns
    -------
@@ -290,11 +290,11 @@ Convert BAM file into chicago input files .chinput
    Parameters
    ----------
    config : str
-      Configuration JSON file
+      tests/json/config_bam2chicago.json
    in_metadata : str
-      Location of input JSON metadata for files
+      tests/json/input_bam2chicago.json
    out_metadata : str
-      Location of output JSON metadata for files
+      tests/json/out_bam2chicago.json
 
    Returns
    -------
@@ -343,7 +343,7 @@ Convert BAM file into chicago input files .chinput
 
 Data normalization and peak calling
 -----------------------------------
-.. automodule:: process_run_chicago
+.. automodule:: process_pyCHiC
 
    This pipeline runs the normalization of the data and call the real
    chomatine interactions
@@ -354,11 +354,11 @@ Data normalization and peak calling
    Parameters
    ----------
    config : str
-      Configuration JSON file
+      tests/json/config_pyCHiC.json
    in_metadata : str
-      Location of input JSON metadata for files
+      tests/json/input_pyCHiC.json
    out_metadata : str
-      Location of output JSON metadata for files
+      tests/json/out_pyCHiC.json
 
    Returns
    -------
@@ -366,15 +366,13 @@ Data normalization and peak calling
 
    Example
    -------
-   REQUIREMENT - Needs a reference genome
-               - Needs file with the capture sequences with FASTA format
-                     - settings file
-                     - design dir:
-                           .rmap
-                           .baitmap
-                           .npb
-                           .nbpb
-                           .poe
+   REQUIREMENT - settings file
+               - rmap file
+               - baitmap file
+               - npb file
+               - nbpb file
+               - poe file
+               - chinput file
 
    When running the pipeline on a local machine without COMPSs:
 
@@ -421,11 +419,11 @@ Run the entire CHi-C pipeline
    Parameters
    ----------
    config : str
-      Configuration JSON file
+      tests/json/config_CHiC.json
    in_metadata : str
-      Location of input JSON metadata for files
+      tests/json/input_CHiC.json
    out_metadata : str
-      Location of output JSON metadata for files
+      tests/json/out_CHiC.json
 
    Returns
    -------
@@ -435,9 +433,9 @@ Run the entire CHi-C pipeline
    -------
    REQUIREMENT - Needs a referance genome
                - Folder with indexed reference genome using bowtie2
-               - Folder with a indexed reference genome using bwa
                - Two FASTQ files
                - Settings chicago file
+               - FASTA file with probes used in capture sequences
 
    When running the pipeline on a local machine without COMPSs:
 

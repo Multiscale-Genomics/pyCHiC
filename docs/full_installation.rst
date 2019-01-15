@@ -158,7 +158,7 @@ Install CHiCAGO
    echo "options(repos = c(CRAN = 'http://mirrors.ebi.ac.uk/CRAN/'))" > ${HOME}/.Rprofile
    echo ".libPaths('~/R')" >> ${HOME}/.Rprofile
    echo 'message("Using library:", .libPaths()[1])' >> ${HOME}/.Rprofile
-   sudo Rscript sudo Rscript CHiC/tool/scripts/install_packages.R 
+   sudo Rscript sudo Rscript CHiC/tool/scripts/install_packages.R
 
    cd ${HOME}/C-HiC/CHiC/tool/scripts/
    wget https://bitbucket.org/chicagoTeam/chicago/raw/e288015f75d36c5367d1595e0ac8099f2ce82aa1/chicagoTools/runChicago.R
@@ -193,7 +193,6 @@ Setup the symlinks
    ln -s ${HOME}/lib/htslib/bin/bgzip bgzip
    ln -s ${HOME}/lib/htslib/bin/htsfile htsfile
    ln -s ${HOME}/lib/htslib/bin/tabix tabix
-
 
    ln -s ${HOME}/lib/samtools/bin/ace2sam ace2sam
    ln -s ${HOME}/lib/samtools/bin/blast2sam.pl blast2sam.pl

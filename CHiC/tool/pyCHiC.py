@@ -416,8 +416,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                     "TRUE", "FALSE")
 
 
-
-
         NoB2BProxInter = x.loc[x["isBait2bait"] == "FALSE"] # pylint: disable=invalid-name
         NoB2BProxInter = NoB2BProxInter.loc[ # pylint: disable=invalid-name
             x["distSign"] < self.configuration["pychic_maxLBrownEst"]
@@ -2098,7 +2096,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x = pd.merge(x, rmap, how="left", on="otherEndID")
 
         x = pd.merge(x, baitmap, how="left", on="baitID")
-
+        print(x)
+        x = x.sort_values("score").drop_duplicates(subset=["baitID", "otherEndID"], keep="last")
+        print(x)
         # note that baitmapGeneIDcol has been renamed into "promID" above
         bm2 = baitmap[["baitID", "promID"]]
         bm2.rename({"promID":"promID_y", "baitID": "otherEndID"}, axis="columns", inplace=True)
@@ -2179,14 +2179,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             out = out0[["bait_chr", "bait_start", "bait_end",
                         "otherEnd_chr", "otherEnd_start", "otherEnd_end", "otherEnd_name",
                         "score"]]
-            if str(out.iloc[0:1, 0][:3]) != "chr":
-                out.loc[:, "bait_chr"] = "chr"+out["bait_chr"].astype(str)
-            if str(out.iloc[0:1, 3][:3]) != "chr":
-                out.loc[:, "otherEnd_chr"] = "chr"+out["otherEnd_chr"].astype(str)
 
             # Bait to bait interactions can be asymmetric in terms of score.
             # Here, we find asymmetric interactions and delete the minimum score
-
             x = x.sort_values("score").drop_duplicates(subset=["baitID", "otherEndID"], keep="last")
 
         if "washU_text" in export_format:

@@ -84,7 +84,7 @@
         },
         {
             "name": "pychic_cutoff",
-            "value": "5"
+            "value": "1"
         },
         {
             "name": "pychic_export_format",

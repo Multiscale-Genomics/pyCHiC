@@ -58,5 +58,5 @@ Tools for processing fastq C-HiC files
 
    run_chicago
    -----------
-   .. autoclass:: CHiC.tool.run_chicago.ChicagoTool
+   .. autoclass:: CHiC.tool.run_chicago.pyCHiC
       :members:
