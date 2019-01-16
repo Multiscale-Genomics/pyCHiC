@@ -2096,16 +2096,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x = pd.merge(x, rmap, how="left", on="otherEndID")
 
         x = pd.merge(x, baitmap, how="left", on="baitID")
-        print(x)
-        x = x.sort_values("score").drop_duplicates(subset=["baitID", "otherEndID"], keep="last")
-        print(x)
+
+
         # note that baitmapGeneIDcol has been renamed into "promID" above
         bm2 = baitmap[["baitID", "promID"]]
         bm2.rename({"promID":"promID_y", "baitID": "otherEndID"}, axis="columns", inplace=True)
 
         out = pd.merge(x, bm2, how="left", on="otherEndID")
 
-        out.loc[:,"promID_y"] = np.where(out["promID_y"].isna(), ".", out["promID_y"])
+        out.loc[:, "promID_y"] = np.where(out["promID_y"].isna(), ".", out["promID_y"])
 
         out.rename({"promID":"promID_x"}, axis="columns", inplace=True)
 
@@ -2118,7 +2117,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                        "otherEnd_ID", "score", "N_reads", "otherEnd_name"]
 
         out["N_reads"].fillna(0, inplace=True)
-        out.loc[:,"score"] = out["score"].round(2)
+        out.loc[:, "score"] = out["score"].round(2)
 
         if order == "position":
             out = out.sort_values(["bait_chr",
@@ -2136,7 +2135,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         out = out[out["bait_chr"].astype(str).str.lower() != "chrmt"]
 
         out0 = out.copy(deep=True)
-        """
+
         if "seqMonk" in export_format:
             logger.info("Writing out for seqMonk...")
 
@@ -2159,20 +2158,21 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                        doublequote=False,
                        quoting=csv.QUOTE_NONE,
                        quotechar="", escapechar="\t"
-                       )
+                        )
 
         if "interBed" in export_format:
             logger.info("writting out interBed...")
             out = out0[["bait_chr", "bait_start", "bait_end", "bait_name",
                         "otherEnd_chr", "otherEnd_start", "otherEnd_end", "otherEnd_name",
-                        "N_reads", "score"]]
+                        "N_reads", "score"
+                        ]]
 
             out.to_csv(self.configuration["execution"]+"/"+ \
                        self.configuration["pychic_outprefix"]+".ibed",
                        sep="\t",
                        index=False
-                       )
-        """
+                        )
+
         if "washU_text" in export_format or "washU_track" in export_format:
             logger.info("Preprocessing for WashU outputs...")
 
@@ -2180,9 +2180,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                         "otherEnd_chr", "otherEnd_start", "otherEnd_end", "otherEnd_name",
                         "score"]]
 
-            # Bait to bait interactions can be asymmetric in terms of score.
-            # Here, we find asymmetric interactions and delete the minimum score
-            x = x.sort_values("score").drop_duplicates(subset=["baitID", "otherEndID"], keep="last")
 
         if "washU_text" in export_format:
             logger.info("Writing out text file for WashU browser upload...")
@@ -2201,21 +2198,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             name = self.configuration["execution"]+"/"+os.path.split(outprefix)[1]
             res.to_csv(name, sep="\t", header=False, index=False)
 
-
-        """
-        if "washU_track" in export_format:
-            logger.info("Writing out track for WashU browser...")
-
-            ## this format requires a duplicate of each row, with bait/otherEnd reversed
-            out["i"] = np.ones(len(out))
-            appendOut =  out[["otherEnd_chr", "otherEnd_start", "otherEnd_end", "bait_chr", "bait_start", "bait_end", "otherEnd_name", "score", "i"]]
-            appendOut.columns = out.columns
-
-            out = out.append(appendOut)
-            out.sort_values(["bait_chr", "bait_start"], inplace=True)
-
-            print(out)
-        """
         return True
 
     def plotBaits(self, x, dispersion, out_name):
