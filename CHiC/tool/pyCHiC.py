@@ -2097,7 +2097,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x = pd.merge(x, baitmap, how="left", on="baitID")
 
-
         # note that baitmapGeneIDcol has been renamed into "promID" above
         bm2 = baitmap[["baitID", "promID"]]
         bm2.rename({"promID":"promID_y", "baitID": "otherEndID"}, axis="columns", inplace=True)
