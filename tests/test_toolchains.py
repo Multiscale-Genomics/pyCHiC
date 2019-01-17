@@ -46,12 +46,12 @@ def all_toolchain(verbose=False):
     if verbose is True:
         params.append('-')
 
-    params.append('test_rmap_tool.py')
-    params.append('test_baitmap.py')
-    params.append('test_design.py')
-    params.append('test_hicup.py')
-    params.append('test_bam2chicago_tool.py')
-    params.append('test_run_chicago.py')
+    params.append('tests/test_rmap_tool.py')
+    params.append('tests/test_baitmap.py')
+    params.append('tests/test_design.py')
+    params.append('tests/test_hicup.py')
+    params.append('tests/test_bam2chicago_tool.py')
+    params.append('tests/test_pyCHiC.py')
 
     return pytest.main(params)
 

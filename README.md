@@ -16,6 +16,12 @@ This repository contains pipelines for analyzing capture Hi-C data. CHiCAGO algo
   - matplotlib
   - pandas
   - rtree
+  - rpy2
+  - numpy
+  - pandas
+  - scipy
+  - multiprocess
+  - matplotlib
 
 
 - R >=3.1.2
@@ -28,7 +34,6 @@ This repository contains pipelines for analyzing capture Hi-C data. CHiCAGO algo
 - spatialindex
 - bowtie2
 - hicup
-- BWA
 
 
 Installation
@@ -54,3 +59,18 @@ Create the Python environment
 
    pyenv-virtualenv 2.7.10 CHi-C
    pip install --editable .
+
+Tests
+-----
+
+Tests must be runned from the top directory.
+Test for single tools are runned with pytest, example: $pytest tests/test_rmap_tool.py
+There is an order to run single tests:
+  - test_rmap_tool.py
+  - test_baitmap.py
+  - test_design.py
+  - test_hicup.py
+  - test_bam2chicago.py
+  - test_pyCHiC.py
+
+To run all test type: $python tests/test_toolchains.py
