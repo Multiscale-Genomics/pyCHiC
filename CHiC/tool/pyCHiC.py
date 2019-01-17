@@ -133,8 +133,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         rmap_name = os.path.split(rmap)[1]
         baitmap_name = os.path.split(baitmap)[1]
 
-
-
         with open(design_fl, "r") as file_in:
             for line in file_in:
                 line_hdl = line.rstrip().split("\t")
@@ -2157,20 +2155,20 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                        doublequote=False,
                        quoting=csv.QUOTE_NONE,
                        quotechar="", escapechar="\t"
-                        )
+                      )
 
         if "interBed" in export_format:
             logger.info("writting out interBed...")
             out = out0[["bait_chr", "bait_start", "bait_end", "bait_name",
                         "otherEnd_chr", "otherEnd_start", "otherEnd_end", "otherEnd_name",
                         "N_reads", "score"
-                        ]]
+                       ]]
 
             out.to_csv(self.configuration["execution"]+"/"+ \
                        self.configuration["pychic_outprefix"]+".ibed",
                        sep="\t",
                        index=False
-                        )
+                      )
 
         if "washU_text" in export_format or "washU_track" in export_format:
             logger.info("Preprocessing for WashU outputs...")
@@ -2567,6 +2565,7 @@ if __name__ == "__main__":
     configuration = {
         "pychic_binsize" : 20000,
         "execution" : ".",
+        "pychic_cpu" : 3,
         "pychic_cutoff" : 5,
         "pychic_export_format" : ["washU_text"],
         "pychic_order" : "score",
