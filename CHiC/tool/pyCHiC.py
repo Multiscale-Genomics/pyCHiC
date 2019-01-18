@@ -12,7 +12,6 @@
    limitations under the License.
 """
 
-from __future__ import print_function
 import sys
 import os
 import re
@@ -884,7 +883,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         transLen = transLen[transLen["transLength"] <= np.percentile(
             transLen["transLength"], 100-self.configuration["pychic_tlb_filterTopPercent"])]
 
-
         if adjBait2bait:
             transLend0 = transLen.copy()
             transLen = transLend0.loc[transLend0["isBait2bait"] == "FALSE"]
@@ -909,7 +907,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             tlbClasses = pd.cut(transLen["transLength"],
                                 cuts,
                                 include_lowest=True
-                                )
+                               )
 
         transLen.loc[:, "tlb"] = tlbClasses
 
@@ -981,7 +979,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         DataFrame
         """
-
         chinput_j = self.addTLB(chinput_j)
 
         x = chinput_j.ix[(chinput_j["distSign"].abs() <= self.configuration["pychic_maxLBrownEst"]) &
@@ -1404,16 +1401,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
 
         if "s_i" in x.columns:
-            """
-            #This is the cython
-            start_time = time.time()
-
-            import distFun # This
-
-            out = distFun.distFun(x["distSign"].abs(), distFunParams)
-            print("--- %s seconds ---" % (time.time() - start_time))
-            """
-
             out = self.distFun(x["distSign"].abs(), distFunParams)
 
             x["Bmean"] = x["s_j"]*x["s_i"]*out
@@ -2328,9 +2315,23 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             input_files["chinput"] = output_files["chinput"]
 
         self.configuration["pychic_cutoff"] = int(self.configuration["pychic_cutoff"])
-        self.configuration["pychic_binsize"] = int(self.configuration["pychic_binsize"])
-        self.configuration["pychic_minFragLen"] = int(self.configuration["pychic_minFragLen"])
-        self.configuration["pychic_maxFragLen"] = int(self.configuration["pychic_maxFragLen"])
+
+        if "pychic_binsize" not in self.configuration:
+            self.configuration["pychic_binsize"] = int(self.configuration["makeDesignFiles_binsize"])
+        else:
+            self.configuration["pychic_binsize"] = int(self.configuration["pychic_binsize"])
+
+        if "pychic_minFragLen" not in self.configuration:
+            self.configuration["pychic_minFragLen"] = int(self.configuration["makeDesignFiles_minFragLen"])
+        else:
+            self.configuration["pychic_minFragLen"] = int(self.configuration["pychic_minFragLen"])
+
+        if "pychic_maxFragLen" not in self.configuration:
+            self.configuration["pychic_maxFragLen"] = int(self.configuration["makeDesignFiles_maxFragLen"])
+        else:
+            self.configuration["pychic_maxFragLen"] = int(self.configuration["pychic_maxFragLen"])
+
+
         self.configuration["pychic_minNPerBait"] = int(self.configuration["pychic_minNPerBait"])
         self.configuration["pychic_tlb_minProxOEPerBin"] = \
             int(self.configuration["pychic_tlb_minProxOEPerBin"])
@@ -2345,8 +2346,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         self.configuration["pychic_techNoise_minBaitsPerBin"] = \
             int(self.configuration["pychic_techNoise_minBaitsPerBin"])
 
-
-        self.configuration["pychic_maxLBrownEst"] = float(self.configuration["pychic_maxLBrownEst"])
+        if "pychic_maxLBrownEst" not in self.configuration:
+            self.configuration["pychic_maxLBrownEst"] = float(self.configuration["makeDesignFiles_binsize"])
+        else:
+            self.configuration["pychic_maxLBrownEst"] = float(self.configuration["pychic_maxLBrownEst"])
         self.configuration["pychic_tlb_filterTopPercent"] = \
             float(self.configuration["pychic_tlb_filterTopPercent"])
 
@@ -2355,15 +2358,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         self.configuration["pychic_weightGamma"] = float(self.configuration["pychic_weightGamma"])
         self.configuration["pychic_weightDelta"] = float(self.configuration["pychic_weightDelta"])
 
-        if self.configuration["pychic_removeAdjacent"] == "True":
-            self.configuration["pychic_removeAdjacent"] = True
-        else:
-            self.configuration["pychic_removeAdjacent"] = False
-
-        if self.configuration["pychic_adjBait2bait"] == "True":
-            self.configuration["pychic_adjBait2bait"] = True
-        else:
-            self.configuration["pychic_adjBait2bait"] = False
+        self.configuration["pychic_removeAdjacent"] = True
+        self.configuration["pychic_adjBait2bait"] = True
 
         if "pychic_cpu" not in self.configuration:
             self.configuration["pychic_cpu"] = 3
@@ -2531,6 +2527,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         }
 
         return output_files, output_metadata
+
 
 
 

@@ -29,22 +29,12 @@
             "allow_multiple": false,
             "name": "bowtie_gen_idx",
             "value": "59b7e020d9422a596976we"
-        },
-        {
-            "required": true,
-            "allow_multiple": false,
-            "name": "setting_file",
-            "value": "59b7e020d9422a5900e2"
         }
     ],
     "arguments": [
         {
             "name": "execution",
             "value": "tests/data/test_baitmap"
-        },
-        {
-            "name": "bowtie2_fasta_input",
-            "value": "True"
         },
         {
             "name": "chic_RE_name",
@@ -115,38 +105,14 @@
             "value": "score"
         },
         {
-            "name": "pychic_binsize",
-            "value": "20000"
-        },
-        {
-            "name": "pychic_maxLBrownEst",
-            "value": "1500000.0"
-        },
-        {
-            "name": "pychic_minFragLen",
-            "value": "150"
-        },
-        {
-            "name": "pychic_maxFragLen",
-            "value": "40000"
-        },
-        {
             "name": "pychic_minNPerBait",
             "value": "1"
         },
         {
-            "name": "pychic_removeAdjacent",
-            "value": "True"
-        },
-        {
-            "name": "pychic_adjBait2bait",
-            "value": "True"
-        },
-         {
             "name": "pychic_tlb_filterTopPercent",
             "value": "0.01"
         },
-         {
+        {
             "name": "pychic_tlb_minProxOEPerBin",
             "value": "1"
         },
