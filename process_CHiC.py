@@ -93,7 +93,6 @@ class process_CHiC(Workflow):
             input_files["bowtie_gen_idx"] = input_files.pop("bowtie_gen_idx_public")
             metadata["bowtie_gen_idx"] = metadata.pop("bowtie_gen_idx_public")
 
-
         #call hicup
         try:
             hicup_caller = hicup(self.configuration)

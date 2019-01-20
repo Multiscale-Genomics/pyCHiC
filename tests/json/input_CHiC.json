@@ -69,18 +69,6 @@
             "visible": true,
             "validated": 1
         }
-    },
-    {
-        "_id": "59b7e020d9422a5900e2",
-        "data_type": "TXT",
-        "file_type": "setting_file",
-        "file_path": "tests/data/test_run_chicago/data_chicago/sGM12878.settingsFile",
-        "sources": ["user"],
-        "taxon_id": 9606,
-        "meta_data": {
-            "visible": true,
-            "validated": 1
-        }
     }
 ]
 

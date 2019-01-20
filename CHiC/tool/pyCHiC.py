@@ -2064,6 +2064,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ------
         bool
         """
+        print(x)
 
         logger.info("Rading the rmap file")
 
@@ -2178,6 +2179,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 out["otherEnd_end"].astype(str)
 
             res.loc[:, "score"] = out["score"]
+
 
             name = self.configuration["execution"]+"/"+os.path.split(outprefix)[1]
             res.to_csv(name, sep="\t", header=False, index=False)
@@ -2341,8 +2343,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             int(self.configuration["pychic_brownianNoise_samples"])
         self.configuration["pychic_brownianNoise_subset"] = \
             int(self.configuration["pychic_brownianNoise_subset"])
-        self.configuration["pychic_brownianNoise_seed"] = \
+
+        if self.configuration["pychic_brownianNoise_seed"]:
             int(self.configuration["pychic_brownianNoise_seed"])
+
         self.configuration["pychic_techNoise_minBaitsPerBin"] = \
             int(self.configuration["pychic_techNoise_minBaitsPerBin"])
 
@@ -2578,7 +2582,7 @@ if __name__ == "__main__":
         "pychic_techNoise_minBaitsPerBin" : 150,
         "pychic_brownianNoise_samples" : 1,
         "pychic_brownianNoise_subset" : 500,
-        "pychic_brownianNoise_seed" : 3,
+        "pychic_brownianNoise_seed" : None,
         "pychic_weightAlpha" : 34.1157346557331,
         "pychic_weightBeta" : -2.58688050486759,
         "pychic_weightGamma" : -17.1347845819659,

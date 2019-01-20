@@ -74,3 +74,5 @@ There is an order to run single tests:
   - test_pyCHiC.py
 
 To run all test type: $python tests/test_toolchains.py
+
+IMPORTANT! From the top directory type ./tidy_data before running tests/test_toolchains.py

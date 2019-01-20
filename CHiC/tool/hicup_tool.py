@@ -158,7 +158,6 @@ class hicup(Tool):
         """
         command_params = []
 
-
         command_parameters = {
             "hicup_bowtie2_loc": ["--bowtie2", True],
             "hicup_bowtie_loc": ["--bowtie", True],
