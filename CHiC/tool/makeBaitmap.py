@@ -114,6 +114,8 @@ class makeBaitmapTool(Tool):
 
         baitmap = []
 
+        features = []
+
         with open(sam_file, "r") as file_in:
             for line in file_in:
                 if line[0] != "@":
@@ -123,6 +125,8 @@ class makeBaitmapTool(Tool):
                         crm = chr_dict[line[2]]
                     except IOError:
                         continue
+
+                    features.append(line[0])
 
                     srt_pos = int(line[3])
                     end_pos = srt_pos + int(len(line[9]))
@@ -158,11 +162,14 @@ class makeBaitmapTool(Tool):
         os.remove(rtree_prefix+".dat")
         os.remove(rtree_prefix+".idx")
 
-        return baitmap
+        return baitmap, features
 
-    @task(returns=bool, baitmap_list=IN,
+    @task(returns=bool, features=IN, baitmap_list=IN,
           out_baitmap=FILE_OUT, chr_handler=FILE_IN)
-    def create_baitmap(self, baitmap_list, out_baitmap, chr_handler):  # pylint: disable=no-self-use
+    def create_baitmap(self, features, # pylint: disable=no-self-use
+                       baitmap_list,
+                       out_baitmap,
+                       chr_handler):
         """
         This function takes a list with RE fragments that
         correspond to baits and print it to a file
@@ -184,13 +191,14 @@ class makeBaitmapTool(Tool):
                 chr_dict[int(line_hdl[0])] = line_hdl[1]
 
         with open(out_baitmap, "a") as file_out:
-            for frag_coord in baitmap_list:
+            for i in enumerate(baitmap_list):
                 file_out.write("{}\t{}\t{}\t{}\t{}\n".format(
-                    chr_dict[frag_coord[0]],
-                    frag_coord[1],
-                    frag_coord[2],
-                    frag_coord[3],
-                    "NaN"))
+                    chr_dict[i[1][0]],
+                    i[1][1],
+                    i[1][2],
+                    i[1][3],
+                    features[i[0]]
+                    ))
 
         if os.path.getsize(out_baitmap) > 0:
             return True
@@ -270,7 +278,7 @@ class makeBaitmapTool(Tool):
 
         prefix_rtree = "rtree_file"
 
-        baitmap_list = self.sam_to_baitmap(
+        baitmap_list, features = self.sam_to_baitmap(
             bait_sam,
             bowtie_files["bam"],
             rtree_file_dat,
@@ -279,6 +287,7 @@ class makeBaitmapTool(Tool):
             chr_handler)
 
         results = self.create_baitmap(
+            features,
             baitmap_list,
             out_baitmap,
             chr_handler)
@@ -291,3 +300,73 @@ class makeBaitmapTool(Tool):
 
         return output_files, output_metadata
 
+
+
+if __name__ == "__main__":
+    import sys
+    sys._run_from_cmdl = True  # pylint: disable=protected-access
+
+
+    path = "/home/pacera/MuG/CHi-C/tests/data/"
+
+    configuration = {
+        "execution": path,
+        "chic_RE_name": "HindIII",
+        "chic_RE_sequence": "A|AGCTT",
+        "bowtie2_fasta_input" : "True"
+    }
+
+    input_files = {
+        "bowtie_gen_idx": path + "test_baitmap/chr21_hg19.fa.bt2.tar.gz",
+        "probes_fa": path + "test_baitmap/h19_promoter.fa",
+        "Rtree_file_dat": path + "test_rmap/rtree_file.dat",
+        "Rtree_file_idx": path + "test_rmap/rtree_file.idx",
+        "genome_fa": path + "test_baitmap/chr21_hg19.fa",
+        "chr_handler": path + "test_baitmap/chr_handler.txt"
+    }
+
+    output_files = {
+        "bait_sam":  path + "test_baitmap/baits.sam",
+        "out_bam": path + "test_baitmap/baits.bam",
+        "out_baitmap": path + "test_run_chicago/test.baitmap"
+    }
+
+    metadata = {
+        "bowtie_gen_idx": Metadata(
+            "bowtie_gen_idx", "tar", input_files["bowtie_gen_idx"], [input_files["genome_fa"]],
+            {
+                "assembly": "test",
+                "tool": "bowtie_gen_idx"
+            }, 9606
+            ),
+        "genome_fa": Metadata(
+            "hg38", "fasta", input_files["genome_fa"], [],
+            {
+                "assembly": "test",
+                "tool": "bowtie_gen_idx"
+            }, 9606),
+
+        "probes_fa": Metadata(
+            "C-HiC probes", "fasta", input_files["probes_fa"], [],
+            {
+                "assembly": "test",
+                "tool": "bowtie_gen_idx"
+            }, 9606),
+
+        "Rtree_file_dat": Metadata(
+            "Rtree files", "dat", input_files["Rtree_file_dat"], [],
+            {"genome": input_files["genome_fa"],
+             "RE": {"HindIII": 'A|AGCTT'}},
+            9606
+            ),
+
+        "Rtree_file_idx": Metadata(
+            "Rtree files", "idx", input_files["Rtree_file_idx"], [],
+            {"genome": input_files["genome_fa"],
+             "RE": {"HindIII": 'A|AGCTT'}},
+            9606
+            )
+    }
+
+    baitmap_handler = makeBaitmapTool(configuration)
+    baitmap_handler.run(input_files, metadata, output_files)
