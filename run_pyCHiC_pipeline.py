@@ -11,6 +11,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import os
 import argparse
 import sys
 from basic_modules.metadata import Metadata
@@ -287,6 +288,10 @@ if __name__ == "__main__":
         }
 
     sys._run_from_cmdl = True # pylint: disable=protected-access
+
+    if not os.path.isdir(CONFIGURATION["execution"]):
+        os.makedirs(CONFIGURATION["execution"])
+
 
     CHIC_HDL = process_CHiC(CONFIGURATION)
     CHIC_HDL.run(INPUT_FILES, INPUT_METADATA, OUTPUT_FILES)
