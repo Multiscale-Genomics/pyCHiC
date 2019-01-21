@@ -660,10 +660,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             x["distbin"] = pd.cut(x["distSign"].abs(),
                                   np.arange(0, self.configuration["pychic_maxLBrownEst"]+1,
                                             binsize)
-                                  )
+                                 )
 
             x["distbin"] = x['distbin'].apply(lambda x: x.left)
-
             x["distbin"] = x["distbin"].astype(float)
 
             xAll = x # pylint: disable=invalid-name
@@ -806,6 +805,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x = self.normaliseFragmentSets(x, "bait", "baitID",
                                        "N", binsize, npb)
+
 
         x["NNb"] = (x["N"]/x["s_j"]).round()
         x["NNb"] = np.where(x["NNb"] == 0, 1, x["NNb"])
@@ -1240,6 +1240,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         # TODO output extra diagnostic information?
 
         # Get f(d_b)
+
         chinput_jiw = chinput_jiw[chinput_jiw["refBinMean"].notnull()]
 
         f_d = chinput_jiw.drop_duplicates(["distbin", "refBinMean"])
@@ -1272,6 +1273,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         distFunParams["tail_coef"] = [alpha2, beta2]
 
         #PLOT
+        print(distFunParams)
         return distFunParams
 
 
@@ -1641,7 +1643,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_jiwb_pval
         """
         alpha = dispersion
-
         logger.info("Calculating p-values...")
 
         ##p-values:
@@ -2325,6 +2326,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         out_bam = "tests/data/test_baitmap/baits.bam"
         sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
 
+
+        print(self.configuration)
+
         if "RMAP" not in input_files:
             input_files["RMAP"] = rmap
         if "BAITMAP" not in input_files:
@@ -2337,6 +2341,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             input_files["poe"] = poe
         if "chinput" not in input_files:
             input_files["chinput"] = output_files["chinput"]
+
+        if self.configuration["pychic_features_plot"] == "None":
+            self.configuration["pychic_features_plot"] = None
 
         self.configuration["pychic_cutoff"] = int(self.configuration["pychic_cutoff"])
 
@@ -2373,7 +2380,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             int(self.configuration["pychic_techNoise_minBaitsPerBin"])
 
         if "pychic_maxLBrownEst" not in self.configuration:
-            self.configuration["pychic_maxLBrownEst"] = float(self.configuration["makeDesignFiles_binsize"])
+            self.configuration["pychic_maxLBrownEst"] = float(self.configuration["makeDesignFiles_maxLBrownEst"])
         else:
             self.configuration["pychic_maxLBrownEst"] = float(self.configuration["pychic_maxLBrownEst"])
         self.configuration["pychic_tlb_filterTopPercent"] = \

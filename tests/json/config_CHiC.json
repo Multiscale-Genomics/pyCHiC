@@ -151,6 +151,10 @@
         {
             "name": "pychic_weightDelta",
             "value": "-7.07609245521541"
+        },
+        {
+            "name": "pychic_features_plot",
+            "value": "None"
         }
     ],
     "output_files": [
