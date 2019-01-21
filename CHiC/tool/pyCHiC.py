@@ -2064,7 +2064,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ------
         bool
         """
-        print(x)
 
         logger.info("Rading the rmap file")
 
@@ -2186,23 +2185,37 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return True
 
-    def plotBaits(self, x, dispersion, out_name):
+    def plotBaits(self, baitmap_df, x, dispersion, out_name):
         """
         This function generates a pdf with 10 random baits
         """
-        baits = x["baitID"].unique()
         sns.set_style("ticks")
 
-        if len(baits) < 6:
-            baits = baits
-            row = int(len(baits)/2)
-            col = 2
-        else:
-            baits = random.sample(list(baits), 6)
-            row = 3
-            col = 2
+        if self.configuration["pychic_features_plot"]:
+            feature_list = self.configuration["pychic_features_plot"].split(",")
+            baitmap_df = baitmap_df[baitmap_df["feature"].isin(feature_list)]
+            baits = baitmap_df["ID"]
+            if len(baits) < 6:
+                baits = baits
+                row = int(len(baits)/2)
+                col = 2
+            else:
+                row = 3
+                col = 2
 
-        x = x[x["baitID"].isin(baits)]
+        else:
+            baits = x["baitID"].unique()
+
+            if len(baits) < 6:
+                baits = baits
+                row = int(len(baits)/2)
+                col = 2
+            else:
+                baits = random.sample(list(baits), 6)
+                row = 3
+                col = 2
+
+            x = x[x["baitID"].isin(baits)]
 
         baits = list(baits)
 
@@ -2211,40 +2224,49 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         index = 0
         for i in range(col):
             for j in range(row):
+                try:
+                    x_temp = x[x["baitID"] == baits[index]]
+                    x_temp = x_temp[x_temp["distSign"].abs() < 800000]
+                    x_temp.sort_values(by="distSign", inplace=True)
 
-                x_temp = x[x["baitID"] == baits[index]]
-                x_temp = x_temp[x_temp["distSign"].abs() < 800000]
-                x_temp.sort_values(by="distSign", inplace=True)
+                    axs[j, i].set_ylim(0, max(x_temp["N"]+1))
+                    axs[j, i].set_xlim(-800000, 800000)
 
-                axs[j, i].set_ylim(0, max(x_temp["N"]+1))
-                axs[j, i].set_xlim(-800000, 800000)
+                    x_red = x_temp[x_temp["score"] >= 5]
+                    x_blue = x_temp[(x_temp["score"] >= 3) & (x_temp["score"] < 5)]
+                    x_black = x_temp[x_temp["score"] < 3]
 
-                x_red = x_temp[x_temp["score"] >= 5]
-                x_blue = x_temp[(x_temp["score"] >= 3) & (x_temp["score"] < 5)]
-                x_black = x_temp[x_temp["score"] < 3]
+                    axs[j, i].scatter(x_red["distSign"], x_red["N"], \
+                        s=15, c="red", label="Significant interactions")
 
-                axs[j, i].scatter(x_red["distSign"], x_red["N"], \
-                    s=15, c="red", label="Significant interactions")
+                    axs[j, i].scatter(x_blue["distSign"], x_blue["N"], \
+                        s=15, c="blue", label="Sub-threshold interactions")
 
-                axs[j, i].scatter(x_blue["distSign"], x_blue["N"], \
-                    s=15, c="blue", label="Sub-threshold interactions")
+                    axs[j, i].scatter(x_black["distSign"], x_black["N"], \
+                                      s=15, facecolors='none', edgecolors='black', \
+                                      label="Non significant interactions")
 
-                axs[j, i].scatter(x_black["distSign"], x_black["N"], \
-                                  s=15, facecolors='none', edgecolors='black', \
-                                  label="Non significant interactions")
+                    axs[j, i].plot([0, max(x_temp["N"])], c="black")
+                    axs[j, i].set_xlabel("Genomic distance from viewpoint")
+                    axs[j, i].set_ylabel("Number of interactions")
 
-                axs[j, i].plot([0, max(x_temp["N"])], c="black")
-                axs[j, i].set_xlabel("Genomic distance from viewpoint")
-                axs[j, i].set_ylabel("Number of interactions")
+                    significant = x_temp["Bmean"].astype(float)+1.96*np.sqrt(
+                        x_temp["Bmean"].astype(float)+x_temp["Bmean"].astype(float)**2/dispersion)
 
-                significant = x_temp["Bmean"].astype(float)+1.96*np.sqrt(
-                    x_temp["Bmean"].astype(float)+x_temp["Bmean"].astype(float)**2/dispersion)
+                    axs[j, i].fill_between(x_temp["distSign"], 0,
+                                           significant,
+                                           facecolor='grey', alpha=0.5, label="Background model")
 
-                axs[j, i].fill_between(x_temp["distSign"], 0,
-                                       significant,
-                                       facecolor='grey', alpha=0.5, label="Background model")
+                    axs[j, i].legend(loc='upper left')
 
-                axs[j, i].legend(loc='upper left')
+                    title = baitmap_df.loc[baitmap_df["ID"] == baits[index]]["feature"]
+
+                    title_str = [str(i) for i in title]
+
+                    axs[j, i].set_title("".join(title_str))
+
+                except ValueError:
+                    logger.fatal("Tried to plot a bait that is being filter out")
 
                 index += 1
 
@@ -2454,7 +2476,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         self.print_params(output_files["params_out"],
                           self.configuration)
 
-        self.plotBaits(chinput_jiwb_scores,
+        self.plotBaits(baitmap_df,
+                       chinput_jiwb_scores,
                        dispersion,
                        output_files["pdf_examples"])
 
@@ -2564,6 +2587,7 @@ if __name__ == "__main__":
         }
 
     configuration = {
+        "pychic_features_plot" : "DEFB125,DEFB126,DEFB128,DEFB129,DEFB132,TRIB3",
         "pychic_binsize" : 20000,
         "execution" : ".",
         "pychic_cpu" : 3,
