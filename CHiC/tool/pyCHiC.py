@@ -1637,15 +1637,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Parameters
         ----------
-        chinput_jiwb: DataFrame
-
+        x: DataFrame
         dispersion: dict
 
         Returns
         -------
         chinput_jiwb_pval
         """
-        alpha = dispersion
         logger.info("Calculating p-values...")
 
         ##p-values:
@@ -1730,17 +1728,19 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return x
 
-    def getAvgFragLength(self, x, rmap, excludeMT=True):
+    def getAvgFragLength(self, rmap, excludeMT=True):
         """
         Get the average fragment
 
         Parameters
         ----------
-        x: dataFrame
+        rmap: DataFrame
+        excludeMT:str
 
         Returns
         -------
         avgFragLen: float
+        rmap: DataFrame
         """
         if excludeMT:
             if "MT" in rmap["chr"].astype(str):
@@ -1757,14 +1757,17 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return avgFragLen, rmap
 
 
-    def getNoOfHypotheses(self, x, rmap, baitmap, avgFragLen):
+    def getNoOfHypotheses(self, rmap, baitmap, avgFragLen):
         """
         Parameter
         ---------
-        x: DataFrame
+        rmap: DataFrame
+        baitmap: DataFrame
+        avgFragLen: float
 
         Returns
         -------
+        Nhyp: float
         """
         chrMAX = rmap.groupby(["chr"], as_index=False)["end"].max()
 
@@ -1785,9 +1788,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Returns
         -------
-        exp(x)/(1+exp(x))
+        float
         """
-
         return 1/(1+math.exp(-x))
 
     def eta_sigma(self, chrs):
@@ -1796,7 +1798,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Parameters
         ----------
+        chrs: list
 
+        Returns
+        -------
+        eta_sigma: float
         """
         alpha = self.configuration["pychic_weightAlpha"]
         beta = self.configuration["pychic_weightBeta"]
@@ -1838,7 +1844,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return eta_sigma
 
 
-
     def getEtaBar(self, x, rmap, baitmap, avgFragLen):
         """
         get parameters for the experiments
@@ -1846,9 +1851,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         Parameters
         ----------
         x: Dataframe
+        rmap: DataFrame
+        baitmap: baitmap
+        avgFragLen: float
 
         Returns
         -------
+        eta_bat: float
         """
         ##1. Collect parameters
 
@@ -1922,6 +1931,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
     def getWeights(self, dist):
         """
         Calculate the weights
+
+        Parameters
+        ----------
+        dist: float
+
+        Returns
+        -------
+        float
         """
         alpha = self.configuration["pychic_weightAlpha"]
         beta = self.configuration["pychic_weightBeta"]
@@ -1946,13 +1963,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         Parameters
         ----------
         x: DataFrame
+        rmap: DataFrame
+        baitmap: DataFrame
 
         Returns
         -------
         chinput_jiwb_scores: DataFrame
         """
 
-        avgFragLen, rmap = self.getAvgFragLength(x, rmap)
+        avgFragLen, rmap = self.getAvgFragLength(rmap)
 
         eta_bar = self.getEtaBar(x, rmap, baitmap, avgFragLen)
 
@@ -2000,7 +2019,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Parameres
         ---------
-        pychic_outprefix: str
+        params_out: str
+        params: dict
 
         Returns
         -------
@@ -2021,6 +2041,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         Given a list of numbers and a parameter m, it will bin the list
         having at least m numbers in each bin. The funciton wont guarantee
         that it will be exactly m number of elements in the last bin.
+
+        Parameters
+        ----------
+        num_list: list
+        m : int
+        onlycuts:Bool
+
+        Returns
+        -------
+        bins: list
         """
         num_list = sorted(num_list)
         unique_list = list(set(num_list))
@@ -2061,8 +2091,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x: DataFrame
         outprefix: str
         cutoff: int
-        format: list
+        export_format: list
         order: str
+        rmap: DataFrame
+        baitmap: DataFrame
 
         Return
         ------
@@ -2192,6 +2224,17 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
     def plotBaits(self, baitmap_df, x, dispersion, out_name):
         """
         This function generates a pdf with 10 random baits
+
+        Parameters
+        ----------
+        baitmap_df: DataFrame
+        x: DataFrame
+        dispersion: float
+        out_name: str
+
+        Returns
+        -------
+        Bool
         """
         sns.set_style("ticks")
 
@@ -2279,6 +2322,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     quality=95, dpi="figure", facecolor='w', edgecolor='w',
                     papertype=None,
                     box_inches='tight', pad_inches="tight")
+
+        return True
 
 
     def run(self, input_files, input_metadata, output_files):

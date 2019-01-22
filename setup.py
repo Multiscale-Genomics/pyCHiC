@@ -26,7 +26,7 @@ setup(
     install_requires=[
         'numpy', 'pytest', 'scipy', 'matplotlib', 'pysam', 'mock',
         'bz2file', 'ConfigParser', 'rtree', 'pylint', 'pandas', 'multiprocess',
-        'seaborn'
+        'seaborn', 'rpy2'
     ],
     setup_requires=[
         'pytest-runner',
