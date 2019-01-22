@@ -1,0 +1,86 @@
+[
+    {
+        "_id": "59b7e020d9422a5900e23456",
+        "data_type": "data_chic",
+        "file_type": "TXT",
+        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.rmap",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9a8489301",
+        "data_type": "data_chic",
+        "file_type": "TXT",
+        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.baitmap",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5908ffg2",
+        "data_type": "data_chic",
+        "file_type": "TXT",
+        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.nbpb",
+        "compressed": 1,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a59033ee4",
+        "data_type": "data_chic",
+        "file_type": "TXT",
+        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.poe",
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5911121",
+        "data_type": "data_chic",
+        "file_type": "TXT",
+        "file_path": "tests/data/test_run_chicago/data_chicago/h19_chr20and21.npb",
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5900e2e4334",
+        "data_type": "data_chic",
+        "file_type": "TXT",
+        "file_path": "tests/data/test_run_chicago/data_chicago/GM_rep1.chinput",
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    }
+]
+
+
+
+
+
+
+
+
+
