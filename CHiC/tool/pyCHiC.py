@@ -1875,7 +1875,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if "chrMT" in baitmap["chr"].astype(str):
             baitmap = baitmap[baitmap["chr"] != "chrMT"]
 
-        Nhyp = self.getNoOfHypotheses(x, rmap, baitmap, avgFragLen)
+        Nhyp = self.getNoOfHypotheses(rmap, baitmap, avgFragLen)
 
         ##3. Calculate eta.bar
         ##Loop, summing contributions of eta
@@ -2374,8 +2374,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         out_bam = "tests/data/test_baitmap/baits.bam"
         sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
 
-
-        print(self.configuration)
 
         if "RMAP" not in input_files:
             input_files["RMAP"] = rmap
