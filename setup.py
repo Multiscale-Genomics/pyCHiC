@@ -25,7 +25,8 @@ setup(
     include_package_data=True,
     install_requires=[
         'numpy', 'pytest', 'scipy', 'matplotlib', 'pysam', 'mock',
-        'bz2file', 'ConfigParser', 'rtree', 'pylint', 'pandas', 'multiprocess'
+        'bz2file', 'ConfigParser', 'rtree', 'pylint', 'pandas', 'multiprocess',
+        'seaborn'
     ],
     setup_requires=[
         'pytest-runner',
@@ -37,7 +38,7 @@ setup(
     #     'install' : Install_DamIDSeq,
     # },
     classifiers=[
-        "Programming Language :: Python :: 2.7",
+        #"Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.6",
         "License :: OSI Approved :: Apache 2.0",
     ]

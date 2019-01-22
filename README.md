@@ -27,6 +27,8 @@ This repository contains pipelines for analyzing capture Hi-C data. CHiCAGO algo
 - R >=3.1.2
 -R Modules:
   -argparser
+  -survival
+  -Hmisc
   -devtools
   -Chicago
 - bedtools

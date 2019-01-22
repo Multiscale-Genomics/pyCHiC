@@ -1273,7 +1273,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         distFunParams["tail_coef"] = [alpha2, beta2]
 
         #PLOT
-        print(distFunParams)
         return distFunParams
 
 
