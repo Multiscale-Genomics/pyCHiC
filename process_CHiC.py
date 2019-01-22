@@ -84,6 +84,16 @@ class process_CHiC(Workflow):
         output_files
         output_metadata
         """
+        if not os.path.exists("tests/data/test_bam2chicago_tool"):
+            os.makedirs("tests/data/test_bam2chicago_tool")
+
+        if not os.path.exists("tests/data/test_hicup"):
+            os.makedirs("tests/data/test_hicup")
+
+        if not os.path.exists("tests/data/test_rmap"):
+            os.makedirs("tests/data/test_rmap")
+
+
         self.configuration["bowtie2_fasta_input"] = "True"
 
         if "genome_fa_public" in input_files:
