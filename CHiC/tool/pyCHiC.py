@@ -68,8 +68,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         Parameters
         ----------
         configuration: dict
-         dictionary containing all the arguments and parameters
-         to run the tool
+            dictionary containing all the arguments and parameters
+            to run the tool
         """
 
         print("CHiCAGO initialising")
@@ -87,8 +87,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Parameter
         ---------
-        file: str
+        test_file: str
+            path to the input file
+
+        file_name: str
             path to the file
+
 
         Returns
         -------
@@ -119,7 +123,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ----------
         design_fl: str
             path to the design file
-
+        rmap: str
+            path to rmap file
+        baitmap: str
+            path to the baitmap file
         column_rmap: column number of the first line in the
             design file to check for the name of he rmap file
         column_baitmap: column number of the first line in the
@@ -171,6 +178,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             path to nbpb
         poe: str
             path to poe
+        npb: str
+            path to npb
 
         Returns
         -------
@@ -274,7 +283,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Return
         ------
-        chinput_filtered: data frame
+        x: DataFrame
         """
 
         chinput = "".join(chinput)
@@ -433,6 +442,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
     def dataframe_merge(self, chinputs):
         """
+
         This function is going to execute the merge command from python to
         merge the dataframe in case there is more than onw biological replicate
 
@@ -444,6 +454,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         Return
         ------
         chunput_merged : dataframe merged
+
         """
         i = 0
         j = 1
@@ -494,13 +505,17 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Parameters
         ----------
-        chinput_merge: data frame
+        chinput_merge: DataFrame
+        pychic_maxLBrownEst: int
+            maximun distance to estimate brownian noise
+        npb: str
+            path to npb file
 
         Returns
         -------
         s_k = list
             scaling factors for each replicate
-        npb = dataframe
+        npb = DataFrame
         """
 
         N_compile = re.compile(r"N.\d+") # pylint: disable=invalid-name
@@ -569,10 +584,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         Parameters
         ----------
         chinputs: list
+        npb: str
+            path to npb
 
         Returns
         -------
-        chinputs_merged: data frame
+        chinputs_merged: DataFrame
         """
         for i in enumerate(chinputs):
             column_names = chinputs[str(i[0])].columns
@@ -623,9 +640,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
     def normaliseFragmentSets(self, x, viewpoint, idcol, Ncol, binsize, # pylint: disable=invalid-name
                               npb=False, adjBait2bait=True,
-                              shrink=False, refExcludeSuffix=None,
-                              plot=True, outfile=None,
-                              debug=False):
+                              shrink=False, refExcludeSuffix=None):
         """
         The normalisation engine used for normaliseBaits and normaliseOtherEnds
         "Viewpoint" will be used in the comments for either baits or sets of other ends,
@@ -642,17 +657,23 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Parameters
         ----------
-        x : dataframe
+        x : DataFrame
         viewpoint : str
             bait or OtherEnd
         npb : str
             path to npb file
         idcol: str
             baitID otherEndID
+        Ncol: str
+            Name of the N column
+        binsize: int
+        adjBait2bait: Bool
+        shrink: Bool
+        refExcludeSuffix: str or Bool
 
         Returns
         -------
-        x_
+        xAll : DataFrame
         """
         if viewpoint == "bait":
             scol = "s_j"
@@ -794,12 +815,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Parameter
         ---------
-        x: str
+        x: DataFrame
             path to the chinput file already filtered
+        npb: str
+            path to npb file
 
         Return
         ------
-        chinput_
+        x: DataFrame
+
         """
         binsize = self.configuration["pychic_binsize"]
 
@@ -813,7 +837,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return x
 
 
-    def addTLB(self, chinput_j, adjBait2bait=True):
+    def addTLB(self, chinput_j, adjBait2bait=True):  # pylint: disable=invalid-name
         """
         ##Assigns each fragment a "tlb" - a range containing the number of trans
         ##1) The bins are constructed based on reduced data - (outliers trimmed, )
@@ -822,27 +846,28 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Parameters
         ----------
-        chinput_j: dataFrame
-        """
-        filterTopPercent = self.configuration["pychic_tlb_filterTopPercent"]
-        minProxOEPerBin = self.configuration["pychic_tlb_minProxOEPerBin"]
-        minProxB2BPerBin = self.configuration["pychic_tlb_minProxB2BPerBin"]
+        chinput_j: DataFrame
+        adjBait2bait: Bool
 
+        Returns
+        -------
+        chinput_j: DataFrame
+        """
         logger.info("preprocessing input....")
 
         # Checking whether in the input, we had distances at trans-interactions labeled as NA
         # (as opposed to a dummy maximum distance)
-        transNA = False
+        transNA = False  # pylint: disable=invalid-name
 
         if chinput_j["distSign"].isnull().values.any():
-            transNA = True
-            transD = max(chinput_j["distSign"])+self.configuration["pychic_binsize"]
+            transNA = True  # pylint: disable=invalid-name
+            transD = max(chinput_j["distSign"])+self.configuration["pychic_binsize"]  # pylint: disable=invalid-name
             chinput_j.distSign.fillna(transD, inplace=True)
             #chinput_j["distSign"] = np.where(chinput_j["distSign"].isna(), transD)
 
 
         else:
-            transD = max(chinput_j["distSign"])
+            transD = max(chinput_j["distSign"])  # pylint: disable=invalid-name
             logger.info("Warning: No NAs found in input. "
                         "Assuming the max distance of "+str(transD)+
                         " is a dummy for  trans-counts.")
@@ -857,40 +882,40 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             chinput_j["transLength"] = np.where(chinput_j['distSign'] == transD, 1, 0)
 
-            transLen = chinput_j[["otherEndID",
+            transLen = chinput_j[["otherEndID",  # pylint: disable=invalid-name
                                   "transLength",
                                  ]].groupby(
                                      "otherEndID", as_index=False).sum()
 
-            transLen2 = pd.DataFrame({"otherEndID" : chinput_j["otherEndID"], \
-                                     "isBait2bait" : chinput_j["isBait2bait"], \
-                                     "distSign" : abs(chinput_j["distSign"])})
+            transLen2 = pd.DataFrame({"otherEndID" : chinput_j["otherEndID"],   # pylint: disable=invalid-name
+                                      "isBait2bait" : chinput_j["isBait2bait"],
+                                      "distSign" : abs(chinput_j["distSign"])})
 
 
-            transLen2 = transLen2[["distSign" , "isBait2bait", "otherEndID"]]
+            transLen2 = transLen2[["distSign" , "isBait2bait", "otherEndID"]]  # pylint: disable=invalid-name
             transLen2.sort_values(["otherEndID", "distSign"], inplace=True)
             transLen2.drop_duplicates(["otherEndID"], inplace=True)
 
-            transLen = pd.merge(transLen, transLen2, on="otherEndID", how="right")
+            transLen = pd.merge(transLen, transLen2, on="otherEndID", how="right")  # pylint: disable=invalid-name
 
         else:
             pass
             # something similar to the above function
 
         # remember to rename the transD column for te else statement
-        transLend0 = transLen.copy()
+        transLend0 = transLen.copy()  # pylint: disable=invalid-name
 
-        transLen = transLen[transLen["transLength"] <= np.percentile(
+        transLen = transLen[transLen["transLength"] <= np.percentile(  # pylint: disable=invalid-name
             transLen["transLength"], 100-self.configuration["pychic_tlb_filterTopPercent"])]
 
         if adjBait2bait:
-            transLend0 = transLen.copy()
-            transLen = transLend0.loc[transLend0["isBait2bait"] == "FALSE"]
-            transLenB2B = transLend0[transLend0["isBait2bait"] == "TRUE"]
+            transLend0 = transLen.copy()  # pylint: disable=invalid-name
+            transLen = transLend0.loc[transLend0["isBait2bait"] == "FALSE"]  # pylint: disable=invalid-name
+            transLenB2B = transLend0[transLend0["isBait2bait"] == "TRUE"]  # pylint: disable=invalid-name
 
         logger.info("Binning..")
 
-        distSign = transLen[transLen["distSign"].abs() <= self.configuration["pychic_maxLBrownEst"]]["transLength"]
+        distSign = transLen[transLen["distSign"].abs() <= self.configuration["pychic_maxLBrownEst"]]["transLength"]  # pylint: disable=invalid-name
 
         cuts = self.cut2(distSign, int(self.configuration["pychic_tlb_minProxOEPerBin"]))
 
@@ -970,6 +995,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ----------
         chinput_j: dataframe
             dataframe after normalize the Baits
+        nbpb: str
+            path to nbpb file
         Ncol: str
             name of the Ncol colum
         normNcol: str
@@ -977,7 +1004,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Returns
         -------
-        DataFrame
+        chinput_j: DataFrame
         """
         chinput_j = self.addTLB(chinput_j)
 
@@ -1053,33 +1080,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return chinput_j
 
 
-    def prepare_design(self, design, first_col):
-        """
-        This function is runned in case that there is just one chinput.
-        Becuase the npb file is modified during the merge_input function
-
-        Parameters
-        ----------
-        npb: str
-            path to the npb file
-        Returns
-        -------
-        DataFrame
-        """
-        design = pd.read_csv(design, sep="\t", skiprows=1, header=None,
-                            )
-
-        column_names = {}
-        column_names[0] = first_col
-
-        for i in enumerate(design.columns, 1):
-            column_names[i[0]] = "bin"+str(i[0])
-
-        design.rename(columns=column_names, inplace=True)
-
-        return design
-
-
     def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap):
         """
         This function estimate the technical noise of the experiments
@@ -1088,6 +1088,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ----------
         chinput_ji : DataFrame
             output from normaliseOtherEnds function
+        rmap: str
+        baitmap: str
 
         Returns
         -------
@@ -1569,9 +1571,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
     def estimateBrownianComponent(self, chinput_jiw, distFunParams, poe, rmap):
         """
+
         1) Reinstate zeros
         2) Add a "Bmean" column to x, giving expected Brownian component.
         3) Calculate dispersion by regressing against "Bmean", added to x as "dispersion" attribute
+
         subset: Since we don't need the entire data set, can just calculate
         based on a random subset of baits.
         !!NB!! Use set.seed to force subset analysis to be reproducible
@@ -1583,7 +1587,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Returns
         -------
-        chinput_jiwb
+        chinput_jiwb: Dataframe
         """
 
         adjBait2bait = self.configuration["pychic_adjBait2bait"]
