@@ -39,6 +39,10 @@
     ],
     "arguments": [
         {
+            "name": "pychic_features_plot",
+            "value": "None"
+        },
+	{
             "name": "execution",
             "value": "tests/data/test_baitmap"
         },
