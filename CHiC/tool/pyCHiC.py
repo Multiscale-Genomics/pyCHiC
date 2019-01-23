@@ -1815,20 +1815,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         eta_sigma = 0
 
-
         for c in chrs:
             #length of chromosome
             d_c = chrMAX[chrMAX["chr"] == c]
-            d_c = d_c.loc[0,"end"]
+            d_c = int(d_c.loc[:, "end"])
 
 
             nBaits = baitmap[baitmap["chr"] == c]
             n_c = nBaits["chr"].value_counts()
 
             n_c = int("".join([str(i) for i in n_c]))
-
-            print("d_c", d_c)
-            print("n_c", n_c)
 
             for i in range(1, n_c+1):
                 try:
