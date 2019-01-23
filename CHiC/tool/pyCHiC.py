@@ -688,6 +688,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             xAll = x # pylint: disable=invalid-name
 
+            print(x)
             if adjBait2bait:
                 """
                 BE CAREFULL IF THIS FUNCTION IS CALLED OUTSIDE NORMALISEDBAITS
