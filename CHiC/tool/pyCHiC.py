@@ -1819,7 +1819,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         for c in chrs:
             #length of chromosome
             d_c = chrMAX[chrMAX["chr"] == c]
-            d_c = d_c["end"]
+            d_c = d_c.loc[0,"end"]
+
 
             nBaits = baitmap[baitmap["chr"] == c]
             n_c = nBaits["chr"].value_counts()
