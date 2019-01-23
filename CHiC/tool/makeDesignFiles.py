@@ -243,6 +243,33 @@ class makeDesignFilesTool(Tool):
         #results = compss_wait_on(results)
 
         output_metadata = {
+            "poe" : Metadata(
+                data_type="data_chic",
+                file_type="TAR",
+                file_path="tests/data/test_run_chicago/test.poe",
+                sources="",
+                taxon_id="",
+                meta_data={"tool": "process_CHiC",
+                           "tool_description" : "hicup_tool"},
+                ),
+            "nbpb" : Metadata(
+                data_type="data_chic",
+                file_type="TAR",
+                file_path="tests/data/test_run_chicago/test.poe",
+                sources="",
+                taxon_id="",
+                meta_data={"tool": "process_CHiC",
+                           "tool_description" : "hicup_tool"},
+                ),
+            "npb" : Metadata(
+                data_type="data_chic",
+                file_type="TAR",
+                file_path="tests/data/test_run_chicago/test.poe",
+                sources="",
+                taxon_id="",
+                meta_data={"tool": "process_CHiC",
+                           "tool_description" : "hicup_tool"},
+                )
         }
 
         return output_files, output_metadata

@@ -39,8 +39,8 @@
     ],
     "arguments": [
 	{
-            "name": "project",
-            "value": "run001"
+            "name": "bowtie2_fasta_input",
+            "value": "True"
         },
         {
             "name": "description",

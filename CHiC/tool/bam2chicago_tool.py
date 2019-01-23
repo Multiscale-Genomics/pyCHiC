@@ -116,8 +116,6 @@ class bam2chicagoTool(Tool):
         """
         out_folder = "".join(chinput.split(".")[0])
 
-
-
         try:
             bam2chicago_script = os.path.join(os.path.dirname(__file__), "scripts/bam2chicago.sh")
 
@@ -247,6 +245,12 @@ class bam2chicagoTool(Tool):
         output_files["chinput"] = self.configuration["execution"]+"/"+\
                                     os.path.split(output_files["chinput"])[1]
 
+        if "fastq1" not in input_files:
+            input_files["fastq1"] = "tests/data/test_truncater/SRR3535023_1_chr21_new.fastq"
+
+        if "fastq2" not in input_files:
+            input_files["fastq2"] = "tests/data/test_truncater/SRR3535023_2_chr21_new.fastq"
+
         #find the name of the future bamfile
         fastq1 = str(os.path.split(input_files["fastq1"])[1])
         fastq2 = str(os.path.split(input_files["fastq2"])[1])
@@ -285,11 +289,40 @@ class bam2chicagoTool(Tool):
 
         #rmtree(folder_name)
 
+        if "genome_fa" not in input_metadata:
+            input_metadata["genome_fa"] = Metadata(
+                data_type="data_chic",
+                file_type="TXT",
+                file_path=output_files["chinput"],
+                sources=[
+                    RMAP,
+                    BAITMAP,
+                    sorted_bam
+                    ],
+                taxon_id=9606,
+                meta_data={"tool": "process_CHiC",
+                           "tool_description" : "bam2chicago_tool"}
+            )
+
         output_metadata = {
             "chinput" : Metadata(
                 data_type="data_chic",
                 file_type="TXT",
                 file_path=output_files["chinput"],
+                sources=[
+                    RMAP,
+                    BAITMAP,
+                    sorted_bam
+                    ],
+                taxon_id=input_metadata["genome_fa"].taxon_id,
+                meta_data={"tool": "process_CHiC",
+                           "tool_description" : "bam2chicago_tool"}
+            ),
+
+            "hicup_outdir_tar" : Metadata(
+                data_type="data_chic",
+                file_type="TXT",
+                file_path=output_files["hicup_outdir_tar"],
                 sources=[
                     RMAP,
                     BAITMAP,

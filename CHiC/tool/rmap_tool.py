@@ -309,7 +309,6 @@ class makeRmapFile(Tool):
             input_files["bowtie_gen_idx"] = input_files.pop("bowtie_gen_idx_public")
             metadata["bowtie_gen_idx"] = metadata.pop("bowtie_gen_idx_public")
 
-
         rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
         rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
         chr_handler = "tests/data/test_baitmap/chr_handler.txt"
