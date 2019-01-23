@@ -2493,26 +2493,18 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_j = self.normaliseBaits(chinput_filtered, \
                                        input_files["npb"])
 
-        print(chinput_j)
-        print()
         chinput_ji = self.normaliseOtherEnds(chinput_j,
                                              input_files["nbpb"]
                                             )
-        print(chinput_ji)
-        print()
+
         logger.info("\n Running estimateTechicalNoise")
 
         chinput_jiw = self.estimateTechnicalNoise(chinput_ji,
                                                   input_files["RMAP"],
                                                   input_files["BAITMAP"])
 
-        print(chinput_jiw)
-        print()
-
         distFunParams = self.estimateDistFun(chinput_jiw)
 
-        print(distFunParams)
-        print()
         chinput_jiwb, dispersion = self.estimateBrownianComponent(
             chinput_jiw,
             distFunParams,
