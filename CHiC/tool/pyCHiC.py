@@ -777,6 +777,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #DEseq-style normalisation
         if not shrink or viewpoint == "otherEnd":
             sbbm["s_iv"] = sbbm["bbm"]/sbbm["geo_mean"]
+            print(sbbm)
             s_v = sbbm.groupby(idcol, as_index=False).s_iv.median()
             print(s_v)
         else:
