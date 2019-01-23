@@ -747,8 +747,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 sort=False,
                 as_index=False).bbm.apply(gmean)
 
-            print(geomean)
-
             bins_elements = Counter(sbbm["distbin"])
 
             geo_mean = []
@@ -759,6 +757,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 counter += 1
 
             sbbm["geo_mean"] = geo_mean
+
+            print(sbbm[sbbm[idcol] == 403482])
 
         else:
             distbin_sorted = sorted(sbbm["distbin"].unique())
