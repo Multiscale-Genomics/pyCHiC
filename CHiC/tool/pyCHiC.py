@@ -1815,11 +1815,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         eta_sigma = 0
 
-        print(alpha)
-        print(beta)
-        print(chrMAX)
-        print(baitmap)
-        print(avgFragLen)
 
         for c in chrs:
             #length of chromosome
@@ -1830,6 +1825,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             n_c = nBaits["chr"].value_counts()
 
             n_c = int("".join([str(i) for i in n_c]))
+
+            print("d_c", d_c)
+            print("n_c", n_c)
 
             for i in range(1, n_c+1):
                 try:
@@ -1903,8 +1901,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             pool = Pool(self.configuration["pychic_cpu"])
 
             chrs_list = [[chrs[i]] for i in range(len(chrs))]
-
-            print(pool.map(self.eta_sigma, chrs_list))
 
             eta_sigma = np.array(pool.map(self.eta_sigma, chrs_list)).sum()
 
