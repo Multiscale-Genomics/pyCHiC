@@ -688,7 +688,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             xAll = x # pylint: disable=invalid-name
 
-            print(x)
             if adjBait2bait:
                 """
                 BE CAREFULL IF THIS FUNCTION IS CALLED OUTSIDE NORMALISEDBAITS
@@ -720,7 +719,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 ntot.append(npb_dic[r[0]][r[1]-1])
 
             x["ntot"] = [int(i) for i in ntot]
-
+            print(x)
         else:
             scol = "s_i"
 
