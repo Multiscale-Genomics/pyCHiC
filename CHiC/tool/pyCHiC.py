@@ -1896,7 +1896,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             pool = Pool(self.configuration["pychic_cpu"])
 
             chrs_list = [[chrs[i]] for i in range(len(chrs))]
-            print(chrs_list)
+
+            print(pool.map(self.eta_sigma, chrs_list))
+
             eta_sigma = np.array(pool.map(self.eta_sigma, chrs_list)).sum()
 
         else:
