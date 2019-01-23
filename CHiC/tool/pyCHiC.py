@@ -747,6 +747,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 sort=False,
                 as_index=False).bbm.apply(gmean)
 
+            print(geomean)
+
             bins_elements = Counter(sbbm["distbin"])
 
             geo_mean = []
@@ -777,12 +779,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #DEseq-style normalisation
         if not shrink or viewpoint == "otherEnd":
             sbbm["s_iv"] = sbbm["bbm"]/sbbm["geo_mean"]
-            print(sbbm)
+
             test = sbbm[sbbm[idcol] == 403482]
-            print(test)
-            print(test["s_iv"].median())
             s_v = sbbm.groupby(idcol, as_index=False).s_iv.median()
-            print(s_v)
+
         else:
             logger.info("computing shrunken means...")
             ##
