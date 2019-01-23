@@ -757,7 +757,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 counter += 1
 
             sbbm["geo_mean"] = geo_mean
-            print(sbbm)
 
         else:
             distbin_sorted = sorted(sbbm["distbin"].unique())
@@ -779,6 +778,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if not shrink or viewpoint == "otherEnd":
             sbbm["s_iv"] = sbbm["bbm"]/sbbm["geo_mean"]
             s_v = sbbm.groupby(idcol, as_index=False).s_iv.median()
+            print(s_v)
         else:
             logger.info("computing shrunken means...")
             ##
