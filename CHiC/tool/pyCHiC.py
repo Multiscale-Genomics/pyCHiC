@@ -748,13 +748,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 as_index=False).bbm.apply(gmean)
 
             bins_elements = Counter(sbbm["distbin"])
-            for el in bins_elements:
-                print(el, bins_elements[el])
+
 
             geo_mean = []
             counter = 0
 
-            for bin_number in bins_elements:
+            for bin_number in sorted(bins_elements.keys()):
                 geo_mean = geo_mean + [geomean[counter]]*bins_elements[bin_number]
                 counter += 1
 
