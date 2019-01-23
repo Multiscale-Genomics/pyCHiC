@@ -759,8 +759,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             sbbm["geo_mean"] = geo_mean
 
-            print(sbbm[sbbm[idcol] == 403482])
-            sys.exit()
         else:
             distbin_sorted = sorted(sbbm["distbin"].unique())
 
