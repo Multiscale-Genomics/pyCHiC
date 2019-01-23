@@ -740,8 +740,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         sbbm.sort_values(by=["distbin"], inplace=True)
 
-        print(sbbm)
-
         if viewpoint == "bait" or refExcludeSuffix is False:
             #IMPROVE THIS APPLYING THE FUNCTION TO BLOCK AND CREATING A COLUMN AT THE SAME TIME
             geomean = sbbm.groupby(
@@ -759,6 +757,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 counter += 1
 
             sbbm["geo_mean"] = geo_mean
+            print(sbbm)
 
         else:
             distbin_sorted = sorted(sbbm["distbin"].unique())
