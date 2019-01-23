@@ -2661,7 +2661,7 @@ if __name__ == "__main__":
         "pychic_techNoise_minBaitsPerBin" : 150,
         "pychic_brownianNoise_samples" : 1,
         "pychic_brownianNoise_subset" : 500,
-        "pychic_brownianNoise_seed" : None,
+        "pychic_brownianNoise_seed" : 3,
         "pychic_weightAlpha" : 34.1157346557331,
         "pychic_weightBeta" : -2.58688050486759,
         "pychic_weightGamma" : -17.1347845819659,

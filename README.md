@@ -7,22 +7,21 @@ This repository contains pipelines for analyzing capture Hi-C data. CHiCAGO algo
 
 # Requirements
 - pyenv and pyenv-virtualenv
-- Python 2.7.12
+- Python 3.6
 - Python Modules:
   - pylint
   - pytest
   - mg-tool-api
   - rpy2
-  - matplotlib
-  - pandas
+  - matplotlib==2.2.3
+  - pandas==0.23.4
   - rtree
   - rpy2
-  - numpy
+  - numpy==1.14.5
   - pandas
-  - scipy
+  - scipy==1.1.0
   - multiprocess
   - matplotlib
-
 
 - R >=3.1.2
 -R Modules:
