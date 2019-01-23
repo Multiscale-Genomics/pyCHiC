@@ -778,6 +778,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if not shrink or viewpoint == "otherEnd":
             sbbm["s_iv"] = sbbm["bbm"]/sbbm["geo_mean"]
             print(sbbm)
+            test = sbbm[sbbm[idcol] == 403482]
+            print(test["s_iv"].median())
             s_v = sbbm.groupby(idcol, as_index=False).s_iv.median()
             print(s_v)
         else:
