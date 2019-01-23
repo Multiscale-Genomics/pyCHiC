@@ -1826,19 +1826,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             n_c = int("".join([str(i) for i in n_c]))
 
             for i in range(1, n_c+1):
-                d = round(d_c*i/n_c, 1)
-
-                d_near = min(float(d), float(d_c-d))
-
-                d_other = np.arange(avgFragLen, max(avgFragLen, d_near), avgFragLen)
-                print(d_near)
-                print(d_c)
-                print(avgFragLen)
-                print()
-
-                d_other2 = np.arange(d_near, d_c-d_near, avgFragLen)
-
                 try:
+                    d = round(d_c*i/n_c, 1)
+
+                    d_near = min(float(d), float(d_c-d))
+
+                    d_other = np.arange(avgFragLen, max(avgFragLen, d_near), avgFragLen)
+
+                    d_other2 = np.arange(d_near, d_c-d_near, avgFragLen)
+
+
                     eta_sigma = eta_sigma + 2*sum(expit(alpha + beta*np.log(d_other))) + \
                                 sum(expit(alpha + beta*np.log(d_other2)))
 
