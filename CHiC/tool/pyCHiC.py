@@ -1831,6 +1831,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 d_near = min(float(d), float(d_c-d))
 
                 d_other = np.arange(avgFragLen, max(avgFragLen, d_near), avgFragLen)
+                print(d_near)
+                print(d_c)
+                print(avgFragLen)
 
                 d_other2 = np.arange(d_near, d_c-d_near, avgFragLen)
 
