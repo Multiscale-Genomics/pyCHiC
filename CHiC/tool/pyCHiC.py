@@ -736,11 +736,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         sbbm["bbm"] = sbbm[Ncol]/sbbm["ntot"]
 
+        print(sbbm)
+
         sbbm.drop([Ncol, "ntot"], axis=1, inplace=True)
 
         sbbm.sort_values(by=["distbin"], inplace=True)
-
-        print(sbbm)
 
         if viewpoint == "bait" or refExcludeSuffix is False:
             #IMPROVE THIS APPLYING THE FUNCTION TO BLOCK AND CREATING A COLUMN AT THE SAME TIME
