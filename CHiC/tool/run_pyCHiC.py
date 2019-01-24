@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
     OPTIONAL.add_argument("--minNPerBait",
                           help=" Minimum number of interactions per bait",
-                          default="1")
+                          default="250")
 
     OPTIONAL.add_argument("--filterTopPercent",
                           help="Top percentile of trans interactions that are going to be removed"\
@@ -94,17 +94,17 @@ if __name__ == "__main__":
     OPTIONAL.add_argument("--minProxOEPerBin",
                           help="Minimum number of trans interactions for every bin during "\
                                "normalisation of other ends",
-                          default="1")
+                          default="150")
 
     OPTIONAL.add_argument("--minProxB2BPerBin",
                           help="Minimum number of trans interactions for every bin during "\
                                "normalisation of bait to bait in other ends",
-                          default="1")
+                          default="15")
 
     OPTIONAL.add_argument("--techNoise_minBaitsPerBin",
                           help="Minimum number of trans interactions for every "\
                                "bin during normalisation of baits",
-                          default="1")
+                          default="150")
 
     OPTIONAL.add_argument("--brownianNoise_samples",
                           help=" Number of times to estimate the brownian noise",
