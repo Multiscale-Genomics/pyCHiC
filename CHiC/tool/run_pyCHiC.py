@@ -207,7 +207,7 @@ if __name__ == "__main__":
         "pychic_weightBeta" : WEIGHTBETA,
         "pychic_weightGamma" : WEIGHTGAMMA,
         "pychic_weightDelta" : WEIGHTDELTA,
-        "pychic_features_plot": None
+        "pychic_features_plot": PLOTBAITS
     }
 
     OUTPUT_FILES = {

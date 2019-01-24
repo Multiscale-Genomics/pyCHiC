@@ -160,6 +160,10 @@ if __name__ == "__main__":
                           help=" Delta parameter for the p value weighting",
                           default="-7.07609245521541")
 
+    OPTIONAL.add_argument("--plot_baits",
+                          help=" coma separated list of features from baits to plot",
+                          default="None")
+
     parser._action_groups.append(OPTIONAL) # pylint: disable=protected-access
 
 
@@ -194,6 +198,7 @@ if __name__ == "__main__":
     WEIGHTBETA = ARGS.weightBeta
     WEIGHTGAMMA = ARGS.weightGamma
     WEIGHTDELTA = ARGS.weightDelta
+    PLOTBAITS = ARGS.plot_baits
 
     RE_SEQUENCE = RE_SEQUENCE.replace("^", "|")
 
@@ -229,7 +234,9 @@ if __name__ == "__main__":
         "pychic_weightAlpha" : WEIGHTALPHA,
         "pychic_weightBeta" : WEIGHTBETA,
         "pychic_weightGamma" : WEIGHTGAMMA,
-        "pychic_weightDelta" : WEIGHTDELTA
+        "pychic_weightDelta" : WEIGHTDELTA,
+        "pychic_features_plot": PLOTBAITS
+
     }
 
     OUTPUT_FILES = {
