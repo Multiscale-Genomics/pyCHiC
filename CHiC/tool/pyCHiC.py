@@ -1422,7 +1422,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return x
 
-    #@profile
     def estimateDispersion(self, chinput_jiw, proxOE, distFunParams):
         """
         Estimate the dispersion
@@ -1436,7 +1435,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         params
         """
-
         if "s_i" in chinput_jiw.columns:
             siPresent = True
         else:
@@ -2003,8 +2001,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         pool = Pool(self.configuration["pychic_cpu"])
 
+        start = time.time()
         x["log_w"] = np.concatenate(pool.map(getWeights, distSign_split)
                                    )
+
+        print(time.time() - start)
 
         x["log_q"] = x["log_p"] - x["log_w"]
 
@@ -2646,7 +2647,7 @@ if __name__ == "__main__":
         }
 
     configuration = {
-        "pychic_features_plot" : "DEFB125,DEFB126,DEFB128,DEFB129,DEFB132,TRIB3",
+        "pychic_features_plot" : None,
         "pychic_binsize" : 20000,
         "execution" : ".",
         "pychic_cpu" : 3,
