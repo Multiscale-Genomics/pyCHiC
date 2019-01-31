@@ -15,12 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-disabled="--disable=similarities,invalid-name,too-many-statements,too-many-arguments,too-many-locals,too-few-public-methods,relative-import,no-self-use"
+disabled="--disable=similarities,invalid-name,too-many-statements,too-many-arguments,too-many-locals,too-few-public-methods,relative-import,no-self-use,useless-object-inheritance,import-error,wrong-import-order"
 
 pylint ${disabled} --rcfile pylintrc process*.py > output.err
 pylint ${disabled} --rcfile pylintrc tool >> output.err
 pylint ${disabled} --rcfile pylintrc tests >> output.err
-pylint ${disabled} --rcfile pylintrc *wrapper*.py >> output.err
 
 grep -v "\-\-\-\-\-\-\-\-\-" output.err | grep -v "Your code has been rated" | grep -v "\n\n" | sed '/^$/d' > pylint.err
 
