@@ -20,11 +20,7 @@
 from __future__ import print_function
 
 #Required for ReadTheDocs
-
 import argparse
-import os
-from shutil import move
-from shutil import rmtree
 
 from basic_modules.workflow import Workflow
 from utils import logger

@@ -23,8 +23,6 @@ from __future__ import print_function
 
 import argparse
 import os
-from shutil import move
-from shutil import rmtree
 
 from basic_modules.workflow import Workflow
 from utils import logger
@@ -191,7 +189,7 @@ class process_CHiC(Workflow):
         try:
             bam2chicago_caller = bam2chicagoTool(self.configuration)
             output_files_bam2chicago, output_metadata_bam2chicago = bam2chicago_caller.run(
-               input_files, metadata, output_files
+                input_files, metadata, output_files
             )
 
             logger.info("bam2chicago_tool succesfully generate chinput files =)")
