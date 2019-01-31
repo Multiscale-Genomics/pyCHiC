@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-disabled="--disable=similarities,invalid-name,too-many-statements,too-many-arguments,too-many-locals,too-few-public-methods,relative-import,no-self-use,useless-object-inheritance,import-error,wrong-import-order"
+disabled="--disable=similarities,literal-comparison,invalid-name,too-many-statements,too-many-arguments,too-many-locals,too-few-public-methods,relative-import,no-self-use,useless-object-inheritance,import-error,wrong-import-order"
 
 pylint ${disabled} --rcfile pylintrc process*.py > output.err
 pylint ${disabled} --rcfile pylintrc tool >> output.err
