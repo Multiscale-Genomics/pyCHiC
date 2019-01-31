@@ -379,10 +379,10 @@ Data normalization and peak calling
    .. code-block:: none
       :linenos:
 
-      python process_run_chicago.py \
-         --config tests/json/config_chicago.json \
-         --in_metadata tests/json/input_chicago.json \
-         --out_metadata tests/json/output_chicago.json \
+      python process_pyCHiC.py \
+         --config tests/json/config_pyCHiC.json \
+         --in_metadata tests/json/input_pyCHiC.json \
+         --out_metadata tests/json/output_pyCHiC.json \
          --local
 
    When using a local version of the [COMPS virtual machine](https://www.bsc.es/research-and-development/
@@ -396,14 +396,14 @@ Data normalization and peak calling
          --library_path=${HOME}/bin \
          --pythonpath=/<pyenv_virtenv_dir>/lib/python2.7/site-packages/ \
          --log_level=debug          \
-         process_runChicago.py         \
-            --config tests/json/config_chicago.json \
-            --in_metadata tests/json/input_chicago.json \
-            --out_metadata tests/json/output_chicago.json
+         process_pyCHiC.py         \
+            --config tests/json/config_pyCHiC.json \
+            --in_metadata tests/json/input_pyCHiC.json \
+            --out_metadata tests/json/output_pyCHiC.json
 
    Methods
    =======
-   .. autoclass:: process_run_chicago.process_run_chicago
+   .. autoclass:: process_pyCHiC.process_pyCHiC
       :members:
 
 

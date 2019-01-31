@@ -33,7 +33,7 @@ from CHiC.tool.pyCHiC import pyCHiC
 
 ################################################
 
-class process_CHiC(Workflow):
+class process_pyCHiC(Workflow):
     """
     This class output chromatin contacts from capture HiC from
     pair fastq reads, baits and RE
@@ -103,7 +103,7 @@ def main_json(config, in_metadata, out_metadata):
     print("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
-    results = app.launch(process_CHiC,
+    results = app.launch(process_pyCHiC,
                          config,
                          in_metadata,
                          out_metadata)
