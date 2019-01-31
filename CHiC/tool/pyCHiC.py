@@ -85,7 +85,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         Check if the file exists, otherwise send an error message
 
-        Parameter
+        Parameters
         ---------
         test_file: str
             path to the input file
@@ -442,12 +442,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
     def dataframe_merge(self, chinputs):
         """
-
         This function is going to execute the merge command from python to
         merge the dataframe in case there is more than onw biological replicate
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         Chinputs : dict
             dict with dataframes
 
@@ -481,7 +480,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         This function is going to execute the merge command from python to
         merge the dataframe in case there is more than onw biological replicate
 
-        Parameter
+        Parameters
         ---------
         Chinputs : dict
             dict with dataframes
@@ -817,7 +816,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         This function normalize the baits, calulating the s_j parameter part of the
         mean of the negative binomial model used to model the background error
 
-        Parameter
+        Parameters
         ---------
         x: DataFrame
             path to the chinput file already filtered
@@ -1761,7 +1760,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
     def getNoOfHypotheses(self, rmap, baitmap, avgFragLen):
         """
-        Parameter
+        Parameters
         ---------
         rmap: DataFrame
         baitmap: DataFrame
@@ -1784,7 +1783,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         inverse logit function
 
-        Parameter
+        Parameters
         ---------
         x : float/int
 
@@ -2025,7 +2024,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         Print to a file all the parameters used in the experiment
 
-        Parameres
+        Parameters
         ---------
         params_out: str
         params: dict
@@ -2094,7 +2093,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         print the results in the correct format and order
 
-        Parameter
+        Parameters
         ---------
         x: DataFrame
         outprefix: str
