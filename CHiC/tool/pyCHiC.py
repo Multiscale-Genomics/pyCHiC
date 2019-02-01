@@ -2615,8 +2615,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return output_files, output_metadata
 
 
-
-
 if __name__ == "__main__":
 
     path = "../../tests/data/test_run_chicago/data_chicago/"
