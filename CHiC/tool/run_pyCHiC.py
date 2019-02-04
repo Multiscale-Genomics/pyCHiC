@@ -45,7 +45,7 @@ if __name__ == "__main__":
                           required=True)
 
     REQUIRED.add_argument("--chinput",
-                          help=" chinput file",
+                          help="chinput file",
                           required=True)
 
     OPTIONAL.add_argument("--execution",
@@ -211,9 +211,9 @@ if __name__ == "__main__":
     }
 
     OUTPUT_FILES = {
-        "washU_text" :  "tests/data/test_baitmap/washu_test.txt",
-        "pdf_examples": "tests/data/test_baitmap/pdf_examples.pdf",
-        "params_out": "tests/data/parameters.txt"
+        "washU_text" :  EXECUTION+ "/washu_test.txt",
+        "pdf_examples": EXECUTION+"/pdf_examples.pdf",
+        "params_out": EXECUTION+"/parameters.txt"
     }
 
     INPUT_METADATA = {

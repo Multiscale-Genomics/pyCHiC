@@ -518,18 +518,18 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
 
         N_compile = re.compile(r"N.\d+") # pylint: disable=invalid-name
-        N_cols = filter(N_compile.match, chinput_merge.columns) # pylint: disable=invalid-name
+        N_cols = re.findall(r'N.\d+', " ".join(chinput_merge.columns)) # pylint: disable=invalid-name
         ns = list(map(lambda x: x.split(".")[1], N_cols)) # pylint: disable=invalid-name
         n = len(N_cols) # pylint: disable=invalid-name
 
-        chinput_merge = chinput_merge.ix[
+        chinput_merge = chinput_merge.loc[
             abs(chinput_merge["distSign"]) < pychic_maxLBrownEst
         ]
 
         column_names = ["baitID"]
 
         npb = pd.read_csv(npb, sep="\t", skiprows=1, header=None,
-                          )
+                         )
 
         column_names = {}
         column_names[0] = "baitID"
@@ -567,10 +567,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         for i in enumerate(ns, 1):
             array_m = np.array(N_p_bait["s_"+str(i[0])+"j"]/N_p_bait["geo_mean"])
-            #Division 0/0 generated inf element, which makes the median sligthly different
-            #from R, thats why im extracting the finite numbers
-            condition = np.isfinite(array_m) is True
-            array_m = np.extract(condition, array_m)
+            array_m = [n for n in array_m if np.isfinite(n)]
             s_k["N."+str(i[0])] = np.median(array_m)
 
         return s_k
@@ -594,8 +591,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             column_names = chinputs[str(i[0])].columns
             #check if the column N is already N.<k>. k being the i
             if "N" not in column_names:
-                N_compile = re.compile(r"N.\d+") # pylint: disable=invalid-name
-                N_name = filter(N_compile.match, column_names) # pylint: disable=invalid-name
+                N_name = re.findall(r'N.\d+', " ".join(column_names)) # pylint: disable=invalid-name
                 if not N_name:
                     logger.fatal("Did not found 'N' coulmn in chinput file")
             else:
@@ -617,14 +613,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         logger.info("computing merged scores..")
 
         s_k = self.getSampleScalingFactors(chinput_merge,
-                                                self.configuration["pychic_maxLBrownEst"]
-                                                )
+                                           self.configuration["pychic_maxLBrownEst"],
+                                           npb
+                                          )
 
         #New column with notmalize merged counts
         #N.1*s_ks["N.1"]+N.2*s_ks["N.2"]+N.3*s_ks["N.3"])/sum(s_ks))
-        N_compile = re.compile(r"N.\d+") # pylint: disable=invalid-name
-        N_name = filter(N_compile.match, chinput_merge.columns) # pylint: disable=invalid-name
-
+        N_name = re.findall(r'N.\d+', " ".join(chinput_merge.columns)) # pylint: disable=invalid-name
+        print(N_name)
         #create a N column with the weighted mean
         # N = round(N.1*s_ks["N.1"]+N.2*s_ks["N.2"]+N.3*s_ks["N.3"])/sum(s_ks))
         for i in enumerate(s_k, 1):
@@ -635,6 +631,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_merge["N"] = chinput_merge["N"].round()
         chinput_merge["N"] = np.where(chinput_merge.N == 0, 1, chinput_merge.N)
 
+        print(chinput_merge)
         return chinput_merge
 
     def normaliseFragmentSets(self, x, viewpoint, idcol, Ncol, binsize, # pylint: disable=invalid-name
@@ -777,8 +774,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #DEseq-style normalisation
         if not shrink or viewpoint == "otherEnd":
             sbbm["s_iv"] = sbbm["bbm"]/sbbm["geo_mean"]
-
-            test = sbbm[sbbm[idcol] == 403482]
             s_v = sbbm.groupby(idcol, as_index=False).s_iv.median()
 
         else:
@@ -795,7 +790,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if not s_v[s_v[scol].isnull()].empty:
             logger.info("The following viewpoints couldn't be robustly "
                         "normalised (too sparse?) and will be removed:")
-            logger.info(s_v[s_v[scol].isnull()])
+            print(s_v[s_v[scol].isnull()])
             s_v = s_v[s_v[scol].notnull()]
 
         if viewpoint == "otherEnd":
@@ -1174,12 +1169,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         tlb_tblb = chinput_ji.drop_duplicates(["tlb", "tblb"])
         tlb_tblb = tlb_tblb[["tlb", "tblb"]]
 
-        numPairsdf = pd.DataFrame(columns={"tlb", "tblb", "numPairs"})
+        num_pairs_df = pd.DataFrame(columns={"tlb", "tblb", "numPairs"})
 
         #SLOW CODE
         for i in tlb_tblb.index:
-            tlb = tlb_tblb.at[i, "tlb"]
-            tblb = tlb_tblb.at[i, "tblb"]
+            tlb = tlb_tblb.loc[i, "tlb"]
+            tblb = tlb_tblb.loc[i, "tblb"]
             temp_chinput = chinput_ji[(chinput_ji["tlb"] == tlb) &
                                       (chinput_ji["tblb"] == tblb)]
 
@@ -1188,27 +1183,30 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             baits_set = set(baits)
             oes_set = set(oes)
-            bChr = temp_chinput.drop_duplicates("baitID")
-            bChr = bChr["baitchr"]
-            oeChr = temp_chinput.drop_duplicates("otherEndID")
-            oeChr = oeChr["otherEndchr"]
+            b_chr = temp_chinput.drop_duplicates("baitID")
+            b_chr = b_chr["baitchr"]
+            oe_chr = temp_chinput.drop_duplicates("otherEndID")
+            oe_chr = oe_chr["otherEndchr"]
 
-            numPairs = 0 # pylint: disable=invalid-name
+            num_pairs = 0 # pylint: disable=invalid-name
 
-            for chromo in bChr.unique():
-                pairs = (len([x for x in bChr if x == chromo])* \
-                    len([y for y in oeChr if y != chromo]))-len(baits_set.intersection(oes_set))
+            for chromo in b_chr.unique():
+                n_bait_chr = len([x for x in b_chr if x == chromo])
+                n_oe_chr = len([y for y in oe_chr if y != chromo])
+                bait_oe_inter = len(baits_set.intersection(oes_set))
 
-                numPairs += pairs
+                pairs = n_bait_chr * n_oe_chr - bait_oe_inter
 
-            numPairsdf = numPairsdf.append({
+                num_pairs += pairs
+
+            num_pairs_df = num_pairs_df.append({
                 "tlb" : tlb,
                 "tblb" : tblb,
-                "numPairs" : numPairs
+                "numPairs" : num_pairs
                 }, ignore_index=True)
 
 
-        res = pd.merge(numPairsdf, res, how="left", on=["tlb", "tblb"])
+        res = pd.merge(num_pairs_df, res, how="left", on=["tlb", "tblb"])
         res = res.rename(columns={"N" : "nTrans"})
 
         res["Tmean"] = res.nTrans.div(res.numPairs.where(res.numPairs != 0, np.nan))
@@ -1242,10 +1240,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         # Take the "refBinMean" column of the data x as f(d_b)
         # then interpolate & extrapolate to get f(d).
-        # TODO output extra diagnostic information?
 
         # Get f(d_b)
-
         chinput_jiw = chinput_jiw[chinput_jiw["refBinMean"].notnull()]
 
         f_d = chinput_jiw.drop_duplicates(["distbin", "refBinMean"])
@@ -2467,17 +2463,17 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             input_files["poe"]
             )
 
+        chinput = input_files["chinput"].split(",")
         # Lets keep it to one for now
-        #if len(input_files["chinput"]) == 1:
-        chinput_filtered = self.readSample(input_files["chinput"],
-                                           self.configuration["pychic_bam"],
-                                           input_files["RMAP"],
-                                           input_files["BAITMAP"])
-        """
+        if len(chinput) == 1:
+            chinput_filtered = self.readSample(input_files["chinput"],
+                                               self.configuration["pychic_bam"],
+                                               input_files["RMAP"],
+                                               input_files["BAITMAP"])
         else:
             chinputs_filtered = {}
-            for i in range(len(input_files["chinput"])):
-                new_chinput = self.readSample(input_files["chinput"][i],
+            for i in range(len(chinput)):
+                new_chinput = self.readSample(chinput[i],
                                               self.configuration["pychic_bam"],
                                               input_files["RMAP"],
                                               input_files["BAITMAP"])
@@ -2485,7 +2481,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 chinputs_filtered[str(i)] = new_chinput
 
             chinput_filtered = self.merge_chinputs(chinputs_filtered, input_files["npb"])
-        """
+
         logger.info("\nRunning normaliseBaits")
 
         chinput_j = self.normaliseBaits(chinput_filtered, \
@@ -2623,11 +2619,9 @@ if __name__ == "__main__":
         "nbpb" : path +"h19_chr20and21.nbpb",
         "npb" : path +"h19_chr20and21.npb",
         "poe" : path +"h19_chr20and21.poe",
-        "chinput" :  [
-                      path + "GM_rep1.chinput",
-                      #path + "GM_rep2.chinput",
-                      #path + "GM_rep3.chinput"
-                      ]
+        "chinput" : path + "GM_rep1.chinput"
+                    #path + "GM_rep2.chinput",
+                    #path + "GM_rep3.chinput"
     }
 
     metadata = {
