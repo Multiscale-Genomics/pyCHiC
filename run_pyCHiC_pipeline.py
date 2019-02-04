@@ -164,6 +164,26 @@ if __name__ == "__main__":
                           help=" coma separated list of features from baits to plot",
                           default="None")
 
+    OPTIONAL.add_argument("--output_file",
+                          help="output name of the interactions file",
+                          default="washU_text.txt")
+
+    OPTIONAL.add_argument("--output_pdf",
+                          help="output name for the pdf containing the bait plots",
+                          default="pdf_examples.pdf")
+
+    OPTIONAL.add_argument("--output_parameters",
+                          help="output name for parameter file",
+                          default="parameters.txt")
+
+    OPTIONAL.add_argument("--output_chinput",
+                          help="output name for the chinput file",
+                          default="output_chinput.chinput")
+
+    OPTIONAL.add_argument("--output_hicup",
+                          help="output name for hicup file",
+                          default="output.tar")
+
     parser._action_groups.append(OPTIONAL) # pylint: disable=protected-access
 
 
@@ -199,6 +219,11 @@ if __name__ == "__main__":
     WEIGHTGAMMA = ARGS.weightGamma
     WEIGHTDELTA = ARGS.weightDelta
     PLOTBAITS = ARGS.plot_baits
+    WASHU = ARGS.output_file
+    PDF = ARGS.output_pdf
+    PARAMETERS = ARGS.output_parameters
+    CHINPUT = ARGS.output_chinput
+    HICUP = ARGS.output_hicup
 
     RE_SEQUENCE = RE_SEQUENCE.replace("^", "|")
 
@@ -236,15 +261,14 @@ if __name__ == "__main__":
         "pychic_weightGamma" : WEIGHTGAMMA,
         "pychic_weightDelta" : WEIGHTDELTA,
         "pychic_features_plot": PLOTBAITS
-
     }
 
     OUTPUT_FILES = {
-        "hicup_outdir_tar": "tests/data/test_hicup/output.tar",
-        "chinput": "tests/data/test_baitmap/output_chinput.chinput",
-        "washU_text" :  "tests/data/test_baitmap/washu_test.txt",
-        "pdf_examples": "tests/data/test_baitmap/pdf_examples.pdf",
-        "params_out": "tests/data/parameters.txt"
+        "hicup_outdir_tar": EXECUTION + "/" + HICUP
+        "chinput":  EXECUTION + "/" + CHINPUT
+        "washU_text" :  EXECUTION + "/" + WASHU,
+        "pdf_examples": EXECUTION + "/" + PDF,
+        "params_out": EXECUTION + "/" + PARAMETERS
     }
 
     INPUT_METADATA = {

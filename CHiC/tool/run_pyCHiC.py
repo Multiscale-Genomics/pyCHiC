@@ -227,7 +227,7 @@ if __name__ == "__main__":
     }
 
     OUTPUT_FILES = {
-        "washU_text" :  EXECUTION + "/" + WASHU ,
+        "washU_text" :  EXECUTION + "/" + WASHU,
         "pdf_examples": EXECUTION + "/" + PDF,
         "params_out": EXECUTION + "/" + PARAMETERS
     }
