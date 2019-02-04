@@ -141,6 +141,18 @@ if __name__ == "__main__":
                           help=" coma separated list of features from baits to plot",
                           default="None")
 
+    OPTIONAL.add_argument("--output_file",
+                          help="output name of the interactions file",
+                          default="washU_text.txt")
+
+    OPTIONAL.add_argument("--output_pdf",
+                          help="output name for the pdf containing the bait plots",
+                          default="pdf_examples.pdf")
+
+    OPTIONAL.add_argument("--output_parameters",
+                          help="output name for parameter file",
+                          default="parameters.txt")
+
     parser._action_groups.append(OPTIONAL) # pylint: disable=protected-access
 
 
@@ -176,6 +188,10 @@ if __name__ == "__main__":
     WEIGHTGAMMA = ARGS.weightGamma
     WEIGHTDELTA = ARGS.weightDelta
     PLOTBAITS = ARGS.plot_baits
+    WASHU = ARGS.output_file
+    PDF = ARGS.output_pdf
+    PARAMETERS = ARGS.output_parameters
+
 
     INPUT_FILES = {
         "RMAP" : RMAP,
@@ -211,9 +227,9 @@ if __name__ == "__main__":
     }
 
     OUTPUT_FILES = {
-        "washU_text" :  EXECUTION+ "/washu_test.txt",
-        "pdf_examples": EXECUTION+"/pdf_examples.pdf",
-        "params_out": EXECUTION+"/parameters.txt"
+        "washU_text" :  EXECUTION + "/" + WASHU ,
+        "pdf_examples": EXECUTION + "/" + PDF,
+        "params_out": EXECUTION + "/" + PARAMETERS
     }
 
     INPUT_METADATA = {
