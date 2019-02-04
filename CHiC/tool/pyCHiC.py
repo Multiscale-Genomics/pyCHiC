@@ -573,7 +573,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             array_m = np.extract(condition, array_m)
             s_k["N."+str(i[0])] = np.median(array_m)
 
-        return s_k, npb
+        return s_k
 
     def merge_chinputs(self, chinputs, npb):
         """
@@ -616,9 +616,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("computing merged scores..")
 
-        s_k, npb = self.getSampleScalingFactors(chinput_merge,
-                                                self.configuration["pychic_maxLBrownEst"],
-                                                npb)
+        s_k = self.getSampleScalingFactors(chinput_merge,
+                                                self.configuration["pychic_maxLBrownEst"]
+                                                )
 
         #New column with notmalize merged counts
         #N.1*s_ks["N.1"]+N.2*s_ks["N.2"]+N.3*s_ks["N.3"])/sum(s_ks))
@@ -635,7 +635,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_merge["N"] = chinput_merge["N"].round()
         chinput_merge["N"] = np.where(chinput_merge.N == 0, 1, chinput_merge.N)
 
-        return chinput_merge, npb
+        return chinput_merge
 
     def normaliseFragmentSets(self, x, viewpoint, idcol, Ncol, binsize, # pylint: disable=invalid-name
                               npb=False, adjBait2bait=True,
@@ -2004,8 +2004,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x["log_w"] = np.concatenate(pool.map(getWeights, distSign_split)
                                    )
 
-        print(time.time() - start)
-
         x["log_q"] = x["log_p"] - x["log_w"]
 
         logger.info("Calculating scores..")
@@ -2486,12 +2484,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
                 chinputs_filtered[str(i)] = new_chinput
 
-            chinput_filtered, npb = self.merge_chinputs(chinputs_filtered, input_files["npb"])
+            chinput_filtered = self.merge_chinputs(chinputs_filtered, input_files["npb"])
         """
         logger.info("\nRunning normaliseBaits")
 
         chinput_j = self.normaliseBaits(chinput_filtered, \
-                                       input_files["npb"])
+                                        input_files["npb"])
 
         chinput_ji = self.normaliseOtherEnds(chinput_j,
                                              input_files["nbpb"]
