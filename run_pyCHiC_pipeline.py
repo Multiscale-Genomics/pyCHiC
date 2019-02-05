@@ -264,8 +264,8 @@ if __name__ == "__main__":
     }
 
     OUTPUT_FILES = {
-        "hicup_outdir_tar": EXECUTION + "/" + HICUP
-        "chinput":  EXECUTION + "/" + CHINPUT
+        "hicup_outdir_tar": EXECUTION + "/" + HICUP,
+        "chinput":  EXECUTION + "/" + CHINPUT,
         "washU_text" :  EXECUTION + "/" + WASHU,
         "pdf_examples": EXECUTION + "/" + PDF,
         "params_out": EXECUTION + "/" + PARAMETERS

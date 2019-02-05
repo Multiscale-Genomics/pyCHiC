@@ -620,7 +620,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #New column with notmalize merged counts
         #N.1*s_ks["N.1"]+N.2*s_ks["N.2"]+N.3*s_ks["N.3"])/sum(s_ks))
         N_name = re.findall(r'N.\d+', " ".join(chinput_merge.columns)) # pylint: disable=invalid-name
-        print(N_name)
+
         #create a N column with the weighted mean
         # N = round(N.1*s_ks["N.1"]+N.2*s_ks["N.2"]+N.3*s_ks["N.3"])/sum(s_ks))
         for i in enumerate(s_k, 1):
@@ -631,7 +631,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_merge["N"] = chinput_merge["N"].round()
         chinput_merge["N"] = np.where(chinput_merge.N == 0, 1, chinput_merge.N)
 
-        print(chinput_merge)
         return chinput_merge
 
     def normaliseFragmentSets(self, x, viewpoint, idcol, Ncol, binsize, # pylint: disable=invalid-name
@@ -1077,7 +1076,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_j
 
-
+    #@profile
     def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap):
         """
         This function estimate the technical noise of the experiments
@@ -1094,6 +1093,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_jiw
 
         """
+        start = time.time()
+
         logger.info("Estimating technical noise based on trans-counts...")
 
         minBaitsPerBin = self.configuration["pychic_techNoise_minBaitsPerBin"]
@@ -1169,14 +1170,21 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         tlb_tblb = chinput_ji.drop_duplicates(["tlb", "tblb"])
         tlb_tblb = tlb_tblb[["tlb", "tblb"]]
 
+
         num_pairs_df = pd.DataFrame(columns={"tlb", "tblb", "numPairs"})
+
+        small_chinput_ji = chinput_ji[["tlb",
+                                       "tblb",
+                                       "baitID",
+                                       "otherEndID",
+                                       "baitchr",
+                                       "otherEndchr"]]
 
         #SLOW CODE
         for i in tlb_tblb.index:
             tlb = tlb_tblb.loc[i, "tlb"]
             tblb = tlb_tblb.loc[i, "tblb"]
-            temp_chinput = chinput_ji[(chinput_ji["tlb"] == tlb) &
-                                      (chinput_ji["tblb"] == tblb)]
+            temp_chinput = small_chinput_ji.query("tlb == @tlb and tblb == @tblb")
 
             baits = temp_chinput["baitID"].unique()
             oes = temp_chinput["otherEndID"].unique()
@@ -1226,8 +1234,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                         axis=1,
                         inplace=True)
 
+        print(time.time() - start)
+        sys.exit()
         return chinput_ji
-
 
     def estimateDistFun(self, chinput_jiw):
         """
