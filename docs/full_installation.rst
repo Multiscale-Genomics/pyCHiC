@@ -229,7 +229,7 @@ Checkout the code for the DM API and the C-HiC pipelines:
    pip install git+https://github.com/Multiscale-Genomics/mg-process-fastq.git
 
 
-   git clone https://github.com/pabloacera/C-HiC.git
+   git clone https://github.com/Multiscale-Genomics/pyCHiC.git
    cd C-HiC
    pip install -e .
    pip install -r requirements.txt
