@@ -23,7 +23,6 @@ from functools import partial
 from multiprocess import Pool
 from scipy.stats.mstats import gmean
 
-
 import pandas as pd
 import numpy as np
 from utils import logger
@@ -1072,11 +1071,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         chinput_j["NNboe"] = chinput_j[Ncol]/chinput_j["s_i"]
         chinput_j["NNboe"] = chinput_j["NNboe"].round(decimals=0)
-        chinput_j["NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1 )
+        chinput_j["NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1)
 
         return chinput_j
 
-    #@profile
     def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap):
         """
         This function estimate the technical noise of the experiments
@@ -1093,8 +1091,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_jiw
 
         """
-        start = time.time()
-
         logger.info("Estimating technical noise based on trans-counts...")
 
         minBaitsPerBin = self.configuration["pychic_techNoise_minBaitsPerBin"]
@@ -1157,34 +1153,49 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("\nProcessing fragment pools")
 
-        chinput_ji["tlb"].astype(str, copy=False)
+        chinput_ji["tlb"] = chinput_ji["tlb"].astype(str, copy=False)
+
+        tlb = list(chinput_ji.tlb)
+        tblb = list(chinput_ji.tblb)
+        tlb_tblb = []
+        for i in enumerate(tlb):
+            tlb_tblb.append(i[1]+tblb[i[0]])
+
+        chinput_ji["tlb_tblb"] = tlb_tblb
+
         res_chinput = chinput_ji[chinput_ji["distSign"].isnull()]
 
         #If there is no trans interactions
         if res_chinput.empty:
-            res = chinput_ji.groupby(["tlb", "tblb"], as_index=False)["N"].sum()
+            res = chinput_ji.groupby(["tlb_tblb"], as_index=False)["N"].sum()
             res["N"] = np.zeros(res.shape[0])
         else:
-            res = res_chinput.groupby(["tlb", "tblb"], as_index=False)["N"].sum()
+            res = res_chinput.groupby(["tlb_tblb"], as_index=False)["N"].sum()
 
-        tlb_tblb = chinput_ji.drop_duplicates(["tlb", "tblb"])
-        tlb_tblb = tlb_tblb[["tlb", "tblb"]]
+        num_pairs_df = pd.DataFrame(columns={"tlb_tblb", "numPairs"})
 
-
-        num_pairs_df = pd.DataFrame(columns={"tlb", "tblb", "numPairs"})
-
-        small_chinput_ji = chinput_ji[["tlb",
-                                       "tblb",
-                                       "baitID",
+        small_chinput_ji = chinput_ji[["baitID",
                                        "otherEndID",
                                        "baitchr",
-                                       "otherEndchr"]]
+                                       "otherEndchr",
+                                       "tlb_tblb"
+                                      ]]
 
-        #SLOW CODE
-        for i in tlb_tblb.index:
-            tlb = tlb_tblb.loc[i, "tlb"]
-            tblb = tlb_tblb.loc[i, "tblb"]
-            temp_chinput = small_chinput_ji.query("tlb == @tlb and tblb == @tblb")
+        small_chinput_ji = small_chinput_ji.reset_index(drop=True)
+
+        #create hash
+        tlb_tblb_hash = {}
+        index = 0
+        for i in enumerate(small_chinput_ji["tlb_tblb"]):
+            if i[1] in tlb_tblb_hash:
+                tlb_tblb_hash[i[1]].append(index)
+            else:
+                tlb_tblb_hash[i[1]] = [index]
+            index += 1
+
+        for key in tlb_tblb_hash:
+
+            temp_chinput = small_chinput_ji.iloc[tlb_tblb_hash[key]]
 
             baits = temp_chinput["baitID"].unique()
             oes = temp_chinput["otherEndID"].unique()
@@ -1208,13 +1219,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 num_pairs += pairs
 
             num_pairs_df = num_pairs_df.append({
-                "tlb" : tlb,
-                "tblb" : tblb,
+                "tlb_tblb" : key,
                 "numPairs" : num_pairs
                 }, ignore_index=True)
 
-
-        res = pd.merge(num_pairs_df, res, how="left", on=["tlb", "tblb"])
+        res = pd.merge(num_pairs_df, res, how="left", on=["tlb_tblb"])
         res = res.rename(columns={"N" : "nTrans"})
 
         res["Tmean"] = res.nTrans.div(res.numPairs.where(res.numPairs != 0, np.nan))
@@ -1226,16 +1235,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #PLOT
         logger.info("Post-processing the results...")
 
-        chinput_ji = pd.merge(chinput_ji, res, how="left", on=["tlb", "tblb"])
+        chinput_ji = pd.merge(chinput_ji, res, how="left", on=["tlb_tblb"])
 
         chinput_ji.drop(["transBaitLen",
                          "baitchr",
-                         "otherEndchr"],
-                        axis=1,
-                        inplace=True)
+                         "otherEndchr",
+                         "tlb_tblb"],
+                         axis=1,
+                         inplace=True)
 
-        print(time.time() - start)
-        sys.exit()
         return chinput_ji
 
     def estimateDistFun(self, chinput_jiw):
@@ -1898,8 +1906,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         chrs = [c for c in rmap["chr"].unique()]
 
-        start_time = time.time()
-
         if len(chrs) < self.configuration["pychic_cpu"]:
             pool = Pool(self.configuration["pychic_cpu"])
 
@@ -2005,7 +2011,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         pool = Pool(self.configuration["pychic_cpu"])
 
-        start = time.time()
         x["log_w"] = np.concatenate(pool.map(getWeights, distSign_split)
                                    )
 
