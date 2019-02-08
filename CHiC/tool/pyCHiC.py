@@ -22,7 +22,6 @@ from collections import Counter
 from functools import partial
 from multiprocess import Pool
 from scipy.stats.mstats import gmean
-from math import e
 
 import pandas as pd
 import numpy as np
@@ -1908,7 +1907,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         else:
             div = int(len(chrs)/self.configuration["pychic_cpu"])
-            divisions = []
+
             count = div
             while count <= len(chrs):
                 divisions.append(count)
@@ -1918,8 +1917,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             divisions = [0] + divisions
 
             chrs_list = []
-
+            print(chrs)
             for i in enumerate(divisions):
+                print(i)
                 try:
                     chrs_list.append(chrs[divisions[i[0]]:divisions[i[0]+1]])
                 except ValueError:
@@ -1993,7 +1993,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         logger.info("Calculating p-values weights...")
 
         x.loc[:,"log_w"] = alpha + beta*np.log(x["distSign"].abs().replace(np.nan, np.inf))
-        x.loc[:,"log_w"] = 1/(1+e**(- x["log_w"]))
+        x.loc[:,"log_w"] = 1/(1+math.e**(- x["log_w"]))
 
         delta = 1/(1+math.exp(-delta))
         gamma = 1/(1+math.exp(-gamma))
