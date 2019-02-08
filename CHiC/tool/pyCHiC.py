@@ -1007,7 +1007,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x = chinput_j.ix[(chinput_j["distSign"].abs() <= self.configuration["pychic_maxLBrownEst"]) &
                          (chinput_j["distSign"].notnull())
-                        ]
+                        ].copy()
 
         logger.info("Computing total bait counts...")
 
@@ -1029,18 +1029,18 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x = x.drop_duplicates(subset=['otherEndID', 'distbin'], keep="first")
 
-        x["BinN"] = x["distbin"]/self.configuration["pychic_binsize"]+1
+        x.loc[:,"BinN"] = x["distbin"]/self.configuration["pychic_binsize"]+1
 
-        x["BinN"] = x["BinN"].astype(int)
+        x.loc[:,"BinN"] = x["BinN"].astype(int)
 
 
         ntot = []
         for r in zip(x["otherEndID"], x["BinN"]):
             ntot.append(nbpb_dic[r[0]][r[1]-1])
 
-        x["ntot"] = [int(i) for i in ntot]
+        x.loc[:,"ntot"] = [int(i) for i in ntot]
 
-        nbpbSum = x[["tlb", "distbin", "ntot"]]
+        nbpbSum = x[["tlb", "distbin", "ntot"]].copy()
 
         nbpbSum = nbpbSum.groupby(["tlb", "distbin"], as_index=False)["ntot"].sum()
 
@@ -1068,11 +1068,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_j = pd.merge(chinput_j, x, how="left", on="tlb")
 
         #If we can estimate s_i robustly, assume it to be one
-        chinput_j["tlb"].fillna(1, inplace=True)
+        chinput_j.loc[:,"tlb"].fillna(1, inplace=True)
 
-        chinput_j["NNboe"] = chinput_j[Ncol]/chinput_j["s_i"]
-        chinput_j["NNboe"] = chinput_j["NNboe"].round(decimals=0)
-        chinput_j["NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1)
+        chinput_j.loc[:,"NNboe"] = chinput_j[Ncol]/chinput_j["s_i"]
+        chinput_j.loc[:,"NNboe"] = chinput_j["NNboe"].round(decimals=0)
+        chinput_j.loc[:,"NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1)
 
         return chinput_j
 
@@ -1113,7 +1113,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         transBaitLen = transBaitLen.rename(columns={"baitID": "transBaitLen"})
 
-        transBaitLen["baitID"] = transBaitLen.index.tolist()
+        transBaitLen.loc[:,"baitID"] = transBaitLen.index.tolist()
 
         levels = self.cut2(transBaitLen["transBaitLen"],
                            self.configuration["pychic_techNoise_minBaitsPerBin"])
@@ -1121,11 +1121,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if len(levels) == 1:
             levels.append(levels[0]+1)
 
-        transBaitLen["tblb"] = pd.cut(transBaitLen["transBaitLen"], levels, right=False)
+        transBaitLen.loc[:,"tblb"] = pd.cut(transBaitLen["transBaitLen"], levels, right=False)
 
-        transBaitLen["tblb"] = transBaitLen["tblb"].astype(str)
+        transBaitLen.loc[:,"tblb"] = transBaitLen["tblb"].astype(str)
 
-        transBaitLen["tblb"] = np.where(transBaitLen["tblb"] == "nan",
+        transBaitLen.loc[:,"tblb"] = np.where(transBaitLen["tblb"] == "nan",
                                         #"[46, 131)"
                                         "["+str(levels[-2])+", "+str(levels[-1])+")",
                                         transBaitLen["tblb"])
@@ -1169,7 +1169,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #If there is no trans interactions
         if res_chinput.empty:
             res = chinput_ji.groupby(["tlb_tblb"], as_index=False)["N"].sum()
-            res["N"] = np.zeros(res.shape[0])
+            res.loc[:,"N"] = np.zeros(res.shape[0])
         else:
             res = res_chinput.groupby(["tlb_tblb"], as_index=False)["N"].sum()
 
@@ -1180,7 +1180,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                        "baitchr",
                                        "otherEndchr",
                                        "tlb_tblb"
-                                      ]]
+                                      ]].copy()
 
         small_chinput_ji = small_chinput_ji.reset_index(drop=True)
 
@@ -1707,7 +1707,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ##NaNs occur when pdelap() thinks the p-value is negative (since can have 1 - 1 != 0),
         ##thus these are also approximated.
 
-        sel = x[(x["log_p"].isnull()) | (x["log_p"] == np.inf) | (x["log_p"] == -np.inf)]
+        sel = x[(x["log_p"].isnull()) | (x["log_p"] == np.inf) | (x["log_p"] == -np.inf)].copy()
 
         if sel.shape[0] > 0:
             logger.info("Approximating "+ str(len(sel))+ " very small p-values.")
