@@ -22,6 +22,7 @@ from collections import Counter
 from functools import partial
 from multiprocess import Pool
 from scipy.stats.mstats import gmean
+from math import e
 
 import pandas as pd
 import numpy as np
@@ -1687,13 +1688,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         robjects.r("log.p1 <- pdelap(N - 1L, alpha, beta=Bmean/alpha, lambda=Tmean, lower.tail=FALSE, log.p=TRUE)")
         log_p1 = robjects.r("log.p1")
-        x["log_p1"] = log_p1
+        x.loc[:,"log_p1"] = log_p1
 
         robjects.r("log.p2 <- ppois(N - 1L, lambda=Tmean, lower.tail=FALSE, log.p=TRUE)")
         log_p2 = robjects.r("log.p2")
-        x["log_p2"] = log_p2
+        x.loc[:,"log_p2"] = log_p2
 
-        x["log_p"] = np.where(x['Bmean'] < np.finfo(float).eps, x["log_p2"], x["log_p1"])
+        x.loc[:,"log_p"] = np.where(x['Bmean'] < np.finfo(float).eps, x["log_p2"], x["log_p1"])
 
         x.drop(["log_p1", "log_p2"], axis=1, inplace=True)
         #poisson_sf = np.vectorize(poisson.sf)
@@ -1711,11 +1712,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if sel.shape[0] > 0:
             logger.info("Approximating "+ str(len(sel))+ " very small p-values.")
 
-            sel["gamma"] = dispersion * (1+sel["Tmean"]/sel["Bmean"])**2
+            sel.loc[:,"gamma"] = dispersion * (1+sel["Tmean"]/sel["Bmean"])**2
 
-            sel["gamma"].replace([np.inf, -np.inf], 1e10, inplace=True)
+            sel.loc[:,"gamma"].replace([np.inf, -np.inf], 1e10, inplace=True)
 
-            sel["Bmean+Tmean"] = sel["Bmean"]+ sel["Tmean"]
+            sel.loc[:,"Bmean+Tmean"] = sel["Bmean"]+ sel["Tmean"]
 
             gamma_r = robjects.numpy2ri.numpy2ri(np.array(sel["gamma"]))
             bmean_tmean = robjects.numpy2ri.numpy2ri(np.array(sel["Bmean+Tmean"]))
@@ -1729,7 +1730,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             log_p = robjects.r("log_p")
 
-            sel["log_p"] = log_p
+            sel.loc[:,"log_p"] = log_p
 
             sel.sort_values(by=["log_p"], inplace=True)
 
@@ -1961,8 +1962,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         delta = self.configuration["pychic_weightDelta"]
         eta_bar = self.configuration["pychic_eta"]
 
-        print(eta_bar)
-
         expit = np.vectorize(self.expit)
 
         eta = expit(alpha + beta*np.log(dist))
@@ -1988,6 +1987,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         chinput_jiwb_scores: DataFrame
         """
+        alpha = self.configuration["pychic_weightAlpha"]
+        beta = self.configuration["pychic_weightBeta"]
+        gamma = self.configuration["pychic_weightGamma"]
+        delta = self.configuration["pychic_weightDelta"]
 
         avgFragLen, rmap = self.getAvgFragLength(rmap)
 
@@ -1997,38 +2000,26 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #Gets weights
         logger.info("Calculating p-values weights...")
 
-        getWeights = np.vectorize(self.getWeights, otypes=[float])
+        x.loc[:,"log_w"] = alpha + beta*np.log(x["distSign"].abs().replace(np.nan, np.inf))
+        x.loc[:,"log_w"] = 1/(1+e**(- x["log_w"]))
 
-        # get the numbers for partition distSign based on CPUs
-        div = int(len(x["distSign"])/self.configuration["pychic_cpu"])
-        divisions = []
-        count = div
-        while count <= len(x["distSign"]):
-            divisions.append(count)
-            count += div
+        delta = 1/(1+math.exp(-delta))
+        gamma = 1/(1+math.exp(-gamma))
 
-        divisions[-1] = len(x["distSign"])
+        x.loc[:,"log_w"] = (np.log((delta - gamma)*x["log_w"] + gamma)) \
+            - (np.log((delta - gamma)*eta_bar) + gamma)
 
-        distSign_split = np.split(x["distSign"].abs().replace(np.nan, np.inf),
-                                  divisions)
-
-        pool = Pool(self.configuration["pychic_cpu"])
-
-        x["log_w"] = getWeights(x["distSign"].abs().replace(np.nan, np.inf))
-
-        #x["log_w"] = np.concatenate(pool.map(getWeights, distSign_split)
-        #                           )
-
-        x["log_q"] = x["log_p"] - x["log_w"]
+        x.loc[:,"log_q"] = x["log_p"] - x["log_w"]
 
         logger.info("Calculating scores..")
 
-        ##get score (more interpretable than log.q)
-        minval = getWeights(0)
+        ## get score (more interpretable than log.q)
+        getweights = np.vectorize(self.getWeights, otypes=[float])
+        minval = getweights(0)
 
-        x["score"] = -x["log_q"] - minval
+        x.loc[:,"score"] = -x["log_q"] - minval
 
-        x["score"] = np.where(x["score"] > 0, x["score"], 0)
+        x.loc[:,"score"] = np.where(x["score"] > 0, x["score"], 0)
 
         return x
 
