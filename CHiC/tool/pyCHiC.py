@@ -1961,6 +1961,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         delta = self.configuration["pychic_weightDelta"]
         eta_bar = self.configuration["pychic_eta"]
 
+        print(eta_bar)
+
         expit = np.vectorize(self.expit)
 
         eta = expit(alpha + beta*np.log(dist))
@@ -1971,6 +1973,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return a - b
 
+    #@profile
     def getScores(self, x, rmap, baitmap):
         """
         Get the scores from the pvalues
@@ -2011,8 +2014,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         pool = Pool(self.configuration["pychic_cpu"])
 
-        x["log_w"] = np.concatenate(pool.map(getWeights, distSign_split)
-                                   )
+        x["log_w"] = getWeights(x["distSign"].abs().replace(np.nan, np.inf))
+
+        #x["log_w"] = np.concatenate(pool.map(getWeights, distSign_split)
+        #                           )
 
         x["log_q"] = x["log_p"] - x["log_w"]
 

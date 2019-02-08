@@ -245,12 +245,6 @@ class bam2chicagoTool(Tool):
         output_files["chinput"] = self.configuration["execution"]+"/"+\
                                     os.path.split(output_files["chinput"])[1]
 
-        if "fastq1" not in input_files:
-            input_files["fastq1"] = "tests/data/test_truncater/SRR3535023_1_chr21_new.fastq"
-
-        if "fastq2" not in input_files:
-            input_files["fastq2"] = "tests/data/test_truncater/SRR3535023_2_chr21_new.fastq"
-
         #find the name of the future bamfile
         fastq1 = str(os.path.split(input_files["fastq1"])[1])
         fastq2 = str(os.path.split(input_files["fastq2"])[1])

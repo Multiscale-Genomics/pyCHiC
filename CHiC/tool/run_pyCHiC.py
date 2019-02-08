@@ -192,7 +192,6 @@ if __name__ == "__main__":
     PDF = ARGS.output_pdf
     PARAMETERS = ARGS.output_parameters
 
-
     INPUT_FILES = {
         "RMAP" : RMAP,
         "BAITMAP" : BAITMAP,

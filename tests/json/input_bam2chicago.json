@@ -37,5 +37,31 @@
             "visible": true,
             "validated": 1
         }
+    },
+    {
+        "_id": "59b7e020d9422a5969ccccc1",
+        "data_type": "FASTQ",
+        "file_type": "FASTQ",
+        "file_path": "tests/data/test_truncater/SRR3535023_1.fastq",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
+    },
+    {
+        "_id": "59b7e020d9422a5cccccc345",
+        "data_type": "FASTQ",
+        "file_type": "FASTQ",
+        "file_path": "tests/data/test_truncater/SRR3535023_2.fastq",
+        "compressed": 0,
+        "sources": ["user"],
+        "taxon_id": 9606,
+        "meta_data": {
+            "visible": true,
+            "validated": 1
+        }
     }
 ]
