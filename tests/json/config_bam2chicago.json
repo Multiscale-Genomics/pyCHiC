@@ -17,6 +17,18 @@
             "allow_multiple": false,
             "name": "hicup_outdir_tar",
             "value": "59b7e020d9422a5969b653dasda"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "fastq1",
+            "value": "59b7e020d9422a5969ccccc1"
+        },
+        {
+            "required": true,
+            "allow_multiple": false,
+            "name": "fastq2",
+            "value": "59b7e020d9422a5cccccc345"
         }
     ],
      "arguments": [
