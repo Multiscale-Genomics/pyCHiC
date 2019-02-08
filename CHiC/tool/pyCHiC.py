@@ -379,7 +379,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x = x.loc[(x["distSign"] != 0) | # pylint: disable=invalid-name
                   (x["distSign"].isnull())
-                 ]
+                 ].copy()
 
         if int(x.shape[0]) < x_shape:
             logger.info("Filtered out "+
@@ -541,9 +541,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         N_p_bait = pd.DataFrame() # pylint: disable=invalid-name
 
-        npb["sum"] = npb.iloc[:, 1:].sum(axis=1)
+        npb.loc[:,"sum"] = npb.iloc[:, 1:].sum(axis=1)
 
-        N_p_bait = npb[["baitID", "sum"]] # pylint: disable=invalid-name
+        N_p_bait = npb[["baitID", "sum"]].copy() # pylint: disable=invalid-name
 
         npb.drop("sum", 1, inplace=True) # pylint: disable=invalid-name
 
@@ -1126,7 +1126,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         transBaitLen.loc[:,"tblb"] = transBaitLen["tblb"].astype(str)
 
         transBaitLen.loc[:,"tblb"] = np.where(transBaitLen["tblb"] == "nan",
-                                        #"[46, 131)"
                                         "["+str(levels[-2])+", "+str(levels[-1])+")",
                                         transBaitLen["tblb"])
 
@@ -1175,19 +1174,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         num_pairs_df = pd.DataFrame(columns={"tlb_tblb", "numPairs"})
 
-        small_chinput_ji = chinput_ji[["baitID",
-                                       "otherEndID",
-                                       "baitchr",
-                                       "otherEndchr",
-                                       "tlb_tblb"
-                                      ]].copy()
-
-        small_chinput_ji = small_chinput_ji.reset_index(drop=True)
+        chinput_ji = chinput_ji.reset_index(drop=True)
 
         #create hash
         tlb_tblb_hash = {}
         index = 0
-        for i in enumerate(small_chinput_ji["tlb_tblb"]):
+        for i in enumerate(list(chinput_ji["tlb_tblb"])):
             if i[1] in tlb_tblb_hash:
                 tlb_tblb_hash[i[1]].append(index)
             else:
@@ -1196,7 +1188,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         for key in tlb_tblb_hash:
 
-            temp_chinput = small_chinput_ji.iloc[tlb_tblb_hash[key]]
+            temp_chinput = chinput_ji.iloc[tlb_tblb_hash[key]]
 
             baits = temp_chinput["baitID"].unique()
             oes = temp_chinput["otherEndID"].unique()
@@ -1227,7 +1219,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         res = pd.merge(num_pairs_df, res, how="left", on=["tlb_tblb"])
         res = res.rename(columns={"N" : "nTrans"})
 
-        res["Tmean"] = res.nTrans.div(res.numPairs.where(res.numPairs != 0, np.nan))
+        res.loc[:,"Tmean"] = res.nTrans.div(res.numPairs.where(res.numPairs != 0, np.nan))
         res["Tmean"].replace(-0, 0, inplace=True)
 
         res.drop(["numPairs",
