@@ -1860,8 +1860,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         baitmap = self.configuration["baitmap"]
         avgFragLen = self.configuration["avgFragLen"]
 
-        expit = np.vectorize(self.expit)
-
         eta_sigma = 0
 
         for c in chrs:
@@ -1869,9 +1867,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             d_c = chrMAX[chrMAX["chr"] == c]
             d_c = int(d_c.loc[:, "end"])
 
-            start = time.time()
             nBaits = baitmap[baitmap["chr"] == c]
-            print(time.time() - start)
             n_c = nBaits["chr"].value_counts()
 
             n_c = int("".join([str(i) for i in n_c]))
@@ -1886,8 +1882,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
                     d_other2 = np.arange(d_near, d_c-d_near, avgFragLen)
 
-                    eta_sigma = eta_sigma + 2*sum(expit(alpha + beta*np.log(d_other))) + \
-                                sum(expit(alpha + beta*np.log(d_other2)))
+                    t1 = alpha + beta*np.log(d_other)
+                    t1_expit = 1/(1+math.e**(-t1))
+
+                    t2 = alpha + beta*np.log(d_other2)
+                    t2_expit = 1/(1+math.e**(-t2))
+
+                    eta_sigma = eta_sigma + 2*sum(t1_expit) + sum(t2_expit)
 
                 except ValueError:
                     logger.info("Empty array")
@@ -1932,8 +1933,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         eta_sigma = 0
 
-        expit = np.vectorize(self.expit)
-
         self.configuration["chrMAX"] = chrMAX
         self.configuration["baitmap"] = baitmap
         self.configuration["avgFragLen"] = avgFragLen
@@ -1967,7 +1966,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 pool.map(self.eta_sigma, divisions)
             ).sum()
 
-
+        print(eta_sigma)
         eta_bar = eta_sigma/Nhyp
 
         return eta_bar
