@@ -1966,7 +1966,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 pool.map(self.eta_sigma, divisions)
             ).sum()
 
-        print(eta_sigma)
         eta_bar = eta_sigma/Nhyp
 
         return eta_bar
@@ -2506,16 +2505,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         # Lets keep it to one for now
         if len(chinput) == 1:
             chinput_filtered, rmap_df, baitmap_df = self.readSample(input_files["chinput"],
-                                               self.configuration["pychic_bam"],
-                                               input_files["RMAP"],
-                                               input_files["BAITMAP"])
+                                                                    self.configuration["pychic_bam"],
+                                                                    input_files["RMAP"],
+                                                                    input_files["BAITMAP"])
         else:
             chinputs_filtered = {}
             for i in range(len(chinput)):
                 new_chinput, rmap_df, baitmap_df = self.readSample(chinput[i],
-                                              self.configuration["pychic_bam"],
-                                              input_files["RMAP"],
-                                              input_files["BAITMAP"])
+                    self.configuration["pychic_bam"],
+                    input_files["RMAP"],
+                    input_files["BAITMAP"])
 
                 chinputs_filtered[str(i)] = new_chinput
 
@@ -2555,12 +2554,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         self.print_params(output_files["params_out"],
                           self.configuration)
 
+        """
         self.plotBaits(baitmap_df,
                        chinput_jiwb_scores,
                        dispersion,
                        output_files["pdf_examples"])
-
-
+        """
         self.exportResults(chinput_jiwb_scores,
                            output_files["washU_text"],
                            self.configuration["pychic_cutoff"],
