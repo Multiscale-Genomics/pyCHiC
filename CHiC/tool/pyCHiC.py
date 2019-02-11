@@ -1822,6 +1822,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         eta_sigma = 0
 
+        print(baitmap["chr"].value_counts())
+
         for c in chrs:
             #length of chromosome
             print(c)
