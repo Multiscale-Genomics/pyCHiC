@@ -2441,7 +2441,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         self.configuration["pychic_adjBait2bait"] = True
 
         if "pychic_cpu" not in self.configuration:
-            self.configuration["pychic_cpu"] = 3
+            self.configuration["pychic_cpu"] = 1
+        else:
+            self.configuration["pychic_cpu"] = int(self.configuration["pychic_cpu"])
 
         if "pychic_bam" not in self.configuration:
             self.configuration["pychic_bam"] = sorted_bam

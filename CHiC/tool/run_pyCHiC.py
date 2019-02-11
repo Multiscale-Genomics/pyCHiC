@@ -152,6 +152,8 @@ if __name__ == "__main__":
     OPTIONAL.add_argument("--output_parameters",
                           help="output name for parameter file",
                           default="parameters.txt")
+    OPTIONAL.add_argument("--cpu",
+                          default="1")
 
     parser._action_groups.append(OPTIONAL) # pylint: disable=protected-access
 
@@ -191,6 +193,7 @@ if __name__ == "__main__":
     WASHU = ARGS.output_file
     PDF = ARGS.output_pdf
     PARAMETERS = ARGS.output_parameters
+    CPU = ARGS.cpu
 
     INPUT_FILES = {
         "RMAP" : RMAP,
@@ -222,7 +225,8 @@ if __name__ == "__main__":
         "pychic_weightBeta" : WEIGHTBETA,
         "pychic_weightGamma" : WEIGHTGAMMA,
         "pychic_weightDelta" : WEIGHTDELTA,
-        "pychic_features_plot": PLOTBAITS
+        "pychic_features_plot": PLOTBAITS,
+        "pychic_cpu": CPU
     }
 
     OUTPUT_FILES = {

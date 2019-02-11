@@ -184,6 +184,9 @@ if __name__ == "__main__":
                           help="output name for hicup file",
                           default="output.tar")
 
+    OPTIONAL.add_argument("--cpu",
+                          default="1")
+
     parser._action_groups.append(OPTIONAL) # pylint: disable=protected-access
 
 
@@ -224,6 +227,8 @@ if __name__ == "__main__":
     PARAMETERS = ARGS.output_parameters
     CHINPUT = ARGS.output_chinput
     HICUP = ARGS.output_hicup
+    CPU = ARGS.cpu
+
 
     RE_SEQUENCE = RE_SEQUENCE.replace("^", "|")
 
@@ -260,7 +265,8 @@ if __name__ == "__main__":
         "pychic_weightBeta" : WEIGHTBETA,
         "pychic_weightGamma" : WEIGHTGAMMA,
         "pychic_weightDelta" : WEIGHTDELTA,
-        "pychic_features_plot": PLOTBAITS
+        "pychic_features_plot": PLOTBAITS,
+        "pychic_cpu": CPU
     }
 
     OUTPUT_FILES = {
