@@ -1823,7 +1823,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         eta_sigma = 0
 
         print(chrs)
-
+        print(chrMAX)
+        print(baitmap)
         for c in chrs:
             #length of chromosome
             d_c = chrMAX[chrMAX["chr"] == c]
