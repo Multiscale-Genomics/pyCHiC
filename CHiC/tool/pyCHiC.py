@@ -339,12 +339,34 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                          "N, otherEndLen, distSign)."+ "Number of columns found "+
                          str(x.columns))
 
+
+        rmap_df = pd.read_csv(rmap,
+                              sep="\t",
+                              names=["chr", "start", "end", "ID"],
+                              dtype = {"chr":str , "start":int, "end":int, "ID":int})
+
+        rmap_id = set(rmap_df.iloc[1:, 3])
+
+        baitmap_df = pd.read_csv(baitmap,
+                                 header=None,
+                                 sep="\t",
+                                 dtype={0:str, 1:int, 2:int, 3:int, 4:str}
+                                )
+
+        if len(baitmap_df.columns) == 4:
+            baitmap_df.columns = ["chr", "start", "end", "ID"]
+        else:
+            baitmap_df.columns = ["chr", "start", "end", "ID", "feature"]
+        baitmap_id = set(baitmap_df.iloc[:, 3])
+
+
+        """
         rmap_df = pd.read_csv(rmap, sep="\t", header=None)
         rmap_id = set(rmap_df.iloc[:, 3])
 
         baitmap_df = pd.read_csv(baitmap, sep="\t", header=None)
         baitmap_id = set(baitmap_df.iloc[:, 3])
-
+        """
         x_rmap = set(x.iloc[:, 1])
         x_baitmap = set(x.iloc[:, 0])
 
@@ -368,10 +390,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     "than "+str(self.configuration["pychic_maxFragLen"]))
 
         #filter rmap chromosomes that are in the baitmap
-        print(rmap_df.iloc[:,0])
-        print(baitmap_df.iloc[:,0].unique())
-        rmap_df = rmap_df[rmap_df.iloc[:,0].isin(baitmap_df.iloc[:,0].unique())]
-        print(rmap_df)
+        chr_baitmap = baitmap_df.iloc[:,0].unique()
+        rmap_df = rmap_df[rmap_df.iloc[:,0].isin(list(chr_baitmap))]
 
         x = x.loc[ # pylint: disable=invalid-name
             (x["otherEndLen"] >= self.configuration["pychic_minFragLen"]) &
@@ -444,7 +464,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if int(x.shape[0]) == 0:
             logger.fatal("All interactions have been filtered out.")
 
-        return x
+        return x, rmap_df, baitmap_df
 
     def dataframe_merge(self, chinputs):
         """
@@ -1119,7 +1139,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         transBaitLen = transBaitLen.rename(columns={"baitID": "transBaitLen"})
 
-        transBaitLen.loc[:,"baitID"] = transBaitLen.index.tolist()
+        transBaitLen.loc[:, "baitID"] = transBaitLen.index.tolist()
 
         levels = self.cut2(transBaitLen["transBaitLen"],
                            self.configuration["pychic_techNoise_minBaitsPerBin"])
@@ -1127,13 +1147,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if len(levels) == 1:
             levels.append(levels[0]+1)
 
-        transBaitLen.loc[:,"tblb"] = pd.cut(transBaitLen["transBaitLen"], levels, right=False)
+        transBaitLen.loc[:, "tblb"] = pd.cut(transBaitLen["transBaitLen"], levels, right=False)
 
-        transBaitLen.loc[:,"tblb"] = transBaitLen["tblb"].astype(str)
+        transBaitLen.loc[:, "tblb"] = transBaitLen["tblb"].astype(str)
 
-        transBaitLen.loc[:,"tblb"] = np.where(transBaitLen["tblb"] == "nan",
-                                        "["+str(levels[-2])+", "+str(levels[-1])+")",
-                                        transBaitLen["tblb"])
+        transBaitLen.loc[:, "tblb"] = np.where(transBaitLen["tblb"] == "nan",
+                                               "["+str(levels[-2])+", "+str(levels[-1])+")",
+                                               transBaitLen["tblb"])
 
         chinput_ji = pd.merge(chinput_ji, transBaitLen, how="left", on="baitID")
 
@@ -1145,7 +1165,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("Computing the total number of possible interactions per pool...")
         logger.info("Preparing the data...")
-
+        """
         baitmap = pd.read_csv(baitmap, sep="\t", header=None)
         rmap = pd.read_csv(rmap, sep="\t", header=None)
 
@@ -1153,6 +1173,22 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         baitmap.drop([1, 2, 4], axis=1, inplace=True)
         rmap = rmap.rename(columns={0:"otherEndchr", 3:"otherEndID"})
         rmap.drop([1, 2], axis=1, inplace=True)
+        """
+        rmap = rmap.drop(["start","end"], axis=1)
+        rmap.rename({"chr": "otherEndchr", "ID":"otherEndID"},
+                    inplace=True,
+                    axis=1
+                   )
+
+        if "feature" in baitmap.columns:
+            baitmap = baitmap.drop(["start","end", "feature"], axis=1)
+        else:
+            baitmap = baitmap.drop(["start","end"], axis=1)
+
+        baitmap.rename({"chr": "baitchr", "ID":"baitID"},
+                       inplace=True,
+                       axis=1
+                      )
 
         chinput_ji = pd.merge(chinput_ji, rmap, how="left", on="otherEndID")
         chinput_ji = pd.merge(chinput_ji, baitmap, how="left", on="baitID")
@@ -1174,7 +1210,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #If there is no trans interactions
         if res_chinput.empty:
             res = chinput_ji.groupby(["tlb_tblb"], as_index=False)["N"].sum()
-            res.loc[:,"N"] = np.zeros(res.shape[0])
+            res.loc[:, "N"] = np.zeros(res.shape[0])
         else:
             res = res_chinput.groupby(["tlb_tblb"], as_index=False)["N"].sum()
 
@@ -1225,7 +1261,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         res = pd.merge(num_pairs_df, res, how="left", on=["tlb_tblb"])
         res = res.rename(columns={"N" : "nTrans"})
 
-        res.loc[:,"Tmean"] = res.nTrans.div(res.numPairs.where(res.numPairs != 0, np.nan))
+        res.loc[:, "Tmean"] = res.nTrans.div(res.numPairs.where(res.numPairs != 0, np.nan))
         res["Tmean"].replace(-0, 0, inplace=True)
 
         res.drop(["numPairs",
@@ -1240,8 +1276,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                          "baitchr",
                          "otherEndchr",
                          "tlb_tblb"],
-                         axis=1,
-                         inplace=True)
+                        axis=1,
+                        inplace=True)
 
         return chinput_ji
 
@@ -2471,14 +2507,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput = input_files["chinput"].split(",")
         # Lets keep it to one for now
         if len(chinput) == 1:
-            chinput_filtered = self.readSample(input_files["chinput"],
+            chinput_filtered, rmap_df, baitmap_df = self.readSample(input_files["chinput"],
                                                self.configuration["pychic_bam"],
                                                input_files["RMAP"],
                                                input_files["BAITMAP"])
         else:
             chinputs_filtered = {}
             for i in range(len(chinput)):
-                new_chinput = self.readSample(chinput[i],
+                new_chinput, rmap_df, baitmap_df = self.readSample(chinput[i],
                                               self.configuration["pychic_bam"],
                                               input_files["RMAP"],
                                               input_files["BAITMAP"])
@@ -2500,8 +2536,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         #Import and prepare RMAP and BAITMAP HERE
         chinput_jiw = self.estimateTechnicalNoise(chinput_ji,
-                                                  input_files["RMAP"],
-                                                  input_files["BAITMAP"])
+                                                  rmap_df,
+                                                  baitmap_df)
 
         distFunParams = self.estimateDistFun(chinput_jiw)
 
@@ -2512,21 +2548,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             input_files["RMAP"])
 
         chinput_jiwb_pval = self.getPvals(chinput_jiwb, dispersion)
-
-        rmap_df = pd.read_csv(input_files["RMAP"],
-                              sep="\t",
-                              names=["chr", "start", "end", "ID"],
-                              dtype = {"chr":str , "start":int, "end":int, "ID":int})
-
-        baitmap_df = pd.read_csv(input_files["BAITMAP"],
-                                 header=None,
-                                 sep="\t")
-
-        if len(baitmap_df.columns) == 4:
-            baitmap_df.columns = ["chr", "start", "end", "ID"]
-        else:
-            baitmap_df.columns = ["chr", "start", "end", "ID", "feature"]
-
 
         chinput_jiwb_scores = self.getScores(chinput_jiwb_pval,
                                              rmap_df,
