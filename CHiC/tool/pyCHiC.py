@@ -2557,12 +2557,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         self.print_params(output_files["params_out"],
                           self.configuration)
 
-        """
         self.plotBaits(baitmap_df,
                        chinput_jiwb_scores,
                        dispersion,
                        output_files["pdf_examples"])
-        """
+
 
         self.exportResults(chinput_jiwb_scores,
                            output_files["washU_text"],
