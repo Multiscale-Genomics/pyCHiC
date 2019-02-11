@@ -1869,7 +1869,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             d_c = chrMAX[chrMAX["chr"] == c]
             d_c = int(d_c.loc[:, "end"])
 
+            start = time.time()
             nBaits = baitmap[baitmap["chr"] == c]
+            print(time.time() - start)
             n_c = nBaits["chr"].value_counts()
 
             n_c = int("".join([str(i) for i in n_c]))
@@ -1961,17 +1963,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             pool = Pool(self.configuration["pychic_cpu"])
 
-            print(divisions)
-            start = time.time()
-
             eta_sigma = np.array(
                 pool.map(self.eta_sigma, divisions)
             ).sum()
-            print("parallel", time.time()-start)
-
-            start = time.time()
-            eta_sigma = self.eta_sigma(chrs)
-            print("Non paralel", time.time()-start)
 
 
         eta_bar = eta_sigma/Nhyp
