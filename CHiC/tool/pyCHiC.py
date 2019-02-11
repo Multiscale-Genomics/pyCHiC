@@ -1824,7 +1824,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         print(baitmap.iloc[0,0])
         print(type(baitmap.iloc[0,0]))
         print(chrMAX.iloc[0,0])
-        print(tyep(chrMAX.iloc[0,0]))
+        print(type(chrMAX.iloc[0,0]))
 
         for c in chrs:
             #length of chromosome
