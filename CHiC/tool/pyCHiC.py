@@ -1825,6 +1825,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         for c in chrs:
             #length of chromosome
             d_c = chrMAX[chrMAX["chr"] == c]
+            print("chr",c)
             print(d_c)
             d_c = int(d_c.loc[:, "end"])
 
@@ -1907,6 +1908,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             eta_sigma = np.array(pool.map(self.eta_sigma, chrs_list)).sum()
         else:
+            """
             div = int(len(chrs)/self.configuration["pychic_cpu"])
             div = math.floor(div)
 
@@ -1926,6 +1928,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             eta_sigma = np.array(
                 pool.map(self.eta_sigma, divisions)
             ).sum()
+            """
+            chrs_list = [[chrs[i]] for i in range(len(chrs))]
+
+            eta_sigma = self.eta_sigma(chrs_list)
 
         eta_bar = eta_sigma/Nhyp
 
