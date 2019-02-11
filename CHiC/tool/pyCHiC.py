@@ -1884,7 +1884,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
                     d_other2 = np.arange(d_near, d_c-d_near, avgFragLen)
 
-
                     eta_sigma = eta_sigma + 2*sum(expit(alpha + beta*np.log(d_other))) + \
                                 sum(expit(alpha + beta*np.log(d_other2)))
 
@@ -1892,7 +1891,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     logger.info("Empty array")
 
         return eta_sigma
-
 
     def getEtaBar(self, x, rmap, baitmap, avgFragLen):
         """
@@ -1963,9 +1961,17 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             pool = Pool(self.configuration["pychic_cpu"])
 
+            print(divisions)
+            start = time.time()
+
             eta_sigma = np.array(
                 pool.map(self.eta_sigma, divisions)
             ).sum()
+            print("parallel", time.time()-start)
+
+            start = time.time()
+            eta_sigma = self.eta_sigma(chrs)
+            print("Non paralel", time.time()-start)
 
 
         eta_bar = eta_sigma/Nhyp
@@ -2001,7 +2007,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return a - b
 
-    #@profile
     def getScores(self, x, rmap, baitmap):
         """
         Get the scores from the pvalues
