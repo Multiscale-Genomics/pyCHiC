@@ -1929,9 +1929,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 pool.map(self.eta_sigma, divisions)
             ).sum()
             """
-            chrs_list = [[chrs[i]] for i in range(len(chrs))]
 
-            eta_sigma = self.eta_sigma(chrs_list)
+            eta_sigma = self.eta_sigma(chrs)
 
         eta_bar = eta_sigma/Nhyp
 
