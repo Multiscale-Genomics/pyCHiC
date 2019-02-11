@@ -22,6 +22,7 @@ from collections import Counter
 from functools import partial
 from multiprocess import Pool
 from scipy.stats.mstats import gmean
+from math import e
 
 import pandas as pd
 import numpy as np
@@ -1826,10 +1827,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             d_c = chrMAX[chrMAX["chr"] == c]
             d_c = int(d_c.loc[:, "end"])
 
-
             nBaits = baitmap[baitmap["chr"] == c]
-            n_c = nBaits["chr"].value_counts()
 
+            n_c = nBaits["chr"].value_counts()
+            print(n_c)
             n_c = int("".join([str(i) for i in n_c]))
 
             for i in range(1, n_c+1):
@@ -1904,31 +1905,25 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             chrs_list = [[chrs[i]] for i in range(len(chrs))]
 
             eta_sigma = np.array(pool.map(self.eta_sigma, chrs_list)).sum()
-
         else:
             div = int(len(chrs)/self.configuration["pychic_cpu"])
+            div = math.floor(div)
 
-            count = div
-            while count <= len(chrs):
-                divisions.append(count)
-                count += div
-
-            divisions[-1] = len(chrs)
-            divisions = [0] + divisions
-
-            chrs_list = []
-            print(chrs)
-            for i in enumerate(divisions):
-                print(i)
-                try:
-                    chrs_list.append(chrs[divisions[i[0]]:divisions[i[0]+1]])
-                except ValueError:
-                    pass
+            divisions = []
+            mini_list = []
+            for i in enumerate(chrs):
+                if len(divisions) == self.configuration["pychic_cpu"]:
+                    mini_list.append(i[1])
+                else:
+                    mini_list.append(i[1])
+                    if len(mini_list) == div:
+                        divisions.append(mini_list)
+                        mini_list = []
 
             pool = Pool(self.configuration["pychic_cpu"])
 
             eta_sigma = np.array(
-                pool.map(self.eta_sigma, chrs_list)
+                pool.map(self.eta_sigma, divisions)
             ).sum()
 
         eta_bar = eta_sigma/Nhyp
@@ -1993,7 +1988,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         logger.info("Calculating p-values weights...")
 
         x.loc[:,"log_w"] = alpha + beta*np.log(x["distSign"].abs().replace(np.nan, np.inf))
-        x.loc[:,"log_w"] = 1/(1+math.e**(- x["log_w"]))
+        x.loc[:,"log_w"] = 1/(1+e**(- x["log_w"]))
 
         delta = 1/(1+math.exp(-delta))
         gamma = 1/(1+math.exp(-gamma))
