@@ -1821,9 +1821,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         expit = np.vectorize(self.expit)
 
         eta_sigma = 0
-        print(baitmap)
-        print(baitmap.dtypes)
-        print(chrMAX.dtypes)
+        print(baitmap.iloc[0,0])
+        print(type(baitmap.iloc[0,0]))
+        print(chrMAX.iloc[0,0])
+        print(tyep(chrMAX.iloc[0,0]))
 
         for c in chrs:
             #length of chromosome
