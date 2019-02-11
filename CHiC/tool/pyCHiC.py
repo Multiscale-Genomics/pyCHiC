@@ -1821,10 +1821,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         expit = np.vectorize(self.expit)
 
         eta_sigma = 0
-        print(baitmap.iloc[0,0])
-        print(type(baitmap.iloc[0,0]))
-        print(chrMAX.iloc[0,0])
-        print(type(chrMAX.iloc[0,0]))
 
         for c in chrs:
             #length of chromosome
@@ -2516,7 +2512,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         rmap_df = pd.read_csv(input_files["RMAP"],
                               sep="\t",
-                              names=["chr", "start", "end", "ID"])
+                              names=["chr", "start", "end", "ID"],
+                              dtype = {"chr":str , "start":int, "end":int, "ID":int})
 
         baitmap_df = pd.read_csv(input_files["BAITMAP"],
                                  header=None,
