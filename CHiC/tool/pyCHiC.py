@@ -367,6 +367,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     str(self.configuration["pychic_minFragLen"])+" and bigger"
                     "than "+str(self.configuration["pychic_maxFragLen"]))
 
+        #filter rmap chromosomes that are in the baitmap
+        print(rmap_df.iloc[:,0])
+        print(baitmap_df.iloc[:,0].unique())
+        rmap_df = rmap_df[rmap_df.iloc[:,0].isin(baitmap_df.iloc[:,0].unique())]
+        print(rmap_df)
+
         x = x.loc[ # pylint: disable=invalid-name
             (x["otherEndLen"] >= self.configuration["pychic_minFragLen"]) &
             (x["otherEndLen"] <= self.configuration["pychic_maxFragLen"])
@@ -1822,18 +1828,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         eta_sigma = 0
 
-        print(baitmap["chr"].value_counts())
-
         for c in chrs:
             #length of chromosome
-            print(c)
             d_c = chrMAX[chrMAX["chr"] == c]
-            print(d_c)
             d_c = int(d_c.loc[:, "end"])
 
             nBaits = baitmap[baitmap["chr"] == c]
             n_c = nBaits["chr"].value_counts()
-            print(n_c)
 
             n_c = int("".join([str(i) for i in n_c]))
 
@@ -1910,7 +1911,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             eta_sigma = np.array(pool.map(self.eta_sigma, chrs_list)).sum()
         else:
-            """
             div = int(len(chrs)/self.configuration["pychic_cpu"])
             div = math.floor(div)
 
@@ -1930,8 +1930,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             eta_sigma = np.array(
                 pool.map(self.eta_sigma, divisions)
             ).sum()
-            """
-        eta_sigma = self.eta_sigma(chrs)
+
 
         eta_bar = eta_sigma/Nhyp
 
