@@ -1868,7 +1868,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         Returns
         -------
-        eta_bat: float
+        eta_bar: float
         """
         ##1. Collect parameters
 
@@ -1908,7 +1908,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             eta_sigma = np.array(pool.map(self.eta_sigma, chrs_list)).sum()
         else:
-            """
             div = int(len(chrs)/self.configuration["pychic_cpu"])
             div = math.floor(div)
 
@@ -1928,9 +1927,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             eta_sigma = np.array(
                 pool.map(self.eta_sigma, divisions)
             ).sum()
-            """
 
-            eta_sigma = self.eta_sigma(chrs)
 
         eta_bar = eta_sigma/Nhyp
 
@@ -2496,6 +2493,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("\n Running estimateTechicalNoise")
 
+        #Import and prepare RMAP and BAITMAP HERE
         chinput_jiw = self.estimateTechnicalNoise(chinput_ji,
                                                   input_files["RMAP"],
                                                   input_files["BAITMAP"])
