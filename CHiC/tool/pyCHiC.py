@@ -1822,6 +1822,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         eta_sigma = 0
 
+        print(chrs)
+
         for c in chrs:
             #length of chromosome
             d_c = chrMAX[chrMAX["chr"] == c]
@@ -1830,7 +1832,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             nBaits = baitmap[baitmap["chr"] == c]
 
             n_c = nBaits["chr"].value_counts()
-            print(n_c)
+
             n_c = int("".join([str(i) for i in n_c]))
 
             for i in range(1, n_c+1):
