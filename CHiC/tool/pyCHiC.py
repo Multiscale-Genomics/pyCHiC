@@ -2477,9 +2477,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             )
         else:
             chinputs_filtered = {}
-            for i in range(len(chinput)):
+            for i in enumerate(chinput):
                 new_chinput, rmap_df, baitmap_df = self.readSample(
-                    chinput[i],
+                    chinput[i[0]],
                     self.configuration["pychic_bam"],
                     input_files["RMAP"],
                     input_files["BAITMAP"]
@@ -2503,7 +2503,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #Import and prepare RMAP and BAITMAP HERE
         chinput_jiw = self.estimateTechnicalNoise(chinput_ji,
                                                   rmap_df,
-                                                  baitmap_df)
+                                                  baitmap_df
+                                                  )
 
         distFunParams = self.estimateDistFun(chinput_jiw)
 

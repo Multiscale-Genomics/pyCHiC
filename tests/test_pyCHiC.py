@@ -35,7 +35,6 @@ def test_pychic():
             path + "GM_rep1.chinput"
             #path + "GM_rep2.chinput",
             #path + "GM_rep3.chinput"
-
     }
 
     configuration = {
@@ -94,6 +93,6 @@ def test_pychic():
                                   check_exact=False)
     #remove the files
     import os
-    #os.remove(configuration["execution"]+"/"+"out_test_washU_text.txt")
+    os.remove(configuration["execution"]+"/"+"out_test_washU_text.txt")
     os.remove(configuration["execution"]+"/"+"parameters_out.txt")
     os.remove(configuration["execution"]+"/"+"out_test_examples.pdf")

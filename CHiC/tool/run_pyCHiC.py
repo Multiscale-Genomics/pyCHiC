@@ -56,7 +56,6 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
 
         self.configuration.update(configuration)
 
-
     def run(self, input_files, input_metadata, output_files):
         """
         The main function to run the test_writer tool
@@ -216,8 +215,8 @@ if __name__ == "__main__":
     }
 
     metadata = {
-     "chinput" : Metadata(
-            "data_chicago", "chinput", [], None, None, 9606)
+        "chinput" : Metadata(
+        "data_chicago", "chinput", [], None, None, 9606)
     }
 
     output_files = {
