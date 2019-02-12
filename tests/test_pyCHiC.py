@@ -17,7 +17,7 @@
 import pytest # pylint: disable=unused-import
 import pandas as pd
 from basic_modules.metadata import Metadata
-from CHiC.tool.pyCHiC import pyCHiC
+from CHiC.tool.run_pyCHiC import run_pyCHiC
 
 def test_pychic():
     """
@@ -79,7 +79,7 @@ def test_pychic():
         "params_out" : "parameters_out.txt",
     }
 
-    pychic_obj = pyCHiC(configuration)
+    pychic_obj = run_pyCHiC(configuration)
     pychic_obj.run(input_files, metadata, output_files)
 
     output_loc = "out_test_washU_text.txt"

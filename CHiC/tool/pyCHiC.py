@@ -42,14 +42,14 @@ try:
         raise ImportError
     from pycompss.api.parameter import FILE_IN, FILE_OUT, IN
     from pycompss.api.task import task
-    from pycompss.api.api import compss_wait_on, compss_delete_file, compss_open
+    from pycompss.api.api import compss_wait_on, compss_delete_file
 except ImportError:
     logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
     logger.warn("          Using mock decorators.")
 
     from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import compss_wait_on, compss_delete_file, compss_open # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import compss_wait_on, compss_delete_file # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata # pylint: disable=unused-import
@@ -2330,122 +2330,127 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         Parameters
         ----------
         input_files : dict
-            pychic_rmap
-            pychic_baitmap
-            pychic_poe
-            pychic_npbp
-            pychic_npb
-            pychic_settings-file
-            pychic_chinput
 
         metadata : dict
-            pychic_cutoff
-            pychic_export_format
-            pychic_export_order
-            pychic_examples_prox_dist
-            pychic_examples_full_range
 
         output_files : dict
-            "washU_text" : str
-                path to washu_text
-            "pdf_examples" : str
-                path to pdf_examples
-            "params_out" : str
-                path to params_out
-
 
         Returns
         -------
-        output_files : dict
-        output_metadata : dict
+        Bool
         """
-        rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
-        rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
-        chr_handler = "tests/data/test_baitmap/chr_handler.txt"
-        rmap = "tests/data/test_run_chicago/test.rmap"
-        baitmap = "tests/data/test_run_chicago/test.baitmap"
-        bait_sam = "tests/data/test_baitmap/baits.sam"
-        nbpb = "tests/data/test_run_chicago/test.nbpb"
-        npb = "tests/data/test_run_chicago/test.npb"
-        poe = "tests/data/test_run_chicago/test.poe"
-        out_bam = "tests/data/test_baitmap/baits.bam"
-        sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
-
-        if "RMAP" not in input_files:
-            input_files["RMAP"] = rmap
-        if "BAITMAP" not in input_files:
-            input_files["BAITMAP"] = baitmap
-        if "nbpb" not in input_files:
-            input_files["nbpb"] = nbpb
-        if "npb" not in input_files:
-            input_files["npb"] = npb
-        if "poe" not in input_files:
-            input_files["poe"] = poe
-        if "chinput" not in input_files:
-            input_files["chinput"] = output_files["chinput"]
-
         if self.configuration["pychic_features_plot"] == "None":
             self.configuration["pychic_features_plot"] = None
 
-        self.configuration["pychic_cutoff"] = int(self.configuration["pychic_cutoff"])
+        if "pychic_cutoff" not in self.configuration:
+            self.configuration["pychic_cutoff"] = 5
+        else:
+            self.configuration["pychic_cutoff"] = int(self.configuration["pychic_cutoff"])
 
         if "pychic_binsize" not in self.configuration:
-            self.configuration["pychic_binsize"] = int(self.configuration["makeDesignFiles_binsize"])
+            self.configuration["pychic_binsize"] = 20000
         else:
             self.configuration["pychic_binsize"] = int(self.configuration["pychic_binsize"])
 
         if "pychic_minFragLen" not in self.configuration:
-            self.configuration["pychic_minFragLen"] = int(self.configuration["makeDesignFiles_minFragLen"])
+            self.configuration["pychic_minFragLen"] = 150
         else:
             self.configuration["pychic_minFragLen"] = int(self.configuration["pychic_minFragLen"])
 
         if "pychic_maxFragLen" not in self.configuration:
-            self.configuration["pychic_maxFragLen"] = int(self.configuration["makeDesignFiles_maxFragLen"])
+            self.configuration["pychic_maxFragLen"] = 40000
         else:
             self.configuration["pychic_maxFragLen"] = int(self.configuration["pychic_maxFragLen"])
 
+        if "pychic_minNPerBait" not in self.configuration:
+            self.configuration["pychic_minNPerBait"] = 250
+        else:
+            self.configuration["pychic_minNPerBait"] = int(self.configuration["pychic_minNPerBait"])
 
-        self.configuration["pychic_minNPerBait"] = int(self.configuration["pychic_minNPerBait"])
-        self.configuration["pychic_tlb_minProxOEPerBin"] = \
-            int(self.configuration["pychic_tlb_minProxOEPerBin"])
-        self.configuration["pychic_tlb_minProxB2BPerBin"] = \
-            int(self.configuration["pychic_tlb_minProxB2BPerBin"])
-        self.configuration["pychic_brownianNoise_samples"] = \
-            int(self.configuration["pychic_brownianNoise_samples"])
-        self.configuration["pychic_brownianNoise_subset"] = \
-            int(self.configuration["pychic_brownianNoise_subset"])
+        if "pychic_tlb_minProxOEPerBin" not in self.configuration:
+            self.configuration["pychic_tlb_minProxOEPerBin"] = 150
+        else:
+            self.configuration["pychic_tlb_minProxOEPerBin"] = \
+                int(self.configuration["pychic_tlb_minProxOEPerBin"])
 
-        if self.configuration["pychic_brownianNoise_seed"]:
-            int(self.configuration["pychic_brownianNoise_seed"])
 
-        self.configuration["pychic_techNoise_minBaitsPerBin"] = \
-            int(self.configuration["pychic_techNoise_minBaitsPerBin"])
+        if "pychic_tlb_minProxB2BPerBin" not in self.configuration:
+            self.configuration["pychic_tlb_minProxB2BPerBin"] = 15
+        else:
+            self.configuration["pychic_tlb_minProxB2BPerBin"] = \
+                int(self.configuration["pychic_tlb_minProxB2BPerBin"])
+
+
+        if "pychic_brownianNoise_samples" not in self.configuration:
+            self.configuration["pychic_brownianNoise_samples"] = 1
+        else:
+            self.configuration["pychic_brownianNoise_samples"] = \
+                int(self.configuration["pychic_brownianNoise_samples"])
+
+
+        if "pychic_brownianNoise_subset" not in self.configuration:
+            self.configuration["pychic_brownianNoise_subset"] = 500
+        else:
+            self.configuration["pychic_brownianNoise_subset"] = \
+                int(self.configuration["pychic_brownianNoise_subset"])
+
+
+        if "pychic_techNoise_minBaitsPerBin" not in self.configuration:
+            self.configuration["pychic_techNoise_minBaitsPerBin"] = 150
+        else:
+            self.configuration["pychic_techNoise_minBaitsPerBin"] = \
+                int(self.configuration["pychic_techNoise_minBaitsPerBin"])
+
 
         if "pychic_maxLBrownEst" not in self.configuration:
-            self.configuration["pychic_maxLBrownEst"] = float(self.configuration["makeDesignFiles_maxLBrownEst"])
+            self.configuration["pychic_maxLBrownEst"] = 1500000.0
         else:
-            self.configuration["pychic_maxLBrownEst"] = float(self.configuration["pychic_maxLBrownEst"])
-        self.configuration["pychic_tlb_filterTopPercent"] = \
-            float(self.configuration["pychic_tlb_filterTopPercent"])
+            self.configuration["pychic_maxLBrownEst"] = \
+                float(self.configuration["pychic_maxLBrownEst"])
 
-        self.configuration["pychic_weightAlpha"] = float(self.configuration["pychic_weightAlpha"])
-        self.configuration["pychic_weightBeta"] = float(self.configuration["pychic_weightBeta"])
-        self.configuration["pychic_weightGamma"] = float(self.configuration["pychic_weightGamma"])
-        self.configuration["pychic_weightDelta"] = float(self.configuration["pychic_weightDelta"])
 
-        self.configuration["pychic_removeAdjacent"] = True
-        self.configuration["pychic_adjBait2bait"] = True
+        if "pychic_tlb_filterTopPercent" not in self.configuration:
+            self.configuration["pychic_tlb_filterTopPercent"] = 0.01
+        else:
+            self.configuration["pychic_tlb_filterTopPercent"] = \
+                float(self.configuration["pychic_tlb_filterTopPercent"])
+
+
+        if "pychic_weightAlpha" not in self.configuration:
+            self.configuration["pychic_weightAlpha"] = 34.1157346557331
+        else:
+            self.configuration["pychic_weightAlpha"] = \
+                float(self.configuration["pychic_weightAlpha"])
+
+
+        if "pychic_weightAlpha" not in self.configuration:
+            self.configuration["pychic_weightBeta"] = -2.58688050486759
+        else:
+            self.configuration["pychic_weightBeta"] = \
+                float(self.configuration["pychic_weightBeta"])
+
+
+        if "pychic_weightAlpha" not in self.configuration:
+            self.configuration["pychic_weightGamma"] = -17.1347845819659
+        else:
+            self.configuration["pychic_weightGamma"] = \
+                float(self.configuration["pychic_weightGamma"])
+
+
+        if "pychic_weightAlpha" not in self.configuration:
+            self.configuration["pychic_weightDelta"] = -7.07609245521541
+        else:
+            self.configuration["pychic_weightDelta"] = \
+                float(self.configuration["pychic_weightDelta"])
 
         if "pychic_cpu" not in self.configuration:
             self.configuration["pychic_cpu"] = 1
         else:
             self.configuration["pychic_cpu"] = int(self.configuration["pychic_cpu"])
 
-        if "pychic_bam" not in self.configuration:
-            self.configuration["pychic_bam"] = sorted_bam
 
-        if "pychic_binsize" not in self.configuration:
-            self.configuration["pychic_binsize"] = self.configuration["makeDesignFiles_binsize"]
+        self.configuration["pychic_removeAdjacent"] = True
+        self.configuration["pychic_adjBait2bait"] = True
 
         for test_file in input_files:
             if self.exist_file(input_files[test_file], test_file) is False:
@@ -2464,17 +2469,21 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput = input_files["chinput"].split(",")
         # Lets keep it to one for now
         if len(chinput) == 1:
-            chinput_filtered, rmap_df, baitmap_df = self.readSample(input_files["chinput"],
-                                                                    self.configuration["pychic_bam"],
-                                                                    input_files["RMAP"],
-                                                                    input_files["BAITMAP"])
+            chinput_filtered, rmap_df, baitmap_df = self.readSample(
+                input_files["chinput"],
+                self.configuration["pychic_bam"],
+                input_files["RMAP"],
+                input_files["BAITMAP"]
+            )
         else:
             chinputs_filtered = {}
             for i in range(len(chinput)):
-                new_chinput, rmap_df, baitmap_df = self.readSample(chinput[i],
+                new_chinput, rmap_df, baitmap_df = self.readSample(
+                    chinput[i],
                     self.configuration["pychic_bam"],
                     input_files["RMAP"],
-                    input_files["BAITMAP"])
+                    input_files["BAITMAP"]
+                )
 
                 chinputs_filtered[str(i)] = new_chinput
 
@@ -2529,128 +2538,4 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                            baitmap_df
                           )
 
-        compss_delete_file(rtree_file_idx)
-        compss_delete_file(rtree_file_dat)
-        compss_delete_file(chr_handler)
-        compss_delete_file(rmap)
-        compss_delete_file(baitmap)
-        compss_delete_file(bait_sam)
-        compss_delete_file(npb)
-        compss_delete_file(nbpb)
-        compss_delete_file(poe)
-        compss_delete_file(out_bam)
-        compss_delete_file(sorted_bam)
-
-        if "genome_name" in self.configuration:
-            files_dir = os.listdir(self.configuration["execution"])
-            for file_ in files_dir:
-                if file_.startswith("Digest_"+self.configuration["genome_name"]):
-                    os.remove(file_)
-
-        if "chinput" not in input_metadata:
-            input_metadata["chinput"] = input_metadata["genome_fa"]
-
-        output_metadata = {
-            "washU_text" : Metadata(
-                data_type="data_chic",
-                file_type="TXT",
-                file_path=output_files["washU_text"],
-                sources=[
-
-                ],
-                taxon_id=input_metadata["chinput"].taxon_id,
-                meta_data={
-                    "tool": "process_CHiC",
-                    "tool_description" : "run_chicago"
-                }
-            ),
-
-            "pdf_examples" : Metadata(
-                data_type="data_chic",
-                file_type="PDF",
-                file_path=output_files["pdf_examples"],
-                sources=[
-                ],
-                taxon_id=input_metadata["chinput"].taxon_id,
-                meta_data={
-                    "tool": "process_CHiC",
-                    "tool_description" : "run_chicago"
-                }
-            ),
-
-            "params_out" : Metadata(
-                data_type="data_chic",
-                file_type="TXT",
-                file_path=output_files["params_out"],
-                sources=[
-                ],
-                taxon_id=input_metadata["chinput"].taxon_id,
-                meta_data={
-                    "tool": "process_CHiC",
-                    "tool_description" : "run_chicago"
-                }
-            )
-        }
-
-        return output_files, output_metadata
-
-
-if __name__ == "__main__":
-
-    path = "../../tests/data/test_run_chicago/data_chicago/"
-
-    input_files = {
-        "RMAP" : path +"h19_chr20and21.rmap",
-        "BAITMAP" : path +"h19_chr20and21.baitmap",
-        "nbpb" : path +"h19_chr20and21.nbpb",
-        "npb" : path +"h19_chr20and21.npb",
-        "poe" : path +"h19_chr20and21.poe",
-        "chinput" : path + "GM_rep1.chinput"+","+
-                    "/home/pacera/chicago/PCHiCdata/inst/extdata/GMchinputFiles/GM_rep2.chinput"
-                    #path + "GM_rep2.chinput",
-                    #path + "GM_rep3.chinput"
-    }
-
-    metadata = {
-     "chinput" : Metadata(
-            "data_chicago", "chinput", [], None, None, 9606)
-    }
-
-    output_files = {
-        "washU_text" : "out_test_washU_text.txt",
-        "pdf_examples" : "out_test_examples.pdf",
-        "params_out" : "parameters.txt"
-        }
-
-    configuration = {
-        "pychic_features_plot" : None,
-        "pychic_binsize" : 20000,
-        "execution" : ".",
-        "pychic_cpu" : 3,
-        "pychic_cutoff" : 5,
-        "pychic_export_format" : ["washU_text"],
-        "pychic_order" : "score",
-        "pychic_maxLBrownEst" : 1500000.0,
-        "pychic_minFragLen" : 150, # minimun OE fragment lenght in bps
-        "pychic_maxFragLen" : 40000, # maximun OE fragment lenght in bps
-        "pychic_minNPerBait" : 250, # total number of interactions per bait
-        "pychic_removeAdjacent" : "True",
-        "pychic_adjBait2bait" : "True",
-        "pychic_tlb_filterTopPercent" : 0.01,
-        "pychic_tlb_minProxOEPerBin" : 150,
-        "pychic_tlb_minProxB2BPerBin" : 15,
-        "pychic_techNoise_minBaitsPerBin" : 150,
-        "pychic_brownianNoise_samples" : 1,
-        "pychic_brownianNoise_subset" : 500,
-        "pychic_brownianNoise_seed" : 3,
-        "pychic_weightAlpha" : 34.1157346557331,
-        "pychic_weightBeta" : -2.58688050486759,
-        "pychic_weightGamma" : -17.1347845819659,
-        "pychic_weightDelta" : -7.07609245521541,
-        #"pychic_Rda" : "False",
-        #"pychic_output_dir" : path +"output_pyCHiC",
-
-    }
-
-    pyCHiC_obj = pyCHiC(configuration)
-    pyCHiC_obj.run(input_files, metadata, output_files)
+        return True
