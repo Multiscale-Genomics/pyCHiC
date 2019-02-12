@@ -343,7 +343,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         rmap_df = pd.read_csv(rmap,
                               sep="\t",
                               names=["chr", "start", "end", "ID"],
-                              dtype = {"chr":str , "start":int, "end":int, "ID":int})
+                              dtype = {"chr":str, "start":int, "end":int, "ID":int})
 
         rmap_id = set(rmap_df.iloc[1:, 3])
 
@@ -359,14 +359,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             baitmap_df.columns = ["chr", "start", "end", "ID", "feature"]
         baitmap_id = set(baitmap_df.iloc[:, 3])
 
-
-        """
-        rmap_df = pd.read_csv(rmap, sep="\t", header=None)
-        rmap_id = set(rmap_df.iloc[:, 3])
-
-        baitmap_df = pd.read_csv(baitmap, sep="\t", header=None)
-        baitmap_id = set(baitmap_df.iloc[:, 3])
-        """
         x_rmap = set(x.iloc[:, 1])
         x_baitmap = set(x.iloc[:, 0])
 
@@ -389,9 +381,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     str(self.configuration["pychic_minFragLen"])+" and bigger"
                     "than "+str(self.configuration["pychic_maxFragLen"]))
 
-        #filter rmap chromosomes that are in the baitmap
-        chr_baitmap = baitmap_df.iloc[:,0].unique()
-        rmap_df = rmap_df[rmap_df.iloc[:,0].isin(list(chr_baitmap))]
+        #filter rmap chromosomes that are not in the baitmap file
+        chr_baitmap = baitmap_df.iloc[:, 0].unique()
+        rmap_df = rmap_df[rmap_df.iloc[:, 0].isin(list(chr_baitmap))]
 
         x = x.loc[ # pylint: disable=invalid-name
             (x["otherEndLen"] >= self.configuration["pychic_minFragLen"]) &
@@ -543,7 +535,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         npb = DataFrame
         """
 
-        N_compile = re.compile(r"N.\d+") # pylint: disable=invalid-name
         N_cols = re.findall(r'N.\d+', " ".join(chinput_merge.columns)) # pylint: disable=invalid-name
         ns = list(map(lambda x: x.split(".")[1], N_cols)) # pylint: disable=invalid-name
         n = len(N_cols) # pylint: disable=invalid-name
@@ -1993,11 +1984,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         eta = expit(alpha + beta*np.log(dist))
 
-        a = np.log((self.expit(delta) - self.expit(gamma))*eta + self.expit(gamma))
+        fa = np.log((self.expit(delta) - self.expit(gamma))*eta + self.expit(gamma))
 
-        b = np.log((self.expit(delta) - self.expit(gamma))*eta_bar) + self.expit(gamma)
+        fb = np.log((self.expit(delta) - self.expit(gamma))*eta_bar) + self.expit(gamma)
 
-        return a - b
+        return fa - fb
 
     def getScores(self, x, rmap, baitmap):
         """
@@ -2026,16 +2017,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #Gets weights
         logger.info("Calculating p-values weights...")
 
-        x.loc[:,"log_w"] = alpha + beta*np.log(x["distSign"].abs().replace(np.nan, np.inf))
-        x.loc[:,"log_w"] = 1/(1+e**(- x["log_w"]))
+        x.loc[:, "log_w"] = alpha + beta*np.log(x["distSign"].abs().replace(np.nan, np.inf))
+        x.loc[:, "log_w"] = 1/(1+e**(- x["log_w"]))
 
         delta = 1/(1+math.exp(-delta))
         gamma = 1/(1+math.exp(-gamma))
 
-        x.loc[:,"log_w"] = (np.log((delta - gamma)*x["log_w"] + gamma)) \
+        x.loc[:, "log_w"] = (np.log((delta - gamma)*x["log_w"] + gamma)) \
             - (np.log((delta - gamma)*eta_bar) + gamma)
 
-        x.loc[:,"log_q"] = x["log_p"] - x["log_w"]
+        x.loc[:, "log_q"] = x["log_p"] - x["log_w"]
 
         logger.info("Calculating scores..")
 
@@ -2043,9 +2034,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         getweights = np.vectorize(self.getWeights, otypes=[float])
         minval = getweights(0)
 
-        x.loc[:,"score"] = -x["log_q"] - minval
+        x.loc[:, "score"] = -x["log_q"] - minval
 
-        x.loc[:,"score"] = np.where(x["score"] > 0, x["score"], 0)
+        x.loc[:, "score"] = np.where(x["score"] > 0, x["score"], 0)
 
         return x
 
