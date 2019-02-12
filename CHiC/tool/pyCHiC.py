@@ -534,9 +534,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             scaling factors for each replicate
         npb = DataFrame
         """
-
         N_cols = re.findall(r'N.\d+', " ".join(chinput_merge.columns)) # pylint: disable=invalid-name
-        ns = list(map(lambda x: x.split(".")[1], N_cols)) # pylint: disable=invalid-name
+        ns = [x.split(".")[1] for x in N_cols] # pylint: disable=invalid-name
         n = len(N_cols) # pylint: disable=invalid-name
 
         chinput_merge = chinput_merge.loc[
@@ -701,19 +700,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             xAll = x # pylint: disable=invalid-name
 
             if adjBait2bait:
-                """
-                BE CAREFULL IF THIS FUNCTION IS CALLED OUTSIDE NORMALISEDBAITS
-                if "isBait2bait" not in x.columns:
-                    x[, isBait2bait := FALSE]
-                    x[wb2b(otherEndID), isBait2bait:= TRUE]
-                """
                 x = x.loc[x["isBait2bait"] == "FALSE"]
 
             # x is the data table used to compute the scaling factors
             x = x.loc[x["distbin"].notna()]
-
-            #x["bincol"] = ["bin"+str(int(i/binsize)+1) for i in x["distbin"]]
-
             x["bincol"] = [int(i/binsize)+1 for i in x["distbin"]]
 
             npb_dic = {}
@@ -787,19 +777,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             sbbm = pd.merge(sbbm, geomean, how="left", on="distbin")
 
-        #DEseq-style normalisation
+        # DEseq-style normalisation
         if not shrink or viewpoint == "otherEnd":
             sbbm["s_iv"] = sbbm["bbm"]/sbbm["geo_mean"]
             s_v = sbbm.groupby(idcol, as_index=False).s_iv.median()
-
-        else:
-            logger.info("computing shrunken means...")
-            ##
-            #
-            #
-            #
-            #
-            #.....
 
         s_v.rename(columns={"s_iv": scol}, inplace=True)
 
@@ -1152,19 +1133,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     "the observed numbers of trans-counts per pool...")
 
         #Getting the observed numbers of trans-counts
-        #Mistery of Ntrans
-
         logger.info("Computing the total number of possible interactions per pool...")
         logger.info("Preparing the data...")
-        """
-        baitmap = pd.read_csv(baitmap, sep="\t", header=None)
-        rmap = pd.read_csv(rmap, sep="\t", header=None)
 
-        baitmap = baitmap.rename(columns={0:"baitchr", 3:"baitID"})
-        baitmap.drop([1, 2, 4], axis=1, inplace=True)
-        rmap = rmap.rename(columns={0:"otherEndchr", 3:"otherEndID"})
-        rmap.drop([1, 2], axis=1, inplace=True)
-        """
         rmap = rmap.drop(["start","end"], axis=1)
         rmap.rename({"chr": "otherEndchr", "ID":"otherEndID"},
                     inplace=True,
@@ -1316,12 +1287,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         distFunParams["head_coef"] = [alpha1, beta1]
         distFunParams["tail_coef"] = [alpha2, beta2]
 
-        #PLOT
         return distFunParams
 
 
     def readProxOEfile(self, poe, rmap):
-
         """
         Reads a pre-computed text file that denotes which other ends are in the proximal
         range relative to each bait, and gives that distance.
@@ -1713,13 +1682,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         robjects.r("log.p1 <- pdelap(N - 1L, alpha, beta=Bmean/alpha, lambda=Tmean, lower.tail=FALSE, log.p=TRUE)")
         log_p1 = robjects.r("log.p1")
-        x.loc[:,"log_p1"] = log_p1
+        x.loc[:, "log_p1"] = log_p1
 
         robjects.r("log.p2 <- ppois(N - 1L, lambda=Tmean, lower.tail=FALSE, log.p=TRUE)")
         log_p2 = robjects.r("log.p2")
-        x.loc[:,"log_p2"] = log_p2
+        x.loc[:, "log_p2"] = log_p2
 
-        x.loc[:,"log_p"] = np.where(x['Bmean'] < np.finfo(float).eps, x["log_p2"], x["log_p1"])
+        x.loc[:, "log_p"] = np.where(x['Bmean'] < np.finfo(float).eps, x["log_p2"], x["log_p1"])
 
         x.drop(["log_p1", "log_p2"], axis=1, inplace=True)
         #poisson_sf = np.vectorize(poisson.sf)
@@ -1737,11 +1706,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if sel.shape[0] > 0:
             logger.info("Approximating "+ str(len(sel))+ " very small p-values.")
 
-            sel.loc[:,"gamma"] = dispersion * (1+sel["Tmean"]/sel["Bmean"])**2
+            sel.loc[:, "gamma"] = dispersion * (1+sel["Tmean"]/sel["Bmean"])**2
 
-            sel.loc[:,"gamma"].replace([np.inf, -np.inf], 1e10, inplace=True)
+            sel.loc[:, "gamma"].replace([np.inf, -np.inf], 1e10, inplace=True)
 
-            sel.loc[:,"Bmean+Tmean"] = sel["Bmean"]+ sel["Tmean"]
+            sel.loc[:, "Bmean+Tmean"] = sel["Bmean"]+ sel["Tmean"]
 
             gamma_r = robjects.numpy2ri.numpy2ri(np.array(sel["gamma"]))
             bmean_tmean = robjects.numpy2ri.numpy2ri(np.array(sel["Bmean+Tmean"]))
@@ -1755,7 +1724,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             log_p = robjects.r("log_p")
 
-            sel.loc[:,"log_p"] = log_p
+            sel.loc[:, "log_p"] = log_p
 
             sel.sort_values(by=["log_p"], inplace=True)
 
@@ -2545,12 +2514,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         self.print_params(output_files["params_out"],
                           self.configuration)
 
-        """
+
         self.plotBaits(baitmap_df,
                        chinput_jiwb_scores,
                        dispersion,
                        output_files["pdf_examples"])
-        """
+
         self.exportResults(chinput_jiwb_scores,
                            output_files["washU_text"],
                            self.configuration["pychic_cutoff"],
@@ -2636,7 +2605,8 @@ if __name__ == "__main__":
         "nbpb" : path +"h19_chr20and21.nbpb",
         "npb" : path +"h19_chr20and21.npb",
         "poe" : path +"h19_chr20and21.poe",
-        "chinput" : path + "GM_rep1.chinput"
+        "chinput" : path + "GM_rep1.chinput"+","+
+                    "/home/pacera/chicago/PCHiCdata/inst/extdata/GMchinputFiles/GM_rep2.chinput"
                     #path + "GM_rep2.chinput",
                     #path + "GM_rep3.chinput"
     }
