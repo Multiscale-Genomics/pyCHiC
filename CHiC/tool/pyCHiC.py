@@ -1066,11 +1066,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_j = pd.merge(chinput_j, x, how="left", on="tlb")
 
         #If we can estimate s_i robustly, assume it to be one
-        chinput_j.loc[:,"tlb"].fillna(1, inplace=True)
+        chinput_j.loc[:, "tlb"].fillna(1, inplace=True)
 
-        chinput_j.loc[:,"NNboe"] = chinput_j[Ncol]/chinput_j["s_i"]
-        chinput_j.loc[:,"NNboe"] = chinput_j["NNboe"].round(decimals=0)
-        chinput_j.loc[:,"NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1)
+        chinput_j.loc[:, "NNboe"] = chinput_j[Ncol]/chinput_j["s_i"]
+        chinput_j.loc[:, "NNboe"] = chinput_j["NNboe"].round(decimals=0)
+        chinput_j.loc[:, "NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1)
 
         return chinput_j
 
@@ -1119,13 +1119,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if len(levels) == 1:
             levels.append(levels[0]+1)
 
-        transBaitLen.loc[:, "tblb"] = pd.cut(transBaitLen["transBaitLen"], levels, right=False)
-
+        transBaitLen.loc[:, "tblb"] = pd.cut(transBaitLen["transBaitLen"],
+                                             levels,
+                                             right=False,
+                                             labels=False
+                                            )
         transBaitLen.loc[:, "tblb"] = transBaitLen["tblb"].astype(str)
 
-        transBaitLen.loc[:, "tblb"] = np.where(transBaitLen["tblb"] == "nan",
-                                               "["+str(levels[-2])+", "+str(levels[-1])+")",
-                                               transBaitLen["tblb"])
+        #transBaitLen.loc[:, "tblb"] = np.where(transBaitLen["tblb"] == "nan",
+        #                                       "["+str(levels[-2])+", "+str(levels[-1])+")",
+        #                                       transBaitLen["tblb"])
 
         chinput_ji = pd.merge(chinput_ji, transBaitLen, how="left", on="baitID")
 
@@ -1136,16 +1139,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         logger.info("Computing the total number of possible interactions per pool...")
         logger.info("Preparing the data...")
 
-        rmap = rmap.drop(["start","end"], axis=1)
+        rmap = rmap.drop(["start", "end"], axis=1)
         rmap.rename({"chr": "otherEndchr", "ID":"otherEndID"},
                     inplace=True,
                     axis=1
                    )
 
         if "feature" in baitmap.columns:
-            baitmap = baitmap.drop(["start","end", "feature"], axis=1)
+            baitmap = baitmap.drop(["start", "end", "feature"], axis=1)
         else:
-            baitmap = baitmap.drop(["start","end"], axis=1)
+            baitmap = baitmap.drop(["start", "end"], axis=1)
 
         baitmap.rename({"chr": "baitchr", "ID":"baitID"},
                        inplace=True,
