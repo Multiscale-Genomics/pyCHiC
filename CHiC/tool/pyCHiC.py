@@ -557,7 +557,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         N_p_bait = pd.DataFrame() # pylint: disable=invalid-name
 
-        npb.loc[:,"sum"] = npb.iloc[:, 1:].sum(axis=1)
+        npb.loc[:, "sum"] = npb.iloc[:, 1:].sum(axis=1)
 
         N_p_bait = npb[["baitID", "sum"]].copy() # pylint: disable=invalid-name
 
@@ -751,7 +751,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             bins_elements = Counter(sbbm["distbin"])
 
-
             geo_mean = []
             counter = 0
 
@@ -765,7 +764,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             distbin_sorted = sorted(sbbm["distbin"].unique())
 
             sbbm_NB2B = sbbm[sbbm["tlb"].astype("str").str.contains("B2B") == False]
-
             geomean = sbbm_NB2B.groupby(
                 ["distbin"],
                 sort=False,
@@ -926,13 +924,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 cuts[-1] = max_transLength
             tlbClasses = pd.cut(transLen["transLength"],
                                 cuts,
-                                include_lowest=True
+                                include_lowest=True,
+                                labels=False
                                )
 
         transLen.loc[:, "tlb"] = tlbClasses
 
         if adjBait2bait:
-
             transLen_length = transLenB2B[transLenB2B["distSign"].abs() <= \
                 self.configuration["pychic_maxLBrownEst"]]["transLength"]
 
@@ -950,7 +948,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
                 tlbClassesB2B = pd.cut(transLenB2B["transLength"],
                                        cutB2B,
-                                       include_lowest=True)
+                                       include_lowest=True,
+                                       labels=False
+                                      )
 
             transLenB2B.loc[:, "tlb"] = tlbClassesB2B
 
@@ -967,8 +967,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         # Discard TLB column if present in x
         #if "tlb" in chinput_j delete it
-        if "tbl" in chinput_j.columns:
-            chinput_j.drop(["tbl"], axis=1, inplace=True)
+        if "tlb" in chinput_j.columns:
+            chinput_j.drop(["tlb"], axis=1, inplace=True)
 
         chinput_j = pd.merge(chinput_j, transLen, how="left", on="otherEndID")
 
@@ -1027,16 +1027,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x = x.drop_duplicates(subset=['otherEndID', 'distbin'], keep="first")
 
-        x.loc[:,"BinN"] = x["distbin"]/self.configuration["pychic_binsize"]+1
+        x.loc[:, "BinN"] = x["distbin"]/self.configuration["pychic_binsize"]+1
 
-        x.loc[:,"BinN"] = x["BinN"].astype(int)
+        x.loc[:, "BinN"] = x["BinN"].astype(int)
 
 
         ntot = []
         for r in zip(x["otherEndID"], x["BinN"]):
             ntot.append(nbpb_dic[r[0]][r[1]-1])
 
-        x.loc[:,"ntot"] = [int(i) for i in ntot]
+        x.loc[:, "ntot"] = [int(i) for i in ntot]
 
         nbpbSum = x[["tlb", "distbin", "ntot"]].copy()
 
@@ -2496,9 +2496,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_j = self.normaliseBaits(chinput_filtered, \
                                         input_files["npb"])
 
+
         chinput_ji = self.normaliseOtherEnds(chinput_j,
                                              input_files["nbpb"]
                                             )
+
 
         logger.info("\n Running estimateTechicalNoise")
 
