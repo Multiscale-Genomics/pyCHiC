@@ -157,6 +157,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 break
             return True
 
+    @task(returns=bool, pychic_export_format=IN, pychic_export_order=IN,
+          rmap=FILE_IN, baitmap=FILE_IN)
     def checks(self, pychic_export_format, pychic_export_order, rmap, baitmap,
                nbpb, npb, poe): # pylint: disable=invalid-name
         """
@@ -265,6 +267,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return True
 
+    @task(returns=bool, chinput=FILE_IN, bamfile=IN,
+          rmap=FILE_IN, baitmap=FILE_IN)
     def readSample(self, chinput, bamFile, rmap, baitmap): # pylint: disable=invalid-name
         """
         This function takes the chinput file and filter it according
@@ -286,43 +290,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x: DataFrame
         """
 
-        chinput = "".join(chinput)
         logger.info("reading and checking "+chinput)
 
         rmap_name = os.path.split(rmap)[1]
         baitmap_name = os.path.split(baitmap)[1]
 
-        with open(chinput, "r") as file_in:
-            for line in file_in:
-                line_hdl = line.rstrip()
-                if line_hdl[0] == "#":
+        if os.path.isfile(chinput):
+            logger.info(chinput+" file checked succesfully")
 
-                    bam_ = re.compile(r"bamname\S+")
-                    rmap_ = re.compile(r"digestfile\S+")
-                    baitmap_ = re.compile(r"baitmapfile\S+")
-
-                    bam_chinput = bam_.findall(line_hdl)
-                    rmap_chinput = rmap_.findall(line_hdl)
-                    baitmap_chinput = baitmap_.findall(line_hdl)
-
-                    if "".join(bam_chinput).split("=")[1] != bamFile:
-                        logger.fatal("The chinput file was not generated using "
-                                     "the BAM file specified, BAM file provided: "
-                                     +bamFile+" BAM file found: "+"".join(bam_chinput).split("=")[1])
-
-                    if "".join(baitmap_chinput).split("=")[1] != baitmap_name:
-                        logger.fatal("The chinput file was not generated using "
-                                     "the baitmap file specified, baitmap provided: "
-                                     +baitmap_name+" baimap found: "+"".join(baitmap_chinput).split("=")[1])
-
-                    if "".join(rmap_chinput).split("=")[1] != rmap_name:
-                        logger.fatal("The chinput file was not generated using "
-                                     "the rmap file specified, rmap provided"
-                                     +rmap_name+" rmap found x"+"".join(rmap_chinput).split("=")[1])
-                else:
-                    break
-
-        logger.info(chinput+"file checked succesfully")
+        else:
+            logger.fatal("chinput file does not exists =(")
 
         x = pd.read_csv(chinput, sep="\t", skiprows=1, dtype= # pylint: disable=invalid-name
                         {"baitID":int,
@@ -689,6 +666,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if viewpoint == "bait":
             scol = "s_j"
 
+
             x["distbin"] = pd.cut(x["distSign"].abs(),
                                   np.arange(0, self.configuration["pychic_maxLBrownEst"]+1,
                                             binsize)
@@ -697,14 +675,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             x["distbin"] = x['distbin'].apply(lambda x: x.left)
             x["distbin"] = x["distbin"].astype(float)
 
-            xAll = x # pylint: disable=invalid-name
+            xAll = x.copy() # pylint: disable=invalid-name
 
             if adjBait2bait:
                 x = x.loc[x["isBait2bait"] == "FALSE"]
 
             # x is the data table used to compute the scaling factors
+
             x = x.loc[x["distbin"].notna()]
-            x["bincol"] = [int(i/binsize)+1 for i in x["distbin"]]
+            x["bincol"] = ((x["distbin"]/binsize)+1).astype(int)
 
             npb_dic = {}
             with open(npb, "r") as npb_file:
@@ -717,10 +696,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             ntot = []
 
-            for r in zip(x["baitID"], x["bincol"]): # pylint: disable=invalid-name
-                ntot.append(npb_dic[r[0]][r[1]-1])
+            start = time.time()
 
-            x["ntot"] = [int(i) for i in ntot]
+            for r in zip(x["baitID"], x["bincol"]): # pylint: disable=invalid-name
+                ntot.append(int(npb_dic[r[0]][r[1]-1]))
+
+            x["ntot"] = ntot
 
         else:
             scol = "s_i"
@@ -823,7 +804,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x = self.normaliseFragmentSets(x, "bait", "baitID",
                                        "N", binsize, npb)
 
-
         x["NNb"] = (x["N"]/x["s_j"]).round()
         x["NNb"] = np.where(x["NNb"] == 0, 1, x["NNb"])
 
@@ -884,8 +864,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                       "isBait2bait" : chinput_j["isBait2bait"],
                                       "distSign" : abs(chinput_j["distSign"])})
 
-
-            transLen2 = transLen2[["distSign" , "isBait2bait", "otherEndID"]]  # pylint: disable=invalid-name
+            transLen2 = transLen2[["distSign", "isBait2bait", "otherEndID"]]  # pylint: disable=invalid-name
             transLen2.sort_values(["otherEndID", "distSign"], inplace=True)
             transLen2.drop_duplicates(["otherEndID"], inplace=True)
 
@@ -1668,8 +1647,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         delaporte = importr('Delaporte')
 
-        #x["Tmean"].astype(float, inplace=True)
-
         n_r = robjects.numpy2ri.numpy2ri(np.array(x["N"]))
         tmean_r = robjects.numpy2ri.numpy2ri(np.array(x["Tmean"]))
         bmean_r = robjects.numpy2ri.numpy2ri(np.array(x["Bmean"]))
@@ -1754,15 +1731,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         avgFragLen: float
         rmap: DataFrame
         """
-        if excludeMT:
-            if "MT" in rmap["chr"].astype(str):
-                #Not sure about this MT name
-                rmap = rmap[rmap["chr"] != "MT"]
-
-            if "chrMT" in rmap["chr"].astype(str):
-                rmap = rmap[rmap["chr"] != "chrMT"]
-
-            chrMAX = rmap.groupby(["chr"], as_index=False)["end"].max()
+        chrMAX = rmap.groupby(["chr"], as_index=False)["end"].max()
+        self.configuration["chrMAX"] = chrMAX
 
         avgFragLen = chrMAX["end"].sum()/rmap.shape[0]
 
@@ -1781,12 +1751,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         Nhyp: float
         """
-        chrMAX = rmap.groupby(["chr"], as_index=False)["end"].max()
-
-        chromo = chrMAX["chr"]
+        chromo = self.configuration["chrMAX"]["chr"]
 
         ##count # hypothesis
-        Nhyp = baitmap.shape[0] * ((2*rmap.shape[0]) - baitmap.shape[0] - 1)/2
+        Nhyp = baitmap.shape[0]*((2*rmap.shape[0]) - baitmap.shape[0] - 1)/2
 
         return Nhyp
 
@@ -1881,13 +1849,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         delta = self.configuration["pychic_weightDelta"]
 
         ##2. Get genomic/fragment map information
-        chrMAX = rmap.groupby(["chr"], as_index=False)["end"].max()
-
-        if "MT" in baitmap["chr"].astype(str):
-            baitamp = baitmap[baitmap["chr"] != "MT"]
-
-        if "chrMT" in baitmap["chr"].astype(str):
-            baitmap = baitmap[baitmap["chr"] != "chrMT"]
+        chrMAX = self.configuration["chrMAX"]
+        self.configuration["baitmap"] = baitmap
+        self.configuration["avgFragLen"] = avgFragLen
 
         Nhyp = self.getNoOfHypotheses(rmap, baitmap, avgFragLen)
 
@@ -1895,10 +1859,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ##Loop, summing contributions of eta
 
         eta_sigma = 0
-
-        self.configuration["chrMAX"] = chrMAX
-        self.configuration["baitmap"] = baitmap
-        self.configuration["avgFragLen"] = avgFragLen
 
         chrs = [c for c in rmap["chr"].unique()]
 
@@ -2314,7 +2274,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
                 index += 1
 
-        #plt.show()
         plt.savefig(self.configuration["execution"]+"/"+os.path.split(out_name)[1],
                     quality=95, dpi="figure", facecolor='w', edgecolor='w',
                     papertype=None,

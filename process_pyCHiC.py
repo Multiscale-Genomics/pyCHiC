@@ -25,7 +25,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from CHiC.tool.pyCHiC import pyCHiC
+from CHiC.tool.run_pyCHiC import run_pyCHiC
 
 ################################################
 
@@ -75,7 +75,7 @@ class process_pyCHiC(Workflow):
         output_metadata
         """
         try:
-            pychic_caller = pyCHiC(self.configuration)
+            pychic_caller = run_pyCHiC(self.configuration)
 
             output_files_chicago, output_metadata_chicago = pychic_caller.run(
                 input_files, metadata, output_files)
