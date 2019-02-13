@@ -33,7 +33,7 @@ from CHiC.tool.makeBaitmap import makeBaitmapTool
 from CHiC.tool.makeDesignFiles import makeDesignFilesTool
 from CHiC.tool.hicup_tool import hicup
 from CHiC.tool.bam2chicago_tool import bam2chicagoTool
-from CHiC.tool.pyCHiC import pyCHiC
+from CHiC.tool.run_pyCHiC import run_pyCHiC
 
 ################################################
 
@@ -198,7 +198,7 @@ class process_CHiC(Workflow):
             logger.fatal("process_bam2chicago failed to generate .chinput files")
 
         try:
-            pychic_caller = pyCHiC(self.configuration)
+            pychic_caller = run_pyCHiC(self.configuration)
 
             output_files_pychic, output_metadata_pychic = pychic_caller.run(
                 input_files, metadata, output_files)
@@ -222,7 +222,6 @@ class process_CHiC(Workflow):
         output_metadata.update(output_metadata_hicup)
         output_metadata.update(output_metadata_bam2chicago)
         output_metadata.update(output_metadata_pychic)
-
 
         return output_files, output_metadata
 

@@ -42,14 +42,14 @@ try:
         raise ImportError
     from pycompss.api.parameter import FILE_IN, FILE_OUT, IN
     from pycompss.api.task import task
-    from pycompss.api.api import compss_wait_on, compss_delete_file, compss_open
+    from pycompss.api.api import compss_wait_on, compss_delete_file
 except ImportError:
     logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
     logger.warn("          Using mock decorators.")
 
     from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import compss_wait_on, compss_delete_file, compss_open # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import compss_wait_on, compss_delete_file # pylint: disable=ungrouped-imports
 
 from basic_modules.tool import Tool
 from basic_modules.metadata import Metadata # pylint: disable=unused-import
@@ -343,7 +343,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         rmap_df = pd.read_csv(rmap,
                               sep="\t",
                               names=["chr", "start", "end", "ID"],
-                              dtype = {"chr":str , "start":int, "end":int, "ID":int})
+                              dtype = {"chr":str, "start":int, "end":int, "ID":int})
 
         rmap_id = set(rmap_df.iloc[1:, 3])
 
@@ -359,14 +359,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             baitmap_df.columns = ["chr", "start", "end", "ID", "feature"]
         baitmap_id = set(baitmap_df.iloc[:, 3])
 
-
-        """
-        rmap_df = pd.read_csv(rmap, sep="\t", header=None)
-        rmap_id = set(rmap_df.iloc[:, 3])
-
-        baitmap_df = pd.read_csv(baitmap, sep="\t", header=None)
-        baitmap_id = set(baitmap_df.iloc[:, 3])
-        """
         x_rmap = set(x.iloc[:, 1])
         x_baitmap = set(x.iloc[:, 0])
 
@@ -389,9 +381,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     str(self.configuration["pychic_minFragLen"])+" and bigger"
                     "than "+str(self.configuration["pychic_maxFragLen"]))
 
-        #filter rmap chromosomes that are in the baitmap
-        chr_baitmap = baitmap_df.iloc[:,0].unique()
-        rmap_df = rmap_df[rmap_df.iloc[:,0].isin(list(chr_baitmap))]
+        #filter rmap chromosomes that are not in the baitmap file
+        chr_baitmap = baitmap_df.iloc[:, 0].unique()
+        rmap_df = rmap_df[rmap_df.iloc[:, 0].isin(list(chr_baitmap))]
 
         x = x.loc[ # pylint: disable=invalid-name
             (x["otherEndLen"] >= self.configuration["pychic_minFragLen"]) &
@@ -542,10 +534,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             scaling factors for each replicate
         npb = DataFrame
         """
-
-        N_compile = re.compile(r"N.\d+") # pylint: disable=invalid-name
         N_cols = re.findall(r'N.\d+', " ".join(chinput_merge.columns)) # pylint: disable=invalid-name
-        ns = list(map(lambda x: x.split(".")[1], N_cols)) # pylint: disable=invalid-name
+        ns = [x.split(".")[1] for x in N_cols] # pylint: disable=invalid-name
         n = len(N_cols) # pylint: disable=invalid-name
 
         chinput_merge = chinput_merge.loc[
@@ -567,7 +557,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         N_p_bait = pd.DataFrame() # pylint: disable=invalid-name
 
-        npb.loc[:,"sum"] = npb.iloc[:, 1:].sum(axis=1)
+        npb.loc[:, "sum"] = npb.iloc[:, 1:].sum(axis=1)
 
         N_p_bait = npb[["baitID", "sum"]].copy() # pylint: disable=invalid-name
 
@@ -710,19 +700,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             xAll = x # pylint: disable=invalid-name
 
             if adjBait2bait:
-                """
-                BE CAREFULL IF THIS FUNCTION IS CALLED OUTSIDE NORMALISEDBAITS
-                if "isBait2bait" not in x.columns:
-                    x[, isBait2bait := FALSE]
-                    x[wb2b(otherEndID), isBait2bait:= TRUE]
-                """
                 x = x.loc[x["isBait2bait"] == "FALSE"]
 
             # x is the data table used to compute the scaling factors
             x = x.loc[x["distbin"].notna()]
-
-            #x["bincol"] = ["bin"+str(int(i/binsize)+1) for i in x["distbin"]]
-
             x["bincol"] = [int(i/binsize)+1 for i in x["distbin"]]
 
             npb_dic = {}
@@ -770,7 +751,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             bins_elements = Counter(sbbm["distbin"])
 
-
             geo_mean = []
             counter = 0
 
@@ -784,7 +764,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             distbin_sorted = sorted(sbbm["distbin"].unique())
 
             sbbm_NB2B = sbbm[sbbm["tlb"].astype("str").str.contains("B2B") == False]
-
             geomean = sbbm_NB2B.groupby(
                 ["distbin"],
                 sort=False,
@@ -796,19 +775,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             sbbm = pd.merge(sbbm, geomean, how="left", on="distbin")
 
-        #DEseq-style normalisation
+        # DEseq-style normalisation
         if not shrink or viewpoint == "otherEnd":
             sbbm["s_iv"] = sbbm["bbm"]/sbbm["geo_mean"]
             s_v = sbbm.groupby(idcol, as_index=False).s_iv.median()
-
-        else:
-            logger.info("computing shrunken means...")
-            ##
-            #
-            #
-            #
-            #
-            #.....
 
         s_v.rename(columns={"s_iv": scol}, inplace=True)
 
@@ -954,13 +924,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 cuts[-1] = max_transLength
             tlbClasses = pd.cut(transLen["transLength"],
                                 cuts,
-                                include_lowest=True
+                                include_lowest=True,
+                                labels=False
                                )
 
         transLen.loc[:, "tlb"] = tlbClasses
 
         if adjBait2bait:
-
             transLen_length = transLenB2B[transLenB2B["distSign"].abs() <= \
                 self.configuration["pychic_maxLBrownEst"]]["transLength"]
 
@@ -978,7 +948,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
                 tlbClassesB2B = pd.cut(transLenB2B["transLength"],
                                        cutB2B,
-                                       include_lowest=True)
+                                       include_lowest=True,
+                                       labels=False
+                                      )
 
             transLenB2B.loc[:, "tlb"] = tlbClassesB2B
 
@@ -995,8 +967,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         # Discard TLB column if present in x
         #if "tlb" in chinput_j delete it
-        if "tbl" in chinput_j.columns:
-            chinput_j.drop(["tbl"], axis=1, inplace=True)
+        if "tlb" in chinput_j.columns:
+            chinput_j.drop(["tlb"], axis=1, inplace=True)
 
         chinput_j = pd.merge(chinput_j, transLen, how="left", on="otherEndID")
 
@@ -1055,16 +1027,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x = x.drop_duplicates(subset=['otherEndID', 'distbin'], keep="first")
 
-        x.loc[:,"BinN"] = x["distbin"]/self.configuration["pychic_binsize"]+1
+        x.loc[:, "BinN"] = x["distbin"]/self.configuration["pychic_binsize"]+1
 
-        x.loc[:,"BinN"] = x["BinN"].astype(int)
+        x.loc[:, "BinN"] = x["BinN"].astype(int)
 
 
         ntot = []
         for r in zip(x["otherEndID"], x["BinN"]):
             ntot.append(nbpb_dic[r[0]][r[1]-1])
 
-        x.loc[:,"ntot"] = [int(i) for i in ntot]
+        x.loc[:, "ntot"] = [int(i) for i in ntot]
 
         nbpbSum = x[["tlb", "distbin", "ntot"]].copy()
 
@@ -1094,11 +1066,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_j = pd.merge(chinput_j, x, how="left", on="tlb")
 
         #If we can estimate s_i robustly, assume it to be one
-        chinput_j.loc[:,"tlb"].fillna(1, inplace=True)
+        chinput_j.loc[:, "tlb"].fillna(1, inplace=True)
 
-        chinput_j.loc[:,"NNboe"] = chinput_j[Ncol]/chinput_j["s_i"]
-        chinput_j.loc[:,"NNboe"] = chinput_j["NNboe"].round(decimals=0)
-        chinput_j.loc[:,"NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1)
+        chinput_j.loc[:, "NNboe"] = chinput_j[Ncol]/chinput_j["s_i"]
+        chinput_j.loc[:, "NNboe"] = chinput_j["NNboe"].round(decimals=0)
+        chinput_j.loc[:, "NNboe"] = np.where(chinput_j["NNboe"] > 1, chinput_j["NNboe"], 1)
 
         return chinput_j
 
@@ -1147,13 +1119,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if len(levels) == 1:
             levels.append(levels[0]+1)
 
-        transBaitLen.loc[:, "tblb"] = pd.cut(transBaitLen["transBaitLen"], levels, right=False)
-
+        transBaitLen.loc[:, "tblb"] = pd.cut(transBaitLen["transBaitLen"],
+                                             levels,
+                                             right=False,
+                                             labels=False
+                                            )
         transBaitLen.loc[:, "tblb"] = transBaitLen["tblb"].astype(str)
 
-        transBaitLen.loc[:, "tblb"] = np.where(transBaitLen["tblb"] == "nan",
-                                               "["+str(levels[-2])+", "+str(levels[-1])+")",
-                                               transBaitLen["tblb"])
+        #transBaitLen.loc[:, "tblb"] = np.where(transBaitLen["tblb"] == "nan",
+        #                                       "["+str(levels[-2])+", "+str(levels[-1])+")",
+        #                                       transBaitLen["tblb"])
 
         chinput_ji = pd.merge(chinput_ji, transBaitLen, how="left", on="baitID")
 
@@ -1161,29 +1136,19 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     "the observed numbers of trans-counts per pool...")
 
         #Getting the observed numbers of trans-counts
-        #Mistery of Ntrans
-
         logger.info("Computing the total number of possible interactions per pool...")
         logger.info("Preparing the data...")
-        """
-        baitmap = pd.read_csv(baitmap, sep="\t", header=None)
-        rmap = pd.read_csv(rmap, sep="\t", header=None)
 
-        baitmap = baitmap.rename(columns={0:"baitchr", 3:"baitID"})
-        baitmap.drop([1, 2, 4], axis=1, inplace=True)
-        rmap = rmap.rename(columns={0:"otherEndchr", 3:"otherEndID"})
-        rmap.drop([1, 2], axis=1, inplace=True)
-        """
-        rmap = rmap.drop(["start","end"], axis=1)
+        rmap = rmap.drop(["start", "end"], axis=1)
         rmap.rename({"chr": "otherEndchr", "ID":"otherEndID"},
                     inplace=True,
                     axis=1
                    )
 
         if "feature" in baitmap.columns:
-            baitmap = baitmap.drop(["start","end", "feature"], axis=1)
+            baitmap = baitmap.drop(["start", "end", "feature"], axis=1)
         else:
-            baitmap = baitmap.drop(["start","end"], axis=1)
+            baitmap = baitmap.drop(["start", "end"], axis=1)
 
         baitmap.rename({"chr": "baitchr", "ID":"baitID"},
                        inplace=True,
@@ -1325,12 +1290,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         distFunParams["head_coef"] = [alpha1, beta1]
         distFunParams["tail_coef"] = [alpha2, beta2]
 
-        #PLOT
         return distFunParams
 
 
     def readProxOEfile(self, poe, rmap):
-
         """
         Reads a pre-computed text file that denotes which other ends are in the proximal
         range relative to each bait, and gives that distance.
@@ -1722,13 +1685,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         robjects.r("log.p1 <- pdelap(N - 1L, alpha, beta=Bmean/alpha, lambda=Tmean, lower.tail=FALSE, log.p=TRUE)")
         log_p1 = robjects.r("log.p1")
-        x.loc[:,"log_p1"] = log_p1
+        x.loc[:, "log_p1"] = log_p1
 
         robjects.r("log.p2 <- ppois(N - 1L, lambda=Tmean, lower.tail=FALSE, log.p=TRUE)")
         log_p2 = robjects.r("log.p2")
-        x.loc[:,"log_p2"] = log_p2
+        x.loc[:, "log_p2"] = log_p2
 
-        x.loc[:,"log_p"] = np.where(x['Bmean'] < np.finfo(float).eps, x["log_p2"], x["log_p1"])
+        x.loc[:, "log_p"] = np.where(x['Bmean'] < np.finfo(float).eps, x["log_p2"], x["log_p1"])
 
         x.drop(["log_p1", "log_p2"], axis=1, inplace=True)
         #poisson_sf = np.vectorize(poisson.sf)
@@ -1746,11 +1709,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if sel.shape[0] > 0:
             logger.info("Approximating "+ str(len(sel))+ " very small p-values.")
 
-            sel.loc[:,"gamma"] = dispersion * (1+sel["Tmean"]/sel["Bmean"])**2
+            sel.loc[:, "gamma"] = dispersion * (1+sel["Tmean"]/sel["Bmean"])**2
 
-            sel.loc[:,"gamma"].replace([np.inf, -np.inf], 1e10, inplace=True)
+            sel.loc[:, "gamma"].replace([np.inf, -np.inf], 1e10, inplace=True)
 
-            sel.loc[:,"Bmean+Tmean"] = sel["Bmean"]+ sel["Tmean"]
+            sel.loc[:, "Bmean+Tmean"] = sel["Bmean"]+ sel["Tmean"]
 
             gamma_r = robjects.numpy2ri.numpy2ri(np.array(sel["gamma"]))
             bmean_tmean = robjects.numpy2ri.numpy2ri(np.array(sel["Bmean+Tmean"]))
@@ -1764,7 +1727,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             log_p = robjects.r("log_p")
 
-            sel.loc[:,"log_p"] = log_p
+            sel.loc[:, "log_p"] = log_p
 
             sel.sort_values(by=["log_p"], inplace=True)
 
@@ -1993,11 +1956,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         eta = expit(alpha + beta*np.log(dist))
 
-        a = np.log((self.expit(delta) - self.expit(gamma))*eta + self.expit(gamma))
+        fa = np.log((self.expit(delta) - self.expit(gamma))*eta + self.expit(gamma))
 
-        b = np.log((self.expit(delta) - self.expit(gamma))*eta_bar) + self.expit(gamma)
+        fb = np.log((self.expit(delta) - self.expit(gamma))*eta_bar) + self.expit(gamma)
 
-        return a - b
+        return fa - fb
 
     def getScores(self, x, rmap, baitmap):
         """
@@ -2026,16 +1989,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #Gets weights
         logger.info("Calculating p-values weights...")
 
-        x.loc[:,"log_w"] = alpha + beta*np.log(x["distSign"].abs().replace(np.nan, np.inf))
-        x.loc[:,"log_w"] = 1/(1+e**(- x["log_w"]))
+        x.loc[:, "log_w"] = alpha + beta*np.log(x["distSign"].abs().replace(np.nan, np.inf))
+        x.loc[:, "log_w"] = 1/(1+e**(- x["log_w"]))
 
         delta = 1/(1+math.exp(-delta))
         gamma = 1/(1+math.exp(-gamma))
 
-        x.loc[:,"log_w"] = (np.log((delta - gamma)*x["log_w"] + gamma)) \
+        x.loc[:, "log_w"] = (np.log((delta - gamma)*x["log_w"] + gamma)) \
             - (np.log((delta - gamma)*eta_bar) + gamma)
 
-        x.loc[:,"log_q"] = x["log_p"] - x["log_w"]
+        x.loc[:, "log_q"] = x["log_p"] - x["log_w"]
 
         logger.info("Calculating scores..")
 
@@ -2043,9 +2006,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         getweights = np.vectorize(self.getWeights, otypes=[float])
         minval = getweights(0)
 
-        x.loc[:,"score"] = -x["log_q"] - minval
+        x.loc[:, "score"] = -x["log_q"] - minval
 
-        x.loc[:,"score"] = np.where(x["score"] > 0, x["score"], 0)
+        x.loc[:, "score"] = np.where(x["score"] > 0, x["score"], 0)
 
         return x
 
@@ -2149,7 +2112,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x = x[x["score"] >= cutoff]
 
-        x = x[["baitID", "otherEndID", "N", "score"]]
+        x = x[["baitID", "otherEndID", "N", "score"]].copy()
 
         x = pd.merge(x, rmap, how="left", on="otherEndID")
 
@@ -2200,15 +2163,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             out["newLineOEChr"] = '\n'+out["otherEnd_chr"].astype(str)
 
-            #out["newLineOEChr"] = out["newLineOEChr"].astype(int)
-
             out = out[["bait_chr", "bait_start", "bait_end", "bait_name",
                        "N_reads", "score", "newLineOEChr", "otherEnd_start",
                        "otherEnd_end", "otherEnd_name", "N_reads", "score"]]
 
             import csv
             out.to_csv(self.configuration["execution"]+"/"+ \
-                       self.configuration["pychic_outprefix"]+"_seqmonk.txt",
+                       "pychic_output_seqmonk.txt",
                        sep="\t",
                        header=False,
                        index=False,
@@ -2225,7 +2186,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                        ]]
 
             out.to_csv(self.configuration["execution"]+"/"+ \
-                       self.configuration["pychic_outprefix"]+".ibed",
+                       "pychic_output"+".ibed",
                        sep="\t",
                        index=False
                       )
@@ -2235,8 +2196,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             out = out0[["bait_chr", "bait_start", "bait_end",
                         "otherEnd_chr", "otherEnd_start", "otherEnd_end", "otherEnd_name",
-                        "score"]]
-
+                        "score"]].copy()
 
         if "washU_text" in export_format:
             logger.info("Writing out text file for WashU browser upload...")
@@ -2370,122 +2330,132 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         Parameters
         ----------
         input_files : dict
-            pychic_rmap
-            pychic_baitmap
-            pychic_poe
-            pychic_npbp
-            pychic_npb
-            pychic_settings-file
-            pychic_chinput
 
         metadata : dict
-            pychic_cutoff
-            pychic_export_format
-            pychic_export_order
-            pychic_examples_prox_dist
-            pychic_examples_full_range
 
         output_files : dict
-            "washU_text" : str
-                path to washu_text
-            "pdf_examples" : str
-                path to pdf_examples
-            "params_out" : str
-                path to params_out
-
 
         Returns
         -------
-        output_files : dict
-        output_metadata : dict
+        Bool
         """
-        rtree_file_dat = "tests/data/test_rmap/rtree_file.dat"
-        rtree_file_idx = "tests/data/test_rmap/rtree_file.idx"
-        chr_handler = "tests/data/test_baitmap/chr_handler.txt"
-        rmap = "tests/data/test_run_chicago/test.rmap"
-        baitmap = "tests/data/test_run_chicago/test.baitmap"
-        bait_sam = "tests/data/test_baitmap/baits.sam"
-        nbpb = "tests/data/test_run_chicago/test.nbpb"
-        npb = "tests/data/test_run_chicago/test.npb"
-        poe = "tests/data/test_run_chicago/test.poe"
-        out_bam = "tests/data/test_baitmap/baits.bam"
-        sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
-
-        if "RMAP" not in input_files:
-            input_files["RMAP"] = rmap
-        if "BAITMAP" not in input_files:
-            input_files["BAITMAP"] = baitmap
-        if "nbpb" not in input_files:
-            input_files["nbpb"] = nbpb
-        if "npb" not in input_files:
-            input_files["npb"] = npb
-        if "poe" not in input_files:
-            input_files["poe"] = poe
-        if "chinput" not in input_files:
-            input_files["chinput"] = output_files["chinput"]
-
         if self.configuration["pychic_features_plot"] == "None":
             self.configuration["pychic_features_plot"] = None
 
-        self.configuration["pychic_cutoff"] = int(self.configuration["pychic_cutoff"])
+        if "pychic_cutoff" not in self.configuration:
+            self.configuration["pychic_cutoff"] = 5
+        else:
+            self.configuration["pychic_cutoff"] = int(self.configuration["pychic_cutoff"])
 
         if "pychic_binsize" not in self.configuration:
-            self.configuration["pychic_binsize"] = int(self.configuration["makeDesignFiles_binsize"])
+            self.configuration["pychic_binsize"] = 20000
         else:
             self.configuration["pychic_binsize"] = int(self.configuration["pychic_binsize"])
 
         if "pychic_minFragLen" not in self.configuration:
-            self.configuration["pychic_minFragLen"] = int(self.configuration["makeDesignFiles_minFragLen"])
+            self.configuration["pychic_minFragLen"] = 150
         else:
             self.configuration["pychic_minFragLen"] = int(self.configuration["pychic_minFragLen"])
 
         if "pychic_maxFragLen" not in self.configuration:
-            self.configuration["pychic_maxFragLen"] = int(self.configuration["makeDesignFiles_maxFragLen"])
+            self.configuration["pychic_maxFragLen"] = 40000
         else:
             self.configuration["pychic_maxFragLen"] = int(self.configuration["pychic_maxFragLen"])
 
+        if "pychic_minNPerBait" not in self.configuration:
+            self.configuration["pychic_minNPerBait"] = 250
+        else:
+            self.configuration["pychic_minNPerBait"] = int(self.configuration["pychic_minNPerBait"])
 
-        self.configuration["pychic_minNPerBait"] = int(self.configuration["pychic_minNPerBait"])
-        self.configuration["pychic_tlb_minProxOEPerBin"] = \
-            int(self.configuration["pychic_tlb_minProxOEPerBin"])
-        self.configuration["pychic_tlb_minProxB2BPerBin"] = \
-            int(self.configuration["pychic_tlb_minProxB2BPerBin"])
-        self.configuration["pychic_brownianNoise_samples"] = \
-            int(self.configuration["pychic_brownianNoise_samples"])
-        self.configuration["pychic_brownianNoise_subset"] = \
-            int(self.configuration["pychic_brownianNoise_subset"])
+        if "pychic_tlb_minProxOEPerBin" not in self.configuration:
+            self.configuration["pychic_tlb_minProxOEPerBin"] = 150
+        else:
+            self.configuration["pychic_tlb_minProxOEPerBin"] = \
+                int(self.configuration["pychic_tlb_minProxOEPerBin"])
 
-        if self.configuration["pychic_brownianNoise_seed"]:
-            int(self.configuration["pychic_brownianNoise_seed"])
 
-        self.configuration["pychic_techNoise_minBaitsPerBin"] = \
-            int(self.configuration["pychic_techNoise_minBaitsPerBin"])
+        if "pychic_tlb_minProxB2BPerBin" not in self.configuration:
+            self.configuration["pychic_tlb_minProxB2BPerBin"] = 15
+        else:
+            self.configuration["pychic_tlb_minProxB2BPerBin"] = \
+                int(self.configuration["pychic_tlb_minProxB2BPerBin"])
+
+
+        if "pychic_brownianNoise_samples" not in self.configuration:
+            self.configuration["pychic_brownianNoise_samples"] = 1
+        else:
+            self.configuration["pychic_brownianNoise_samples"] = \
+                int(self.configuration["pychic_brownianNoise_samples"])
+
+
+        if "pychic_brownianNoise_subset" not in self.configuration:
+            self.configuration["pychic_brownianNoise_subset"] = 500
+        else:
+            self.configuration["pychic_brownianNoise_subset"] = \
+                int(self.configuration["pychic_brownianNoise_subset"])
+
+
+        if "pychic_techNoise_minBaitsPerBin" not in self.configuration:
+            self.configuration["pychic_techNoise_minBaitsPerBin"] = 150
+        else:
+            self.configuration["pychic_techNoise_minBaitsPerBin"] = \
+                int(self.configuration["pychic_techNoise_minBaitsPerBin"])
+
 
         if "pychic_maxLBrownEst" not in self.configuration:
-            self.configuration["pychic_maxLBrownEst"] = float(self.configuration["makeDesignFiles_maxLBrownEst"])
+            self.configuration["pychic_maxLBrownEst"] = 1500000.0
         else:
-            self.configuration["pychic_maxLBrownEst"] = float(self.configuration["pychic_maxLBrownEst"])
-        self.configuration["pychic_tlb_filterTopPercent"] = \
-            float(self.configuration["pychic_tlb_filterTopPercent"])
+            self.configuration["pychic_maxLBrownEst"] = \
+                float(self.configuration["pychic_maxLBrownEst"])
 
-        self.configuration["pychic_weightAlpha"] = float(self.configuration["pychic_weightAlpha"])
-        self.configuration["pychic_weightBeta"] = float(self.configuration["pychic_weightBeta"])
-        self.configuration["pychic_weightGamma"] = float(self.configuration["pychic_weightGamma"])
-        self.configuration["pychic_weightDelta"] = float(self.configuration["pychic_weightDelta"])
 
-        self.configuration["pychic_removeAdjacent"] = True
-        self.configuration["pychic_adjBait2bait"] = True
+        if "pychic_tlb_filterTopPercent" not in self.configuration:
+            self.configuration["pychic_tlb_filterTopPercent"] = 0.01
+        else:
+            self.configuration["pychic_tlb_filterTopPercent"] = \
+                float(self.configuration["pychic_tlb_filterTopPercent"])
+
+
+        if "pychic_weightAlpha" not in self.configuration:
+            self.configuration["pychic_weightAlpha"] = 34.1157346557331
+        else:
+            self.configuration["pychic_weightAlpha"] = \
+                float(self.configuration["pychic_weightAlpha"])
+
+
+        if "pychic_weightAlpha" not in self.configuration:
+            self.configuration["pychic_weightBeta"] = -2.58688050486759
+        else:
+            self.configuration["pychic_weightBeta"] = \
+                float(self.configuration["pychic_weightBeta"])
+
+
+        if "pychic_weightAlpha" not in self.configuration:
+            self.configuration["pychic_weightGamma"] = -17.1347845819659
+        else:
+            self.configuration["pychic_weightGamma"] = \
+                float(self.configuration["pychic_weightGamma"])
+
+
+        if "pychic_weightAlpha" not in self.configuration:
+            self.configuration["pychic_weightDelta"] = -7.07609245521541
+        else:
+            self.configuration["pychic_weightDelta"] = \
+                float(self.configuration["pychic_weightDelta"])
+
 
         if "pychic_cpu" not in self.configuration:
             self.configuration["pychic_cpu"] = 1
         else:
             self.configuration["pychic_cpu"] = int(self.configuration["pychic_cpu"])
 
-        if "pychic_bam" not in self.configuration:
-            self.configuration["pychic_bam"] = sorted_bam
 
-        if "pychic_binsize" not in self.configuration:
-            self.configuration["pychic_binsize"] = self.configuration["makeDesignFiles_binsize"]
+        if "pychic_bam" not in self.configuration:
+            logger.info("Insert the name of the BAM file")
+            self.configuration["pychic_bam"] = "None"
+
+        self.configuration["pychic_removeAdjacent"] = True
+        self.configuration["pychic_adjBait2bait"] = True
 
         for test_file in input_files:
             if self.exist_file(input_files[test_file], test_file) is False:
@@ -2504,17 +2474,21 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput = input_files["chinput"].split(",")
         # Lets keep it to one for now
         if len(chinput) == 1:
-            chinput_filtered, rmap_df, baitmap_df = self.readSample(input_files["chinput"],
-                                                                    self.configuration["pychic_bam"],
-                                                                    input_files["RMAP"],
-                                                                    input_files["BAITMAP"])
+            chinput_filtered, rmap_df, baitmap_df = self.readSample(
+                input_files["chinput"],
+                self.configuration["pychic_bam"],
+                input_files["RMAP"],
+                input_files["BAITMAP"]
+            )
         else:
             chinputs_filtered = {}
-            for i in range(len(chinput)):
-                new_chinput, rmap_df, baitmap_df = self.readSample(chinput[i],
+            for i in enumerate(chinput):
+                new_chinput, rmap_df, baitmap_df = self.readSample(
+                    chinput[i[0]],
                     self.configuration["pychic_bam"],
                     input_files["RMAP"],
-                    input_files["BAITMAP"])
+                    input_files["BAITMAP"]
+                )
 
                 chinputs_filtered[str(i)] = new_chinput
 
@@ -2525,16 +2499,19 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_j = self.normaliseBaits(chinput_filtered, \
                                         input_files["npb"])
 
+
         chinput_ji = self.normaliseOtherEnds(chinput_j,
                                              input_files["nbpb"]
                                             )
+
 
         logger.info("\n Running estimateTechicalNoise")
 
         #Import and prepare RMAP and BAITMAP HERE
         chinput_jiw = self.estimateTechnicalNoise(chinput_ji,
                                                   rmap_df,
-                                                  baitmap_df)
+                                                  baitmap_df
+                                                  )
 
         distFunParams = self.estimateDistFun(chinput_jiw)
 
@@ -2554,12 +2531,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         self.print_params(output_files["params_out"],
                           self.configuration)
 
-        """
+
         self.plotBaits(baitmap_df,
                        chinput_jiwb_scores,
                        dispersion,
                        output_files["pdf_examples"])
-        """
+
         self.exportResults(chinput_jiwb_scores,
                            output_files["washU_text"],
                            self.configuration["pychic_cutoff"],
@@ -2569,127 +2546,4 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                            baitmap_df
                           )
 
-        compss_delete_file(rtree_file_idx)
-        compss_delete_file(rtree_file_dat)
-        compss_delete_file(chr_handler)
-        compss_delete_file(rmap)
-        compss_delete_file(baitmap)
-        compss_delete_file(bait_sam)
-        compss_delete_file(npb)
-        compss_delete_file(nbpb)
-        compss_delete_file(poe)
-        compss_delete_file(out_bam)
-        compss_delete_file(sorted_bam)
-
-        if "genome_name" in self.configuration:
-            files_dir = os.listdir(self.configuration["execution"])
-            for file_ in files_dir:
-                if file_.startswith("Digest_"+self.configuration["genome_name"]):
-                    os.remove(file_)
-
-        if "chinput" not in input_metadata:
-            input_metadata["chinput"] = input_metadata["genome_fa"]
-
-        output_metadata = {
-            "washU_text" : Metadata(
-                data_type="data_chic",
-                file_type="TXT",
-                file_path=output_files["washU_text"],
-                sources=[
-
-                ],
-                taxon_id=input_metadata["chinput"].taxon_id,
-                meta_data={
-                    "tool": "process_CHiC",
-                    "tool_description" : "run_chicago"
-                }
-            ),
-
-            "pdf_examples" : Metadata(
-                data_type="data_chic",
-                file_type="PDF",
-                file_path=output_files["pdf_examples"],
-                sources=[
-                ],
-                taxon_id=input_metadata["chinput"].taxon_id,
-                meta_data={
-                    "tool": "process_CHiC",
-                    "tool_description" : "run_chicago"
-                }
-            ),
-
-            "params_out" : Metadata(
-                data_type="data_chic",
-                file_type="TXT",
-                file_path=output_files["params_out"],
-                sources=[
-                ],
-                taxon_id=input_metadata["chinput"].taxon_id,
-                meta_data={
-                    "tool": "process_CHiC",
-                    "tool_description" : "run_chicago"
-                }
-            )
-        }
-
-        return output_files, output_metadata
-
-
-if __name__ == "__main__":
-
-    path = "../../tests/data/test_run_chicago/data_chicago/"
-
-    input_files = {
-        "RMAP" : path +"h19_chr20and21.rmap",
-        "BAITMAP" : path +"h19_chr20and21.baitmap",
-        "nbpb" : path +"h19_chr20and21.nbpb",
-        "npb" : path +"h19_chr20and21.npb",
-        "poe" : path +"h19_chr20and21.poe",
-        "chinput" : path + "GM_rep1.chinput"
-                    #path + "GM_rep2.chinput",
-                    #path + "GM_rep3.chinput"
-    }
-
-    metadata = {
-     "chinput" : Metadata(
-            "data_chicago", "chinput", [], None, None, 9606)
-    }
-
-    output_files = {
-        "washU_text" : "out_test_washU_text.txt",
-        "pdf_examples" : "out_test_examples.pdf",
-        "params_out" : "parameters.txt"
-        }
-
-    configuration = {
-        "pychic_features_plot" : None,
-        "pychic_binsize" : 20000,
-        "execution" : ".",
-        "pychic_cpu" : 3,
-        "pychic_cutoff" : 5,
-        "pychic_export_format" : ["washU_text"],
-        "pychic_order" : "score",
-        "pychic_maxLBrownEst" : 1500000.0,
-        "pychic_minFragLen" : 150, # minimun OE fragment lenght in bps
-        "pychic_maxFragLen" : 40000, # maximun OE fragment lenght in bps
-        "pychic_minNPerBait" : 250, # total number of interactions per bait
-        "pychic_removeAdjacent" : "True",
-        "pychic_adjBait2bait" : "True",
-        "pychic_tlb_filterTopPercent" : 0.01,
-        "pychic_tlb_minProxOEPerBin" : 150,
-        "pychic_tlb_minProxB2BPerBin" : 15,
-        "pychic_techNoise_minBaitsPerBin" : 150,
-        "pychic_brownianNoise_samples" : 1,
-        "pychic_brownianNoise_subset" : 500,
-        "pychic_brownianNoise_seed" : 3,
-        "pychic_weightAlpha" : 34.1157346557331,
-        "pychic_weightBeta" : -2.58688050486759,
-        "pychic_weightGamma" : -17.1347845819659,
-        "pychic_weightDelta" : -7.07609245521541,
-        #"pychic_Rda" : "False",
-        #"pychic_output_dir" : path +"output_pyCHiC",
-
-    }
-
-    pyCHiC_obj = pyCHiC(configuration)
-    pyCHiC_obj.run(input_files, metadata, output_files)
+        return True
