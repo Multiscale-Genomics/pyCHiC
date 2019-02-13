@@ -231,7 +231,7 @@ if __name__ == "__main__":
         "execution" : ".",
         "pychic_cpu" : 3,
         "pychic_cutoff" : 5,
-        "pychic_export_format" : ["washU_text"],
+        "pychic_export_format" : ["washU_text", "seqMonk", "interBed"],
         "pychic_order" : "score",
         "pychic_maxLBrownEst" : 1500000.0,
         "pychic_minFragLen" : 150, # minimun OE fragment lenght in bps

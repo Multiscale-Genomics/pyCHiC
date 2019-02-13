@@ -2109,7 +2109,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x = x[x["score"] >= cutoff]
 
-        x = x[["baitID", "otherEndID", "N", "score"]]
+        x = x[["baitID", "otherEndID", "N", "score"]].copy()
 
         x = pd.merge(x, rmap, how="left", on="otherEndID")
 
@@ -2160,15 +2160,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             out["newLineOEChr"] = '\n'+out["otherEnd_chr"].astype(str)
 
-            #out["newLineOEChr"] = out["newLineOEChr"].astype(int)
-
             out = out[["bait_chr", "bait_start", "bait_end", "bait_name",
                        "N_reads", "score", "newLineOEChr", "otherEnd_start",
                        "otherEnd_end", "otherEnd_name", "N_reads", "score"]]
 
             import csv
             out.to_csv(self.configuration["execution"]+"/"+ \
-                       self.configuration["pychic_outprefix"]+"_seqmonk.txt",
+                       "pychic_output_seqmonk.txt",
                        sep="\t",
                        header=False,
                        index=False,
@@ -2185,7 +2183,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                        ]]
 
             out.to_csv(self.configuration["execution"]+"/"+ \
-                       self.configuration["pychic_outprefix"]+".ibed",
+                       "pychic_output"+".ibed",
                        sep="\t",
                        index=False
                       )
@@ -2195,8 +2193,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
             out = out0[["bait_chr", "bait_start", "bait_end",
                         "otherEnd_chr", "otherEnd_start", "otherEnd_end", "otherEnd_name",
-                        "score"]]
-
+                        "score"]].copy()
 
         if "washU_text" in export_format:
             logger.info("Writing out text file for WashU browser upload...")
@@ -2443,11 +2440,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             self.configuration["pychic_weightDelta"] = \
                 float(self.configuration["pychic_weightDelta"])
 
+
         if "pychic_cpu" not in self.configuration:
             self.configuration["pychic_cpu"] = 1
         else:
             self.configuration["pychic_cpu"] = int(self.configuration["pychic_cpu"])
 
+
+        if "pychic_bam" not in self.configuration:
+            logger.info("Insert the name of the BAM file")
+            self.configuration["pychic_bam"] = "None"
 
         self.configuration["pychic_removeAdjacent"] = True
         self.configuration["pychic_adjBait2bait"] = True
