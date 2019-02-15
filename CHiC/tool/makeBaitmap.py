@@ -68,7 +68,7 @@ class makeBaitmapTool(Tool):
 
         self.configuration.update(configuration)
 
-    @task(returns=list, sam_file=FILE_OUT, out_bam=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
+    @task(returns=(list, list), sam_file=FILE_OUT, out_bam=FILE_IN, rtree_dat=FILE_IN, rtree_idx=FILE_IN,
           rtree_prefix=IN, chr_handler=FILE_IN)
     def sam_to_baitmap(self, sam_file, out_bam, rtree_dat, rtree_idx, rtree_prefix,
                        chr_handler):  # pylint: disable=no-self-use

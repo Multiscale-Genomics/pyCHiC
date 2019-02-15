@@ -40,14 +40,14 @@ from rpy2.robjects import r
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
         raise ImportError
-    from pycompss.api.parameter import FILE_IN, FILE_OUT, IN
+    from pycompss.api.parameter import FILE_IN, FILE_OUT, IN, OUT
     from pycompss.api.task import task
     from pycompss.api.api import compss_wait_on, compss_delete_file
 except ImportError:
     logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
     logger.warn("          Using mock decorators.")
 
-    from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN  # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN, OUT  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import compss_wait_on, compss_delete_file # pylint: disable=ungrouped-imports
 
@@ -267,7 +267,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return True
 
-    @task(returns=bool, chinput=FILE_IN, bamfile=IN,
+    @task(returns=3,
+          chinput=FILE_IN, bamfile=IN,
           rmap=FILE_IN, baitmap=FILE_IN)
     def readSample(self, chinput, bamFile, rmap, baitmap): # pylint: disable=invalid-name
         """
@@ -320,7 +321,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         rmap_df = pd.read_csv(rmap,
                               sep="\t",
                               names=["chr", "start", "end", "ID"],
-                              dtype = {"chr":str, "start":int, "end":int, "ID":int})
+                              dtype ={"chr":str, "start":int, "end":int, "ID":int})
 
         rmap_id = set(rmap_df.iloc[1:, 3])
 
@@ -565,6 +566,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return s_k
 
+
+    @task(returns=1, chinput=FILE_IN, bamfile=IN,
+          rmap=FILE_IN, baitmap=FILE_IN, chinput_filtered=OUT,
+          rmap_df=OUT, baitmap_df=OUT)
     def merge_chinputs(self, chinputs, npb):
         """
         This function will work in case there is more than one chinput file.
@@ -665,7 +670,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         if viewpoint == "bait":
             scol = "s_j"
-
 
             x["distbin"] = pd.cut(x["distSign"].abs(),
                                   np.arange(0, self.configuration["pychic_maxLBrownEst"]+1,
@@ -782,6 +786,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return xAll
 
+    @task(returns=1, x=IN, npb=FILE_IN)
     def normaliseBaits(self, x, npb): # pylint: disable=invalid-name
         """
         This function normalize the baits, calulating the s_j parameter part of the
@@ -808,7 +813,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x["NNb"] = np.where(x["NNb"] == 0, 1, x["NNb"])
 
         return x
-
 
     def addTLB(self, chinput_j, adjBait2bait=True):  # pylint: disable=invalid-name
         """
@@ -960,6 +964,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_j
 
+    @task(returns=1, chinput_j=IN,
+          nbpb=FILE_IN)
     def normaliseOtherEnds(self, chinput_j, nbpb, Ncol="NNb", normNcol="NNboe"):
         """
         This function is used to calculate the normalization parameter for
@@ -1053,6 +1059,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_j
 
+    @task(returns=1,
+          chinput_ji=IN,
+          rmap=IN,
+          baitmap=IN)
     def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap):
         """
         This function estimate the technical noise of the experiments
@@ -1225,6 +1235,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_ji
 
+    @task(returns=dict, chinput_jiwb=IN)
     def estimateDistFun(self, chinput_jiw):
         """
         Estimate the distancde function
@@ -1270,7 +1281,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         distFunParams["tail_coef"] = [alpha2, beta2]
 
         return distFunParams
-
 
     def readProxOEfile(self, poe, rmap):
         """
@@ -1345,7 +1355,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return poe
 
-    def distFun(self, d, distFunParams):
+    @staticmethod
+    def distFun(d, distFunParams):
         """
         Select the distance function parameters
 
@@ -1560,9 +1571,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return model_theta
 
+    @task(returns=1,
+          chinput_jiw=IN,
+          distFunParams=IN,
+          poe=FILE_IN,
+          rmap=FILE_IN)
     def estimateBrownianComponent(self, chinput_jiw, distFunParams, poe, rmap):
         """
-
         1) Reinstate zeros
         2) Add a "Bmean" column to x, giving expected Brownian component.
         3) Calculate dispersion by regressing against "Bmean", added to x as "dispersion" attribute
@@ -1622,6 +1637,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_jiw, param_dispersion
 
+    @task(returns=1,
+          x=IN,
+          dispersion=IN)
     def getPvals(self, x, dispersion):
         """
         Get the pvalues for each interaction
@@ -1737,7 +1755,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         avgFragLen = chrMAX["end"].sum()/rmap.shape[0]
 
         return avgFragLen, rmap
-
 
     def getNoOfHypotheses(self, rmap, baitmap, avgFragLen):
         """
@@ -1893,7 +1910,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return eta_bar
 
-
     def getWeights(self, dist):
         """
         Calculate the weights
@@ -1972,7 +1988,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return x
 
-
+    @task(returns=bool,
+          params_out=IN,
+          params=IN)
     def print_params(self, params_out, params):
         """
         Print to a file all the parameters used in the experiment
@@ -1995,7 +2013,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return True
 
-    def cut2(self, num_list, m, onlycuts=True):
+    @staticmethod
+    def cut2(num_list, m, onlycuts=True):
         """
         This function si the fixed version of cut2 form R.
         Given a list of numbers and a parameter m, it will bin the list
@@ -2041,6 +2060,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return bins
 
+    @task(returns=bool,
+          x=IN,
+          outprefix=IN,
+          cutoff=IN,
+          export_format=IN,
+          order=IN,
+          rmap=IN,
+          baitmap=IN)
     def exportResults(self, x, outprefix, cutoff, export_format,
                       order, rmap, baitmap):
         """
@@ -2431,14 +2458,16 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             )
 
         chinput = input_files["chinput"].split(",")
+
         # Lets keep it to one for now
         if len(chinput) == 1:
             chinput_filtered, rmap_df, baitmap_df = self.readSample(
                 input_files["chinput"],
                 self.configuration["pychic_bam"],
                 input_files["RMAP"],
-                input_files["BAITMAP"]
+                input_files["BAITMAP"],
             )
+
         else:
             chinputs_filtered = {}
             for i in enumerate(chinput):
@@ -2448,10 +2477,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                     input_files["RMAP"],
                     input_files["BAITMAP"]
                 )
-
                 chinputs_filtered[str(i)] = new_chinput
 
-            chinput_filtered = self.merge_chinputs(chinputs_filtered, input_files["npb"])
+            chinput_merged = pd.DataFrame()
+            chinput_filtered = self.merge_chinputs(chinputs_filtered,
+                                                   input_files["npb"],
+                                                   chinput_merged)
 
         logger.info("\nRunning normaliseBaits")
 
@@ -2488,7 +2519,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                             )
 
         self.print_params(output_files["params_out"],
-                          self.configuration)
+                          self.configuration,
+                          )
 
 
         self.plotBaits(baitmap_df,
