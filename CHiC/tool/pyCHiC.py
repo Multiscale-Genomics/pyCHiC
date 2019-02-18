@@ -72,7 +72,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             to run the tool
         """
 
-        print("CHiCAGO initialising")
+        print("pyCHiC initialising")
         Tool.__init__(self)
 
         if configuration is None:
@@ -2458,6 +2458,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         chinput = input_files["chinput"].split(",")
 
+        print(self.configuration)
         # Lets keep it to one for now
         if len(chinput) == 1:
             chinput_filtered, rmap_df, baitmap_df = self.readSample(

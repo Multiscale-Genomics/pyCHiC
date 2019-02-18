@@ -48,7 +48,7 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
         """
         Init function
         """
-        logger.info("Test writer")
+        logger.info("starting run_pyCHiC")
         Tool.__init__(self)
 
         if configuration is None:
