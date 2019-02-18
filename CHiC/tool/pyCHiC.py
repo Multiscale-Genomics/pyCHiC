@@ -2325,6 +2325,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         Bool
         """
+        print(input_files)
+        print(self.configuration)
+        print(output_files)
+
         if self.configuration["pychic_features_plot"] == "None":
             self.configuration["pychic_features_plot"] = None
 
