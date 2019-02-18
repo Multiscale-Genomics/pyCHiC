@@ -321,7 +321,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         rmap_df = pd.read_csv(rmap,
                               sep="\t",
                               names=["chr", "start", "end", "ID"],
-                              dtype ={"chr":str, "start":int, "end":int, "ID":int})
+                              dtype={"chr":str, "start":int, "end":int, "ID":int})
 
         rmap_id = set(rmap_df.iloc[1:, 3])
 
@@ -355,9 +355,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             for ID in x_baitmap - baitmap_id: # pylint: disable=invalid-name
                 logger.info(str(ID))
 
-        logger.info("Filtering interaction with OEs smaller than "+
-                    str(self.configuration["pychic_minFragLen"])+" and bigger"
-                    "than "+str(self.configuration["pychic_maxFragLen"]))
+        logger.info("Filtering interaction with OEs")
 
         #filter rmap chromosomes that are not in the baitmap file
         chr_baitmap = baitmap_df.iloc[:, 0].unique()
@@ -2325,10 +2323,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         Bool
         """
-        print(input_files)
-        print(self.configuration)
-        print(output_files)
-
         if self.configuration["pychic_features_plot"] == "None":
             self.configuration["pychic_features_plot"] = None
 
