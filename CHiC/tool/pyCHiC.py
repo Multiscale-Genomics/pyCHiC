@@ -290,6 +290,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ------
         x: DataFrame
         """
+        print(self.configuration)
 
         logger.info("reading and checking "+chinput)
 
