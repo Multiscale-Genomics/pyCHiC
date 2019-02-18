@@ -2522,12 +2522,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                           self.configuration,
                           )
 
-
+        """
         self.plotBaits(baitmap_df,
                        chinput_jiwb_scores,
                        dispersion,
                        output_files["pdf_examples"])
-
+        """
         self.exportResults(chinput_jiwb_scores,
                            output_files["washU_text"],
                            self.configuration["pychic_cutoff"],
