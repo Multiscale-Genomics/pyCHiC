@@ -57,7 +57,7 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
         self.configuration.update(configuration)
 
 
-    @task(returns=bool, configuration=IN, rmap=FILE_IN, baitmap=FILE_IN,
+    @task(returns=bool, configuration=IN, RMAP=FILE_IN, BAITMAP=FILE_IN,
           npb=FILE_IN, nbpb=FILE_IN, poe=FILE_IN, chinput=FILE_IN,
           washU_text=FILE_OUT, pdf_examples=FILE_OUT, params_out=FILE_OUT)
     def pychic_runner(self, configuration, RMAP, BAITMAP, npb, nbpb, poe, chinput,
@@ -171,7 +171,6 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
         #pychic_handler = pyCHiC(self.configuration)
         #pychic_handler.run(input_files, input_metadata, output_files)
 
-        print(output_files["params_out"])
         results = self.pychic_runner(self.configuration,
                                      input_files["RMAP"],
                                      input_files["BAITMAP"],
