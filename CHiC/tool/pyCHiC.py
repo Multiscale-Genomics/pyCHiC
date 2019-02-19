@@ -802,6 +802,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x: DataFrame
 
         """
+
         binsize = configuration["pychic_binsize"]
 
         x = self.normaliseFragmentSets(x, "bait", "baitID",
@@ -835,7 +836,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         # Checking whether in the input, we had distances at trans-interactions labeled as NA
         # (as opposed to a dummy maximum distance)
         transNA = False  # pylint: disable=invalid-name
-        print(chinput_j)
+
         if chinput_j["distSign"].isnull().values.any():
             transNA = True  # pylint: disable=invalid-name
             transD = max(chinput_j["distSign"])+self.configuration["pychic_binsize"]  # pylint: disable=invalid-name
@@ -987,6 +988,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         chinput_j: DataFrame
         """
+        print(2)
+        print(chinput_j)
+
         chinput_j = self.addTLB(chinput_j)
 
         x = chinput_j.ix[(chinput_j["distSign"].abs() <= configuration["pychic_maxLBrownEst"]) &
@@ -2501,6 +2505,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                         input_files["npb"],
                                         self.configuration)
 
+        print(chinput_j)
         chinput_ji = self.normaliseOtherEnds(chinput_j,
                                              input_files["nbpb"],
                                              self.configuration
