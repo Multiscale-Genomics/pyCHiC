@@ -2016,6 +2016,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         file = configuration["execution"]+"/"+ \
                    os.path.split(params_out)[1]
 
+        print("file")
+        print(file)
         with open(file, "w") as file_out:
             for parameter in configuration:
                 file_out.write("{}\t{}\n".format(parameter, configuration[parameter]))
