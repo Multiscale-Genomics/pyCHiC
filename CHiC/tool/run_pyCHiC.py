@@ -171,7 +171,7 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
         #pychic_handler = pyCHiC(self.configuration)
         #pychic_handler.run(input_files, input_metadata, output_files)
 
-        results = pychic_runner(self.configuration,
+        results = self.pychic_runner(self.configuration,
                                 input_files["rmap"],
                                 input_files["baitmap"],
                                 input_files["npb"],
