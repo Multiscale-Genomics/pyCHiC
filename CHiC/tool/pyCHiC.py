@@ -433,8 +433,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if int(x.shape[0]) == 0:
             logger.fatal("All interactions have been filtered out.")
 
-        #return x, rmap_df, baitmap_df
-        return True
+        return x, rmap_df, baitmap_df
 
     def dataframe_merge(self, chinputs):
         """
