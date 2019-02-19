@@ -1573,12 +1573,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return model_theta
 
-    @task(returns=1,
-          chinput_jiw=IN,
-          distFunParams=IN,
-          poe=FILE_IN,
-          rmap=FILE_IN,
-          configuration=FILE_IN)
+    #@task(returns=1,
+    #      chinput_jiw=IN,
+    #      distFunParams=IN,
+    #      poe=FILE_IN,
+    #      rmap=FILE_IN,
+    #      configuration=FILE_IN)
     def estimateBrownianComponent(self, chinput_jiw, distFunParams,
                                   poe, rmap, configuration):
         """
