@@ -172,15 +172,15 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
         #pychic_handler.run(input_files, input_metadata, output_files)
 
         results = self.pychic_runner(self.configuration,
-                                input_files["rmap"],
-                                input_files["baitmap"],
-                                input_files["npb"],
-                                input_files["nbpb"],
-                                input_files["poe"],
-                                input_files["chinput"],
-                                output_files["washU_text"],
-                                output_files["pdf_examples"],
-                                output_files["params_out"])
+                                     input_files["RMAP"],
+                                     input_files["BAITMAP"],
+                                     input_files["npb"],
+                                     input_files["nbpb"],
+                                     input_files["poe"],
+                                     input_files["chinput"],
+                                     output_files["washU_text"],
+                                     output_files["pdf_examples"],
+                                     output_files["params_out"])
 
         if "genome_name" in self.configuration:
             files_dir = os.listdir(self.configuration["execution"])
