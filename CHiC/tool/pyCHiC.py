@@ -395,7 +395,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("Filtered out "+str(baits_more_min.shape[0]-baits_N_sum.shape[0])+
                     " baits with < minNPerBait reads ("+
-                    str(self.configuration["pychic_minNPerBait"])+")")
+                    str(configuration["pychic_minNPerBait"])+")")
 
         if int(x.shape[0]) == 0:
             logger.fatal("All interactions have been filtered out.")
@@ -609,7 +609,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         logger.info("computing merged scores..")
 
         s_k = self.getSampleScalingFactors(chinput_merge,
-                                           self.configuration["pychic_maxLBrownEst"],
+                                           configuration["pychic_maxLBrownEst"],
                                            npb
                                           )
 
@@ -964,8 +964,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_j
 
-    @task(returns=1, chinput_j=IN,
-          nbpb=FILE_IN, configuration=IN)
+    #@task(returns=1, chinput_j=IN,
+    #      nbpb=FILE_IN, configuration=IN)
     def normaliseOtherEnds(self, chinput_j, nbpb, configuration,
                            Ncol="NNb", normNcol="NNboe"):
         """
@@ -1013,7 +1013,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         x = x.drop_duplicates(subset=['otherEndID', 'distbin'], keep="first")
 
-        x.loc[:, "BinN"] = x["distbin"]/self.configuration["pychic_binsize"]+1
+        x.loc[:, "BinN"] = x["distbin"]/configuration["pychic_binsize"]+1
 
         x.loc[:, "BinN"] = x["BinN"].astype(int)
 
@@ -1035,7 +1035,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         logger.info("Computing scaling factors")
 
 
-        x = self.normaliseFragmentSets(x, "otherEnd", "tlb", "NNb", self.configuration["pychic_binsize"],
+        x = self.normaliseFragmentSets(x, "otherEnd", "tlb", "NNb", configuration["pychic_binsize"],
                                        configuration, refExcludeSuffix="B2B")
 
         x.drop_duplicates(subset=["s_i"], keep="first", inplace=True)
