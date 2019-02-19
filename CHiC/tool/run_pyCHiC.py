@@ -56,6 +56,41 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
 
         self.configuration.update(configuration)
 
+
+    @task(returns=bool, configuration=IN, rmap=FILE_IN, baitmap=FILE_IN,
+          npb=FILE_IN, nbpb=FILE_IN, poe=FILE_IN, chinput=FILE_IN,
+          washU_text=FILE_OUT, pdf_examples=FILE_OUT, params_out=FILE_OUT)
+    def pychic_runner(self, configuration, rmap, baitmap, npb, nbpb, poe, chinput,
+                      washU_text, pdf_examples, params_out):
+        """
+        This is the function with pyCOMPSs that is going to run pyCHiC
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        """
+        input_files = {"rmap": rmap,
+                       "baitmap": baitmap,
+                       "npb": npb,
+                       "nbpb": nbpb,
+                       "poe": poe,
+                       "chinput": chinput
+                       }
+
+        metadata = {}
+
+        output_files = {"washU_text": washU_text,
+                        "pdf_examples": pdf_examples,
+                        "params_out": params_out}
+
+        pychic_handler = pyCHiC(configuration)
+        pychic_handler.run(input_files, metadata, output_files)
+
+        return True
+
+
     def run(self, input_files, input_metadata, output_files):
         """
         The main function to run the test_writer tool
@@ -133,8 +168,19 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
         if "pychic_bam" not in self.configuration:
             self.configuration["pychic_bam"] = sorted_bam
 
-        pychic_handler = pyCHiC(self.configuration)
-        pychic_handler.run(input_files, input_metadata, output_files)
+        #pychic_handler = pyCHiC(self.configuration)
+        #pychic_handler.run(input_files, input_metadata, output_files)
+
+        results = pychic_runner(self.configuration,
+                                input_files["rmap"],
+                                input_files["baitmap"],
+                                input_files["npb"],
+                                input_files["nbpb"],
+                                input_files["poe"],
+                                input_files["chinput"],
+                                output_files["washU_text"],
+                                output_files["pdf_examples"],
+                                output_files["params_out"])
 
         if "genome_name" in self.configuration:
             files_dir = os.listdir(self.configuration["execution"])

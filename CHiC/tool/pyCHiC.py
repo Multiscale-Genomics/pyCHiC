@@ -157,8 +157,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 break
             return True
 
-    @task(returns=bool, pychic_export_format=IN, pychic_export_order=IN,
-          rmap=FILE_IN, baitmap=FILE_IN)
+    #@task(returns=bool, pychic_export_format=IN, pychic_export_order=IN,
+    #      rmap=FILE_IN, baitmap=FILE_IN)
     def checks(self, pychic_export_format, pychic_export_order, rmap, baitmap,
                nbpb, npb, poe): # pylint: disable=invalid-name
         """
@@ -267,9 +267,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return True
 
-    @task(returns=3,
-          chinput=FILE_IN, bamfile=IN,
-          rmap=FILE_IN, baitmap=FILE_IN, configuration=IN)
+    #@task(returns=bool,
+    #      chinput=FILE_IN, bamfile=IN,
+    #      rmap=FILE_IN, baitmap=FILE_IN, configuration=IN)
     def readSample(self, chinput, bamFile, rmap, baitmap, configuration): # pylint: disable=invalid-name
         """
         This function takes the chinput file and filter it according
@@ -433,7 +433,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         if int(x.shape[0]) == 0:
             logger.fatal("All interactions have been filtered out.")
 
-        return x, rmap_df, baitmap_df
+        #return x, rmap_df, baitmap_df
+        return True
 
     def dataframe_merge(self, chinputs):
         """
@@ -567,7 +568,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return s_k
 
 
-    @task(returns=1, chinputs=IN, npb=FILE_IN, configuration=IN)
+    #@task(returns=1, chinputs=IN, npb=FILE_IN, configuration=IN)
     def merge_chinputs(self, chinputs, npb, configuration):
         """
         This function will work in case there is more than one chinput file.
@@ -784,7 +785,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return xAll
 
-    @task(returns=1, x=IN, npb=FILE_IN, configuration=IN)
+    #@task(returns=1, x=IN, npb=FILE_IN, configuration=IN)
     def normaliseBaits(self, x, npb, configuration): # pylint: disable=invalid-name
         """
         This function normalize the baits, calulating the s_j parameter part of the
@@ -1064,11 +1065,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_j
 
-    @task(returns=1,
-          chinput_ji=IN,
-          rmap=IN,
-          baitmap=IN,
-          configuration=IN)
+    #@task(returns=1,
+    #      chinput_ji=IN,
+    #      rmap=IN,
+    #      baitmap=IN,
+    #      configuration=IN)
     def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap, configuration):
         """
         This function estimate the technical noise of the experiments
@@ -1645,9 +1646,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_jiw, param_dispersion
 
-    @task(returns=1,
-          x=IN,
-          dispersion=IN)
+    #@task(returns=1,
+    #      x=IN,
+    #      dispersion=IN)
     def getPvals(self, x, dispersion):
         """
         Get the pvalues for each interaction
@@ -1996,10 +1997,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return x
 
-    @task(returns=bool,
-          params_out=IN,
-          params=IN,
-          configuration=IN)
+    #@task(returns=bool,
+    #      params_out=IN,
+    #      params=IN,
+    #      configuration=IN)
     def print_params(self, params_out, configuration):
         """
         Print to a file all the parameters used in the experiment
@@ -2505,7 +2506,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                         input_files["npb"],
                                         self.configuration)
 
-        print(chinput_j)
+
         chinput_ji = self.normaliseOtherEnds(chinput_j,
                                              input_files["nbpb"],
                                              self.configuration
