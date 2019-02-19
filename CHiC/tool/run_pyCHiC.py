@@ -60,7 +60,7 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
     @task(returns=bool, configuration=IN, rmap=FILE_IN, baitmap=FILE_IN,
           npb=FILE_IN, nbpb=FILE_IN, poe=FILE_IN, chinput=FILE_IN,
           washU_text=FILE_OUT, pdf_examples=FILE_OUT, params_out=FILE_OUT)
-    def pychic_runner(self, configuration, rmap, baitmap, npb, nbpb, poe, chinput,
+    def pychic_runner(self, configuration, RMAP, BAITMAP, npb, nbpb, poe, chinput,
                       washU_text, pdf_examples, params_out):
         """
         This is the function with pyCOMPSs that is going to run pyCHiC
@@ -71,8 +71,8 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
         Returns
         -------
         """
-        input_files = {"rmap": rmap,
-                       "baitmap": baitmap,
+        input_files = {"RMAP": RMAP,
+                       "BAITMAP": BAITMAP,
                        "npb": npb,
                        "nbpb": nbpb,
                        "poe": poe,
