@@ -1241,7 +1241,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_ji
 
-    @task(returns=dict, chinput_jiwb=IN, configuration=IN)
+    #@task(returns=dict, chinput_jiwb=IN, configuration=IN)
     def estimateDistFun(self, chinput_jiw, configuration):
         """
         Estimate the distancde function
@@ -2069,15 +2069,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return bins
 
-    @task(returns=bool,
-          x=IN,
-          outprefix=IN,
-          cutoff=IN,
-          export_format=IN,
-          order=IN,
-          rmap=IN,
-          baitmap=IN,
-          configuration=IN)
+    #@task(returns=bool,
+    #      x=IN,
+    #      outprefix=IN,
+    #      cutoff=IN,
+    #      export_format=IN,
+    #      order=IN,
+    #      rmap=IN,
+    #      baitmap=IN,
+    #      configuration=IN)
     def exportResults(self, x, outprefix, cutoff, export_format,
                       order, rmap, baitmap, configuration):
         """
