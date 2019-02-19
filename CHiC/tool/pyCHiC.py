@@ -835,7 +835,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         # Checking whether in the input, we had distances at trans-interactions labeled as NA
         # (as opposed to a dummy maximum distance)
         transNA = False  # pylint: disable=invalid-name
-
+        print(chinput_j)
         if chinput_j["distSign"].isnull().values.any():
             transNA = True  # pylint: disable=invalid-name
             transD = max(chinput_j["distSign"])+self.configuration["pychic_binsize"]  # pylint: disable=invalid-name
