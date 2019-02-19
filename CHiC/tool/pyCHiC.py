@@ -269,8 +269,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
     @task(returns=3,
           chinput=FILE_IN, bamfile=IN,
-          rmap=FILE_IN, baitmap=FILE_IN)
-    def readSample(self, chinput, bamFile, rmap, baitmap): # pylint: disable=invalid-name
+          rmap=FILE_IN, baitmap=FILE_IN, configuration=IN)
+    def readSample(self, chinput, bamFile, rmap, baitmap, configuration): # pylint: disable=invalid-name
         """
         This function takes the chinput file and filter it according
         with the settings of the experiment
@@ -290,7 +290,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ------
         x: DataFrame
         """
-        print(self.configuration)
+        print(configuration)
 
         logger.info("reading and checking "+chinput)
 
@@ -363,8 +363,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         rmap_df = rmap_df[rmap_df.iloc[:, 0].isin(list(chr_baitmap))]
 
         x = x.loc[ # pylint: disable=invalid-name
-            (x["otherEndLen"] >= self.configuration["pychic_minFragLen"]) &
-            (x["otherEndLen"] <= self.configuration["pychic_maxFragLen"])
+            (x["otherEndLen"] >= configuration["pychic_minFragLen"]) &
+            (x["otherEndLen"] <= configuration["pychic_maxFragLen"])
         ]
 
         if int(x.shape[0]) == 0:
@@ -388,7 +388,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ## remove baits that have no observations within the proximal range
         baits_N_sum = x.groupby("baitID").sum() # pylint: disable=invalid-name
         baits_more_min = baits_N_sum.loc[baits_N_sum["N"] >= \
-                                         self.configuration["pychic_minNPerBait"]]
+                                         configuration["pychic_minNPerBait"]]
 
         x = x.loc[x["baitID"].isin(baits_more_min.index)] # pylint: disable=invalid-name
 
@@ -401,7 +401,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             logger.fatal("All interactions have been filtered out.")
 
         # remove adjacent pairs
-        if self.configuration["pychic_removeAdjacent"] is True:
+        if configuration["pychic_removeAdjacent"] is True:
             #adjacent = chinput_filt3.loc abs(chinput_filt3["baitID"]-chinput_filt3["otherEndID"])
             x = x.loc[abs(x['baitID']-x["otherEndID"]) > 1] # pylint: disable=invalid-name
             logger.info("Removed interactions with fragments adjacent to baits.")
@@ -419,7 +419,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         NoB2BProxInter = x.loc[x["isBait2bait"] == "FALSE"] # pylint: disable=invalid-name
         NoB2BProxInter = NoB2BProxInter.loc[ # pylint: disable=invalid-name
-            x["distSign"] < self.configuration["pychic_maxLBrownEst"]
+            x["distSign"] < configuration["pychic_maxLBrownEst"]
         ]
         NoB2BProxInter = NoB2BProxInter[["baitID", "N"]].groupby("baitID").sum() # pylint: disable=invalid-name
 
@@ -456,7 +456,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_merge = pd.merge(chinputs[str(i)], chinputs[str(j)],
                                  how='outer',
                                  on=['baitID', 'otherEndID', 'otherEndLen',
-                                     'distSign', 'isBait2bait'])
+                                     'distSign', 'isBait2bait']
+                                )
 
         if len(chinputs) == 2:
             return chinput_merge
@@ -566,10 +567,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return s_k
 
 
-    @task(returns=1, chinput=FILE_IN, bamfile=IN,
-          rmap=FILE_IN, baitmap=FILE_IN, chinput_filtered=OUT,
-          rmap_df=OUT, baitmap_df=OUT)
-    def merge_chinputs(self, chinputs, npb):
+    @task(returns=1, chinputs=IN, npb=FILE_IN, configuration=IN)
+    def merge_chinputs(self, chinputs, npb, configuration):
         """
         This function will work in case there is more than one chinput file.
         It takes the filtered chinput files and merge them
@@ -631,7 +630,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return chinput_merge
 
     def normaliseFragmentSets(self, x, viewpoint, idcol, Ncol, binsize, # pylint: disable=invalid-name
-                              npb=False, adjBait2bait=True,
+                              configuration, npb=False, adjBait2bait=True,
                               shrink=False, refExcludeSuffix=None):
         """
         The normalisation engine used for normaliseBaits and normaliseOtherEnds
@@ -671,7 +670,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             scol = "s_j"
 
             x["distbin"] = pd.cut(x["distSign"].abs(),
-                                  np.arange(0, self.configuration["pychic_maxLBrownEst"]+1,
+                                  np.arange(0, configuration["pychic_maxLBrownEst"]+1,
                                             binsize)
                                  )
 
@@ -785,8 +784,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return xAll
 
-    @task(returns=1, x=IN, npb=FILE_IN)
-    def normaliseBaits(self, x, npb): # pylint: disable=invalid-name
+    @task(returns=1, x=IN, npb=FILE_IN, configuration=IN)
+    def normaliseBaits(self, x, npb, configuration): # pylint: disable=invalid-name
         """
         This function normalize the baits, calulating the s_j parameter part of the
         mean of the negative binomial model used to model the background error
@@ -803,10 +802,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         x: DataFrame
 
         """
-        binsize = self.configuration["pychic_binsize"]
+        binsize = configuration["pychic_binsize"]
 
         x = self.normaliseFragmentSets(x, "bait", "baitID",
-                                       "N", binsize, npb)
+                                       "N", binsize, configuration,
+                                       npb
+                                       )
 
         x["NNb"] = (x["N"]/x["s_j"]).round()
         x["NNb"] = np.where(x["NNb"] == 0, 1, x["NNb"])
@@ -964,8 +965,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return chinput_j
 
     @task(returns=1, chinput_j=IN,
-          nbpb=FILE_IN)
-    def normaliseOtherEnds(self, chinput_j, nbpb, Ncol="NNb", normNcol="NNboe"):
+          nbpb=FILE_IN, configuration=IN)
+    def normaliseOtherEnds(self, chinput_j, nbpb, configuration,
+                           Ncol="NNb", normNcol="NNboe"):
         """
         This function is used to calculate the normalization parameter for
         the OE
@@ -987,7 +989,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         chinput_j = self.addTLB(chinput_j)
 
-        x = chinput_j.ix[(chinput_j["distSign"].abs() <= self.configuration["pychic_maxLBrownEst"]) &
+        x = chinput_j.ix[(chinput_j["distSign"].abs() <= configuration["pychic_maxLBrownEst"]) &
                          (chinput_j["distSign"].notnull())
                         ].copy()
 
@@ -1034,7 +1036,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
 
         x = self.normaliseFragmentSets(x, "otherEnd", "tlb", "NNb", self.configuration["pychic_binsize"],
-                                       refExcludeSuffix="B2B")
+                                       configuration, refExcludeSuffix="B2B")
 
         x.drop_duplicates(subset=["s_i"], keep="first", inplace=True)
 
@@ -1061,8 +1063,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
     @task(returns=1,
           chinput_ji=IN,
           rmap=IN,
-          baitmap=IN)
-    def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap):
+          baitmap=IN,
+          configuration=IN)
+    def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap, configuration):
         """
         This function estimate the technical noise of the experiments
 
@@ -1080,8 +1083,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         logger.info("Estimating technical noise based on trans-counts...")
 
-        minBaitsPerBin = self.configuration["pychic_techNoise_minBaitsPerBin"]
-        adjBait2bait = self.configuration["pychic_adjBait2bait"]
+        minBaitsPerBin = configuration["pychic_techNoise_minBaitsPerBin"]
+        adjBait2bait = configuration["pychic_adjBait2bait"]
 
         logger.info("Binning baits based on observed trans-counts...")
 
@@ -1102,7 +1105,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         transBaitLen.loc[:, "baitID"] = transBaitLen.index.tolist()
 
         levels = self.cut2(transBaitLen["transBaitLen"],
-                           self.configuration["pychic_techNoise_minBaitsPerBin"])
+                           configuration["pychic_techNoise_minBaitsPerBin"])
 
         if len(levels) == 1:
             levels.append(levels[0]+1)
@@ -1234,8 +1237,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_ji
 
-    @task(returns=dict, chinput_jiwb=IN)
-    def estimateDistFun(self, chinput_jiw):
+    @task(returns=dict, chinput_jiwb=IN, configuration=IN)
+    def estimateDistFun(self, chinput_jiw, configuration):
         """
         Estimate the distancde function
 
@@ -1254,9 +1257,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         f_d = f_d[["distbin", "refBinMean"]]
         f_d.sort_values(by=["refBinMean"], inplace=True, ascending=False)
 
-        f_d["midpoint"] = np.arange(self.configuration["pychic_binsize"]/2,
-                                    self.configuration["pychic_binsize"]*f_d.shape[0],
-                                    self.configuration["pychic_binsize"])
+        f_d["midpoint"] = np.arange(configuration["pychic_binsize"]/2,
+                                    configuration["pychic_binsize"]*f_d.shape[0],
+                                    configuration["pychic_binsize"])
 
         obs_min = np.log(min(f_d["midpoint"]))
         obs_max = np.log(max(f_d["midpoint"]))
@@ -1574,8 +1577,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
           chinput_jiw=IN,
           distFunParams=IN,
           poe=FILE_IN,
-          rmap=FILE_IN)
-    def estimateBrownianComponent(self, chinput_jiw, distFunParams, poe, rmap):
+          rmap=FILE_IN,
+          configuration=FILE_IN)
+    def estimateBrownianComponent(self, chinput_jiw, distFunParams,
+                                  poe, rmap, configuration):
         """
         1) Reinstate zeros
         2) Add a "Bmean" column to x, giving expected Brownian component.
@@ -1595,11 +1600,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_jiwb: Dataframe
         """
 
-        adjBait2bait = self.configuration["pychic_adjBait2bait"]
-        samples = self.configuration["pychic_brownianNoise_samples"]
-        subset = self.configuration["pychic_brownianNoise_subset"]
-        seed = self.configuration["pychic_brownianNoise_seed"]
-        maxLBrownEst = self.configuration["pychic_maxLBrownEst"]
+        adjBait2bait = configuration["pychic_adjBait2bait"]
+        samples = configuration["pychic_brownianNoise_samples"]
+        subset = configuration["pychic_brownianNoise_subset"]
+        seed = configuration["pychic_brownianNoise_seed"]
+        maxLBrownEst = configuration["pychic_maxLBrownEst"]
 
         #Seed
         if samples is None:
@@ -1989,8 +1994,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
     @task(returns=bool,
           params_out=IN,
-          params=IN)
-    def print_params(self, params_out, params):
+          params=IN,
+          configuration=IN)
+    def print_params(self, params_out, configuration):
         """
         Print to a file all the parameters used in the experiment
 
@@ -2003,12 +2009,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         Bool
         """
-        file = self.configuration["execution"]+"/"+ \
+        file = configuration["execution"]+"/"+ \
                    os.path.split(params_out)[1]
 
         with open(file, "w") as file_out:
-            for parameter in params:
-                file_out.write("{}\t{}\n".format(parameter, params[parameter]))
+            for parameter in configuration:
+                file_out.write("{}\t{}\n".format(parameter, configuration[parameter]))
 
         return True
 
@@ -2066,9 +2072,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
           export_format=IN,
           order=IN,
           rmap=IN,
-          baitmap=IN)
+          baitmap=IN,
+          configuration=IN)
     def exportResults(self, x, outprefix, cutoff, export_format,
-                      order, rmap, baitmap):
+                      order, rmap, baitmap, configuration):
         """
         print the results in the correct format and order
 
@@ -2462,36 +2469,41 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         # Lets keep it to one for now
         if len(chinput) == 1:
-            chinput_filtered, rmap_df, baitmap_df = self.readSample(
+            chinput_filtered, rmap_df, baitmap_df = self.readSample( # pylint: disable=too-many-function-args
                 input_files["chinput"],
                 self.configuration["pychic_bam"],
                 input_files["RMAP"],
-                input_files["BAITMAP"]
+                input_files["BAITMAP"],
+                self.configuration
             )
 
         else:
             chinputs_filtered = {}
             for i in enumerate(chinput):
-                new_chinput, rmap_df, baitmap_df = self.readSample(
+                new_chinput, rmap_df, baitmap_df = self.readSample( # pylint: disable=too-many-function-args
                     chinput[i[0]],
                     self.configuration["pychic_bam"],
                     input_files["RMAP"],
-                    input_files["BAITMAP"]
+                    input_files["BAITMAP"],
+                    self.configuration
                 )
                 chinputs_filtered[str(i)] = new_chinput
 
             chinput_merged = pd.DataFrame()
-            chinput_filtered = self.merge_chinputs(chinputs_filtered,
+            chinput_filtered = self.merge_chinputs(chinputs_filtered, # pylint: disable=too-many-function-args
                                                    input_files["npb"],
-                                                   chinput_merged)
+                                                   chinput_merged,
+                                                   self.configuration)
 
         logger.info("\nRunning normaliseBaits")
 
         chinput_j = self.normaliseBaits(chinput_filtered, \
-                                        input_files["npb"])
+                                        input_files["npb"],
+                                        self.configuration)
 
         chinput_ji = self.normaliseOtherEnds(chinput_j,
-                                             input_files["nbpb"]
+                                             input_files["nbpb"],
+                                             self.configuration
                                             )
 
         logger.info("\n Running estimateTechicalNoise")
@@ -2499,16 +2511,20 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         #Import and prepare RMAP and BAITMAP HERE
         chinput_jiw = self.estimateTechnicalNoise(chinput_ji,
                                                   rmap_df,
-                                                  baitmap_df
+                                                  baitmap_df,
+                                                  self.configuration
                                                   )
 
-        distFunParams = self.estimateDistFun(chinput_jiw)
+        distFunParams = self.estimateDistFun(chinput_jiw,
+                                             self.configuration
+                                            )
 
         chinput_jiwb, dispersion = self.estimateBrownianComponent(
             chinput_jiw,
             distFunParams,
             input_files["poe"],
-            input_files["RMAP"])
+            input_files["RMAP"],
+            self.configuration)
 
         chinput_jiwb_pval = self.getPvals(chinput_jiwb, dispersion)
 
@@ -2533,7 +2549,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                            self.configuration["pychic_export_format"],
                            self.configuration["pychic_order"],
                            rmap_df,
-                           baitmap_df
+                           baitmap_df,
+                           self.configuration
                           )
 
         return True
