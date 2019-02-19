@@ -2459,13 +2459,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput = input_files["chinput"].split(",")
 
         print(self.configuration)
+
         # Lets keep it to one for now
         if len(chinput) == 1:
             chinput_filtered, rmap_df, baitmap_df = self.readSample(
                 input_files["chinput"],
                 self.configuration["pychic_bam"],
                 input_files["RMAP"],
-                input_files["BAITMAP"],
+                input_files["BAITMAP"]
             )
 
         else:
@@ -2489,11 +2490,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         chinput_j = self.normaliseBaits(chinput_filtered, \
                                         input_files["npb"])
 
-
         chinput_ji = self.normaliseOtherEnds(chinput_j,
                                              input_files["nbpb"]
                                             )
-
 
         logger.info("\n Running estimateTechicalNoise")
 
