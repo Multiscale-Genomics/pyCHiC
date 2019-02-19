@@ -23,14 +23,14 @@ from CHiC.tool.pyCHiC import pyCHiC
 try:
     if hasattr(sys, '_run_from_cmdl') is True:
         raise ImportError
-    from pycompss.api.parameter import FILE_IN, FILE_OUT
+    from pycompss.api.parameter import FILE_IN, FILE_OUT, IN, OUT
     from pycompss.api.task import task
-    from pycompss.api.api import compss_wait_on,compss_delete_file
+    from pycompss.api.api import compss_wait_on, compss_delete_file
 except ImportError:
     logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
     logger.warn("          Using mock decorators.")
 
-    from utils.dummy_pycompss import FILE_IN, FILE_OUT  # pylint: disable=ungrouped-imports
+    from utils.dummy_pycompss import FILE_IN, FILE_OUT, IN, OUT  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import compss_wait_on, compss_delete_file  # pylint: disable=ungrouped-imports
 
