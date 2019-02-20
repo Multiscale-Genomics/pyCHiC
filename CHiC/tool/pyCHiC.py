@@ -19,8 +19,8 @@ import time
 import math
 import random
 from collections import Counter
-from functools import partial
 from multiprocess import Pool
+from functools import partial
 from scipy.stats.mstats import gmean
 from math import e
 
@@ -157,8 +157,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 break
             return True
 
-    #@task(returns=bool, pychic_export_format=IN, pychic_export_order=IN,
-    #      rmap=FILE_IN, baitmap=FILE_IN)
+    @task(returns=bool, pychic_export_format=IN, pychic_export_order=IN,
+          rmap=FILE_IN, baitmap=FILE_IN)
     def checks(self, pychic_export_format, pychic_export_order, rmap, baitmap,
                nbpb, npb, poe): # pylint: disable=invalid-name
         """
@@ -267,9 +267,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return True
 
-    #@task(returns=bool,
-    #      chinput=FILE_IN, bamfile=IN,
-    #      rmap=FILE_IN, baitmap=FILE_IN, configuration=IN)
+    @task(returns=3,
+          chinput=FILE_IN, bamfile=IN,
+          rmap=FILE_IN, baitmap=FILE_IN, configuration=IN)
     def readSample(self, chinput, bamFile, rmap, baitmap, configuration): # pylint: disable=invalid-name
         """
         This function takes the chinput file and filter it according
@@ -290,8 +290,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ------
         x: DataFrame
         """
-        print(configuration)
-
         logger.info("reading and checking "+chinput)
 
         rmap_name = os.path.split(rmap)[1]
@@ -567,7 +565,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return s_k
 
 
-    #@task(returns=1, chinputs=IN, npb=FILE_IN, configuration=IN)
+    @task(returns=1, chinputs=IN, npb=FILE_IN, configuration=IN)
     def merge_chinputs(self, chinputs, npb, configuration):
         """
         This function will work in case there is more than one chinput file.
@@ -784,7 +782,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return xAll
 
-    #@task(returns=1, x=IN, npb=FILE_IN, configuration=IN)
+    @task(returns=1, x=IN, npb=FILE_IN, configuration=IN)
     def normaliseBaits(self, x, npb, configuration): # pylint: disable=invalid-name
         """
         This function normalize the baits, calulating the s_j parameter part of the
@@ -815,7 +813,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return x
 
-    def addTLB(self, chinput_j, adjBait2bait=True):  # pylint: disable=invalid-name
+    def addTLB(self, chinput_j, configuration, adjBait2bait=True):  # pylint: disable=invalid-name
         """
         ##Assigns each fragment a "tlb" - a range containing the number of trans
         ##1) The bins are constructed based on reduced data - (outliers trimmed, )
@@ -839,7 +837,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         if chinput_j["distSign"].isnull().values.any():
             transNA = True  # pylint: disable=invalid-name
-            transD = max(chinput_j["distSign"])+self.configuration["pychic_binsize"]  # pylint: disable=invalid-name
+            transD = max(chinput_j["distSign"])+configuration["pychic_binsize"]  # pylint: disable=invalid-name
             chinput_j.distSign.fillna(transD, inplace=True)
             #chinput_j["distSign"] = np.where(chinput_j["distSign"].isna(), transD)
 
@@ -883,7 +881,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         transLend0 = transLen.copy()  # pylint: disable=invalid-name
 
         transLen = transLen[transLen["transLength"] <= np.percentile(  # pylint: disable=invalid-name
-            transLen["transLength"], 100-self.configuration["pychic_tlb_filterTopPercent"])]
+            transLen["transLength"], 100-configuration["pychic_tlb_filterTopPercent"])]
 
         if adjBait2bait:
             transLend0 = transLen.copy()  # pylint: disable=invalid-name
@@ -892,9 +890,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("Binning..")
 
-        distSign = transLen[transLen["distSign"].abs() <= self.configuration["pychic_maxLBrownEst"]]["transLength"]  # pylint: disable=invalid-name
+        distSign = transLen[transLen["distSign"].abs() <= configuration["pychic_maxLBrownEst"]]["transLength"]  # pylint: disable=invalid-name
 
-        cuts = self.cut2(distSign, int(self.configuration["pychic_tlb_minProxOEPerBin"]))
+        cuts = self.cut2(distSign, int(configuration["pychic_tlb_minProxOEPerBin"]))
 
         #with depleated datasets curs == 1
         if len(cuts) == 1:
@@ -916,9 +914,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         if adjBait2bait:
             transLen_length = transLenB2B[transLenB2B["distSign"].abs() <= \
-                self.configuration["pychic_maxLBrownEst"]]["transLength"]
+                configuration["pychic_maxLBrownEst"]]["transLength"]
 
-            cutB2B = self.cut2(transLen_length, self.configuration["pychic_tlb_minProxB2BPerBin"] )
+            cutB2B = self.cut2(transLen_length, configuration["pychic_tlb_minProxB2BPerBin"] )
 
             if len(cutB2B) == 1:
                 tlbClassesB2B = cutB2B*transLenB2B.shape[0]
@@ -965,8 +963,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_j
 
-    #@task(returns=1, chinput_j=IN,
-    #      nbpb=FILE_IN, configuration=IN)
+    @task(returns=1, chinput_j=IN,
+          nbpb=FILE_IN, configuration=IN)
     def normaliseOtherEnds(self, chinput_j, nbpb, configuration,
                            Ncol="NNb", normNcol="NNboe"):
         """
@@ -988,10 +986,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         chinput_j: DataFrame
         """
-        print(2)
-        print(chinput_j)
-
-        chinput_j = self.addTLB(chinput_j)
+        chinput_j = self.addTLB(chinput_j, configuration)
 
         x = chinput_j.ix[(chinput_j["distSign"].abs() <= configuration["pychic_maxLBrownEst"]) &
                          (chinput_j["distSign"].notnull())
@@ -1064,11 +1059,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_j
 
-    #@task(returns=1,
-    #      chinput_ji=IN,
-    #      rmap=IN,
-    #      baitmap=IN,
-    #      configuration=IN)
+    @task(returns=1,
+          chinput_ji=IN,
+          rmap=IN,
+          baitmap=IN,
+          configuration=IN)
     def estimateTechnicalNoise(self, chinput_ji, rmap, baitmap, configuration):
         """
         This function estimate the technical noise of the experiments
@@ -1241,7 +1236,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_ji
 
-    #@task(returns=dict, chinput_jiwb=IN, configuration=IN)
+    @task(returns=dict, chinput_jiwb=IN, configuration=IN)
     def estimateDistFun(self, chinput_jiw, configuration):
         """
         Estimate the distancde function
@@ -1288,7 +1283,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return distFunParams
 
-    def readProxOEfile(self, poe, rmap):
+    @staticmethod
+    def readProxOEfile(poe, rmap, configuration):
         """
         Reads a pre-computed text file that denotes which other ends are in the proximal
         range relative to each bait, and gives that distance.
@@ -1310,28 +1306,28 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         params = [param for param in params.split("\t")]
 
         minsize = "".join([param for param in params if param.startswith("minFragLen")])
-        if int(minsize.split("=")[1]) != self.configuration["pychic_minFragLen"]:
+        if int(minsize.split("=")[1]) != configuration["pychic_minFragLen"]:
             logger.info("The minFragLen specified in the ProxOE file header is not "+
                         "equal to minFragLen defined in experiment settings. Amend either "+
                         "parameter setting (and if needed, generate a new ProxOE file) before"+
                         "running the analysis\n")
 
         maxsize = "".join([param for param in params if param.startswith("maxFragLen")])
-        if int(maxsize.split("=")[1]) != self.configuration["pychic_maxFragLen"]:
+        if int(maxsize.split("=")[1]) != configuration["pychic_maxFragLen"]:
             logger.info("The maxFragLen specified in the ProxOE file header is not"+
                         " equal to maxFragLen defined in experiment settings."+
                         " Amend either parameter setting (and if needed, generate"+
                         " a new ProxOE file) before running the analysis\n")
 
         maxl = "".join([param for param in params if param.startswith("maxLBrownEst")])
-        if int(maxl.split("=")[1]) != self.configuration["pychic_maxLBrownEst"]:
+        if int(maxl.split("=")[1]) != configuration["pychic_maxLBrownEst"]:
             logger.info("The maxLBrownEst specified in the ProxOE file header is "+
                         "not equal to maxLBrownEst defined in experiment settings."+
                         "Amend either parameter setting (and if needed, generate a "+
                         "new ProxOE file) before running the analysis\n")
 
         binsz = "".join([param for param in params if param.startswith("binsize")])
-        if int(binsz.split("=")[1]) != self.configuration["pychic_binsize"]:
+        if int(binsz.split("=")[1]) != configuration["pychic_binsize"]:
             logger.info("The binsize specified in the ProxOE file header is"+
                         "not equal to binsize defined in experiment settigs."+
                         " Amend either parameter setting (and if needed, "+
@@ -1343,7 +1339,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                         "Please generate a new file.\n")
 
         removeAdjacent = "".join([param for param in params if param.startswith("removeb2b")])
-        if removeAdjacent.split("=")[1] == True and self.configuration["pychic_removeAdjacent"] is False:
+        if removeAdjacent.split("=")[1] == True and configuration["pychic_removeAdjacent"] is False:
             logger.info("The removeAdjacent parameter settings used for generating ProxOE " +
                         "file (according to its header) and defined in experiment settings "+
                         "do not match. Amend either setting (and if needed, generate a new "+
@@ -1428,7 +1424,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return x
 
-    def estimateDispersion(self, chinput_jiw, proxOE, distFunParams):
+    def estimateDispersion(self, chinput_jiw, proxOE, distFunParams, configuration):
         """
         Estimate the dispersion
 
@@ -1446,18 +1442,18 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         else:
             siPresent = False
 
-        adjBait2bait = self.configuration["pychic_adjBait2bait"]
-        samples = self.configuration["pychic_brownianNoise_samples"]
-        subset = self.configuration["pychic_brownianNoise_subset"]
-        maxLBrownEst = self.configuration["pychic_maxLBrownEst"]
+        adjBait2bait = configuration["pychic_adjBait2bait"]
+        samples = configuration["pychic_brownianNoise_samples"]
+        subset = configuration["pychic_brownianNoise_subset"]
+        maxLBrownEst = configuration["pychic_maxLBrownEst"]
 
         ##Pre-filtering: get subset of data, store as x
         ##---------------------------------------------
 
         if subset != False:
             if len(chinput_jiw["baitID"].unique()) > subset:
-                if isinstance(self.configuration["pychic_brownianNoise_seed"], int) is True:
-                    random.seed(self.configuration["pychic_brownianNoise_seed"])
+                if isinstance(configuration["pychic_brownianNoise_seed"], int) is True:
+                    random.seed(configuration["pychic_brownianNoise_seed"])
                 sel_sub = sorted(random.sample(list(chinput_jiw["baitID"].unique()), subset))
                 x = chinput_jiw[chinput_jiw["baitID"].isin(sel_sub)]
             else:
@@ -1467,7 +1463,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             x = chinput_jiw
 
         ##consider proximal region only...
-        x = x[(x["distSign"].abs() < self.configuration["pychic_maxLBrownEst"]) & \
+        x = x[(x["distSign"].abs() < configuration["pychic_maxLBrownEst"]) & \
               (x["distSign"].notnull())]
 
         #remove bait2bait...
@@ -1577,12 +1573,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return model_theta
 
-    #@task(returns=1,
-    #      chinput_jiw=IN,
-    #      distFunParams=IN,
-    #      poe=FILE_IN,
-    #      rmap=FILE_IN,
-    #      configuration=FILE_IN)
+    @task(returns=1,
+          chinput_jiw=IN,
+          distFunParams=IN,
+          poe=FILE_IN,
+          rmap=FILE_IN,
+          configuration=FILE_IN)
     def estimateBrownianComponent(self, chinput_jiw, distFunParams,
                                   poe, rmap, configuration):
         """
@@ -1626,14 +1622,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                         "in this case, so overriding brownianNoise.samples to 1.")
             samples = 1
 
-        proxOE = self.readProxOEfile(poe, rmap)
+        proxOE = self.readProxOEfile(poe, rmap, configuration)
 
         #Run this the same as the number of Samples
         dispersion_samples = []
         for i in range(samples):
             dispersion_samples.append(
                 self.estimateDispersion(
-                    chinput_jiw, proxOE, distFunParams
+                    chinput_jiw, proxOE, distFunParams, configuration
                     )
             )
 
@@ -1645,9 +1641,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return chinput_jiw, param_dispersion
 
-    #@task(returns=1,
-    #      x=IN,
-    #      dispersion=IN)
+    @task(returns=1,
+          x=IN,
+          dispersion=IN)
     def getPvals(self, x, dispersion):
         """
         Get the pvalues for each interaction
@@ -1743,7 +1739,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return x
 
-    def getAvgFragLength(self, rmap, excludeMT=True):
+    @staticmethod
+    def getAvgFragLength(rmap, configuration, excludeMT=True):
         """
         Get the average fragment
 
@@ -1758,13 +1755,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         rmap: DataFrame
         """
         chrMAX = rmap.groupby(["chr"], as_index=False)["end"].max()
-        self.configuration["chrMAX"] = chrMAX
+        configuration["chrMAX"] = chrMAX
 
         avgFragLen = chrMAX["end"].sum()/rmap.shape[0]
 
         return avgFragLen, rmap
 
-    def getNoOfHypotheses(self, rmap, baitmap, avgFragLen):
+    @staticmethod
+    def getNoOfHypotheses(rmap, baitmap, avgFragLen, configuration):
         """
         Parameters
         ---------
@@ -1776,14 +1774,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         Nhyp: float
         """
-        chromo = self.configuration["chrMAX"]["chr"]
+        chromo = configuration["chrMAX"]["chr"]
 
         ##count # hypothesis
         Nhyp = baitmap.shape[0]*((2*rmap.shape[0]) - baitmap.shape[0] - 1)/2
 
         return Nhyp
 
-    def expit(self, x):
+    @staticmethod
+    def expit(x):
         """
         inverse logit function
 
@@ -1797,7 +1796,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         return 1/(1+math.exp(-x))
 
-    def eta_sigma(self, chrs):
+    @staticmethod
+    def eta_sigma(configuration, chrs):
         """
         Calculate eta_sigma parameter
 
@@ -1809,12 +1809,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         eta_sigma: float
         """
-        alpha = self.configuration["pychic_weightAlpha"]
-        beta = self.configuration["pychic_weightBeta"]
-
-        chrMAX = self.configuration["chrMAX"]
-        baitmap = self.configuration["baitmap"]
-        avgFragLen = self.configuration["avgFragLen"]
+        alpha = configuration["pychic_weightAlpha"]
+        beta = configuration["pychic_weightBeta"]
+        chrMAX = configuration["chrMAX"]
+        baitmap = configuration["baitmap"]
+        avgFragLen = configuration["avgFragLen"]
 
         eta_sigma = 0
 
@@ -1851,7 +1850,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return eta_sigma
 
-    def getEtaBar(self, x, rmap, baitmap, avgFragLen):
+
+    def getEtaBar(self, rmap, baitmap, avgFragLen, configuration):
         """
         get parameters for the experiments
 
@@ -1868,17 +1868,17 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         ##1. Collect parameters
 
-        alpha = self.configuration["pychic_weightAlpha"]
-        beta = self.configuration["pychic_weightBeta"]
-        gamma = self.configuration["pychic_weightGamma"]
-        delta = self.configuration["pychic_weightDelta"]
+        alpha = configuration["pychic_weightAlpha"]
+        beta = configuration["pychic_weightBeta"]
+        gamma = configuration["pychic_weightGamma"]
+        delta = configuration["pychic_weightDelta"]
 
         ##2. Get genomic/fragment map information
-        chrMAX = self.configuration["chrMAX"]
-        self.configuration["baitmap"] = baitmap
-        self.configuration["avgFragLen"] = avgFragLen
+        chrMAX = configuration["chrMAX"]
+        configuration["baitmap"] = baitmap
+        configuration["avgFragLen"] = avgFragLen
 
-        Nhyp = self.getNoOfHypotheses(rmap, baitmap, avgFragLen)
+        Nhyp = self.getNoOfHypotheses(rmap, baitmap, avgFragLen, configuration)
 
         ##3. Calculate eta.bar
         ##Loop, summing contributions of eta
@@ -1887,20 +1887,25 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         chrs = [c for c in rmap["chr"].unique()]
 
-        if len(chrs) < self.configuration["pychic_cpu"]:
-            pool = Pool(self.configuration["pychic_cpu"])
+        #paralelize code, silence to use pyCOMPCs
+
+        if len(chrs) < configuration["pychic_cpu"]:
+            pool = Pool(configuration["pychic_cpu"])
 
             chrs_list = [[chrs[i]] for i in range(len(chrs))]
 
-            eta_sigma = np.array(pool.map(self.eta_sigma, chrs_list)).sum()
+            func_arg = partial(self.eta_sigma, configuration)
+
+            eta_sigma = np.array(pool.map(func_arg, chrs_list)).sum()
         else:
-            div = int(len(chrs)/self.configuration["pychic_cpu"])
+
+            div = int(len(chrs)/configuration["pychic_cpu"])
             div = math.floor(div)
 
             divisions = []
             mini_list = []
             for i in enumerate(chrs):
-                if len(divisions) == self.configuration["pychic_cpu"]:
+                if len(divisions) == configuration["pychic_cpu"]:
                     mini_list.append(i[1])
                 else:
                     mini_list.append(i[1])
@@ -1908,17 +1913,18 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                         divisions.append(mini_list)
                         mini_list = []
 
-            pool = Pool(self.configuration["pychic_cpu"])
+            pool = Pool(configuration["pychic_cpu"])
 
             eta_sigma = np.array(
-                pool.map(self.eta_sigma, divisions)
+                pool.map(self.eta_sigma, chrs)
             ).sum()
 
         eta_bar = eta_sigma/Nhyp
 
-        return eta_bar
+        return eta_bar, configuration
 
-    def getWeights(self, dist):
+
+    def getWeights(self, dist, configuration):
         """
         Calculate the weights
 
@@ -1930,11 +1936,11 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         float
         """
-        alpha = self.configuration["pychic_weightAlpha"]
-        beta = self.configuration["pychic_weightBeta"]
-        gamma = self.configuration["pychic_weightGamma"]
-        delta = self.configuration["pychic_weightDelta"]
-        eta_bar = self.configuration["pychic_eta"]
+        alpha = configuration["pychic_weightAlpha"]
+        beta = configuration["pychic_weightBeta"]
+        gamma = configuration["pychic_weightGamma"]
+        delta = configuration["pychic_weightDelta"]
+        eta_bar = configuration["pychic_eta"]
 
         expit = np.vectorize(self.expit)
 
@@ -1946,7 +1952,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return fa - fb
 
-    def getScores(self, x, rmap, baitmap):
+    @task(returns=1, x=IN, rmap=IN, baitmap=IN)
+    def getScores(self, x, rmap, baitmap, configuration):
         """
         Get the scores from the pvalues
 
@@ -1960,16 +1967,67 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         chinput_jiwb_scores: DataFrame
         """
-        alpha = self.configuration["pychic_weightAlpha"]
-        beta = self.configuration["pychic_weightBeta"]
-        gamma = self.configuration["pychic_weightGamma"]
-        delta = self.configuration["pychic_weightDelta"]
+        alpha = configuration["pychic_weightAlpha"]
+        beta = configuration["pychic_weightBeta"]
+        gamma = configuration["pychic_weightGamma"]
+        delta = configuration["pychic_weightDelta"]
 
-        avgFragLen, rmap = self.getAvgFragLength(rmap)
+        avgFragLen, rmap = self.getAvgFragLength(rmap, configuration)
 
-        eta_bar = self.getEtaBar(x, rmap, baitmap, avgFragLen)
+        #run pyCOMPSs
+        #eta_bar, configuration = self.getEtaBar(rmap, baitmap, avgFragLen, configuration)
 
-        self.configuration["pychic_eta"] = eta_bar
+        ##2. Get genomic/fragment map information
+        chrMAX = configuration["chrMAX"]
+        configuration["baitmap"] = baitmap
+        configuration["avgFragLen"] = avgFragLen
+
+        Nhyp = self.getNoOfHypotheses(rmap, baitmap, avgFragLen, configuration)
+
+        ##3. Calculate eta.bar
+        ##Loop, summing contributions of eta
+
+        eta_sigma = 0
+
+        chrs = [c for c in rmap["chr"].unique()]
+
+        #paralelize code, silence to use pyCOMPCs
+
+        for c in chrs:
+            #length of chromosome
+            d_c = chrMAX[chrMAX["chr"] == c]
+            d_c = int(d_c.loc[:, "end"])
+
+            nBaits = baitmap[baitmap["chr"] == c]
+            n_c = nBaits["chr"].value_counts()
+
+            n_c = int("".join([str(i) for i in n_c]))
+
+            for i in range(1, n_c+1):
+                try:
+                    d = round(d_c*i/n_c, 1)
+
+                    d_near = min(float(d), float(d_c-d))
+
+                    d_other = np.arange(avgFragLen, max(avgFragLen, d_near), avgFragLen)
+
+                    d_other2 = np.arange(d_near, d_c-d_near, avgFragLen)
+
+                    t1 = alpha + beta*np.log(d_other)
+                    t1_expit = 1/(1+math.e**(-t1))
+
+                    t2 = alpha + beta*np.log(d_other2)
+                    t2_expit = 1/(1+math.e**(-t2))
+
+                    eta_sigma = eta_sigma + 2*sum(t1_expit) + sum(t2_expit)
+
+                except ValueError:
+                    logger.info("Empty array")
+
+
+        eta_bar = eta_sigma/Nhyp
+
+        configuration["pychic_eta"] = eta_bar
         #Gets weights
         logger.info("Calculating p-values weights...")
 
@@ -1988,7 +2046,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         ## get score (more interpretable than log.q)
         getweights = np.vectorize(self.getWeights, otypes=[float])
-        minval = getweights(0)
+        minval = getweights(0, configuration)
 
         x.loc[:, "score"] = -x["log_q"] - minval
 
@@ -1996,10 +2054,10 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return x
 
-    #@task(returns=bool,
-    #      params_out=IN,
-    #      params=IN,
-    #      configuration=IN)
+    @task(returns=bool,
+          params_out=IN,
+          params=IN,
+          configuration=IN)
     def print_params(self, params_out, configuration):
         """
         Print to a file all the parameters used in the experiment
@@ -2025,7 +2083,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         return True
 
     @staticmethod
-    def cut2(num_list, m, onlycuts=True):
+    def cut2(num_list, m):
         """
         This function si the fixed version of cut2 form R.
         Given a list of numbers and a parameter m, it will bin the list
@@ -2036,7 +2094,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ----------
         num_list: list
         m : int
-        onlycuts:Bool
+
 
         Returns
         -------
@@ -2071,15 +2129,15 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return bins
 
-    #@task(returns=bool,
-    #      x=IN,
-    #      outprefix=IN,
-    #      cutoff=IN,
-    #      export_format=IN,
-    #      order=IN,
-    #      rmap=IN,
-    #      baitmap=IN,
-    #      configuration=IN)
+    @task(returns=bool,
+          x=IN,
+          outprefix=IN,
+          cutoff=IN,
+          export_format=IN,
+          order=IN,
+          rmap=IN,
+          baitmap=IN,
+          configuration=IN)
     def exportResults(self, x, outprefix, cutoff, export_format,
                       order, rmap, baitmap, configuration):
         """
@@ -2167,7 +2225,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                        "otherEnd_end", "otherEnd_name", "N_reads", "score"]]
 
             import csv
-            out.to_csv(self.configuration["execution"]+"/"+ \
+            out.to_csv(configuration["execution"]+"/"+ \
                        "pychic_output_seqmonk.txt",
                        sep="\t",
                        header=False,
@@ -2184,7 +2242,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                         "N_reads", "score"
                        ]]
 
-            out.to_csv(self.configuration["execution"]+"/"+ \
+            out.to_csv(configuration["execution"]+"/"+ \
                        "pychic_output"+".ibed",
                        sep="\t",
                        index=False
@@ -2212,12 +2270,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             res.loc[:, "score"] = out["score"]
 
 
-            name = self.configuration["execution"]+"/"+os.path.split(outprefix)[1]
+            name = configuration["execution"]+"/"+os.path.split(outprefix)[1]
             res.to_csv(name, sep="\t", header=False, index=False)
 
         return True
 
-    def plotBaits(self, baitmap_df, x, dispersion, out_name):
+    @task(returns= bool, baitmap_df=IN, x=IN, dispersion=IN,
+          out_name=IN)
+    def plotBaits(self, baitmap_df, x, dispersion, out_name, configuration):
         """
         This function generates a pdf with 10 random baits
 
@@ -2234,8 +2294,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         """
         sns.set_style("ticks")
 
-        if self.configuration["pychic_features_plot"]:
-            feature_list = self.configuration["pychic_features_plot"].split(",")
+        if configuration["pychic_features_plot"]:
+            feature_list = configuration["pychic_features_plot"].split(",")
             baitmap_df = baitmap_df[baitmap_df["feature"].isin(feature_list)]
             baits = baitmap_df["ID"]
             if len(baits) < 6:
@@ -2313,7 +2373,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
                 index += 1
 
-        plt.savefig(self.configuration["execution"]+"/"+os.path.split(out_name)[1],
+        plt.savefig(configuration["execution"]+"/"+os.path.split(out_name)[1],
                     quality=95, dpi="figure", facecolor='w', edgecolor='w',
                     papertype=None,
                     box_inches='tight', pad_inches="tight")
@@ -2471,8 +2531,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         chinput = input_files["chinput"].split(",")
 
-        print(self.configuration)
-
         # Lets keep it to one for now
         if len(chinput) == 1:
             chinput_filtered, rmap_df, baitmap_df = self.readSample( # pylint: disable=too-many-function-args
@@ -2537,8 +2595,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         chinput_jiwb_scores = self.getScores(chinput_jiwb_pval,
                                              rmap_df,
-                                             baitmap_df
-                                            )
+                                             baitmap_df,
+                                             self.configuration)
 
         self.print_params(output_files["params_out"],
                           self.configuration,
@@ -2548,7 +2606,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         self.plotBaits(baitmap_df,
                        chinput_jiwb_scores,
                        dispersion,
-                       output_files["pdf_examples"])
+                       output_files["pdf_examples"],
+                       self.configuration)
 
         self.exportResults(chinput_jiwb_scores,
                            output_files["washU_text"],

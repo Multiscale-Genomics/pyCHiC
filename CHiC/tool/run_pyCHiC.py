@@ -166,19 +166,19 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
         if "pychic_bam" not in self.configuration:
             self.configuration["pychic_bam"] = sorted_bam
 
-        #pychic_handler = pyCHiC(self.configuration)
-        #pychic_handler.run(input_files, input_metadata, output_files)
+        pychic_handler = pyCHiC(self.configuration)
+        pychic_handler.run(input_files, input_metadata, output_files)
 
-        results = self.pychic_runner(self.configuration,
-                                     input_files["RMAP"],
-                                     input_files["BAITMAP"],
-                                     input_files["npb"],
-                                     input_files["nbpb"],
-                                     input_files["poe"],
-                                     input_files["chinput"],
-                                     output_files["washU_text"],
-                                     output_files["pdf_examples"],
-                                     output_files["params_out"])
+        #results = self.pychic_runner(self.configuration,
+        #                             input_files["RMAP"],
+        #                             input_files["BAITMAP"],
+        #                             input_files["npb"],
+        #                             input_files["nbpb"],
+        #                             input_files["poe"],
+        #                             input_files["chinput"],
+        #                             output_files["washU_text"],
+        #                             output_files["pdf_examples"],
+        #                                                output_files["params_out"])
 
         if "genome_name" in self.configuration:
             files_dir = os.listdir(self.configuration["execution"])
@@ -245,7 +245,7 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
 
         return output_files, output_metadata
 
-"""
+
 if __name__ == "__main__":
 
     path = "../../tests/data/test_run_chicago/data_chicago/"
@@ -302,4 +302,3 @@ if __name__ == "__main__":
 
     pyCHiC_obj = run_pyCHiC(configuration)
     pyCHiC_obj.run(input_files, metadata, output_files)
-"""
