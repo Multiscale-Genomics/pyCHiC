@@ -60,8 +60,8 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
     @task(returns=bool, configuration=IN, RMAP=FILE_IN, BAITMAP=FILE_IN,
           npb=FILE_IN, nbpb=FILE_IN, poe=FILE_IN, chinput=FILE_IN)
           #washU_text=FILE_OUT, pdf_examples=FILE_OUT, params_out=FILE_OUT)
-    def pychic_runner(self, configuration, RMAP, BAITMAP, npb, nbpb, poe, chinput):
-                      #washU_text, pdf_examples, params_out):
+    def pychic_runner(self, configuration, RMAP, BAITMAP, npb, nbpb, poe, chinput,
+                      washU_text, pdf_examples, params_out):
         """
         This is the function with pyCOMPSs that is going to run pyCHiC
 
