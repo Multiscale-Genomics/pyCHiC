@@ -1665,7 +1665,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         log_p = []
 
-        robjects.r.assign("alpha", dispersion)
+        robjects.r.assign("alpha", float(dispersion))
 
         robjects.numpy2ri.activate()
 
