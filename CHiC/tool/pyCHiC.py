@@ -1578,7 +1578,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
           distFunParams=IN,
           poe=FILE_IN,
           rmap=FILE_IN,
-          configuration=FILE_IN)
+          configuration=IN)
     def estimateBrownianComponent(self, chinput_jiw, distFunParams,
                                   poe, rmap, configuration):
         """
