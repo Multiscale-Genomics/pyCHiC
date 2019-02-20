@@ -1639,9 +1639,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         chinput_jiw = self.estimateBMean(chinput_jiw, distFunParams)
 
-        print("dispersion")
-        print(param_dispersion)
-        logger.info(param_dispersion)
         return chinput_jiw, param_dispersion
 
     @task(returns=1,
@@ -1676,6 +1673,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         tmean_r = robjects.numpy2ri.numpy2ri(np.array(x["Tmean"]))
         bmean_r = robjects.numpy2ri.numpy2ri(np.array(x["Bmean"]))
 
+        print("dispersion")
+        print(dispersion)
         robjects.r.assign("N", n_r)
         robjects.r.assign("Tmean", tmean_r)
         robjects.r.assign("Bmean", bmean_r)
