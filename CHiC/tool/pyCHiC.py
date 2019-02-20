@@ -1573,7 +1573,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return model_theta
 
-    @task(returns=1,
+    @task(returns=2,
           chinput_jiw=IN,
           distFunParams=IN,
           poe=FILE_IN,
