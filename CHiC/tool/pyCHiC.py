@@ -1639,6 +1639,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         chinput_jiw = self.estimateBMean(chinput_jiw, distFunParams)
 
+        print("dispersion")
+        print(param_dispersion)
+        logger.info(param_dispersion)
         return chinput_jiw, param_dispersion
 
     @task(returns=1,
