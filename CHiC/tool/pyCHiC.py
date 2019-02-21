@@ -2599,7 +2599,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                              baitmap_df,
                                              self.configuration)
 
-        file_param = self.configuration["execution"]+"/"+ \
+        abs_param = os.path.abspath(self.configuration["execution"])
+
+        file_param = abs_param+"/"+ \
                    os.path.split(output_files["params_out"])[1]
 
         self.print_params(output_files["params_out"],

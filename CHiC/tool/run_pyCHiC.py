@@ -247,7 +247,7 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
 
         return output_files, output_metadata
 
-"""
+
 if __name__ == "__main__":
 
     path = "../../tests/data/test_run_chicago/data_chicago/"
@@ -304,4 +304,3 @@ if __name__ == "__main__":
 
     pyCHiC_obj = run_pyCHiC(configuration)
     pyCHiC_obj.run(input_files, metadata, output_files)
-"""
