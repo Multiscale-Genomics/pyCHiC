@@ -292,7 +292,7 @@ class makeBaitmapTool(Tool):
             out_baitmap,
             chr_handler)
 
-        #results = compss_wait_on(results)
+        results = compss_wait_on(results)
 
         output_metadata = {
             }
