@@ -2603,7 +2603,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                           self.configuration,
                           )
 
-
         self.plotBaits(baitmap_df,
                        chinput_jiwb_scores,
                        dispersion,
