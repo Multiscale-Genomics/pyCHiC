@@ -256,14 +256,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("checking nbpb, npb and poe files...")
 
-        if self.check_design(nbpb, rmap, baitmap, 3, 4) is False:
-            return False
+        #if self.check_design(nbpb, rmap, baitmap, 3, 4) is False:
+        #    return False
 
-        if self.check_design(npb, rmap, baitmap, 7, 8) is False:
-            return False
+        #if self.check_design(npb, rmap, baitmap, 7, 8) is False:
+        #    return False
 
-        if self.check_design(poe, rmap, baitmap, 7, 8) is False:
-            return False
+        #if self.check_design(poe, rmap, baitmap, 7, 8) is False:
+        #    return False
 
         return True
 
