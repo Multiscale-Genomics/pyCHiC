@@ -158,7 +158,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             return True
 
     @task(returns=bool, pychic_export_format=IN, pychic_export_order=IN,
-          rmap=FILE_IN, baitmap=FILE_IN)
+          rmap=FILE_IN, baitmap=FILE_IN, nbpb=FILE_IN, npb=FILE_IN, poe=FILE_IN)
     def checks(self, pychic_export_format, pychic_export_order, rmap, baitmap,
                nbpb, npb, poe): # pylint: disable=invalid-name
         """
