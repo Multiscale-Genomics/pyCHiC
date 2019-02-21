@@ -2376,7 +2376,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return True
 
-
     def run(self, input_files, input_metadata, output_files):
         """
         Function that runs and pass the parameters to PyCHiC
