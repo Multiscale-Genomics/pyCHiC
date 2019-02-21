@@ -2073,9 +2073,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         -------
         Bool
         """
-        file = configuration["execution"]+"/"+ \
-                   os.path.split(params_out)[1]
-
         logger.info("file")
         logger.info(file)
         with open(file, "w") as file_out:
