@@ -256,14 +256,14 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         logger.info("checking nbpb, npb and poe files...")
 
-        #if self.check_design(nbpb, rmap, baitmap, 3, 4) is False:
-        #    return False
+        if self.check_design(nbpb, rmap, baitmap, 3, 4) is False:
+            return False
 
-        #if self.check_design(npb, rmap, baitmap, 7, 8) is False:
-        #    return False
+        if self.check_design(npb, rmap, baitmap, 7, 8) is False:
+            return False
 
-        #if self.check_design(poe, rmap, baitmap, 7, 8) is False:
-        #    return False
+        if self.check_design(poe, rmap, baitmap, 7, 8) is False:
+            return False
 
         return True
 
@@ -2058,8 +2058,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
     @task(returns=bool,
           params_out=IN,
           params=IN,
-          configuration=IN)
-    def print_params(self, params_out, configuration):
+          configuration=IN,
+          file=FILE_OUT)
+    def print_params(self, params_out, configuration, file):
         """
         Print to a file all the parameters used in the experiment
 
@@ -2599,8 +2600,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                              baitmap_df,
                                              self.configuration)
 
+        file_param = self.configuration["execution"]+"/"+ \
+                   os.path.split(params_out)[1]
+
         self.print_params(output_files["params_out"],
                           self.configuration,
+                          file_param
                           )
 
         self.plotBaits(baitmap_df,
