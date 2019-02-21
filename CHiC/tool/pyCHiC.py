@@ -2097,7 +2097,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         num_list: list
         m : int
 
-
         Returns
         -------
         bins: list
@@ -2601,7 +2600,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                              self.configuration)
 
         file_param = self.configuration["execution"]+"/"+ \
-                   os.path.split(params_out)[1]
+                   os.path.split(output_files["params_out"])[1]
 
         self.print_params(output_files["params_out"],
                           self.configuration,
