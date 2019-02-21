@@ -2136,7 +2136,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
           rmap=IN,
           baitmap=IN,
           configuration=IN)
-    def exportResults(self, x, outprefix, cutoff, export_format,
+    def exportResults(self, x, out_file, cutoff, export_format,
                       order, rmap, baitmap, configuration):
         """
         print the results in the correct format and order
@@ -2268,14 +2268,13 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
             res.loc[:, "score"] = out["score"]
 
 
-            name = configuration["execution"]+"/"+os.path.split(outprefix)[1]
-            res.to_csv(name, sep="\t", header=False, index=False)
+            res.to_csv(out_file, sep="\t", header=False, index=False)
 
         return True
 
     @task(returns= bool, baitmap_df=IN, x=IN, dispersion=IN,
-          out_name=IN)
-    def plotBaits(self, baitmap_df, x, dispersion, out_name, configuration):
+          out_file=IN)
+    def plotBaits(self, baitmap_df, x, dispersion, out_file, configuration):
         """
         This function generates a pdf with 10 random baits
 
@@ -2371,7 +2370,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
                 index += 1
 
-        plt.savefig(configuration["execution"]+"/"+os.path.split(out_name)[1],
+        plt.savefig(out_file,
                     quality=95, dpi="figure", facecolor='w', edgecolor='w',
                     papertype=None,
                     box_inches='tight', pad_inches="tight")
@@ -2596,9 +2595,9 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                              baitmap_df,
                                              self.configuration)
 
-        abs_param = os.path.abspath(self.configuration["execution"])
+        abs_path = os.path.abspath(self.configuration["execution"])
 
-        file_param = abs_param+"/"+ \
+        file_param = abs_path+"/"+ \
                    os.path.split(output_files["params_out"])[1]
 
         self.print_params(output_files["params_out"],
@@ -2606,14 +2605,20 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                           file_param
                           )
 
+        out_pdf = self.configuration["execution"]+"/"+\
+                  os.path.split(output_files["pdf_examples"])[1]
+
         self.plotBaits(baitmap_df,
                        chinput_jiwb_scores,
                        dispersion,
-                       output_files["pdf_examples"],
+                       out_pdf,
                        self.configuration)
 
+        out_washu = self.configuration["execution"]+"/"+\
+                    os.path.split(output_files["washU_text"])[1]
+
         self.exportResults(chinput_jiwb_scores,
-                           output_files["washU_text"],
+                           out_washu,
                            self.configuration["pychic_cutoff"],
                            self.configuration["pychic_export_format"],
                            self.configuration["pychic_order"],
