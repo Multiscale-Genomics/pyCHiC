@@ -186,6 +186,7 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
                 if file_.startswith("Digest_"+self.configuration["genome_name"]):
                     os.remove(file_)
 
+        """
         compss_delete_file(rtree_file_idx)
         compss_delete_file(rtree_file_dat)
         compss_delete_file(chr_handler)
@@ -197,6 +198,7 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
         compss_delete_file(poe)
         compss_delete_file(out_bam)
         compss_delete_file(sorted_bam)
+        """
 
         if "chinput" not in input_metadata:
             input_metadata["chinput"] = input_metadata["genome_fa"]
