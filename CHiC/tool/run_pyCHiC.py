@@ -116,9 +116,9 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
         rmap = "tests/data/test_run_chicago/test.rmap"
         baitmap = "tests/data/test_run_chicago/test.baitmap"
         bait_sam = "tests/data/test_baitmap/baits.sam"
-        nbpb = os.path.abspath("tests/data/test_run_chicago/test.nbpb")
-        npb = os.path.abspath("tests/data/test_run_chicago/test.npb")
-        poe = os.path.abspath("tests/data/test_run_chicago/test.poe")
+        nbpb = "tests/data/test_run_chicago/test.nbpb"
+        npb = "tests/data/test_run_chicago/test.npb"
+        poe = "tests/data/test_run_chicago/test.poe"
         out_bam = "tests/data/test_baitmap/baits.bam"
         sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
 
