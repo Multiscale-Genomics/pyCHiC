@@ -116,9 +116,9 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
         rmap = "tests/data/test_run_chicago/test.rmap"
         baitmap = "tests/data/test_run_chicago/test.baitmap"
         bait_sam = "tests/data/test_baitmap/baits.sam"
-        nbpb = "tests/data/test_run_chicago/test.nbpb"
-        npb = "tests/data/test_run_chicago/test.npb"
-        poe = "tests/data/test_run_chicago/test.poe"
+        nbpb = os.path.abspath("tests/data/test_run_chicago/test.nbpb")
+        npb = os.path.abspath("tests/data/test_run_chicago/test.npb")
+        poe = os.path.abspath("tests/data/test_run_chicago/test.poe")
         out_bam = "tests/data/test_baitmap/baits.bam"
         sorted_bam = self.configuration["execution"] + "/" + "sorted_bam"
 
@@ -245,7 +245,7 @@ class run_pyCHiC(Tool):  # pylint: disable=invalid-name
 
         return output_files, output_metadata
 
-
+"""
 if __name__ == "__main__":
 
     path = "../../tests/data/test_run_chicago/data_chicago/"
@@ -302,3 +302,4 @@ if __name__ == "__main__":
 
     pyCHiC_obj = run_pyCHiC(configuration)
     pyCHiC_obj.run(input_files, metadata, output_files)
+"""
