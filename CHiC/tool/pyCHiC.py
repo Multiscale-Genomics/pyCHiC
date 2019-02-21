@@ -2129,7 +2129,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
     @task(returns=bool,
           x=IN,
-          outprefix=IN,
+          out_file=FILE_OUT,
           cutoff=IN,
           export_format=IN,
           order=IN,
@@ -2155,7 +2155,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ------
         bool
         """
-
         logger.info("Rading the rmap file")
 
         rmap.columns = ["rChr", "rStart", "rEnd", "otherEndID"]
@@ -2272,8 +2271,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return True
 
-    @task(returns= bool, baitmap_df=IN, x=IN, dispersion=IN,
-          out_file=IN)
+    @task(returns=bool, baitmap_df=IN, x=IN, dispersion=IN,
+          out_file=FILE_OUT, configuration=IN)
     def plotBaits(self, baitmap_df, x, dispersion, out_file, configuration):
         """
         This function generates a pdf with 10 random baits
