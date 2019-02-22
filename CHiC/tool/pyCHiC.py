@@ -157,8 +157,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                 break
             return True
 
-    @task(returns=bool, pychic_export_format=IN, pychic_export_order=IN,
-          rmap=FILE_IN, baitmap=FILE_IN)
     def checks(self, pychic_export_format, pychic_export_order, rmap, baitmap,
                nbpb, npb, poe): # pylint: disable=invalid-name
         """
@@ -267,8 +265,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
 
         return True
 
-    @task(returns=bool, chinput=FILE_IN, bamfile=IN,
-          rmap=FILE_IN, baitmap=FILE_IN)
     def readSample(self, chinput, bamFile, rmap, baitmap): # pylint: disable=invalid-name
         """
         This function takes the chinput file and filter it according
@@ -1104,10 +1100,6 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
                                              labels=False
                                             )
         transBaitLen.loc[:, "tblb"] = transBaitLen["tblb"].astype(str)
-
-        #transBaitLen.loc[:, "tblb"] = np.where(transBaitLen["tblb"] == "nan",
-        #                                       "["+str(levels[-2])+", "+str(levels[-1])+")",
-        #                                       transBaitLen["tblb"])
 
         chinput_ji = pd.merge(chinput_ji, transBaitLen, how="left", on="baitID")
 
@@ -2490,12 +2482,12 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         self.print_params(output_files["params_out"],
                           self.configuration)
 
-        """
+
         self.plotBaits(baitmap_df,
                        chinput_jiwb_scores,
                        dispersion,
                        output_files["pdf_examples"])
-        """
+
         self.exportResults(chinput_jiwb_scores,
                            output_files["washU_text"],
                            self.configuration["pychic_cutoff"],

@@ -272,4 +272,4 @@ class makeDesignFilesTool(Tool):
                 )
         }
 
-        return output_files, output_metadata
+        return (output_files, output_metadata)
