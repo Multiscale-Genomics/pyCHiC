@@ -24,7 +24,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from CHiC.tool.makeDesignFiles import makeDesignFilesTool
+from pyCHiC.tool.makeDesignFiles import makeDesignFilesTool
 
 #####################################################
 

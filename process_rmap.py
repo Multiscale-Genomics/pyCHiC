@@ -24,7 +24,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from CHiC.tool.rmap_tool import makeRmapFile
+from pyCHiC.tool.rmap_tool import makeRmapFile
 
 ################################################
 

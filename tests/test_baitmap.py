@@ -17,7 +17,7 @@ import os
 import pytest  # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
-from CHiC.tool.makeBaitmap import makeBaitmapTool
+from pyCHiC.tool.makeBaitmap import makeBaitmapTool
 
 
 def test_baitmap():

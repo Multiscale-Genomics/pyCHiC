@@ -25,7 +25,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from CHiC.tool.run_pyCHiC import run_pyCHiC
+from pyCHiC.tool.run_pyCHiC import run_pyCHiC
 
 ################################################
 

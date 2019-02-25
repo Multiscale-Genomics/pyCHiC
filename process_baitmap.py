@@ -24,7 +24,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from CHiC.tool.makeBaitmap import makeBaitmapTool
+from pyCHiC.tool.makeBaitmap import makeBaitmapTool
 
 ################################################
 

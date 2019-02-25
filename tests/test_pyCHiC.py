@@ -17,7 +17,7 @@
 import pytest # pylint: disable=unused-import
 import pandas as pd
 from basic_modules.metadata import Metadata
-from CHiC.tool.run_pyCHiC import run_pyCHiC
+from pyCHiC.tool.run_pyCHiC import run_pyCHiC
 
 def test_pychic():
     """

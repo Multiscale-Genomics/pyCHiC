@@ -24,7 +24,7 @@ import argparse
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from CHiC.tool.hicup_tool import hicup
+from pyCHiC.tool.hicup_tool import hicup
 
 ################################################
 

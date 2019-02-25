@@ -18,7 +18,7 @@ import os
 import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
-from CHiC.tool.hicup_tool import hicup
+from pyCHiC.tool.hicup_tool import hicup
 
 def test_hicup():
     """

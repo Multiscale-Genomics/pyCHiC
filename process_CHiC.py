@@ -28,12 +28,12 @@ from basic_modules.workflow import Workflow
 from utils import logger
 
 
-from CHiC.tool.rmap_tool import makeRmapFile
-from CHiC.tool.makeBaitmap import makeBaitmapTool
-from CHiC.tool.makeDesignFiles import makeDesignFilesTool
-from CHiC.tool.hicup_tool import hicup
-from CHiC.tool.bam2chicago_tool import bam2chicagoTool
-from CHiC.tool.run_pyCHiC import run_pyCHiC
+from pyCHiC.tool.rmap_tool import makeRmapFile
+from pyCHiC.tool.makeBaitmap import makeBaitmapTool
+from pyCHiC.tool.makeDesignFiles import makeDesignFilesTool
+from pyCHiC.tool.hicup_tool import hicup
+from pyCHiC.tool.bam2chicago_tool import bam2chicagoTool
+from pyCHiC.tool.run_pyCHiC import run_pyCHiC
 
 ################################################
 

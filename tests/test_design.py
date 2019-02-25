@@ -20,7 +20,7 @@ import pytest # pylint: disable=unused-import
 
 from basic_modules.metadata import Metadata
 
-from CHiC.tool.makeDesignFiles import makeDesignFilesTool
+from pyCHiC.tool.makeDesignFiles import makeDesignFilesTool
 
 def test_design():
     """
