@@ -33,6 +33,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from rpy2.robjects.packages import importr
+import  rpy2.robjects.numpy2ri
 from rpy2 import robjects
 from rpy2.robjects import r
 
