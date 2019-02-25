@@ -32,3 +32,11 @@ This file is passed to the makeBaitmap.py script and generate the .batimap file 
 ------------------------------------------------------------
 
 This branch contains some modifications from Mark to solve issues with pyCOMPSs regarding makeBaitmap.py tool
+
+
+25-2-2019 Creating branch called folder_name
+--------------------------------------------
+
+This branch rename the folder CHiC to pyCHiC. The path from the pyCHiC master and pyCOMPSs branches to acces the tools was pyCHiC/CHiC/tool/.. This branch rename CHiC and convert the path to pyCHiC/pyCHiC/tool/...
+
+

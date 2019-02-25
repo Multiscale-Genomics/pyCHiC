@@ -33,7 +33,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from rpy2.robjects.packages import importr
-from rpy2.robjects.numpy2ri import numpy2ri
 from rpy2 import robjects
 from rpy2.robjects import r
 
@@ -1537,8 +1536,8 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         numpyN = np.array(x["N"])
         numpyBmenalog = np.array(x["Bmean"])
 
-        r_y = numpy2ri(numpyN)
-        r_x = numpy2ri(numpyBmenalog)
+        r_y = robjects.numpy2ri.numpy2ri(numpyN)
+        r_x = robjects.numpy2ri.numpy2ri(numpyBmenalog)
 
         r.assign("y", r_y)
         r.assign("x", r_x)
