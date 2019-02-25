@@ -32,3 +32,18 @@ This file is passed to the makeBaitmap.py script and generate the .batimap file 
 ------------------------------------------------------------
 
 This branch contains some modifications from Mark to solve issues with pyCOMPSs regarding makeBaitmap.py tool
+
+
+25-1-2019 Creating branch pyCOMPSs
+----------------------------------
+This is the branch containing pyCOMPSs decorators, and is working in COMPSs. This Branch was not
+merged with master because the code contain modifications that will made the code run slower in local
+(mostly the function getEtaBar is not running in parallel due to issues in COMPSs)
+
+
+25-2-2019 Creating branch called folder_name
+--------------------------------------------
+
+This branch rename the folder CHiC to pyCHiC. The path from the pyCHiC master and pyCOMPSs branches to acces the tools was pyCHiC/CHiC/tool/.. This branch rename CHiC and convert the path to pyCHiC/pyCHiC/tool/...
+
+
