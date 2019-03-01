@@ -56,7 +56,12 @@ Tools for processing fastq C-HiC files
    Normalize data and call C-HiC peaks
    ===================================
 
-   run_chicago
+   pyCHiC
    -----------
    .. autoclass:: CHiC.tool.pyCHiC.pyCHiC
+      :members:
+
+   run_pyCHiC
+   -----------
+   .. autoclass:: CHiC.tool.run_pyCHiC.run_pyCHiC
       :members:
