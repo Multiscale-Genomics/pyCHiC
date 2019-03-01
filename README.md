@@ -80,3 +80,10 @@ IMPORTANT! From the top directory type ./tidy_data before running tests/test_too
 
 To test run_pyCHiC_pipeline:
 python run_pyCHiC_pipeline.py --bowtie_idx tests/data/test_baitmap/chr21_hg19.fa.bt2.tar.gz  --genome_fa tests/data/test_baitmap/chr21_hg19.fa --probes_fa tests/data/test_baitmap/h19_promoter.fa --fastq1 tests/data/test_truncater/SRR3535023_1_chr21_new.fastq --fastq2 tests/data/test_truncater/SRR3535023_2_chr21_new.fastq --execution . --RE_name HindIII --RE_sequence A^AGCTT --execution test_run --minNPerBait 1 --minProxOEPerBin 1 --minProxB2BPerBin 1 --techNoise_minBaitsPerBin 1 --cutoff 1
+
+Command Line
+------------
+
+pyCHiC/run_pyCHiC_pipeline.py is a command line tool to run the complete CHiC pipeline. Use python run_pyCHiC_pipeline.py -h for more information.
+
+pyCHiC/CHiC/tool/cline_pyCHiC.py are command line tools to tun the pyCHiC tool. Use python cline_pyCHiC.py -h for more information.

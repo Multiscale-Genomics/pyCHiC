@@ -2053,7 +2053,7 @@ class pyCHiC(Tool): # pylint: disable=invalid-name
         ------
         bool
         """
-
+        print(export_format)
         logger.info("Rading the rmap file")
 
         rmap.columns = ["rChr", "rStart", "rEnd", "otherEndID"]
