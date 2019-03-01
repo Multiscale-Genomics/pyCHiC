@@ -35,7 +35,7 @@ import seaborn as sns
 from rpy2.robjects.packages import importr
 from rpy2 import robjects
 from rpy2.robjects import r
-from rpy2.robjects.numpy2ri import numpy2ri
+import rpy2.robjects.numpy2ri
 
 
 try:
